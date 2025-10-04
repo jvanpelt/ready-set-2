@@ -452,14 +452,11 @@ body {
     }
     
     .card {
-        padding: 6px;
-        gap: 4px;
+        padding: 8px;
+        gap: 6px;
     }
     
-    .circle {
-        width: 18px;
-        height: 18px;
-    }
+    /* Let circles scale naturally with card size - removed fixed 18px */
     
     .dice-area {
         padding: 8px;
