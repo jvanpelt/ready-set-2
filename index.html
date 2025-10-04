@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Ready, Set 2 - Set Theory Puzzle Game</title>
-    <link rel="stylesheet" href="css/styles.css?v=1.1.0">
+    <link rel="stylesheet" href="css/styles.css?v=1.1.1">
 </head>
 <body>
     <div id="app">
@@ -82,19 +82,42 @@
                     <button id="new-game-btn" class="btn btn-secondary">New Game</button>
                     <button id="resume-btn" class="btn btn-success">Resume</button>
                 </div>
-                <div id="menu-settings-view" class="hidden">
-                    <h2>Settings</h2>
-                    <div class="settings-group">
-                        <label class="setting-item">
-                            <input type="checkbox" id="solution-helper-toggle">
-                            <span class="setting-label">
-                                <strong>Solution Helper</strong>
-                                <small>Automatically highlight cards that match your current solution</small>
-                            </span>
-                        </label>
-                    </div>
-                    <button id="settings-back-btn" class="btn btn-secondary">Back</button>
+            <div id="menu-settings-view" class="hidden">
+                <h2>Settings</h2>
+                <div class="settings-group">
+                    <label class="setting-item">
+                        <input type="checkbox" id="solution-helper-toggle">
+                        <span class="setting-label">
+                            <strong>Solution Helper</strong>
+                            <small>Automatically highlight cards that match your current solution</small>
+                        </span>
+                    </label>
                 </div>
+                <div class="settings-group" style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 15px; margin-top: 15px;">
+                    <label class="setting-item">
+                        <span class="setting-label">
+                            <strong>🔧 Test Mode (Temporary)</strong>
+                            <small>Jump to any level for testing</small>
+                        </span>
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <select id="level-selector" class="level-select">
+                                <option value="1">Level 1</option>
+                                <option value="2">Level 2</option>
+                                <option value="3">Level 3</option>
+                                <option value="4">Level 4</option>
+                                <option value="5">Level 5</option>
+                                <option value="6">Level 6</option>
+                                <option value="7">Level 7</option>
+                                <option value="8">Level 8</option>
+                                <option value="9">Level 9</option>
+                                <option value="10">Level 10</option>
+                            </select>
+                            <button id="jump-to-level-btn" class="btn btn-primary">Jump</button>
+                        </div>
+                    </label>
+                </div>
+                <button id="settings-back-btn" class="btn btn-secondary">Back</button>
+            </div>
             </div>
         </div>
 
@@ -111,7 +134,7 @@
         </div>
     </div>
 
-    <script type="module" src="js/main.js?v=1.1.0"></script>
+    <script type="module" src="js/main.js?v=1.1.1"></script>
 </body>
 </html>
 

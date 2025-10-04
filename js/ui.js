@@ -57,6 +57,8 @@ export class UI {
         this.settingsBtn = document.getElementById('settings-btn');
         this.settingsBackBtn = document.getElementById('settings-back-btn');
         this.solutionHelperToggle = document.getElementById('solution-helper-toggle');
+        this.levelSelector = document.getElementById('level-selector');
+        this.jumpToLevelBtn = document.getElementById('jump-to-level-btn');
         
         this.passModal = document.getElementById('pass-modal');
         this.passTitle = document.getElementById('pass-title');
@@ -119,6 +121,15 @@ export class UI {
             } else {
                 this.clearSolutionHelper();
             }
+        });
+        
+        // Test mode: Jump to level
+        this.jumpToLevelBtn.addEventListener('click', () => {
+            const targetLevel = parseInt(this.levelSelector.value);
+            this.game.jumpToLevel(targetLevel);
+            this.hideMenu();
+            this.render();
+            this.clearSolutionHelper();
         });
         
         // Pass confirmation modal
@@ -656,6 +667,8 @@ export class UI {
     showSettings() {
         this.menuMainView.classList.add('hidden');
         this.menuSettingsView.classList.remove('hidden');
+        // Update level selector to current level
+        this.levelSelector.value = this.game.level.toString();
     }
     
     hideSettings() {

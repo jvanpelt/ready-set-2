@@ -595,6 +595,22 @@ body {
     line-height: 1.4;
 }
 
+.level-select {
+    padding: 8px 12px;
+    font-size: 16px;
+    border: 2px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-bg-dark);
+    color: white;
+    cursor: pointer;
+    flex: 1;
+}
+
+.level-select:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
 /* Utility */
 .hidden {
     display: none !important;

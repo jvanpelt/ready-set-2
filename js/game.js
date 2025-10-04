@@ -88,6 +88,26 @@ export class Game {
         this.saveState();
     }
     
+    // Test mode: Jump to any level
+    jumpToLevel(targetLevel) {
+        if (targetLevel < 1 || targetLevel > 10) return;
+        
+        this.level = targetLevel;
+        this.score = 0; // Reset score for new level
+        this.tutorialShown = false; // Show tutorial for new level
+        this.generateNewRound();
+        
+        const config = getLevelConfig(this.level);
+        this.goalScore = config.goalScore;
+        
+        // Update highest level if needed
+        if (targetLevel > this.highestLevel) {
+            this.highestLevel = targetLevel;
+        }
+        
+        this.saveState();
+    }
+    
     addDieToSolution(die, rowIndex = 0, x = null, y = null) {
         if (!this.solutions[rowIndex]) {
             this.solutions[rowIndex] = [];
