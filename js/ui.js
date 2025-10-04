@@ -154,10 +154,25 @@ export class UI {
             }
         });
         
-        // Mouse-based drag and drop for solution dice
-        this.solutionArea.addEventListener('mousedown', (e) => {
+        // Helper to get coordinates from mouse or touch event
+        const getEventCoords = (e) => {
+            if (e.touches && e.touches.length > 0) {
+                return { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
+            }
+            return { clientX: e.clientX, clientY: e.clientY };
+        };
+        
+        // Mouse/Touch-based drag and drop for solution dice
+        const handleDragStart = (e) => {
             const solutionDie = e.target.closest('.solution-die');
-            if (solutionDie && e.button === 0) { // Left click only
+            if (solutionDie && (e.button === 0 || e.type === 'touchstart')) { // Left click or touch
+                // Prevent default to stop scrolling on touch
+                if (e.type === 'touchstart') {
+                    e.preventDefault();
+                }
+                
+                const coords = getEventCoords(e);
+                
                 const row = solutionDie.closest('.solution-row');
                 this.draggedRowIndex = parseInt(row.dataset.row);
                 this.draggedDieIndex = parseInt(solutionDie.dataset.index);
@@ -168,24 +183,29 @@ export class UI {
                 this.hasMoved = false;
                 
                 // Store start position to detect movement
-                this.dragStartPos = { x: e.clientX, y: e.clientY };
+                this.dragStartPos = { x: coords.clientX, y: coords.clientY };
                 
                 // Calculate offset from die's top-left
                 const rect = solutionDie.getBoundingClientRect();
                 this.dragOffset = {
-                    x: e.clientX - rect.left,
-                    y: e.clientY - rect.top
+                    x: coords.clientX - rect.left,
+                    y: coords.clientY - rect.top
                 };
                 
                 solutionDie.style.zIndex = '100';
             }
-        });
+        };
         
-        document.addEventListener('mousemove', (e) => {
+        this.solutionArea.addEventListener('mousedown', handleDragStart);
+        this.solutionArea.addEventListener('touchstart', handleDragStart, { passive: false });
+        
+        const handleDragMove = (e) => {
             if (this.isDragging && this.currentDragElement) {
+                const coords = getEventCoords(e);
+                
                 // Check if moved more than threshold (5px)
-                const dx = Math.abs(e.clientX - this.dragStartPos.x);
-                const dy = Math.abs(e.clientY - this.dragStartPos.y);
+                const dx = Math.abs(coords.clientX - this.dragStartPos.x);
+                const dy = Math.abs(coords.clientY - this.dragStartPos.y);
                 
                 if (dx > 5 || dy > 5) {
                     this.hasMoved = true;
@@ -195,12 +215,17 @@ export class UI {
                 }
                 
                 if (this.hasMoved) {
+                    // Prevent default to stop scrolling during drag
+                    if (e.type === 'touchmove') {
+                        e.preventDefault();
+                    }
+                    
                     const row = this.currentDragElement.closest('.solution-row');
                     const rowRect = row.getBoundingClientRect();
                     
                     // Calculate position relative to row
-                    let x = e.clientX - rowRect.left - this.dragOffset.x;
-                    let y = e.clientY - rowRect.top - this.dragOffset.y;
+                    let x = coords.clientX - rowRect.left - this.dragOffset.x;
+                    let y = coords.clientY - rowRect.top - this.dragOffset.y;
                     
                     // Keep within bounds
                     const dieWidth = 80;
@@ -212,18 +237,25 @@ export class UI {
                     this.currentDragElement.style.top = `${y}px`;
                 }
             }
-        });
+        };
         
-        document.addEventListener('mouseup', (e) => {
+        document.addEventListener('mousemove', handleDragMove);
+        document.addEventListener('touchmove', handleDragMove, { passive: false });
+        
+        const handleDragEnd = (e) => {
             if (this.isDragging && this.currentDragElement) {
                 // Only update position if actually moved
                 if (this.hasMoved) {
+                    const coords = e.changedTouches ? 
+                        { clientX: e.changedTouches[0].clientX, clientY: e.changedTouches[0].clientY } :
+                        { clientX: e.clientX, clientY: e.clientY };
+                    
                     const row = this.currentDragElement.closest('.solution-row');
                     const rowRect = row.getBoundingClientRect();
                     
                     // Final position
-                    let x = e.clientX - rowRect.left - this.dragOffset.x;
-                    let y = e.clientY - rowRect.top - this.dragOffset.y;
+                    let x = coords.clientX - rowRect.left - this.dragOffset.x;
+                    let y = coords.clientY - rowRect.top - this.dragOffset.y;
                     
                     const dieWidth = 80;
                     const dieHeight = 80;
@@ -247,7 +279,10 @@ export class UI {
                 this.isDragging = false;
                 this.hasMoved = false;
             }
-        });
+        };
+        
+        document.addEventListener('mouseup', handleDragEnd);
+        document.addEventListener('touchend', handleDragEnd);
         
         // Drop dice from dice area to solution
         this.solutionArea.addEventListener('dragover', (e) => {

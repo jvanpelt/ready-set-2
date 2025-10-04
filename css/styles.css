@@ -27,6 +27,12 @@ body {
     justify-content: center;
     align-items: center;
     user-select: none;
+    /* Prevent pull-to-refresh and overscroll on mobile */
+    overscroll-behavior: none;
+    /* Prevent tap highlight on mobile */
+    -webkit-tap-highlight-color: transparent;
+    /* Prevent touch callout on iOS */
+    -webkit-touch-callout: none;
 }
 
 #app {
@@ -36,6 +42,8 @@ body {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    /* Prevent scrolling when touching game elements */
+    touch-action: none;
 }
 
 /* Game Board */
