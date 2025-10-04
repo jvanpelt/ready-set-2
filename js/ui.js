@@ -308,18 +308,22 @@ export class UI {
                     
                     const row = this.currentDragElement.closest('.solution-row');
                     const rowRect = row.getBoundingClientRect();
+                    const rowIndex = this.draggedRowIndex;
                     
-                    // Final position
+                    // Calculate intended position
                     let x = coords.clientX - rowRect.left - this.dragOffset.x;
                     let y = coords.clientY - rowRect.top - this.dragOffset.y;
                     
-                    const dieWidth = 80;
-                    const dieHeight = 80;
-                    x = Math.max(0, Math.min(x, rowRect.width - dieWidth - 20));
-                    y = Math.max(0, Math.min(y, rowRect.height - dieHeight - 20));
+                    // Create temp die object for smart snap
+                    const tempDie = this.game.solutions[rowIndex][this.draggedDieIndex];
+                    tempDie.x = x;
+                    tempDie.y = y;
                     
-                    // Update position in game state
-                    this.game.updateDiePosition(this.draggedRowIndex, this.draggedDieIndex, x, y);
+                    // Apply smart snap (horizontal adjustment only)
+                    const snappedPos = this.smartSnapPosition(tempDie, rowIndex, rowRect);
+                    
+                    // Update position in game state with snapped coordinates
+                    this.game.updateDiePosition(rowIndex, this.draggedDieIndex, snappedPos.x, snappedPos.y);
                     
                     this.currentDragElement.classList.remove('dragging');
                     
@@ -369,13 +373,17 @@ export class UI {
                 let x = e.clientX - rowRect.left - 40; // 40 = half of die width (80px)
                 let y = e.clientY - rowRect.top - 40;  // 40 = half of die height (80px)
                 
-                // Apply same boundary constraints as when dragging within solution area
-                const dieWidth = 80;
-                const dieHeight = 80;
-                x = Math.max(0, Math.min(x, rowRect.width - dieWidth - 20));
-                y = Math.max(0, Math.min(y, rowRect.height - dieHeight - 20));
-                
+                // Add die to solution at initial position
                 this.game.addDieToSolution(this.draggedDie, rowIndex, x, y);
+                
+                // Apply smart snap to newly added die (it's the last one in the array)
+                const newDieIndex = this.game.solutions[rowIndex].length - 1;
+                const newDie = this.game.solutions[rowIndex][newDieIndex];
+                const snappedPos = this.smartSnapPosition(newDie, rowIndex, rowRect);
+                
+                // Update with snapped position
+                this.game.updateDiePosition(rowIndex, newDieIndex, snappedPos.x, snappedPos.y);
+                
                 this.draggedDie = null;
                 this.render();
                 this.evaluateSolutionHelper();
@@ -404,13 +412,17 @@ export class UI {
                     let x = coords.clientX - rowRect.left - 40; // 40 = half of die width (80px)
                     let y = coords.clientY - rowRect.top - 40;  // 40 = half of die height (80px)
                     
-                    // Apply same boundary constraints
-                    const dieWidth = 80;
-                    const dieHeight = 80;
-                    x = Math.max(0, Math.min(x, rowRect.width - dieWidth - 20));
-                    y = Math.max(0, Math.min(y, rowRect.height - dieHeight - 20));
-                    
+                    // Add die to solution at initial position
                     this.game.addDieToSolution(this.draggedDie, rowIndex, x, y);
+                    
+                    // Apply smart snap to newly added die (it's the last one in the array)
+                    const newDieIndex = this.game.solutions[rowIndex].length - 1;
+                    const newDie = this.game.solutions[rowIndex][newDieIndex];
+                    const snappedPos = this.smartSnapPosition(newDie, rowIndex, rowRect);
+                    
+                    // Update with snapped position
+                    this.game.updateDiePosition(rowIndex, newDieIndex, snappedPos.x, snappedPos.y);
+                    
                     this.draggedDie = null;
                     this.render();
                     this.evaluateSolutionHelper();
@@ -974,6 +986,104 @@ export class UI {
             y: minY,
             width: maxX - minX,
             height: maxY - minY
+        };
+    }
+    
+    /**
+     * Calculate horizontal overlap percentage between two dice
+     * Returns 0-100 (percentage of overlap)
+     */
+    getOverlapPercentage(die1, die2) {
+        const isMobile = window.innerWidth <= 768;
+        const dieSize = isMobile ? 50 : 80;
+        
+        // Calculate overlap in x direction
+        const x1Start = die1.x;
+        const x1End = die1.x + dieSize;
+        const x2Start = die2.x;
+        const x2End = die2.x + dieSize;
+        
+        // No overlap if one is completely to the left/right of the other
+        if (x1End <= x2Start || x2End <= x1Start) {
+            return 0;
+        }
+        
+        // Calculate overlap width
+        const overlapStart = Math.max(x1Start, x2Start);
+        const overlapEnd = Math.min(x1End, x2End);
+        const overlapWidth = overlapEnd - overlapStart;
+        
+        // Return percentage (relative to die size)
+        return (overlapWidth / dieSize) * 100;
+    }
+    
+    /**
+     * Smart snap: Find a valid horizontal position for a die
+     * that maintains ≤20% overlap with all other dice in the solution
+     * Only adjusts horizontally, keeps y-position constant
+     */
+    smartSnapPosition(newDie, rowIndex, rowRect) {
+        const isMobile = window.innerWidth <= 768;
+        const dieSize = isMobile ? 50 : 80;
+        const maxOverlapPercent = 20;
+        const otherDice = this.game.solutions[rowIndex].filter(d => d !== newDie);
+        
+        // If no other dice, just return current position (bounded)
+        if (otherDice.length === 0) {
+            return {
+                x: Math.max(0, Math.min(newDie.x, rowRect.width - dieSize - 20)),
+                y: Math.max(0, Math.min(newDie.y, rowRect.height - dieSize - 20))
+            };
+        }
+        
+        // Check current position
+        const currentOverlaps = otherDice.map(other => this.getOverlapPercentage(newDie, other));
+        const maxCurrentOverlap = Math.max(...currentOverlaps);
+        
+        // If current position is valid (≤20% overlap with all), use it
+        if (maxCurrentOverlap <= maxOverlapPercent) {
+            return {
+                x: Math.max(0, Math.min(newDie.x, rowRect.width - dieSize - 20)),
+                y: Math.max(0, Math.min(newDie.y, rowRect.height - dieSize - 20))
+            };
+        }
+        
+        // Need to adjust - try nudging left and right incrementally
+        const step = 5; // px per step
+        const maxSteps = 50; // Max distance to search
+        
+        // Try both directions
+        for (let distance = step; distance <= maxSteps * step; distance += step) {
+            // Try right
+            const testDieRight = { ...newDie, x: newDie.x + distance };
+            const rightOverlaps = otherDice.map(other => this.getOverlapPercentage(testDieRight, other));
+            const maxRightOverlap = Math.max(...rightOverlaps);
+            
+            if (maxRightOverlap <= maxOverlapPercent && testDieRight.x + dieSize <= rowRect.width - 20) {
+                return {
+                    x: testDieRight.x,
+                    y: Math.max(0, Math.min(newDie.y, rowRect.height - dieSize - 20))
+                };
+            }
+            
+            // Try left
+            const testDieLeft = { ...newDie, x: newDie.x - distance };
+            const leftOverlaps = otherDice.map(other => this.getOverlapPercentage(testDieLeft, other));
+            const maxLeftOverlap = Math.max(...leftOverlaps);
+            
+            if (maxLeftOverlap <= maxOverlapPercent && testDieLeft.x >= 0) {
+                return {
+                    x: testDieLeft.x,
+                    y: Math.max(0, Math.min(newDie.y, rowRect.height - dieSize - 20))
+                };
+            }
+        }
+        
+        // Fallback: couldn't find valid position, use current (bounded)
+        // This is rare with only 6 dice
+        return {
+            x: Math.max(0, Math.min(newDie.x, rowRect.width - dieSize - 20)),
+            y: Math.max(0, Math.min(newDie.y, rowRect.height - dieSize - 20))
         };
     }
     
