@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ready, Set 2 - Set Theory Puzzle Game</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Game Board -->
+        <div id="game-board" class="game-board">
+            <div id="cards-container" class="cards-container"></div>
+        </div>
+
+        <!-- Dice Area -->
+        <div id="dice-area" class="dice-area">
+            <div id="dice-container" class="dice-container"></div>
+        </div>
+
+        <!-- Solution Area -->
+        <div id="solution-area" class="solution-area">
+            <div class="solution-row" data-row="0"></div>
+            <button id="add-row-btn" class="btn-add-row">+ Add Row</button>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="score-display">
+                <span class="label">Score:</span>
+                <span id="current-score" class="score">0</span>
+                <span class="score-goal">/<span id="goal-score">750</span></span>
+            </div>
+            <div class="level-display">
+                <span class="label">Level:</span>
+                <span id="current-level">1</span>
+            </div>
+            <div class="goal-display">
+                <span class="label">Goal Cards:</span>
+                <span id="goal-cards">3</span>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button id="menu-btn" class="btn btn-primary">Menu</button>
+            <button id="reset-btn" class="btn btn-secondary">Reset</button>
+            <button id="pass-btn" class="btn btn-warning">Pass</button>
+            <button id="go-btn" class="btn btn-success">GO!</button>
+        </div>
+
+        <!-- Tutorial Overlay -->
+        <div id="tutorial-overlay" class="tutorial-overlay hidden">
+            <div class="tutorial-content">
+                <h2 id="tutorial-title"></h2>
+                <div id="tutorial-text"></div>
+                <button id="tutorial-next" class="btn btn-success">Next</button>
+                <button id="tutorial-skip" class="btn btn-secondary">Skip</button>
+            </div>
+        </div>
+
+        <!-- Result Modal -->
+        <div id="result-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2 id="result-title"></h2>
+                <div id="result-message"></div>
+                <div id="result-score" class="result-score"></div>
+                <button id="result-continue" class="btn btn-success">Continue</button>
+            </div>
+        </div>
+
+        <!-- Menu Modal -->
+        <div id="menu-modal" class="modal hidden">
+            <div class="modal-content">
+                <div id="menu-main-view">
+                    <h2>Menu</h2>
+                    <button id="settings-btn" class="btn btn-primary">Settings</button>
+                    <button id="tutorial-btn" class="btn btn-secondary">How to Play</button>
+                    <button id="new-game-btn" class="btn btn-secondary">New Game</button>
+                    <button id="resume-btn" class="btn btn-success">Resume</button>
+                </div>
+                <div id="menu-settings-view" class="hidden">
+                    <h2>Settings</h2>
+                    <div class="settings-group">
+                        <label class="setting-item">
+                            <input type="checkbox" id="solution-helper-toggle">
+                            <span class="setting-label">
+                                <strong>Solution Helper</strong>
+                                <small>Automatically highlight cards that match your current solution</small>
+                            </span>
+                        </label>
+                    </div>
+                    <button id="settings-back-btn" class="btn btn-secondary">Back</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pass Confirmation Modal -->
+        <div id="pass-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2 id="pass-title"></h2>
+                <div id="pass-message"></div>
+                <div id="pass-buttons">
+                    <button id="pass-continue" class="btn btn-warning">Continue</button>
+                    <button id="pass-cancel" class="btn btn-secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
+

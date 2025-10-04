@@ -1,0 +1,177 @@
+// Local storage management for game persistence
+
+const STORAGE_VERSION = '1.0';
+const STORAGE_KEY_PREFIX = 'readyset2_';
+
+export class GameStorage {
+    constructor() {
+        this.keys = {
+            version: `${STORAGE_KEY_PREFIX}version`,
+            level: `${STORAGE_KEY_PREFIX}currentLevel`,
+            highestLevel: `${STORAGE_KEY_PREFIX}highestLevel`,
+            score: `${STORAGE_KEY_PREFIX}currentScore`,
+            goalCards: `${STORAGE_KEY_PREFIX}goalCards`,
+            cards: `${STORAGE_KEY_PREFIX}cards`,
+            dice: `${STORAGE_KEY_PREFIX}dice`,
+            solutions: `${STORAGE_KEY_PREFIX}solutions`,
+            cardStates: `${STORAGE_KEY_PREFIX}cardStates`,
+            tutorialShown: `${STORAGE_KEY_PREFIX}tutorialShown`,
+            isFirstGame: `${STORAGE_KEY_PREFIX}isFirstGame`,
+            settings: `${STORAGE_KEY_PREFIX}settings`
+        };
+        
+        this.checkVersion();
+    }
+    
+    checkVersion() {
+        const storedVersion = localStorage.getItem(this.keys.version);
+        if (!storedVersion || storedVersion !== STORAGE_VERSION) {
+            // Version mismatch or first time - keep highest level but reset current game
+            const highestLevel = this.getHighestLevel();
+            this.clear();
+            if (highestLevel > 1) {
+                this.saveHighestLevel(highestLevel);
+            }
+            localStorage.setItem(this.keys.version, STORAGE_VERSION);
+        }
+    }
+    
+    // Save entire game state
+    saveGameState(gameState) {
+        try {
+            localStorage.setItem(this.keys.level, gameState.level);
+            localStorage.setItem(this.keys.score, gameState.score);
+            localStorage.setItem(this.keys.goalCards, gameState.goalCards);
+            localStorage.setItem(this.keys.cards, JSON.stringify(gameState.cards));
+            localStorage.setItem(this.keys.dice, JSON.stringify(gameState.dice));
+            localStorage.setItem(this.keys.solutions, JSON.stringify(gameState.solutions));
+            localStorage.setItem(this.keys.cardStates, JSON.stringify(gameState.cardStates));
+            localStorage.setItem(this.keys.tutorialShown, gameState.tutorialShown);
+            
+            // Update highest level
+            this.saveHighestLevel(gameState.level);
+            
+            return true;
+        } catch (e) {
+            console.error('Failed to save game state:', e);
+            return false;
+        }
+    }
+    
+    // Load entire game state
+    loadGameState() {
+        try {
+            const level = localStorage.getItem(this.keys.level);
+            
+            // If no saved game, return null
+            if (!level) {
+                return null;
+            }
+            
+            return {
+                level: parseInt(level) || 1,
+                score: parseInt(localStorage.getItem(this.keys.score)) || 0,
+                goalCards: parseInt(localStorage.getItem(this.keys.goalCards)) || 3,
+                cards: JSON.parse(localStorage.getItem(this.keys.cards) || '[]'),
+                dice: JSON.parse(localStorage.getItem(this.keys.dice) || '[]'),
+                solutions: JSON.parse(localStorage.getItem(this.keys.solutions) || '[[]]'),
+                cardStates: JSON.parse(localStorage.getItem(this.keys.cardStates) || '[]'),
+                tutorialShown: localStorage.getItem(this.keys.tutorialShown) === 'true'
+            };
+        } catch (e) {
+            console.error('Failed to load game state:', e);
+            this.clear();
+            return null;
+        }
+    }
+    
+    // Check if saved game exists
+    hasSavedGame() {
+        return localStorage.getItem(this.keys.level) !== null;
+    }
+    
+    // Save highest level achieved
+    saveHighestLevel(level) {
+        const currentHighest = this.getHighestLevel();
+        if (level > currentHighest) {
+            localStorage.setItem(this.keys.highestLevel, level);
+        }
+    }
+    
+    // Get highest level achieved
+    getHighestLevel() {
+        return parseInt(localStorage.getItem(this.keys.highestLevel)) || 1;
+    }
+    
+    // Check if first time playing
+    isFirstGame() {
+        const value = localStorage.getItem(this.keys.isFirstGame);
+        if (value === null) {
+            // First time ever
+            localStorage.setItem(this.keys.isFirstGame, 'false');
+            return true;
+        }
+        return false;
+    }
+    
+    // Clear round state (keep level and score)
+    clearRound() {
+        localStorage.removeItem(this.keys.goalCards);
+        localStorage.removeItem(this.keys.cards);
+        localStorage.removeItem(this.keys.dice);
+        localStorage.removeItem(this.keys.solutions);
+        localStorage.removeItem(this.keys.cardStates);
+    }
+    
+    // Clear level state (keep highest level)
+    clearLevel() {
+        const highestLevel = this.getHighestLevel();
+        this.clear();
+        this.saveHighestLevel(highestLevel);
+    }
+    
+    // Clear all game state
+    clear() {
+        Object.values(this.keys).forEach(key => {
+            if (key !== this.keys.version && key !== this.keys.highestLevel) {
+                localStorage.removeItem(key);
+            }
+        });
+    }
+    
+    // Reset everything (including highest level)
+    reset() {
+        Object.values(this.keys).forEach(key => {
+            localStorage.removeItem(key);
+        });
+        localStorage.setItem(this.keys.version, STORAGE_VERSION);
+    }
+    
+    // Settings management
+    saveSettings(settings) {
+        try {
+            localStorage.setItem(this.keys.settings, JSON.stringify(settings));
+            return true;
+        } catch (e) {
+            console.error('Failed to save settings:', e);
+            return false;
+        }
+    }
+    
+    loadSettings() {
+        try {
+            const settings = localStorage.getItem(this.keys.settings);
+            if (settings) {
+                return JSON.parse(settings);
+            }
+        } catch (e) {
+            console.error('Failed to load settings:', e);
+        }
+        
+        // Return default settings
+        return {
+            solutionHelper: false
+        };
+    }
+}
+
