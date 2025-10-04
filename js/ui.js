@@ -429,7 +429,7 @@ export class UI {
             }
         });
         
-        // Double-click on solution die to remove
+        // Double-click on solution die to remove (Desktop)
         this.solutionArea.addEventListener('dblclick', (e) => {
             const solutionDie = e.target.closest('.solution-die');
             if (solutionDie) {
@@ -439,6 +439,41 @@ export class UI {
                 this.game.removeDieFromSolution(rowIndex, dieIndex);
                 this.render();
                 this.evaluateSolutionHelper();
+            }
+        });
+        
+        // Double-tap detection for mobile
+        let lastTap = 0;
+        let lastTapTarget = null;
+        
+        this.solutionArea.addEventListener('touchend', (e) => {
+            const solutionDie = e.target.closest('.solution-die');
+            if (!solutionDie) return;
+            
+            // Don't trigger if we were dragging
+            if (this.hasMoved) return;
+            
+            const currentTime = Date.now();
+            const tapLength = currentTime - lastTap;
+            
+            // Double tap detected (within 300ms and on same element)
+            if (tapLength < 300 && tapLength > 0 && lastTapTarget === solutionDie) {
+                e.preventDefault();
+                
+                const row = solutionDie.closest('.solution-row');
+                const rowIndex = parseInt(row.dataset.row);
+                const dieIndex = parseInt(solutionDie.dataset.index);
+                this.game.removeDieFromSolution(rowIndex, dieIndex);
+                this.render();
+                this.evaluateSolutionHelper();
+                
+                // Reset
+                lastTap = 0;
+                lastTapTarget = null;
+            } else {
+                // Single tap - store for potential double tap
+                lastTap = currentTime;
+                lastTapTarget = solutionDie;
             }
         });
     }
@@ -909,7 +944,8 @@ export class UI {
     }
     
     areDiceTouching(die1, die2) {
-        const dieSize = 80;
+        const isMobile = window.innerWidth <= 768;
+        const dieSize = isMobile ? 50 : 80;
         const touchThreshold = 15; // Dice are "touching" if within 15px
         
         const dx = Math.abs(die1.x - die2.x);
@@ -920,7 +956,9 @@ export class UI {
     }
     
     getGroupBounds(group) {
-        const dieSize = 80;
+        // Use responsive die size (50px on mobile, 80px on desktop)
+        const isMobile = window.innerWidth <= 768;
+        const dieSize = isMobile ? 50 : 80;
         let minX = Infinity, minY = Infinity;
         let maxX = -Infinity, maxY = -Infinity;
         
