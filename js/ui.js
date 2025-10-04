@@ -129,10 +129,23 @@ export class UI {
     }
     
     initDragAndDrop() {
-        // Dice container - source dice
-        this.diceContainer.addEventListener('dragstart', (e) => {
+        // Helper to get coordinates from mouse or touch event (defined here for dice dragging too)
+        const getEventCoords = (e) => {
+            if (e.touches && e.touches.length > 0) {
+                return { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
+            }
+            return { clientX: e.clientX, clientY: e.clientY };
+        };
+        
+        // Dice container - source dice (Mouse AND Touch)
+        const handleDiceStart = (e) => {
             const die = e.target.closest('.die');
             if (die && !die.classList.contains('disabled')) {
+                // Prevent default on touch to stop scrolling
+                if (e.type === 'touchstart') {
+                    e.preventDefault();
+                }
+                
                 this.draggedDie = {
                     type: die.dataset.type,
                     value: die.dataset.value,
@@ -142,25 +155,34 @@ export class UI {
                 this.draggedFromSolution = false;
                 this.draggedRowIndex = null;
                 die.classList.add('dragging');
-                e.dataTransfer.effectAllowed = 'move';
-                e.dataTransfer.setData('text/html', die.innerHTML);
+                
+                // For native drag-and-drop (desktop)
+                if (e.dataTransfer) {
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/html', die.innerHTML);
+                }
+                
+                // Store for touch dragging
+                this.sourceDieElement = die;
             }
-        });
+        };
         
-        this.diceContainer.addEventListener('dragend', (e) => {
+        this.diceContainer.addEventListener('dragstart', handleDiceStart);
+        this.diceContainer.addEventListener('touchstart', handleDiceStart, { passive: false });
+        
+        const handleDiceEnd = (e) => {
             const die = e.target.closest('.die');
             if (die) {
                 die.classList.remove('dragging');
             }
-        });
-        
-        // Helper to get coordinates from mouse or touch event
-        const getEventCoords = (e) => {
-            if (e.touches && e.touches.length > 0) {
-                return { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
+            if (this.sourceDieElement) {
+                this.sourceDieElement.classList.remove('dragging');
+                this.sourceDieElement = null;
             }
-            return { clientX: e.clientX, clientY: e.clientY };
         };
+        
+        this.diceContainer.addEventListener('dragend', handleDiceEnd);
+        this.diceContainer.addEventListener('touchend', handleDiceEnd);
         
         // Mouse/Touch-based drag and drop for solution dice
         const handleDragStart = (e) => {
@@ -284,7 +306,7 @@ export class UI {
         document.addEventListener('mouseup', handleDragEnd);
         document.addEventListener('touchend', handleDragEnd);
         
-        // Drop dice from dice area to solution
+        // Drop dice from dice area to solution (Desktop - native drag and drop)
         this.solutionArea.addEventListener('dragover', (e) => {
             const row = e.target.closest('.solution-row');
             if (row && this.draggedDie && !this.draggedFromSolution) {
@@ -323,6 +345,49 @@ export class UI {
                 this.draggedDie = null;
                 this.render();
                 this.evaluateSolutionHelper();
+            }
+        });
+        
+        // Touch drop handler (Mobile)
+        document.addEventListener('touchend', (e) => {
+            // Only handle if dragging from dice area (not moving within solution)
+            if (this.draggedDie && !this.draggedFromSolution && !this.isDragging) {
+                const coords = e.changedTouches ? 
+                    { clientX: e.changedTouches[0].clientX, clientY: e.changedTouches[0].clientY } :
+                    { clientX: e.clientX, clientY: e.clientY };
+                
+                // Check if touch ended over a solution row
+                const element = document.elementFromPoint(coords.clientX, coords.clientY);
+                const row = element ? element.closest('.solution-row') : null;
+                
+                if (row) {
+                    e.preventDefault();
+                    
+                    const rowIndex = parseInt(row.dataset.row);
+                    const rowRect = row.getBoundingClientRect();
+                    
+                    // Calculate drop position relative to row (center die on cursor)
+                    let x = coords.clientX - rowRect.left - 40; // 40 = half of die width (80px)
+                    let y = coords.clientY - rowRect.top - 40;  // 40 = half of die height (80px)
+                    
+                    // Apply same boundary constraints
+                    const dieWidth = 80;
+                    const dieHeight = 80;
+                    x = Math.max(0, Math.min(x, rowRect.width - dieWidth - 20));
+                    y = Math.max(0, Math.min(y, rowRect.height - dieHeight - 20));
+                    
+                    this.game.addDieToSolution(this.draggedDie, rowIndex, x, y);
+                    this.draggedDie = null;
+                    this.render();
+                    this.evaluateSolutionHelper();
+                }
+                
+                // Clean up
+                if (this.sourceDieElement) {
+                    this.sourceDieElement.classList.remove('dragging');
+                    this.sourceDieElement = null;
+                }
+                this.draggedDie = null;
             }
         });
         
