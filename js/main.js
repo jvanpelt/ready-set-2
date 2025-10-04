@@ -1,15 +1,15 @@
 // Main entry point for the game
 
 import { Game } from './game.js';
-import { UI } from './ui.js';
+import { UIController } from './ui/UIController.js';
 
 // Initialize the game when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     // Create game instance
     const game = new Game();
     
-    // Create UI instance
-    const ui = new UI(game, () => {
+    // Create UI Controller instance (coordinates all UI modules)
+    const ui = new UIController(game, () => {
         // Callback for updates if needed
     });
     
