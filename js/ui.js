@@ -164,11 +164,40 @@ export class UI {
                 
                 // Store for touch dragging
                 this.sourceDieElement = die;
+                
+                // Create visual clone for touch dragging
+                if (e.type === 'touchstart') {
+                    const coords = getEventCoords(e);
+                    const rect = die.getBoundingClientRect();
+                    
+                    this.touchDragClone = die.cloneNode(true);
+                    this.touchDragClone.classList.add('touch-drag-clone');
+                    this.touchDragClone.style.position = 'fixed';
+                    this.touchDragClone.style.pointerEvents = 'none';
+                    this.touchDragClone.style.zIndex = '10000';
+                    this.touchDragClone.style.width = rect.width + 'px';
+                    this.touchDragClone.style.height = rect.height + 'px';
+                    this.touchDragClone.style.left = (coords.clientX - rect.width / 2) + 'px';
+                    this.touchDragClone.style.top = (coords.clientY - rect.height / 2) + 'px';
+                    this.touchDragClone.style.opacity = '0.8';
+                    document.body.appendChild(this.touchDragClone);
+                }
             }
         };
         
         this.diceContainer.addEventListener('dragstart', handleDiceStart);
         this.diceContainer.addEventListener('touchstart', handleDiceStart, { passive: false });
+        
+        // Update clone position during touch drag
+        document.addEventListener('touchmove', (e) => {
+            if (this.touchDragClone) {
+                e.preventDefault();
+                const coords = getEventCoords(e);
+                const rect = this.touchDragClone.getBoundingClientRect();
+                this.touchDragClone.style.left = (coords.clientX - rect.width / 2) + 'px';
+                this.touchDragClone.style.top = (coords.clientY - rect.height / 2) + 'px';
+            }
+        }, { passive: false });
         
         const handleDiceEnd = (e) => {
             const die = e.target.closest('.die');
@@ -178,6 +207,11 @@ export class UI {
             if (this.sourceDieElement) {
                 this.sourceDieElement.classList.remove('dragging');
                 this.sourceDieElement = null;
+            }
+            // Remove touch drag clone
+            if (this.touchDragClone) {
+                this.touchDragClone.remove();
+                this.touchDragClone = null;
             }
         };
         
@@ -386,6 +420,10 @@ export class UI {
                 if (this.sourceDieElement) {
                     this.sourceDieElement.classList.remove('dragging');
                     this.sourceDieElement = null;
+                }
+                if (this.touchDragClone) {
+                    this.touchDragClone.remove();
+                    this.touchDragClone = null;
                 }
                 this.draggedDie = null;
             }
