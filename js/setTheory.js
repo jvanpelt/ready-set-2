@@ -541,12 +541,10 @@ export function getPatternString(expression) {
 export function isValidSyntax(expression) {
     if (!expression || expression.length === 0) return false;
     
-    // Must have at least 2 dice
+    // Must have at least 2 dice (no single die solutions allowed)
     if (expression.length < 2) {
-        // Single die is only valid if it's a setName (U or ∅) with restrictions
-        const isValid = expression.length === 1 && ['U', '∅'].includes(expression[0].value);
-        console.log('Single die validation:', isValid);
-        return isValid;
+        console.log('Single die validation: INVALID (requires at least 2 dice)');
+        return false;
     }
     
     // Sort dice by X position (left to right) before validation

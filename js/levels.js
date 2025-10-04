@@ -73,19 +73,28 @@ Drag dice to the solution area and click GO!`
     {
         level: 5,
         goalScore: 2500,
+        numDice: 8, // Increase from 6 to 8 dice
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE', 'COMPLEMENT', 'UNIVERSE', 'NULL'],
         tutorial: {
-            title: 'Level 5: Special Sets',
-            text: `New special set dice!
-            
-• U (Universe) = all cards on the board
-• ∅ (Null Set) = no cards at all
-• Use these in complex expressions!`
+            title: 'Level 5: Universe & Null',
+            text: `Welcome to Level 5 with 2 new cubes and a new concept: padding!
+
+• U (Universe) refers to the set of ALL cards
+• Use it like other color cubes, combining with operators
+• Example: U ∩ Red = all cards AND red cards = just red cards
+
+• ∅ (Null) is an empty set containing NO cards
+• Example: Green − ∅ = green minus null = just green
+
+• Padding: Use Universe and Null to add extra cubes to your solution
+• More cubes = MORE POINTS!
+• Try padding your solutions to boost your scores!`
         }
     },
     {
         level: 6,
         goalScore: 5000,
+        numDice: 8,
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE', 'COMPLEMENT', 'UNIVERSE', 'NULL', 'EQUALS', 'SUBSET'],
         tutorial: {
             title: 'Level 6: Restrictions',
@@ -99,6 +108,7 @@ Drag dice to the solution area and click GO!`
     {
         level: 7,
         goalScore: 5000,
+        numDice: 8,
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE', 'COMPLEMENT', 'UNIVERSE', 'NULL', 'EQUALS', 'SUBSET'],
         tutorial: {
             title: 'Level 7: Expert Mode',
@@ -112,6 +122,7 @@ Drag dice to the solution area and click GO!`
     {
         level: 8,
         goalScore: 5000,
+        numDice: 8,
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE', 'COMPLEMENT', 'UNIVERSE', 'NULL', 'EQUALS', 'SUBSET'],
         tutorial: {
             title: 'Level 8: Challenge',
@@ -125,6 +136,7 @@ Drag dice to the solution area and click GO!`
     {
         level: 9,
         goalScore: 7500,
+        numDice: 8,
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE', 'COMPLEMENT', 'UNIVERSE', 'NULL', 'EQUALS', 'SUBSET'],
         tutorial: {
             title: 'Level 9: Master Class',
@@ -138,6 +150,7 @@ Drag dice to the solution area and click GO!`
     {
         level: 10,
         goalScore: 10000,
+        numDice: 8,
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE', 'COMPLEMENT', 'UNIVERSE', 'NULL', 'EQUALS', 'SUBSET'],
         tutorial: {
             title: 'Level 10: Ultimate Challenge',
@@ -173,7 +186,8 @@ const ALL_CARD_COMBINATIONS = [
 // Generate a random goal number using weighted distribution
 export function generateGoal() {
     // Weighted array favoring 2, 3, and 4
-    const goalArray = [0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7];
+    // Excludes 0 and 8 (can't use single U or ∅ as solution)
+    const goalArray = [1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7];
     const rndm = Math.floor(Math.random() * goalArray.length);
     return goalArray[rndm];
 }
@@ -193,6 +207,7 @@ export function generateDiceForLevel(level) {
     if (!config) return [];
     
     const dice = [];
+    const numDice = config.numDice || 6; // Default to 6 dice, Level 5+ uses 8
     
     // Always generate exactly 4 color dice
     // Each color can appear 0, 1, or 2 times (max 2 of any color)
@@ -208,12 +223,16 @@ export function generateDiceForLevel(level) {
         dice.push({ type: 'color', value: color });
     }
     
-    // Add operator dice based on level
+    // Separate operators from special sets (Universe, Null)
+    const regularOperators = config.operators.filter(op => !['UNIVERSE', 'NULL'].includes(op));
+    const specialSets = config.operators.filter(op => ['UNIVERSE', 'NULL'].includes(op));
+    
+    // Add regular operator dice (2 dice)
     // Levels 1-3: Always get exactly 2 operators (no duplicates)
     // Level 4+: Can get duplicate operators
     if (level < 4) {
         // Select 2 random operators from available pool (no duplicates)
-        const availableOps = [...config.operators];
+        const availableOps = [...regularOperators];
         for (let i = 0; i < 2; i++) {
             const randomIndex = Math.floor(Math.random() * availableOps.length);
             const selectedOp = availableOps.splice(randomIndex, 1)[0];
@@ -226,12 +245,25 @@ export function generateDiceForLevel(level) {
     } else {
         // Level 4+: Can get duplicates, randomly select 2
         for (let i = 0; i < 2; i++) {
-            const randomIndex = Math.floor(Math.random() * config.operators.length);
-            const selectedOp = config.operators[randomIndex];
+            const randomIndex = Math.floor(Math.random() * regularOperators.length);
+            const selectedOp = regularOperators[randomIndex];
             dice.push({ 
                 type: 'operator', 
                 value: OPERATORS[selectedOp].symbol, 
                 name: selectedOp 
+            });
+        }
+    }
+    
+    // Level 5+: Add 2 special set dice (Universe and/or Null)
+    if (numDice === 8 && specialSets.length > 0) {
+        for (let i = 0; i < 2; i++) {
+            const randomIndex = Math.floor(Math.random() * specialSets.length);
+            const selectedSet = specialSets[randomIndex];
+            dice.push({ 
+                type: 'operator', // U and ∅ are treated as operators in evaluation
+                value: OPERATORS[selectedSet].symbol, 
+                name: selectedSet 
             });
         }
     }
