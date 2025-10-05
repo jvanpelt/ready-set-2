@@ -164,11 +164,34 @@ body {
 
 .die.operator {
     font-size: 36px;
-    color: #333;
 }
 
+/* Color cubes: gray border */
 .die.color-circle {
     position: relative;
+    border-color: #888;
+    background: white;
+}
+
+/* Regular operators (∪, ∩, −, ′): red styling */
+.die.operator-regular {
+    color: #b50606;
+    border-color: #b50606;
+    background: #ffebeb;
+}
+
+/* Set names (U, ∅): gray styling */
+.die.operator-setname {
+    color: #555;
+    border-color: #888;
+    background: #f5f5f5;
+}
+
+/* Restrictions (=, ⊆): blue styling */
+.die.operator-restriction {
+    color: #055db4;
+    border-color: #055db4;
+    background: #e6f2ff;
 }
 
 .die .circle {
@@ -281,6 +304,33 @@ body {
 
 .solution-die.dragging {
     opacity: 0.5;
+}
+
+/* Color cubes in solution: gray border */
+.solution-die.color-circle {
+    border-color: #888;
+    background: white;
+}
+
+/* Regular operators in solution: red styling */
+.solution-die.operator-regular {
+    color: #b50606;
+    border-color: #b50606;
+    background: #ffebeb;
+}
+
+/* Set names in solution: gray styling */
+.solution-die.operator-setname {
+    color: #555;
+    border-color: #888;
+    background: #f5f5f5;
+}
+
+/* Restrictions in solution: blue styling */
+.solution-die.operator-restriction {
+    color: #055db4;
+    border-color: #055db4;
+    background: #e6f2ff;
 }
 
 /* Group styling */

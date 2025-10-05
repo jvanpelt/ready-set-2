@@ -1,5 +1,7 @@
 // Pure rendering logic - no side effects, just DOM updates
 
+import { getSVGForOperator, getOperatorClass } from '../svgSymbols.js';
+
 export class UIRenderer {
     constructor(game) {
         this.game = game;
@@ -85,13 +87,25 @@ export class UIRenderer {
             
             // Add content based on type
             if (die.type === 'color') {
+                dieEl.classList.add('color-circle');
                 const circle = document.createElement('div');
                 circle.className = `circle ${die.value}`;
                 dieEl.appendChild(circle);
             } else {
                 // Operator or special set
                 dieEl.classList.add('operator');
-                dieEl.textContent = die.value;
+                
+                // Add type-specific styling class
+                const operatorClass = getOperatorClass(die.value);
+                dieEl.classList.add(operatorClass);
+                
+                // Check if we should use SVG
+                const svg = getSVGForOperator(die.value);
+                if (svg) {
+                    dieEl.innerHTML = svg;
+                } else {
+                    dieEl.textContent = die.value;
+                }
             }
             
             diceContainer.appendChild(dieEl);
@@ -140,12 +154,24 @@ export class UIRenderer {
                 
                 // Add content
                 if (die.type === 'color') {
+                    dieEl.classList.add('color-circle');
                     const circle = document.createElement('div');
                     circle.className = `circle ${die.value}`;
                     dieEl.appendChild(circle);
                 } else {
                     dieEl.classList.add('operator');
-                    dieEl.textContent = die.value;
+                    
+                    // Add type-specific styling class
+                    const operatorClass = getOperatorClass(die.value);
+                    dieEl.classList.add(operatorClass);
+                    
+                    // Check if we should use SVG
+                    const svg = getSVGForOperator(die.value);
+                    if (svg) {
+                        dieEl.innerHTML = svg;
+                    } else {
+                        dieEl.textContent = die.value;
+                    }
                 }
                 
                 row.appendChild(dieEl);
