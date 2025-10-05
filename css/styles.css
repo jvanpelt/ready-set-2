@@ -122,9 +122,18 @@ body {
 
 .dice-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     gap: 12px;
     justify-items: center;
+}
+
+/* 6 dice: 3x2 grid (3 columns, 2 rows) */
+.dice-container[data-dice-count="6"] {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* 8 dice: 4x2 grid (4 columns, 2 rows) */
+.dice-container[data-dice-count="8"] {
+    grid-template-columns: repeat(4, 1fr);
 }
 
 .die {
@@ -523,7 +532,6 @@ body {
     }
     
     .dice-container {
-        grid-template-columns: repeat(4, 1fr);
         gap: 6px;
     }
     

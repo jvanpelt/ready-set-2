@@ -60,6 +60,9 @@ export class UIRenderer {
     renderDice(diceContainer, dice, solutions) {
         diceContainer.innerHTML = '';
         
+        // Set data attribute for CSS grid layout (3x2 for 6 dice, 4x2 for 8 dice)
+        diceContainer.dataset.diceCount = dice.length;
+        
         // Track which dice IDs are used across all solution rows
         const usedDiceIds = [];
         solutions.forEach(row => {
