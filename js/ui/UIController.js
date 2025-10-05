@@ -34,6 +34,10 @@ export class UIController {
                 this.evaluateSolutionHelper();
             }
         );
+        
+        // Wire up timer callbacks (Level 7+)
+        this.game.onTimerTick = (timeRemaining) => this.updateTimer(timeRemaining);
+        this.game.onTimeout = () => this.handleTimeout();
     }
     
     initElements() {
@@ -409,8 +413,42 @@ export class UIController {
         });
     }
     
+    updateTimer(timeRemaining) {
+        // Update timer display
+        this.timerValue.textContent = timeRemaining;
+        
+        // Show warning color when time is running low (< 30 seconds)
+        if (timeRemaining <= 30 && timeRemaining > 0) {
+            this.timerDisplay.style.borderColor = '#f0ad4e'; // Orange warning
+        } else if (timeRemaining <= 10 && timeRemaining > 0) {
+            this.timerDisplay.style.borderColor = '#d9534f'; // Red danger
+        } else {
+            this.timerDisplay.style.borderColor = 'var(--color-blue)'; // Normal blue
+        }
+    }
+    
+    handleTimeout() {
+        console.log('⏰ Timeout handled in UI');
+        
+        // Show timeout modal
+        this.modals.showTimeout(() => {
+            // Generate new round when user clicks OK
+            this.game.resetRound();
+            this.render();
+            this.clearSolutionHelper();
+            this.modals.showTutorialIfNeeded();
+        });
+    }
+    
     render() {
         const state = this.game.getState();
+        
+        // Show/hide timer display based on level (Level 7+)
+        if (this.game.level >= 7 && this.game.timeRemaining !== null) {
+            this.timerDisplay.style.display = 'flex';
+        } else {
+            this.timerDisplay.style.display = 'none';
+        }
         
         // Update status bar
         this.renderer.updateStatusBar(

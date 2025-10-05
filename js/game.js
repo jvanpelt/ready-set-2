@@ -15,6 +15,12 @@ export class Game {
         this.goalCards = 3;
         this.tutorialShown = false;
         
+        // Timer (Level 7+)
+        this.timeRemaining = null;
+        this.timerInterval = null;
+        this.onTimerTick = null; // Callback for UI updates
+        this.onTimeout = null; // Callback when time runs out
+        
         this.init();
     }
     
@@ -67,6 +73,14 @@ export class Game {
             excluded: false,
             flipped: false  // Level 6+: card removed from universe
         }));
+        
+        // Start timer if level has time limit (Level 7+)
+        const config = getLevelConfig(this.level);
+        if (config.timeLimit) {
+            this.startTimer(config.timeLimit);
+        } else {
+            this.stopTimer();
+        }
     }
     
     startNewLevel() {
@@ -149,6 +163,49 @@ export class Game {
     clearSolution() {
         this.solutions = [[], []]; // Clear both rows
         this.saveState();
+    }
+    
+    // Timer methods (Level 7+)
+    startTimer(seconds) {
+        this.stopTimer(); // Clear any existing timer
+        this.timeRemaining = seconds;
+        
+        console.log(`⏱️ Timer started: ${seconds} seconds`);
+        
+        // Tick immediately
+        if (this.onTimerTick) {
+            this.onTimerTick(this.timeRemaining);
+        }
+        
+        // Then tick every second
+        this.timerInterval = setInterval(() => {
+            this.timeRemaining--;
+            
+            if (this.onTimerTick) {
+                this.onTimerTick(this.timeRemaining);
+            }
+            
+            if (this.timeRemaining <= 0) {
+                this.handleTimeout();
+            }
+        }, 1000);
+    }
+    
+    stopTimer() {
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+            this.timerInterval = null;
+        }
+        this.timeRemaining = null;
+    }
+    
+    handleTimeout() {
+        console.log('⏰ Time expired!');
+        this.stopTimer();
+        
+        if (this.onTimeout) {
+            this.onTimeout();
+        }
     }
     
     toggleCardState(cardIndex) {
@@ -284,6 +341,9 @@ export class Game {
         const result = this.validateSolution();
         
         if (result.valid) {
+            // Stop timer on successful submission
+            this.stopTimer();
+            
             // Apply restriction flips if present
             if (result.cardsToFlip && result.cardsToFlip.length > 0) {
                 this.flipCardsByRestriction(result.cardsToFlip);
@@ -297,12 +357,16 @@ export class Game {
     }
     
     pass() {
+        // Stop timer when passing
+        this.stopTimer();
         // Generate new puzzle (small penalty could be added)
         this.resetRound();
         return { passed: true, message: 'New puzzle generated!' };
     }
     
     correctPass() {
+        // Stop timer when passing
+        this.stopTimer();
         // Award points for correctly identifying unsolvable puzzle
         // Points: 15 × level
         const passPoints = 15 * this.level;

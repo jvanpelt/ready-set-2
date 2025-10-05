@@ -125,20 +125,25 @@ Restrictions let you use ALL 8 cubes for MASSIVE points!`
         level: 7,
         goalScore: 5000,
         numDice: 8,
+        timeLimit: 180, // 3 minutes
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE', 'COMPLEMENT', 'UNIVERSE', 'NULL', 'EQUALS', 'SUBSET'],
         tutorial: {
-            title: 'Level 7: Expert Mode',
-            text: `All operators available!
-            
-• Combine everything you've learned
-• Find the most efficient solutions
-• Maximum points await!`
+            title: 'Level 7: Beat the Clock!',
+            text: `New challenge: TIME LIMIT!
+
+⏱️ You now have 3 MINUTES per puzzle!
+• Timer counts down from 180 seconds
+• Submit before time runs out!
+• If time expires, the round ends and you start fresh
+
+Work quickly but stay focused!`
         }
     },
     {
         level: 8,
         goalScore: 5000,
         numDice: 8,
+        timeLimit: 180, // 3 minutes
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE', 'COMPLEMENT', 'UNIVERSE', 'NULL', 'EQUALS', 'SUBSET'],
         tutorial: {
             title: 'Level 8: Challenge',
@@ -153,6 +158,7 @@ Restrictions let you use ALL 8 cubes for MASSIVE points!`
         level: 9,
         goalScore: 7500,
         numDice: 8,
+        timeLimit: 150, // 2.5 minutes - harder!
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE', 'COMPLEMENT', 'UNIVERSE', 'NULL', 'EQUALS', 'SUBSET'],
         tutorial: {
             title: 'Level 9: Master Class',
@@ -167,6 +173,7 @@ Restrictions let you use ALL 8 cubes for MASSIVE points!`
         level: 10,
         goalScore: 10000,
         numDice: 8,
+        timeLimit: 120, // 2 minutes - ultimate challenge!
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE', 'COMPLEMENT', 'UNIVERSE', 'NULL', 'EQUALS', 'SUBSET'],
         tutorial: {
             title: 'Level 10: Ultimate Challenge',

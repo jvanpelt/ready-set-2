@@ -30,6 +30,10 @@ export class ModalManager {
         this.passContinueBtn = document.getElementById('pass-continue');
         this.passCancelBtn = document.getElementById('pass-cancel');
         
+        // Timeout modal (Level 7+)
+        this.timeoutModal = document.getElementById('timeout-modal');
+        this.timeoutOkBtn = document.getElementById('timeout-ok');
+        
         // Level selector (test mode)
         this.levelSelector = document.getElementById('level-selector');
         
@@ -161,5 +165,29 @@ export class ModalManager {
         
         // Clear the onclick handler
         this.passContinueBtn.onclick = null;
+    }
+    
+    /**
+     * Show timeout modal (Level 7+)
+     */
+    showTimeout(onOk) {
+        this.timeoutModal.classList.remove('hidden');
+        
+        // Update the OK button
+        this.timeoutOkBtn.onclick = () => {
+            this.hideTimeout();
+            if (onOk) {
+                onOk();
+            }
+        };
+    }
+    
+    /**
+     * Hide timeout modal
+     */
+    hideTimeout() {
+        this.timeoutModal.classList.add('hidden');
+        // Clear the onclick handler
+        this.timeoutOkBtn.onclick = null;
     }
 }
