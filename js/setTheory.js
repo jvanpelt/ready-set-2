@@ -509,6 +509,7 @@ const RESTRICTION_PATTERNS = [
     // three cubes
     "color,restriction,color",
     "setName,restriction,color",
+    "setName,restriction,setName",
     "color,restriction,setName",
     // four cubes
     "color,restriction,color,prime",

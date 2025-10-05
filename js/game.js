@@ -68,10 +68,12 @@ export class Game {
                 
                 if (remaining > 0) {
                     console.log('  - Timer still active - restoring');
-                    // Timer still has time left - restore it
-                    this.startTimer(remaining);
+                    // Set the original start time and duration BEFORE calling startTimer
+                    // This prevents startTimer from creating a new timestamp
                     this.timerStartTime = savedState.timerStartTime;
                     this.timerDuration = savedState.timerDuration;
+                    // Timer still has time left - restore it
+                    this.startTimer(remaining);
                 } else {
                     console.log('  - Timer expired - generating new round');
                     // Timer expired while away - start new round
