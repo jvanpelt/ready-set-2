@@ -314,11 +314,12 @@ export class UIController {
         
         console.log('=== SOLUTION HELPER EVALUATION ===');
         
-        const restrictionRow = this.game.solutions[0] || [];
-        const setNameRow = this.game.solutions[1] || [];
+        // Sort dice by X position (left-to-right) before evaluation
+        const restrictionRow = (this.game.solutions[0] || []).sort((a, b) => a.x - b.x);
+        const setNameRow = (this.game.solutions[1] || []).sort((a, b) => a.x - b.x);
         
-        console.log('Restriction row:', restrictionRow.map(d => d.value).join(' '));
-        console.log('Set name row:', setNameRow.map(d => d.value).join(' '));
+        console.log('Restriction row (sorted L→R):', restrictionRow.map(d => d.value).join(' '));
+        console.log('Set name row (sorted L→R):', setNameRow.map(d => d.value).join(' '));
         
         // If both rows are empty, clear helper
         if (restrictionRow.length === 0 && setNameRow.length === 0) {

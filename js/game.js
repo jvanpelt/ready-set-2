@@ -240,8 +240,9 @@ export class Game {
     }
     
     validateSolution() {
-        const restrictionRow = this.solutions[0] || [];
-        const setNameRow = this.solutions[1] || [];
+        // Sort dice by X position (left-to-right) before validation
+        const restrictionRow = (this.solutions[0] || []).sort((a, b) => a.x - b.x);
+        const setNameRow = (this.solutions[1] || []).sort((a, b) => a.x - b.x);
         
         // Check if any row has dice
         if (restrictionRow.length === 0 && setNameRow.length === 0) {
