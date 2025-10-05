@@ -629,10 +629,17 @@ export function getPatternString(expression) {
 export function isValidSyntax(expression) {
     if (!expression || expression.length === 0) return false;
     
-    // Must have at least 2 dice (no single die solutions allowed)
-    if (expression.length < 2) {
-        console.log('Single die validation: INVALID (requires at least 2 dice)');
-        return false;
+    // Single die validation: Only color cubes are allowed as single-cube solutions
+    // Universe (U) and Null (∅) require at least 2 cubes
+    if (expression.length === 1) {
+        const die = expression[0];
+        if (die.type === 'color') {
+            console.log('Single color cube validation: ✓ VALID');
+            return true;
+        } else {
+            console.log('Single die validation: ✗ INVALID (U and ∅ require at least 2 cubes)');
+            return false;
+        }
     }
     
     // Sort dice by X position (left to right) before validation
