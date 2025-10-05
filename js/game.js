@@ -397,16 +397,13 @@ export class Game {
     correctPass() {
         // Stop timer when passing
         this.stopTimer();
-        // Award points for correctly identifying unsolvable puzzle
-        // Points: 15 × level
-        const passPoints = 15 * this.level;
-        this.score += passPoints;
+        // No points awarded for passing (even if correct)
         this.resetRound();
         return { 
             passed: true, 
             correct: true,
-            points: passPoints,
-            message: "You're correct! There was no possible solution." 
+            points: 0,
+            message: "You're right! No solution exists." 
         };
     }
     

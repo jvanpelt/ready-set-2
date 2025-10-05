@@ -194,53 +194,64 @@ export class UIController {
         this.isProcessingPass = true;
         console.log('🔒 Set isProcessingPass = true');
         
-        try {
-            const state = this.game.getState();
-            
-            const startTime = performance.now();
-            const solutionExists = hasPossibleSolution(
-                state.cards,
-                state.dice,
-                state.goalCards
-            );
-            const endTime = performance.now();
-            console.log(`⏱️ Solution check took ${(endTime - startTime).toFixed(2)}ms`);
-            console.log(`📊 Solution exists: ${solutionExists}`);
-            
-            if (solutionExists) {
-                console.log('⚠️ Showing pass warning modal');
-                this.modals.showPassWarning(
-                    // onConfirm callback
-                    () => {
-                        this.handleConfirmedPass();
-                        this.isProcessingPass = false;
-                        console.log('🔓 Set isProcessingPass = false (after confirmed pass)');
-                    },
-                    // onCancel callback
-                    () => {
-                        this.isProcessingPass = false;
-                        console.log('🔓 Set isProcessingPass = false (after cancel)');
-                    }
+        // Show "checking puzzle" modal immediately
+        this.modals.showPassChecking();
+        
+        // Run check asynchronously to allow modal to render
+        setTimeout(() => {
+            try {
+                const state = this.game.getState();
+                
+                const startTime = performance.now();
+                const solutionExists = hasPossibleSolution(
+                    state.cards,
+                    state.dice,
+                    state.goalCards
                 );
-                // Don't reset flag here - wait for user to confirm or cancel
-            } else {
-                console.log('✅ Correct pass - no solution exists');
-                this.handleCorrectPass();
+                const endTime = performance.now();
+                console.log(`⏱️ Solution check took ${(endTime - startTime).toFixed(2)}ms`);
+                console.log(`📊 Solution exists: ${solutionExists}`);
+                
+                if (solutionExists) {
+                    // Solution exists - show warning
+                    console.log('⚠️ Showing pass warning modal');
+                    this.modals.showPassWarning(
+                        // onConfirm callback (pass anyway)
+                        () => {
+                            this.handleConfirmedPass();
+                            this.isProcessingPass = false;
+                            console.log('🔓 Set isProcessingPass = false (after confirmed pass)');
+                        },
+                        // onCancel callback (back to puzzle)
+                        () => {
+                            this.isProcessingPass = false;
+                            console.log('🔓 Set isProcessingPass = false (after cancel)');
+                        }
+                    );
+                } else {
+                    // No solution exists - show confirmation (no points)
+                    console.log('✅ No solution exists');
+                    this.modals.showPassNoSolution(() => {
+                        this.handleCorrectPass();
+                        this.isProcessingPass = false;
+                        console.log('🔓 Set isProcessingPass = false (after no solution)');
+                    });
+                }
+            } catch (error) {
+                console.error('❌ Error in handlePass:', error);
+                this.modals.hidePassModal();
                 this.isProcessingPass = false;
-                console.log('🔓 Set isProcessingPass = false (after correct pass)');
+                console.log('🔓 Set isProcessingPass = false (after error)');
             }
-        } catch (error) {
-            console.error('❌ Error in handlePass:', error);
-            this.isProcessingPass = false;
-            console.log('🔓 Set isProcessingPass = false (after error)');
-        }
+        }, 100); // Small delay to let modal render
     }
     
     handleCorrectPass() {
-        const result = this.game.correctPass();
+        // No points awarded, just reset the round
+        this.game.correctPass();
         this.render();
         this.clearSolutionHelper();
-        this.modals.showResult('Excellent!', result.message, result.points);
+        // Modal is already shown by handlePass(), no need to show result modal
     }
     
     handleConfirmedPass() {

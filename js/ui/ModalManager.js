@@ -135,11 +135,42 @@ export class ModalManager {
     /**
      * Show pass confirmation warning
      */
+    /**
+     * Show "checking puzzle" loading state
+     */
+    showPassChecking() {
+        this.passTitle.textContent = 'Checking puzzle...';
+        this.passMessage.textContent = 'Analyzing if a solution is possible...';
+        this.passContinueBtn.style.display = 'none';
+        this.passCancelBtn.style.display = 'none';
+        this.passModal.classList.remove('hidden');
+    }
+    
+    /**
+     * Show "no solution exists" confirmation
+     */
+    showPassNoSolution(onContinue) {
+        this.passTitle.textContent = "You're right!";
+        this.passMessage.textContent = 'No solution exists.';
+        this.passContinueBtn.textContent = 'Continue';
+        this.passContinueBtn.style.display = 'inline-block';
+        this.passCancelBtn.style.display = 'none';
+        
+        this.passContinueBtn.onclick = () => {
+            this.hidePassModal();
+            onContinue();
+        };
+    }
+    
+    /**
+     * Show "solution exists" warning
+     */
     showPassWarning(onConfirm, onCancel) {
         this.passTitle.textContent = 'Are you sure?';
         this.passMessage.textContent = 'A valid solution exists! Are you sure you want to pass?';
         this.passContinueBtn.textContent = 'Continue';
-        this.passModal.classList.remove('hidden');
+        this.passContinueBtn.style.display = 'inline-block';
+        this.passCancelBtn.style.display = 'inline-block';
         
         // Store cancel callback for use when hidePassModal is called
         this.passOnCancel = onCancel;
