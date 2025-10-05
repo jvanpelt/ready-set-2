@@ -47,6 +47,8 @@ export class UIController {
         this.goalScoreEl = document.getElementById('goal-score');
         this.currentLevelEl = document.getElementById('current-level');
         this.goalCardsEl = document.getElementById('goal-cards');
+        this.timerDisplay = document.getElementById('timer-display');
+        this.timerValue = document.getElementById('timer-value');
         
         // Control buttons
         this.goBtn = document.getElementById('go-btn');
