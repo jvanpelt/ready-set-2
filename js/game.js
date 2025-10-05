@@ -373,14 +373,23 @@ export class Game {
         // Evaluate set name against active (non-flipped) cards
         const matchingCards = evaluateExpression(setName, activeCards);
         
+        console.log('📊 Validation Summary:');
+        console.log('  - Active card indices:', Array.from(activeCardIndices));
+        console.log('  - Matching cards (in active array):', Array.from(matchingCards));
+        
         // Map back to original card indices
         const activeCardsArray = Array.from(activeCardIndices);
         const finalMatchingCards = new Set(
             Array.from(matchingCards).map(activeIdx => activeCardsArray[activeIdx])
         );
         
+        console.log('  - Final matching cards (original indices):', Array.from(finalMatchingCards));
+        console.log('  - Final count:', finalMatchingCards.size);
+        console.log('  - Goal:', this.goalCards);
+        
         // Check if exactly the goal number of cards
         if (finalMatchingCards.size !== this.goalCards) {
+            console.log('❌ VALIDATION FAILED: Card count mismatch');
             return { 
                 valid: false, 
                 message: `Found ${finalMatchingCards.size} cards, need ${this.goalCards}!`,
@@ -389,13 +398,20 @@ export class Game {
             };
         }
         
+        console.log('✅ Card count matches goal!');
+        
         // Check if required cube is used (Level 8+)
         const requiredDie = this.dice.find(die => die.isRequired);
         if (requiredDie) {
+            console.log('🟩 Required cube check:');
+            console.log('  - Required die:', requiredDie.value, 'ID:', requiredDie.id);
             const allDice = [...restrictionRow, ...setNameRow];
+            console.log('  - Solution dice IDs:', allDice.map(d => d.id));
             const usedRequiredCube = allDice.some(die => die.id === requiredDie.id);
+            console.log('  - Used required cube?', usedRequiredCube);
             
             if (!usedRequiredCube) {
+                console.log('❌ VALIDATION FAILED: Required cube not used');
                 return {
                     valid: false,
                     message: 'You must use the required cube (green border)!',
@@ -403,6 +419,9 @@ export class Game {
                     cardsToFlip
                 };
             }
+            console.log('✅ Required cube is used!');
+        } else {
+            console.log('No required cube this round');
         }
         
         // Calculate score (all dice from both rows)
