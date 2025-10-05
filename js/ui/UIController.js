@@ -5,6 +5,7 @@ import { DragDropHandler } from './DragDropHandler.js';
 import { ModalManager } from './ModalManager.js';
 import { evaluateExpression, hasRestriction, evaluateRestriction } from '../setTheory.js';
 import { hasPossibleSolution } from '../solutionFinder.js';
+import { getLevelConfig } from '../levels.js';
 
 export class UIController {
     constructor(game, onUpdate) {
@@ -484,9 +485,14 @@ export class UIController {
     render() {
         const state = this.game.getState();
         
-        // Show/hide timer display based on level (Level 7+)
-        if (this.game.level >= 7 && this.game.timeRemaining !== null) {
+        // Show/hide timer display based on level config (Level 7+)
+        const config = getLevelConfig(this.game.level);
+        if (config.timeLimit) {
             this.timerDisplay.style.display = 'flex';
+            // If timer isn't running, show the initial time
+            if (this.game.timeRemaining === null) {
+                this.timerValue.textContent = config.timeLimit;
+            }
         } else {
             this.timerDisplay.style.display = 'none';
         }
