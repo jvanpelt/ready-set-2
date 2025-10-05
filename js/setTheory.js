@@ -503,6 +503,90 @@ const SETNAME_PATTERNS = [
 ];
 
 /**
+ * Valid restriction patterns (Level 6+, based on original game)
+ */
+const RESTRICTION_PATTERNS = [
+    // three cubes
+    "color,restriction,color",
+    "setName,restriction,color",
+    "color,restriction,setName",
+    // four cubes
+    "color,restriction,color,prime",
+    "color,restriction,setName,prime",
+    "color,prime,restriction,setName",
+    "color,prime,restriction,color",
+    "setName,restriction,color,prime",
+    "setName,restriction,setName,prime",
+    "setName,prime,restriction,color",
+    "setName,prime,restriction,setName",
+    // five cubes
+    "color,restriction,color,operator,color",
+    "color,operator,color,restriction,color",
+    "color,restriction,color,restriction,color",
+    "setName,restriction,color,operator,color",
+    "setName,operator,color,restriction,color",
+    "setName,restriction,color,restriction,color",
+    "color,restriction,setName,operator,color",
+    "color,operator,setName,restriction,color",
+    "color,restriction,setName,restriction,color",
+    "color,restriction,color,operator,setName",
+    "color,operator,color,restriction,setName",
+    "color,restriction,color,restriction,setName",
+    "color,restriction,setName,operator,setName",
+    "color,operator,setName,restriction,setName",
+    "color,restriction,setName,restriction,setName",
+    "setName,restriction,color,operator,setName",
+    "setName,operator,color,restriction,setName",
+    "setName,restriction,color,restriction,setName",
+    "setName,restriction,setName,operator,color",
+    "setName,operator,setName,restriction,color",
+    "setName,restriction,setName,restriction,color",
+    "color,prime,prime,restriction,color",
+    "color,restriction,color,prime,prime",
+    "setName,restriction,color,prime,prime",
+    "color,restriction,setName,prime,prime",
+    "setName,prime,prime,restriction,color",
+    "color,prime,prime,restriction,setName",
+    "setName,prime,prime,restriction,setName",
+    // six cubes
+    "color,operator,setName,restriction,color,prime",
+    "color,restriction,setName,operator,color,prime",
+    "color,restriction,color,operator,color,prime",
+    "color,operator,color,restriction,color,prime",
+    "setName,operator,color,restriction,color,prime",
+    "setName,restriction,color,operator,color,prime",
+    "color,restriction,setName,operator,color,prime",
+    "color,operator,setName,restriction,color,prime",
+    "color,operator,color,restriction,setName,prime",
+    "color,restriction,color,operator,setName,prime",
+    "color,prime,operator,setName,restriction,color",
+    "color,prime,restriction,setName,operator,color",
+    "color,prime,restriction,color,operator,color",
+    "color,prime,operator,color,restriction,color",
+    "setName,prime,operator,color,restriction,color",
+    "setName,prime,restriction,color,operator,color",
+    "color,prime,restriction,setName,operator,color",
+    "color,prime,operator,setName,restriction,color",
+    "color,prime,operator,color,restriction,setName",
+    "color,prime,restriction,color,operator,setName",
+    "color,operator,setName,prime,restriction,color",
+    "color,restriction,setName,prime,operator,color",
+    "color,restriction,color,prime,operator,color",
+    "color,operator,color,prime,restriction,color",
+    "setName,operator,color,prime,restriction,color",
+    "setName,restriction,color,prime,operator,color",
+    "color,operator,setName,prime,restriction,color",
+    "color,operator,color,prime,restriction,setName",
+    "color,restriction,color,prime,operator,setName",
+    // seven cubes
+    "color,operator,color,restriction,color,operator,setName",
+    "color,operator,color,restriction,setName,operator,color",
+    "color,operator,setName,restriction,color,operator,color",
+    "setName,operator,color,restriction,color,operator,color",
+    "color,operator,color,restriction,setName,operator,color"
+];
+
+/**
  * Convert dice array to pattern string for validation
  */
 function dicesToPatternString(dice) {
@@ -517,6 +601,10 @@ function dicesToPatternString(dice) {
             // U and ∅ are "setName" types
             if (die.value === 'U' || die.value === '∅') {
                 return 'setName';
+            }
+            // Equals and Subset are "restriction" types
+            if (die.value === '=' || die.value === '⊆') {
+                return 'restriction';
             }
             return 'operator';
         }
@@ -561,5 +649,85 @@ export function isValidSyntax(expression) {
     
     // Check if it matches any valid pattern
     return isValid;
+}
+
+/**
+ * Check if an expression contains a restriction operator (= or ⊆)
+ */
+export function hasRestriction(expression) {
+    if (!expression || expression.length === 0) return false;
+    return expression.some(die => die.value === '=' || die.value === '⊆');
+}
+
+/**
+ * Validate if expression matches a known valid restriction pattern
+ */
+export function isValidRestriction(expression) {
+    if (!expression || expression.length === 0) return false;
+    
+    // Must have at least 3 dice for restrictions (color, restriction, color)
+    if (expression.length < 3) {
+        console.log('Restriction validation: INVALID (requires at least 3 dice)');
+        return false;
+    }
+    
+    // Sort dice by X position (left to right) before validation
+    const sortedDice = [...expression].sort((a, b) => (a.x || 0) - (b.x || 0));
+    
+    // Convert to pattern string
+    const patternString = dicesToPatternString(sortedDice);
+    const isValid = RESTRICTION_PATTERNS.includes(patternString);
+    
+    console.log('Restriction pattern validation:', patternString, '→', isValid ? '✓ VALID' : '✗ INVALID');
+    
+    return isValid;
+}
+
+/**
+ * Evaluate a restriction expression and return indices of cards to flip
+ * @param {Array} restriction - The restriction dice expression
+ * @param {Array} cards - All cards
+ * @returns {Array} - Array of card indices that should be flipped (removed from universe)
+ */
+export function evaluateRestriction(restriction, cards) {
+    if (!restriction || restriction.length === 0) return [];
+    
+    console.log('=== EVALUATING RESTRICTION ===');
+    
+    // Find the restriction operator
+    const restrictionDie = restriction.find(die => die.value === '=' || die.value === '⊆');
+    if (!restrictionDie) return [];
+    
+    const restrictionIndex = restriction.indexOf(restrictionDie);
+    const leftSide = restriction.slice(0, restrictionIndex);
+    const rightSide = restriction.slice(restrictionIndex + 1);
+    
+    // Evaluate both sides
+    const leftCards = evaluateExpression(leftSide, cards);
+    const rightCards = evaluateExpression(rightSide, cards);
+    
+    console.log(`Left side (${leftSide.map(d => d.value).join(' ')}):`, Array.from(leftCards));
+    console.log(`Right side (${rightSide.map(d => d.value).join(' ')}):`, Array.from(rightCards));
+    
+    let cardsToFlip = [];
+    
+    if (restrictionDie.value === '⊆') {
+        // Subset: All cards in left must be in right
+        // Flip any cards in left that are NOT in right
+        cardsToFlip = Array.from(leftCards).filter(cardIndex => !rightCards.has(cardIndex));
+        console.log(`Subset restriction: Flipping ${cardsToFlip.length} cards from left that aren't in right`);
+    } else if (restrictionDie.value === '=') {
+        // Equals: Left and right must be identical
+        // Flip any cards that are in one but not the other
+        const leftOnly = Array.from(leftCards).filter(cardIndex => !rightCards.has(cardIndex));
+        const rightOnly = Array.from(rightCards).filter(cardIndex => !leftCards.has(cardIndex));
+        cardsToFlip = [...leftOnly, ...rightOnly];
+        console.log(`Equals restriction: Flipping ${cardsToFlip.length} cards (${leftOnly.length} left-only + ${rightOnly.length} right-only)`);
+    }
+    
+    console.log('Cards to flip:', cardsToFlip);
+    console.log('==============================\n');
+    
+    return cardsToFlip;
 }
 

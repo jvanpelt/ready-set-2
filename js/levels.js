@@ -98,11 +98,23 @@ Drag dice to the solution area and click GO!`
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE', 'COMPLEMENT', 'UNIVERSE', 'NULL', 'EQUALS', 'SUBSET'],
         tutorial: {
             title: 'Level 6: Restrictions',
-            text: `Advanced restrictions unlocked!
-            
-• = (Equals) = sets must be identical
-• ⊆ (Subset) = first set contained in second
-• Higher points for restriction expressions!`
+            text: `Welcome to Level 6: RESTRICTIONS change everything!
+
+**Two Solution Rows:**
+• Top row (now unlocked): Restrictions
+• Bottom row: Set name
+
+**Subset (⊆):** Red ⊆ Blue means "all red cards must contain blue"
+• Any red cards without blue are FLIPPED OUT of the universe
+• Your set name only considers cards that remain
+
+**Equals (=):** Red = Blue means "red and blue are identical"
+• Cards with red-but-not-blue OR blue-but-not-red are flipped out
+• Only cards with BOTH colors remain
+
+**Double-tap cards** to manually flip them out of the universe!
+
+Restrictions let you use ALL 8 cubes for MASSIVE points!`
         }
     },
     {

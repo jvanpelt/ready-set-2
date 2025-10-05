@@ -1,7 +1,7 @@
 // Game state management
 
 import { generateCardConfig, generateDiceForLevel, getLevelConfig, hasNextLevel, generateGoal } from './levels.js';
-import { evaluateExpression, calculateScore, isValidSyntax, getPatternString } from './setTheory.js';
+import { evaluateExpression, calculateScore, isValidSyntax, getPatternString, hasRestriction, isValidRestriction, evaluateRestriction } from './setTheory.js';
 import { GameStorage } from './storage.js';
 
 export class Game {
@@ -64,7 +64,8 @@ export class Game {
         // Reset card states - ensure all cards start fully visible
         this.cardStates = this.cards.map(() => ({
             dimmed: false,
-            excluded: false
+            excluded: false,
+            flipped: false  // Level 6+: card removed from universe
         }));
     }
     
@@ -153,62 +154,129 @@ export class Game {
     toggleCardState(cardIndex) {
         const state = this.cardStates[cardIndex];
         
-        if (!state.dimmed && !state.excluded) {
-            // First tap: dim
+        if (!state.dimmed && !state.flipped) {
+            // First tap: dim (note-taking)
             state.dimmed = true;
-        } else if (state.dimmed && !state.excluded) {
-            // Second tap: exclude (flip to blue)
+            state.excluded = false;
+        } else if (state.dimmed && !state.flipped) {
+            // Second tap: flip (remove from universe)
             state.dimmed = false;
             state.excluded = true;
+            state.flipped = true;
         } else {
             // Third tap: reset
             state.dimmed = false;
             state.excluded = false;
+            state.flipped = false;
         }
         this.saveState();
     }
     
+    // Flip cards based on restriction (called during evaluation)
+    flipCardsByRestriction(cardIndicesToFlip) {
+        cardIndicesToFlip.forEach(index => {
+            this.cardStates[index].flipped = true;
+            this.cardStates[index].excluded = true;
+            this.cardStates[index].dimmed = false;
+        });
+        this.saveState();
+    }
+    
     validateSolution() {
+        const restrictionRow = this.solutions[0] || [];
+        const setNameRow = this.solutions[1] || [];
+        
         // Check if any row has dice
-        const hasAnyDice = this.solutions.some(row => row.length > 0);
-        if (!hasAnyDice) {
+        if (restrictionRow.length === 0 && setNameRow.length === 0) {
             return { valid: false, message: 'Add dice to create a solution!' };
         }
         
-        // Find the first non-empty row and validate it
-        const solution = this.solutions.find(row => row.length > 0);
-        
-        if (!solution) {
-            return { valid: false, message: 'Add dice to create a solution!' };
+        // Check for restrictions in both rows (not allowed)
+        if (hasRestriction(restrictionRow) && hasRestriction(setNameRow)) {
+            return { valid: false, message: "You can't have 2 restrictions!" };
         }
         
-        // Check syntax
-        if (!isValidSyntax(solution)) {
-            const pattern = getPatternString(solution);
-            console.log(`Invalid pattern: ${pattern}`);
-            return { valid: false, message: 'Invalid expression syntax! Check dice order.' };
+        // Check for set names in both rows (not allowed)
+        if (restrictionRow.length > 0 && !hasRestriction(restrictionRow) && 
+            setNameRow.length > 0 && !hasRestriction(setNameRow)) {
+            return { valid: false, message: "You can't have 2 set names!" };
         }
         
-        // Evaluate expression
-        const matchingCards = evaluateExpression(solution, this.cards);
+        // Determine which row has the restriction and which has the set name
+        let restriction = null;
+        let setName = null;
+        
+        if (hasRestriction(restrictionRow)) {
+            restriction = restrictionRow;
+            setName = setNameRow;
+        } else if (hasRestriction(setNameRow)) {
+            restriction = setNameRow;
+            setName = restrictionRow;
+        } else {
+            // No restriction, just a set name
+            setName = restrictionRow.length > 0 ? restrictionRow : setNameRow;
+        }
+        
+        // Validate patterns
+        if (restriction && restriction.length > 0) {
+            if (!isValidRestriction(restriction)) {
+                return { valid: false, message: 'Invalid restriction syntax!' };
+            }
+            // Must have a set name with a restriction
+            if (!setName || setName.length === 0) {
+                return { valid: false, message: "You can't have a restriction without a set name!" };
+            }
+        }
+        
+        if (setName && setName.length > 0) {
+            if (!isValidSyntax(setName)) {
+                return { valid: false, message: 'Invalid set name syntax!' };
+            }
+        }
+        
+        // Apply restriction if present (flip cards)
+        let cardsToFlip = [];
+        if (restriction && restriction.length > 0) {
+            cardsToFlip = evaluateRestriction(restriction, this.cards);
+        }
+        
+        // Filter out flipped cards for set name evaluation
+        const activeCardIndices = new Set(
+            this.cards.map((_, idx) => idx).filter(idx => 
+                !cardsToFlip.includes(idx) && !this.cardStates[idx].flipped
+            )
+        );
+        const activeCards = this.cards.filter((_, idx) => activeCardIndices.has(idx));
+        
+        // Evaluate set name against active (non-flipped) cards
+        const matchingCards = evaluateExpression(setName, activeCards);
+        
+        // Map back to original card indices
+        const activeCardsArray = Array.from(activeCardIndices);
+        const finalMatchingCards = new Set(
+            Array.from(matchingCards).map(activeIdx => activeCardsArray[activeIdx])
+        );
         
         // Check if exactly the goal number of cards
-        if (matchingCards.size !== this.goalCards) {
+        if (finalMatchingCards.size !== this.goalCards) {
             return { 
                 valid: false, 
-                message: `Found ${matchingCards.size} cards, need ${this.goalCards}!`,
-                matchingCards
+                message: `Found ${finalMatchingCards.size} cards, need ${this.goalCards}!`,
+                matchingCards: finalMatchingCards,
+                cardsToFlip
             };
         }
         
-        // Calculate score
-        const points = calculateScore(solution);
+        // Calculate score (all dice from both rows)
+        const allDice = [...restrictionRow, ...setNameRow];
+        const points = calculateScore(allDice);
         
         return {
             valid: true,
             message: 'Correct solution!',
             points,
-            matchingCards
+            matchingCards: finalMatchingCards,
+            cardsToFlip
         };
     }
     
@@ -216,6 +284,11 @@ export class Game {
         const result = this.validateSolution();
         
         if (result.valid) {
+            // Apply restriction flips if present
+            if (result.cardsToFlip && result.cardsToFlip.length > 0) {
+                this.flipCardsByRestriction(result.cardsToFlip);
+            }
+            
             this.score += result.points;
             this.saveState();
         }
