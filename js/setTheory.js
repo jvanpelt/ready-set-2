@@ -629,15 +629,15 @@ export function getPatternString(expression) {
 export function isValidSyntax(expression) {
     if (!expression || expression.length === 0) return false;
     
-    // Single die validation: Only color cubes are allowed as single-cube solutions
-    // Universe (U) and Null (∅) require at least 2 cubes
+    // Single die: Only color cubes are valid as single-die expressions
+    // (Solution-level validation handles the 2-cube minimum for complete solutions)
     if (expression.length === 1) {
         const die = expression[0];
         if (die.type === 'color') {
-            console.log('Single color cube validation: ✓ VALID');
+            console.log('Single color cube: ✓ VALID pattern');
             return true;
         } else {
-            console.log('Single die validation: ✗ INVALID (U and ∅ require at least 2 cubes)');
+            console.log('Single U/∅: ✗ INVALID (must use with other cubes)');
             return false;
         }
     }

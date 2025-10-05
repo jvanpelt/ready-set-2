@@ -274,6 +274,12 @@ export class Game {
             setName = restrictionRow.length > 0 ? restrictionRow : setNameRow;
         }
         
+        // Check total cube count: SOLUTION must have at least 2 cubes total
+        const totalCubes = restrictionRow.length + setNameRow.length;
+        if (totalCubes < 2) {
+            return { valid: false, message: 'Solution must use at least 2 cubes!' };
+        }
+        
         // Validate patterns
         if (restriction && restriction.length > 0) {
             if (!isValidRestriction(restriction)) {

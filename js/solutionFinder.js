@@ -13,9 +13,9 @@ export function hasPossibleSolution(cards, dice, goal) {
     // Check if there's a required cube (Level 8+)
     const requiredDie = dice.find(die => die.isRequired);
     
-    // Try all possible dice combinations from size 1 to dice.length
-    // (size 1 is valid for single color cubes)
-    for (let size = 1; size <= dice.length; size++) {
+    // Try all possible dice combinations from size 2 to dice.length
+    // Note: Single-cube solutions are only valid with restrictions (not checked here yet)
+    for (let size = 2; size <= dice.length; size++) {
         const combinations = getCombinations(dice, size);
         
         for (let combo of combinations) {
