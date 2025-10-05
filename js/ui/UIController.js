@@ -3,7 +3,7 @@
 import { UIRenderer } from './UIRenderer.js';
 import { DragDropHandler } from './DragDropHandler.js';
 import { ModalManager } from './ModalManager.js';
-import { evaluateExpression } from '../setTheory.js';
+import { evaluateExpression, hasRestriction, evaluateRestriction } from '../setTheory.js';
 import { hasPossibleSolution } from '../solutionFinder.js';
 
 export class UIController {
@@ -227,31 +227,68 @@ export class UIController {
     evaluateSolutionHelper() {
         if (!this.settings.solutionHelper) return;
         
-        const solution = this.game.solutions.find(row => row.length > 0);
-        if (!solution || solution.length === 0) {
+        const restrictionRow = this.game.solutions[0] || [];
+        const setNameRow = this.game.solutions[1] || [];
+        
+        // If both rows are empty, clear helper
+        if (restrictionRow.length === 0 && setNameRow.length === 0) {
             this.clearSolutionHelper();
             return;
         }
         
-        const matchingCards = evaluateExpression(solution, this.game.cards);
+        // Determine which row has restriction and which has set name
+        let restriction = null;
+        let setName = null;
+        
+        if (hasRestriction(restrictionRow)) {
+            restriction = restrictionRow;
+            setName = setNameRow;
+        } else if (hasRestriction(setNameRow)) {
+            restriction = setNameRow;
+            setName = restrictionRow;
+        } else {
+            // No restriction, just a regular set name
+            setName = restrictionRow.length > 0 ? restrictionRow : setNameRow;
+        }
         
         const cards = this.cardsContainer.querySelectorAll('.card');
-        cards.forEach((cardEl, index) => {
-            // Store original user states
+        
+        // Store original user states
+        cards.forEach((cardEl) => {
             if (!cardEl.dataset.helperActive) {
                 cardEl.dataset.userDimmed = cardEl.classList.contains('dimmed') ? 'true' : 'false';
                 cardEl.dataset.userExcluded = cardEl.classList.contains('excluded') ? 'true' : 'false';
                 cardEl.dataset.helperActive = 'true';
             }
-            
-            // Apply helper states
-            if (matchingCards.has(index)) {
-                cardEl.classList.remove('dimmed', 'excluded');
-            } else {
-                cardEl.classList.add('dimmed');
-                cardEl.classList.remove('excluded');
-            }
         });
+        
+        // If there's a restriction, show which cards would be flipped
+        if (restriction && restriction.length > 0) {
+            const cardsToFlip = evaluateRestriction(restriction, this.game.cards);
+            
+            cards.forEach((cardEl, index) => {
+                if (cardsToFlip.includes(index)) {
+                    // Show as flipped (excluded)
+                    cardEl.classList.add('excluded');
+                    cardEl.classList.remove('dimmed');
+                } else {
+                    // Leave as is (don't dim/brighten for restrictions)
+                    cardEl.classList.remove('dimmed', 'excluded');
+                }
+            });
+        } else if (setName && setName.length > 0) {
+            // Regular set name - show matching cards
+            const matchingCards = evaluateExpression(setName, this.game.cards);
+            
+            cards.forEach((cardEl, index) => {
+                if (matchingCards.has(index)) {
+                    cardEl.classList.remove('dimmed', 'excluded');
+                } else {
+                    cardEl.classList.add('dimmed');
+                    cardEl.classList.remove('excluded');
+                }
+            });
+        }
     }
     
     clearSolutionHelper() {
