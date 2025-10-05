@@ -262,30 +262,55 @@ export class UIController {
             }
         });
         
-        // If there's a restriction, show which cards would be flipped
+        // Evaluate restriction and set name together
+        let cardsToFlip = [];
+        
         if (restriction && restriction.length > 0) {
-            const cardsToFlip = evaluateRestriction(restriction, this.game.cards);
+            cardsToFlip = evaluateRestriction(restriction, this.game.cards);
+        }
+        
+        // If we have a set name, evaluate it against non-flipped cards
+        if (setName && setName.length > 0) {
+            // Filter out flipped cards for set name evaluation
+            const activeCardIndices = new Set(
+                this.game.cards.map((_, idx) => idx).filter(idx => 
+                    !cardsToFlip.includes(idx) && !this.game.cardStates[idx].flipped
+                )
+            );
+            const activeCards = this.game.cards.filter((_, idx) => activeCardIndices.has(idx));
             
+            // Evaluate set name against active (non-flipped) cards
+            const matchingCards = evaluateExpression(setName, activeCards);
+            
+            // Map back to original card indices
+            const activeCardsArray = Array.from(activeCardIndices);
+            const finalMatchingCards = new Set(
+                Array.from(matchingCards).map(activeIdx => activeCardsArray[activeIdx])
+            );
+            
+            // Apply visual states
             cards.forEach((cardEl, index) => {
                 if (cardsToFlip.includes(index)) {
-                    // Show as flipped (excluded)
+                    // Show as flipped (excluded) - highest priority
+                    cardEl.classList.add('excluded');
+                    cardEl.classList.remove('dimmed');
+                } else if (finalMatchingCards.has(index)) {
+                    // Matches set name - bright
+                    cardEl.classList.remove('dimmed', 'excluded');
+                } else {
+                    // Doesn't match set name - dimmed
+                    cardEl.classList.add('dimmed');
+                    cardEl.classList.remove('excluded');
+                }
+            });
+        } else if (cardsToFlip.length > 0) {
+            // Only restriction, no set name - just show flipped cards
+            cards.forEach((cardEl, index) => {
+                if (cardsToFlip.includes(index)) {
                     cardEl.classList.add('excluded');
                     cardEl.classList.remove('dimmed');
                 } else {
-                    // Leave as is (don't dim/brighten for restrictions)
                     cardEl.classList.remove('dimmed', 'excluded');
-                }
-            });
-        } else if (setName && setName.length > 0) {
-            // Regular set name - show matching cards
-            const matchingCards = evaluateExpression(setName, this.game.cards);
-            
-            cards.forEach((cardEl, index) => {
-                if (matchingCards.has(index)) {
-                    cardEl.classList.remove('dimmed', 'excluded');
-                } else {
-                    cardEl.classList.add('dimmed');
-                    cardEl.classList.remove('excluded');
                 }
             });
         }
