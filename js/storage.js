@@ -17,7 +17,9 @@ export class GameStorage {
             cardStates: `${STORAGE_KEY_PREFIX}cardStates`,
             tutorialShown: `${STORAGE_KEY_PREFIX}tutorialShown`,
             isFirstGame: `${STORAGE_KEY_PREFIX}isFirstGame`,
-            settings: `${STORAGE_KEY_PREFIX}settings`
+            settings: `${STORAGE_KEY_PREFIX}settings`,
+            timerStartTime: `${STORAGE_KEY_PREFIX}timerStartTime`,
+            timerDuration: `${STORAGE_KEY_PREFIX}timerDuration`
         };
         
         this.checkVersion();
@@ -48,6 +50,12 @@ export class GameStorage {
             localStorage.setItem(this.keys.cardStates, JSON.stringify(gameState.cardStates));
             localStorage.setItem(this.keys.tutorialShown, gameState.tutorialShown);
             
+            // Save timer state if active
+            if (gameState.timerStartTime) {
+                localStorage.setItem(this.keys.timerStartTime, gameState.timerStartTime);
+                localStorage.setItem(this.keys.timerDuration, gameState.timerDuration);
+            }
+            
             // Update highest level
             this.saveHighestLevel(gameState.level);
             
@@ -68,7 +76,7 @@ export class GameStorage {
                 return null;
             }
             
-            return {
+            const state = {
                 level: parseInt(level) || 1,
                 score: parseInt(localStorage.getItem(this.keys.score)) || 0,
                 goalCards: parseInt(localStorage.getItem(this.keys.goalCards)) || 3,
@@ -78,6 +86,16 @@ export class GameStorage {
                 cardStates: JSON.parse(localStorage.getItem(this.keys.cardStates) || '[]'),
                 tutorialShown: localStorage.getItem(this.keys.tutorialShown) === 'true'
             };
+            
+            // Load timer state if present
+            const timerStartTime = localStorage.getItem(this.keys.timerStartTime);
+            const timerDuration = localStorage.getItem(this.keys.timerDuration);
+            if (timerStartTime && timerDuration) {
+                state.timerStartTime = parseInt(timerStartTime);
+                state.timerDuration = parseInt(timerDuration);
+            }
+            
+            return state;
         } catch (e) {
             console.error('Failed to load game state:', e);
             this.clear();
@@ -121,6 +139,8 @@ export class GameStorage {
         localStorage.removeItem(this.keys.dice);
         localStorage.removeItem(this.keys.solutions);
         localStorage.removeItem(this.keys.cardStates);
+        localStorage.removeItem(this.keys.timerStartTime);
+        localStorage.removeItem(this.keys.timerDuration);
     }
     
     // Clear level state (keep highest level)

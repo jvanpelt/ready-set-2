@@ -18,6 +18,8 @@ export class Game {
         // Timer (Level 7+)
         this.timeRemaining = null;
         this.timerInterval = null;
+        this.timerStartTime = null; // Timestamp when timer started (for persistence)
+        this.timerDuration = null; // Original duration (for persistence)
         this.onTimerTick = null; // Callback for UI updates
         this.onTimeout = null; // Callback when time runs out
         
@@ -44,6 +46,22 @@ export class Game {
                 this.solutions = [[], savedState.solutions[0]];
             } else {
                 this.solutions = savedState.solutions;
+            }
+            
+            // Restore timer if it was running
+            if (savedState.timerStartTime && savedState.timerDuration) {
+                const elapsed = Math.floor((Date.now() - savedState.timerStartTime) / 1000);
+                const remaining = savedState.timerDuration - elapsed;
+                
+                if (remaining > 0) {
+                    // Timer still has time left - restore it
+                    this.startTimer(remaining);
+                    this.timerStartTime = savedState.timerStartTime;
+                    this.timerDuration = savedState.timerDuration;
+                } else {
+                    // Timer expired while away - start new round
+                    this.generateNewRound();
+                }
             }
         } else {
             // Start fresh
@@ -170,6 +188,12 @@ export class Game {
         this.stopTimer(); // Clear any existing timer
         this.timeRemaining = seconds;
         
+        // Save start time and duration for persistence (only if not restoring)
+        if (!this.timerStartTime) {
+            this.timerStartTime = Date.now();
+            this.timerDuration = seconds;
+        }
+        
         console.log(`⏱️ Timer started: ${seconds} seconds`);
         
         // Tick immediately
@@ -188,6 +212,9 @@ export class Game {
             if (this.timeRemaining <= 0) {
                 this.handleTimeout();
             }
+            
+            // Save state on each tick to persist timer
+            this.saveState();
         }, 1000);
     }
     
@@ -197,6 +224,9 @@ export class Game {
             this.timerInterval = null;
         }
         this.timeRemaining = null;
+        this.timerStartTime = null;
+        this.timerDuration = null;
+        this.saveState(); // Clear timer from storage
     }
     
     handleTimeout() {
@@ -459,7 +489,9 @@ export class Game {
             goalCards: this.goalCards,
             canAdvance: this.canAdvanceLevel(),
             hasNextLevel: hasNextLevel(this.level),
-            restrictionsEnabled: this.level >= 6 // Whether top row (restrictions) is enabled
+            restrictionsEnabled: this.level >= 6, // Whether top row (restrictions) is enabled
+            timerStartTime: this.timerStartTime,
+            timerDuration: this.timerDuration
         };
     }
 }
