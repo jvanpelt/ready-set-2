@@ -29,9 +29,16 @@ export class Game {
             this.goalCards = savedState.goalCards;
             this.cards = savedState.cards;
             this.dice = savedState.dice;
-            this.solutions = savedState.solutions;
             this.cardStates = savedState.cardStates;
             this.tutorialShown = savedState.tutorialShown;
+            
+            // Migrate old saved state to new 2-row format
+            if (savedState.solutions.length === 1) {
+                // Old format: single row - move to bottom row
+                this.solutions = [[], savedState.solutions[0]];
+            } else {
+                this.solutions = savedState.solutions;
+            }
         } else {
             // Start fresh
             this.generateNewRound();
