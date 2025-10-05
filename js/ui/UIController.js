@@ -18,6 +18,9 @@ export class UIController {
         // Load settings
         this.settings = this.game.storage.loadSettings();
         
+        // Flags for preventing duplicate actions
+        this.isProcessingPass = false;
+        
         this.initElements();
         this.initEventListeners();
         
@@ -70,11 +73,34 @@ export class UIController {
             }
         });
         
-        // Control buttons
-        this.goBtn.addEventListener('click', () => this.handleGo());
-        this.resetBtn.addEventListener('click', () => this.handleReset());
-        this.passBtn.addEventListener('click', () => this.handlePass());
-        this.menuBtn.addEventListener('click', () => this.modals.showMenu());
+        // Control buttons with debug logging
+        this.goBtn.addEventListener('click', () => {
+            console.log('🎯 GO button clicked');
+            this.handleGo();
+        });
+        this.goBtn.addEventListener('mouseup', () => console.log('🖱️ GO mouseup'));
+        this.goBtn.addEventListener('touchend', () => console.log('👆 GO touchend'));
+        
+        this.resetBtn.addEventListener('click', () => {
+            console.log('🔄 RESET button clicked');
+            this.handleReset();
+        });
+        this.resetBtn.addEventListener('mouseup', () => console.log('🖱️ RESET mouseup'));
+        this.resetBtn.addEventListener('touchend', () => console.log('👆 RESET touchend'));
+        
+        this.passBtn.addEventListener('click', () => {
+            console.log('⏭️ PASS button clicked');
+            this.handlePass();
+        });
+        this.passBtn.addEventListener('mouseup', () => console.log('🖱️ PASS mouseup'));
+        this.passBtn.addEventListener('touchend', () => console.log('👆 PASS touchend'));
+        
+        this.menuBtn.addEventListener('click', () => {
+            console.log('📋 MENU button clicked');
+            this.modals.showMenu();
+        });
+        this.menuBtn.addEventListener('mouseup', () => console.log('🖱️ MENU mouseup'));
+        this.menuBtn.addEventListener('touchend', () => console.log('👆 MENU touchend'));
         
         // Tutorial
         document.getElementById('tutorial-next').addEventListener('click', () => this.modals.hideTutorial());
@@ -151,17 +177,56 @@ export class UIController {
     }
     
     handlePass() {
-        const state = this.game.getState();
-        const solutionExists = hasPossibleSolution(
-            state.cards,
-            state.dice,
-            state.goalCards
-        );
+        console.log('🔍 handlePass() called - checking for possible solution...');
         
-        if (solutionExists) {
-            this.modals.showPassWarning(() => this.handleConfirmedPass());
-        } else {
-            this.handleCorrectPass();
+        // Prevent duplicate processing
+        if (this.isProcessingPass) {
+            console.log('⚠️ Already processing Pass - ignoring duplicate click');
+            return;
+        }
+        
+        this.isProcessingPass = true;
+        console.log('🔒 Set isProcessingPass = true');
+        
+        try {
+            const state = this.game.getState();
+            
+            const startTime = performance.now();
+            const solutionExists = hasPossibleSolution(
+                state.cards,
+                state.dice,
+                state.goalCards
+            );
+            const endTime = performance.now();
+            console.log(`⏱️ Solution check took ${(endTime - startTime).toFixed(2)}ms`);
+            console.log(`📊 Solution exists: ${solutionExists}`);
+            
+            if (solutionExists) {
+                console.log('⚠️ Showing pass warning modal');
+                this.modals.showPassWarning(
+                    // onConfirm callback
+                    () => {
+                        this.handleConfirmedPass();
+                        this.isProcessingPass = false;
+                        console.log('🔓 Set isProcessingPass = false (after confirmed pass)');
+                    },
+                    // onCancel callback
+                    () => {
+                        this.isProcessingPass = false;
+                        console.log('🔓 Set isProcessingPass = false (after cancel)');
+                    }
+                );
+                // Don't reset flag here - wait for user to confirm or cancel
+            } else {
+                console.log('✅ Correct pass - no solution exists');
+                this.handleCorrectPass();
+                this.isProcessingPass = false;
+                console.log('🔓 Set isProcessingPass = false (after correct pass)');
+            }
+        } catch (error) {
+            console.error('❌ Error in handlePass:', error);
+            this.isProcessingPass = false;
+            console.log('🔓 Set isProcessingPass = false (after error)');
         }
     }
     

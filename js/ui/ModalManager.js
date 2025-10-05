@@ -28,9 +28,13 @@ export class ModalManager {
         this.passTitle = document.getElementById('pass-title');
         this.passMessage = document.getElementById('pass-message');
         this.passContinueBtn = document.getElementById('pass-continue');
+        this.passCancelBtn = document.getElementById('pass-cancel');
         
         // Level selector (test mode)
         this.levelSelector = document.getElementById('level-selector');
+        
+        // Hook up cancel button
+        this.passCancelBtn.addEventListener('click', () => this.hidePassModal());
     }
     
     /**
@@ -127,11 +131,14 @@ export class ModalManager {
     /**
      * Show pass confirmation warning
      */
-    showPassWarning(onConfirm) {
+    showPassWarning(onConfirm, onCancel) {
         this.passTitle.textContent = 'Are you sure?';
         this.passMessage.textContent = 'A valid solution exists! Are you sure you want to pass?';
         this.passContinueBtn.textContent = 'Continue';
         this.passModal.classList.remove('hidden');
+        
+        // Store cancel callback for use when hidePassModal is called
+        this.passOnCancel = onCancel;
         
         // Update the continue button to confirm pass
         this.passContinueBtn.onclick = () => {
@@ -145,6 +152,13 @@ export class ModalManager {
      */
     hidePassModal() {
         this.passModal.classList.add('hidden');
+        
+        // Call cancel callback if provided
+        if (this.passOnCancel) {
+            this.passOnCancel();
+            this.passOnCancel = null;
+        }
+        
         // Clear the onclick handler
         this.passContinueBtn.onclick = null;
     }
