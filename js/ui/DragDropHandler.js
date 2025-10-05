@@ -223,7 +223,8 @@ export class DragDropHandler {
         // === DROP FROM DICE AREA TO SOLUTION (Desktop) ===
         this.solutionArea.addEventListener('dragover', (e) => {
             const row = e.target.closest('.solution-row');
-            if (row && this.draggedDie && !this.draggedFromSolution) {
+            // Prevent dropping into disabled rows
+            if (row && this.draggedDie && !this.draggedFromSolution && !row.dataset.disabled) {
                 e.preventDefault();
                 row.classList.add('drag-over');
             }
@@ -238,7 +239,8 @@ export class DragDropHandler {
         
         this.solutionArea.addEventListener('drop', (e) => {
             const row = e.target.closest('.solution-row');
-            if (row && this.draggedDie && !this.draggedFromSolution) {
+            // Prevent dropping into disabled rows
+            if (row && this.draggedDie && !this.draggedFromSolution && !row.dataset.disabled) {
                 e.preventDefault();
                 row.classList.remove('drag-over');
                 
@@ -271,7 +273,8 @@ export class DragDropHandler {
                 const element = document.elementFromPoint(coords.clientX, coords.clientY);
                 const row = element ? element.closest('.solution-row') : null;
                 
-                if (row) {
+                // Prevent dropping into disabled rows
+                if (row && !row.dataset.disabled) {
                     e.preventDefault();
                     
                     const rowIndex = parseInt(row.dataset.row);

@@ -38,7 +38,6 @@ export class UIController {
         this.cardsContainer = document.getElementById('cards-container');
         this.diceContainer = document.getElementById('dice-container');
         this.solutionArea = document.getElementById('solution-area');
-        this.addRowBtn = document.getElementById('add-row-btn');
         
         // Status bar
         this.currentScoreEl = document.getElementById('current-score');
@@ -76,7 +75,6 @@ export class UIController {
         this.resetBtn.addEventListener('click', () => this.handleReset());
         this.passBtn.addEventListener('click', () => this.handlePass());
         this.menuBtn.addEventListener('click', () => this.modals.showMenu());
-        this.addRowBtn.addEventListener('click', () => this.handleAddRow());
         
         // Tutorial
         document.getElementById('tutorial-next').addEventListener('click', () => this.modals.hideTutorial());
@@ -178,13 +176,6 @@ export class UIController {
         this.game.pass();
         this.render();
         this.clearSolutionHelper();
-    }
-    
-    handleAddRow() {
-        if (this.game.addSolutionRow()) {
-            this.render();
-            this.evaluateSolutionHelper();
-        }
     }
     
     playSuccessAnimation(matchingCards) {
@@ -308,14 +299,7 @@ export class UIController {
         this.renderer.renderDice(this.diceContainer, state.dice, state.solutions);
         
         // Render solutions
-        this.renderer.renderSolutions(this.solutionArea, state.solutions);
-        
-        // Show/hide add row button
-        if (state.canAddRow) {
-            this.addRowBtn.classList.remove('hidden');
-        } else {
-            this.addRowBtn.classList.add('hidden');
-        }
+        this.renderer.renderSolutions(this.solutionArea, state.solutions, state.restrictionsEnabled);
     }
     
     showTutorialIfNeeded() {

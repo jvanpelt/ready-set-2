@@ -11,10 +11,9 @@ export class Game {
         this.score = 0;
         this.cards = [];
         this.dice = [];
-        this.solutions = [[]]; // Array of solution rows
+        this.solutions = [[], []]; // Always 2 rows: [restriction row, set name row]
         this.goalCards = 3;
         this.tutorialShown = false;
-        this.maxRows = 2; // Maximum solution rows allowed
         
         this.init();
     }
@@ -53,7 +52,7 @@ export class Game {
         }));
         
         this.goalCards = generateGoal(); // New random goal each round
-        this.solutions = [[]]; // Reset to single empty row
+        this.solutions = [[], []]; // Always 2 rows: [restriction row, set name row]
         
         // Reset card states - ensure all cards start fully visible
         this.cardStates = this.cards.map(() => ({
@@ -140,21 +139,8 @@ export class Game {
     }
     
     clearSolution() {
-        this.solutions = [[]]; // Reset to single empty row
+        this.solutions = [[], []]; // Clear both rows
         this.saveState();
-    }
-    
-    addSolutionRow() {
-        if (this.solutions.length < this.maxRows) {
-            this.solutions.push([]);
-            this.saveState();
-            return true;
-        }
-        return false;
-    }
-    
-    canAddRow() {
-        return this.solutions.length < this.maxRows;
     }
     
     toggleCardState(cardIndex) {
@@ -301,7 +287,7 @@ export class Game {
             goalCards: this.goalCards,
             canAdvance: this.canAdvanceLevel(),
             hasNextLevel: hasNextLevel(this.level),
-            canAddRow: this.canAddRow()
+            restrictionsEnabled: this.level >= 6 // Whether top row (restrictions) is enabled
         };
     }
 }

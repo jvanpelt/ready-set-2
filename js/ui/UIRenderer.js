@@ -100,14 +100,28 @@ export class UIRenderer {
     
     /**
      * Render solution rows with dice
+     * Row 0 (top): Restrictions (disabled until Level 6)
+     * Row 1 (bottom): Set name (always enabled)
      */
-    renderSolutions(solutionArea, solutions) {
+    renderSolutions(solutionArea, solutions, restrictionsEnabled) {
         solutionArea.innerHTML = '';
         
         solutions.forEach((solution, rowIndex) => {
             const row = document.createElement('div');
             row.className = 'solution-row';
             row.dataset.row = rowIndex;
+            
+            // Row 0 is for restrictions (disabled until Level 6)
+            if (rowIndex === 0 && !restrictionsEnabled) {
+                row.classList.add('disabled');
+                row.dataset.disabled = 'true';
+                
+                // Add placeholder label
+                const label = document.createElement('div');
+                label.className = 'solution-row-label';
+                label.textContent = 'Restrictions (Level 6+)';
+                row.appendChild(label);
+            }
             
             // Render dice in this row
             solution.forEach((die, dieIndex) => {
