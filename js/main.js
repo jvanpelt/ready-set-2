@@ -5,22 +5,39 @@ import { UIController } from './ui/UIController.js';
 
 // Initialize the game when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    // Create game instance
-    const game = new Game();
+    console.log('🚀 DOM loaded - initializing game');
     
-    // Create UI Controller instance (coordinates all UI modules)
-    const ui = new UIController(game, () => {
-        // Callback for updates if needed
-    });
-    
-    // Initial render
-    ui.render();
-    
-    // Show tutorial for first time players
-    ui.showTutorialIfNeeded();
-    
-    // Make game accessible for debugging
-    window.game = game;
-    window.ui = ui;
+    try {
+        // Create game instance
+        console.log('📦 Creating Game instance...');
+        const game = new Game();
+        console.log('✅ Game instance created');
+        
+        // Create UI Controller instance (coordinates all UI modules)
+        console.log('🎨 Creating UIController instance...');
+        const ui = new UIController(game, () => {
+            // Callback for updates if needed
+        });
+        console.log('✅ UIController instance created');
+        
+        // Initial render
+        console.log('🖼️ Rendering initial UI...');
+        ui.render();
+        console.log('✅ Initial render complete');
+        
+        // Show tutorial for first time players
+        console.log('📚 Checking for tutorial...');
+        ui.showTutorialIfNeeded();
+        console.log('✅ Tutorial check complete');
+        
+        // Make game accessible for debugging
+        window.game = game;
+        window.ui = ui;
+        
+        console.log('✅ Game initialization complete!');
+    } catch (error) {
+        console.error('❌ FATAL ERROR during initialization:', error);
+        console.error('Stack trace:', error.stack);
+    }
 });
 

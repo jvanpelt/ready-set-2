@@ -27,10 +27,18 @@ export class Game {
     }
     
     init() {
+        console.log('🎮 Game.init() called');
+        
         // Try to load saved game first
         const savedState = this.storage.loadGameState();
+        console.log('💾 Saved state loaded:', savedState ? 'YES' : 'NO');
         
         if (savedState && savedState.cards.length > 0) {
+            console.log('✅ Restoring from saved state');
+            console.log('  - Level:', savedState.level);
+            console.log('  - Cards:', savedState.cards.length);
+            console.log('  - Dice:', savedState.dice.length);
+            
             // Restore from saved state
             this.level = savedState.level;
             this.score = savedState.score;
@@ -42,34 +50,52 @@ export class Game {
             
             // Migrate old saved state to new 2-row format
             if (savedState.solutions.length === 1) {
-                // Old format: single row - move to bottom row
+                console.log('  - Migrating old 1-row format to 2-row format');
                 this.solutions = [[], savedState.solutions[0]];
             } else {
                 this.solutions = savedState.solutions;
             }
             
+            console.log('  - Solutions:', this.solutions.length, 'rows');
+            
             // Restore timer if it was running
             if (savedState.timerStartTime && savedState.timerDuration) {
+                console.log('⏱️ Restoring timer...');
                 const elapsed = Math.floor((Date.now() - savedState.timerStartTime) / 1000);
                 const remaining = savedState.timerDuration - elapsed;
+                console.log('  - Elapsed:', elapsed, 'seconds');
+                console.log('  - Remaining:', remaining, 'seconds');
                 
                 if (remaining > 0) {
+                    console.log('  - Timer still active - restoring');
                     // Timer still has time left - restore it
                     this.startTimer(remaining);
                     this.timerStartTime = savedState.timerStartTime;
                     this.timerDuration = savedState.timerDuration;
                 } else {
+                    console.log('  - Timer expired - generating new round');
                     // Timer expired while away - start new round
                     this.generateNewRound();
                 }
+            } else {
+                console.log('  - No timer to restore');
             }
         } else {
+            console.log('🆕 Starting fresh - generating new round');
             // Start fresh
             this.generateNewRound();
         }
         
+        console.log('📊 Getting level config for level', this.level);
         const config = getLevelConfig(this.level);
-        this.goalScore = config.goalScore;
+        if (config) {
+            this.goalScore = config.goalScore;
+            console.log('✅ Level config loaded - goal score:', this.goalScore);
+        } else {
+            console.error('❌ Failed to load level config for level', this.level);
+        }
+        
+        console.log('✅ Game.init() complete');
     }
     
     generateNewRound() {
