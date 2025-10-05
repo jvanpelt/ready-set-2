@@ -324,9 +324,33 @@ export class Game {
             };
         }
         
+        // Check if required cube is used (Level 8+)
+        const requiredDie = this.dice.find(die => die.isRequired);
+        if (requiredDie) {
+            const allDice = [...restrictionRow, ...setNameRow];
+            const usedRequiredCube = allDice.some(die => die.id === requiredDie.id);
+            
+            if (!usedRequiredCube) {
+                return {
+                    valid: false,
+                    message: 'You must use the required cube (green border)!',
+                    matchingCards: finalMatchingCards,
+                    cardsToFlip
+                };
+            }
+        }
+        
         // Calculate score (all dice from both rows)
         const allDice = [...restrictionRow, ...setNameRow];
-        const points = calculateScore(allDice);
+        let points = calculateScore(allDice);
+        
+        // Add bonus for using required cube (Level 8+)
+        if (requiredDie) {
+            const usedRequiredCube = allDice.some(die => die.id === requiredDie.id);
+            if (usedRequiredCube) {
+                points += 50; // Bonus points for required cube
+            }
+        }
         
         return {
             valid: true,

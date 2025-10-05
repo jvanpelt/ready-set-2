@@ -144,14 +144,19 @@ Work quickly but stay focused!`
         goalScore: 5000,
         numDice: 8,
         timeLimit: 180, // 3 minutes
+        requiredCubeChance: 0.5, // 50% chance of required cube
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE', 'COMPLEMENT', 'UNIVERSE', 'NULL', 'EQUALS', 'SUBSET'],
         tutorial: {
-            title: 'Level 8: Challenge',
-            text: `Expert level challenges!
-            
-• Watch for special dice
-• Think creatively about solutions
-• You've got this!`
+            title: 'Level 8: Required Cubes!',
+            text: `New challenge: REQUIRED CUBES!
+
+🟩 REQUIRED CUBE (Green Border)
+• When present, you MUST use it in your solution
+• Worth 50 points!
+• Only appears sometimes (50% chance)
+• Your solution won't be valid without it
+
+Keep an eye out for that green border!`
         }
     },
     {
@@ -289,6 +294,15 @@ export function generateDiceForLevel(level) {
                 name: selectedSet 
             });
         }
+    }
+    
+    // Level 8+: Randomly designate one cube as required
+    // Level 8: 50% chance
+    // Level 9: 33% chance (will also have wild cubes)
+    // Level 10: 25% chance (will also have wild and bonus cubes)
+    if (config.requiredCubeChance && Math.random() < config.requiredCubeChance) {
+        const randomIndex = Math.floor(Math.random() * dice.length);
+        dice[randomIndex].isRequired = true;
     }
     
     return dice;

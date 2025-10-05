@@ -10,11 +10,19 @@ import { isValidSyntax, evaluateExpression } from './setTheory.js';
  * @returns {boolean} - True if a solution exists
  */
 export function hasPossibleSolution(cards, dice, goal) {
+    // Check if there's a required cube (Level 8+)
+    const requiredDie = dice.find(die => die.isRequired);
+    
     // Try all possible dice combinations from size 2 to dice.length
     for (let size = 2; size <= dice.length; size++) {
         const combinations = getCombinations(dice, size);
         
         for (let combo of combinations) {
+            // Skip combinations that don't include the required die
+            if (requiredDie && !combo.some(die => die.id === requiredDie.id)) {
+                continue;
+            }
+            
             // Try all permutations of this combination
             const perms = getPermutations(combo);
             

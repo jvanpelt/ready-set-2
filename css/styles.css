@@ -350,6 +350,19 @@ body {
     background: white;
 }
 
+/* Required cubes (Level 8+): green border, must be used */
+.die.required,
+.solution-die.required {
+    border-color: #2b8103;
+    border-width: 4px;
+    box-shadow: 0 0 12px rgba(43, 129, 3, 0.4), 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.die.required:hover,
+.solution-die.required:hover {
+    box-shadow: 0 0 16px rgba(43, 129, 3, 0.6), 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
 /* Make SVGs larger in solution */
 .solution-die svg {
     width: 60px;

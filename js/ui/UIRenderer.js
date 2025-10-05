@@ -88,6 +88,11 @@ export class UIRenderer {
                 dieEl.draggable = false;
             }
             
+            // Add required class if this die is required (Level 8+)
+            if (die.isRequired) {
+                dieEl.classList.add('required');
+            }
+            
             // Add content based on type
             if (die.type === 'color') {
                 dieEl.classList.add('color-circle');
@@ -154,6 +159,11 @@ export class UIRenderer {
                 // Apply rotation
                 const rotation = die.rotation || 0;
                 dieEl.style.transform = `rotate(${rotation}deg)`;
+                
+                // Add required class if this die is required (Level 8+)
+                if (die.isRequired) {
+                    dieEl.classList.add('required');
+                }
                 
                 // Add content
                 if (die.type === 'color') {
