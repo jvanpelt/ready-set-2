@@ -439,6 +439,7 @@ body {
 }
 
 .level-badge {
+    display: none; /* Hidden for now - may show in menu modal later */
     background: rgba(0, 0, 0, 0.3);
     border-radius: 6px;
     padding: 4px 8px;
