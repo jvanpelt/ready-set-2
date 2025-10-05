@@ -63,11 +63,11 @@ export function getSVGForOperator(value) {
  * @returns {string} - CSS class name
  */
 export function getOperatorClass(value) {
-    // Set names (Universe and Null)
+    // Set constants (Universe and Null) - predefined sets like colors
     if (value === 'U' || value === '∅') {
-        return 'operator-setname';
+        return 'set-constant';
     }
-    // Restrictions (Equals and Subset)
+    // Restrictions (Equals and Subset) - constraints/comparisons
     if (value === '=' || value === '⊆') {
         return 'operator-restriction';
     }

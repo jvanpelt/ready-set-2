@@ -1,12 +1,16 @@
 // Level configuration and card generation
 
+// All non-color dice (operators, set constants, and restrictions)
 export const OPERATORS = {
+    // Regular operators (set operations)
     UNION: { symbol: '∪', name: 'Union', points: 10 },
     INTERSECTION: { symbol: '∩', name: 'Intersection', points: 10 },
     DIFFERENCE: { symbol: '−', name: 'Difference', points: 10 },
     COMPLEMENT: { symbol: '′', name: 'Complement', points: 15 },
+    // Set constants (predefined sets, like colors)
     UNIVERSE: { symbol: 'U', name: 'Universe', points: 15 },
     NULL: { symbol: '∅', name: 'Null Set', points: 15 },
+    // Restrictions (constraints/comparisons)
     EQUALS: { symbol: '=', name: 'Equals', points: 20 },
     SUBSET: { symbol: '⊆', name: 'Subset', points: 20 },
 };
