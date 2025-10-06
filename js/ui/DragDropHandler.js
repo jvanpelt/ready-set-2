@@ -46,7 +46,8 @@ export class DragDropHandler {
                     type: die.dataset.type,
                     value: die.dataset.value,
                     name: die.dataset.name,
-                    id: die.dataset.id
+                    id: die.dataset.id,
+                    isRequired: die.dataset.isRequired === 'true' // Preserve required status
                 };
                 this.draggedFromSolution = false;
                 this.draggedRowIndex = null;

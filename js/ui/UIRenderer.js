@@ -81,6 +81,7 @@ export class UIRenderer {
             dieEl.dataset.value = die.value;
             dieEl.dataset.id = die.id;
             if (die.name) dieEl.dataset.name = die.name;
+            if (die.isRequired) dieEl.dataset.isRequired = 'true'; // Store in dataset for drag-and-drop
             
             // Check if this specific die instance is used
             if (usedDiceIds.includes(die.id)) {
