@@ -95,7 +95,11 @@ export class UIRenderer {
             }
             
             // Add content based on type
-            if (die.type === 'color') {
+            if (die.type === 'wild') {
+                // Wild cube (Level 9+)
+                dieEl.classList.add('wild');
+                dieEl.textContent = '?';
+            } else if (die.type === 'color') {
                 dieEl.classList.add('color-circle');
                 const circle = document.createElement('div');
                 circle.className = `circle ${die.value}`;
@@ -167,7 +171,18 @@ export class UIRenderer {
                 }
                 
                 // Add content
-                if (die.type === 'color') {
+                if (die.type === 'wild') {
+                    // Wild cube (Level 9+)
+                    dieEl.classList.add('wild');
+                    // Display selected operator or '?' if none selected
+                    const displayValue = die.selectedOperator || '?';
+                    const svg = getSVGForOperator(displayValue);
+                    if (svg) {
+                        dieEl.innerHTML = svg;
+                    } else {
+                        dieEl.textContent = displayValue;
+                    }
+                } else if (die.type === 'color') {
                     dieEl.classList.add('color-circle');
                     const circle = document.createElement('div');
                     circle.className = `circle ${die.value}`;

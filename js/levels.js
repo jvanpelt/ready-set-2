@@ -164,14 +164,20 @@ Keep an eye out for that green border!`
         goalScore: 7500,
         numDice: 8,
         timeLimit: 150, // 2.5 minutes - harder!
+        requiredCubeChance: 0.33, // 33% chance of required cube
+        wildCubeChance: 0.33, // 33% chance of wild cube (cannot have both)
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE', 'COMPLEMENT', 'UNIVERSE', 'NULL', 'EQUALS', 'SUBSET'],
         tutorial: {
-            title: 'Level 9: Master Class',
-            text: `Nearly at the top!
-            
-• Most challenging puzzles yet
-• Special dice may appear
-• Push for those high scores!`
+            title: 'Level 9: Wild Cubes!',
+            text: `For once, we're making things easier!
+
+🎴 WILD CUBE (Red Border with ?)
+• Can be ANY operator (∪, ∩, −, ′)
+• Click it in your solution to choose which operator
+• Worth 25 points!
+• 33% chance to appear
+
+Try different operators until one works - or strategize!`
         }
     },
     {
@@ -296,13 +302,27 @@ export function generateDiceForLevel(level) {
         }
     }
     
-    // Level 8+: Randomly designate one cube as required
-    // Level 8: 50% chance
-    // Level 9: 33% chance (will also have wild cubes)
-    // Level 10: 25% chance (will also have wild and bonus cubes)
-    if (config.requiredCubeChance && Math.random() < config.requiredCubeChance) {
+    // Level 8+: Randomly designate special cubes (required, wild, or bonus)
+    // Only ONE special cube type per round (never multiple types together)
+    const rnd = Math.random();
+    
+    if (config.requiredCubeChance && rnd < config.requiredCubeChance) {
+        // Required cube: any dice can be required
         const randomIndex = Math.floor(Math.random() * dice.length);
         dice[randomIndex].isRequired = true;
+    } else if (config.wildCubeChance && rnd < (config.requiredCubeChance || 0) + config.wildCubeChance) {
+        // Wild cube: replace one of the operator dice (indices 4 or 5)
+        const operatorIndex = 4 + Math.floor(Math.random() * 2); // Either 4 or 5
+        dice[operatorIndex] = {
+            type: 'wild',
+            value: '?',
+            name: 'WILD',
+            selectedOperator: null // Will be set by user in UI
+        };
+    } else if (config.bonusCubeChance && rnd < (config.requiredCubeChance || 0) + (config.wildCubeChance || 0) + config.bonusCubeChance) {
+        // Bonus cube: any dice can be bonus (Level 10)
+        const randomIndex = Math.floor(Math.random() * dice.length);
+        dice[randomIndex].isBonus = true;
     }
     
     return dice;

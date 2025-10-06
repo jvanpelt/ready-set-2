@@ -3,6 +3,7 @@
 import { UIRenderer } from './UIRenderer.js';
 import { DragDropHandler } from './DragDropHandler.js';
 import { ModalManager } from './ModalManager.js';
+import { WildCubeManager } from './WildCubeManager.js';
 import { evaluateExpression, hasRestriction, evaluateRestriction } from '../setTheory.js';
 import { hasPossibleSolution } from '../solutionFinder.js';
 import { getLevelConfig } from '../levels.js';
@@ -15,6 +16,7 @@ export class UIController {
         // Initialize sub-components
         this.renderer = new UIRenderer(game);
         this.modals = new ModalManager(game);
+        this.wildCubeManager = new WildCubeManager(game, () => this.render());
         
         // Load settings
         this.settings = this.game.storage.loadSettings();
@@ -514,6 +516,27 @@ export class UIController {
         
         // Render solutions
         this.renderer.renderSolutions(this.solutionArea, state.solutions, state.restrictionsEnabled);
+        
+        // Set up wild cube click listeners
+        this.setupWildCubeListeners();
+    }
+    
+    /**
+     * Set up click listeners for wild cubes in the solution area
+     */
+    setupWildCubeListeners() {
+        // Find all wild cubes in solution area
+        const wildCubes = this.solutionArea.querySelectorAll('.solution-die.wild');
+        
+        wildCubes.forEach(dieEl => {
+            dieEl.addEventListener('click', () => {
+                const rowIndex = parseInt(dieEl.closest('.solution-row').dataset.row);
+                const dieIndex = parseInt(dieEl.dataset.index);
+                
+                // Show the popover
+                this.wildCubeManager.show(dieEl, rowIndex, dieIndex);
+            });
+        });
     }
     
     showTutorialIfNeeded() {
