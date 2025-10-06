@@ -290,15 +290,23 @@ export class PuzzleBuilderManager {
         });
         
         // Add operator dice
-        this.selectedOperators.forEach((operatorName, index) => {
-            console.log('   Looking for operator:', operatorName);
-            const operator = Object.values(OPERATORS).find(op => op.name === operatorName);
+        this.selectedOperators.forEach((operatorKey, index) => {
+            console.log('   Looking for operator:', operatorKey);
+            const operator = OPERATORS[operatorKey]; // Use key directly instead of searching
             console.log('   Found:', operator);
             if (operator) {
+                // Determine type based on which category it belongs to
+                let type = 'operator';
+                if (operatorKey === 'UNIVERSE' || operatorKey === 'NULL') {
+                    type = 'set-constant';
+                } else if (operatorKey === 'EQUALS' || operatorKey === 'SUBSET') {
+                    type = 'restriction';
+                }
+                
                 dice.push({
-                    type: operator.type || 'operator',
+                    type: type,
                     value: operator.symbol,
-                    name: operator.name,
+                    name: operatorKey, // Use the key as the name for consistency
                     id: `builder-op-${index}`
                 });
             }
