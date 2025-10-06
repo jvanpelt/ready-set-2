@@ -178,6 +178,699 @@ export const TUTORIAL_SCENARIOS = {
                 }
             ]
         }
+    },
+    
+    3: {
+        // Level 3: Complement (Prime) operator
+        // Example: gold' (all cards that are NOT gold)
+        // Cards: 5 without gold, 3 with gold
+        cards: [2, 4, 6, 8, 10, 12, 13, 15],
+        dice: [
+            { type: 'color', value: 'gold', name: 'GOLD', id: 'tutorial-3-gold' },
+            { type: 'operator', value: '′', name: 'COMPLEMENT', id: 'tutorial-3-prime' },
+            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-3-red' },
+            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-3-intersect' },
+            { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-3-union' },
+            { type: 'operator', value: '−', name: 'DIFFERENCE', id: 'tutorial-3-diff' }
+        ],
+        goal: 5,
+        
+        walkthrough: {
+            enabled: true,
+            steps: [
+                {
+                    id: 'intro',
+                    message: 'Welcome to Level 3! Meet the <strong>Complement</strong> operator. Think "Opposite Day."',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 3000
+                },
+                {
+                    id: 'explain-complement',
+                    message: '<strong>Complement</strong> (the prime symbol) means "NOT this". It\'s the opposite or inverse.',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'identify-goal',
+                    message: 'Our goal is <strong>5 cards</strong>. Let\'s build "Gold Complement" (all cards that are NOT gold).',
+                    highlight: { goal: true },
+                    nextTrigger: 'auto',
+                    duration: 3000
+                },
+                {
+                    id: 'drag-gold',
+                    message: 'First, drag the <strong>GOLD</strong> cube to the solution area.',
+                    highlight: { dice: [0] },
+                    validation: (game) => {
+                        return game.solutions[1].some(die => die.value === 'gold');
+                    },
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-prime',
+                    message: 'Great! Now drag the <strong>COMPLEMENT</strong> cube. (It has the prime symbol ′)',
+                    highlight: { dice: [1] },
+                    validation: (game) => {
+                        return game.solutions[1].some(die => die.value === '′');
+                    },
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'explain-result',
+                    message: 'Your solution "Gold Complement" means: "All cards that are NOT gold". Count them - 5 cards! ✓',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'explain-power',
+                    message: 'Complement is powerful! It gets tricky when combined with other operators. Experiment!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'submit',
+                    message: 'Perfect! Now click <strong>GO!</strong> to submit your solution!',
+                    highlight: { goButton: true },
+                    validation: (game) => false,
+                    nextTrigger: 'submit'
+                }
+            ]
+        }
+    },
+    
+    4: {
+        // Level 4: Recap/mastery (no new mechanics, just practice)
+        // Example: red ∪ blue
+        cards: [1, 2, 3, 4, 5, 8, 9, 10],
+        dice: [
+            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-4-red' },
+            { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-4-union' },
+            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-4-blue' },
+            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-4-intersect' },
+            { type: 'operator', value: '−', name: 'DIFFERENCE', id: 'tutorial-4-diff' },
+            { type: 'operator', value: '′', name: 'COMPLEMENT', id: 'tutorial-4-prime' }
+        ],
+        goal: 5,
+        
+        walkthrough: {
+            enabled: true,
+            steps: [
+                {
+                    id: 'intro',
+                    message: 'Welcome to Level 4! No new operators, but things get more interesting...',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 3000
+                },
+                {
+                    id: 'recap',
+                    message: 'You now have <strong>all four operators</strong>: Union, Intersection, Difference, and Complement.',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'challenge',
+                    message: 'From now on, you might get <strong>duplicate operators</strong> in your dice. Use them wisely!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'identify-goal',
+                    message: 'Let\'s practice. Our goal is <strong>5 cards</strong>. Try "Red Union Blue".',
+                    highlight: { goal: true },
+                    nextTrigger: 'auto',
+                    duration: 3000
+                },
+                {
+                    id: 'drag-red',
+                    message: 'Drag the <strong>RED</strong> cube.',
+                    highlight: { dice: [0] },
+                    validation: (game) => {
+                        return game.solutions[1].some(die => die.value === 'red');
+                    },
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-union',
+                    message: 'Drag the <strong>UNION</strong> cube.',
+                    highlight: { dice: [1] },
+                    validation: (game) => {
+                        return game.solutions[1].some(die => die.value === '∪');
+                    },
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-blue',
+                    message: 'Drag the <strong>BLUE</strong> cube.',
+                    highlight: { dice: [2] },
+                    validation: (game) => {
+                        return game.solutions[1].some(die => die.value === 'blue');
+                    },
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'submit',
+                    message: 'You\'re ready for the real challenge! Click <strong>GO!</strong>',
+                    highlight: { goButton: true },
+                    validation: (game) => false,
+                    nextTrigger: 'submit'
+                }
+            ]
+        }
+    },
+    
+    5: {
+        // Level 5: Universe and Null set (8 dice, padding concept)
+        // Example: U ∩ red (same as red, but with padding)
+        cards: [1, 2, 3, 4, 5, 8, 9, 10],
+        dice: [
+            { type: 'set-constant', value: 'U', name: 'UNIVERSE', id: 'tutorial-5-universe' },
+            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-5-intersect' },
+            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-5-red' },
+            { type: 'set-constant', value: '∅', name: 'NULL', id: 'tutorial-5-null' },
+            { type: 'operator', value: '−', name: 'DIFFERENCE', id: 'tutorial-5-diff' },
+            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-5-blue' },
+            { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-5-union' },
+            { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-5-green' }
+        ],
+        goal: 4,
+        
+        walkthrough: {
+            enabled: true,
+            steps: [
+                {
+                    id: 'intro',
+                    message: 'Welcome to Level 5! Two new cubes: <strong>Universe</strong> and <strong>Null</strong>.',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 3000
+                },
+                {
+                    id: 'explain-universe',
+                    message: '<strong>Universe (U)</strong> refers to ALL cards. It\'s like a wildcard for the entire board.',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'explain-null',
+                    message: '<strong>Null (∅)</strong> is an empty set with NO cards. Useful for padding!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'explain-padding',
+                    message: '<strong>Padding</strong> means using extra cubes that don\'t change the result. More cubes = MORE POINTS!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'identify-goal',
+                    message: 'Our goal is <strong>4 cards</strong>. Let\'s build "Universe Intersection Red" (same as just "Red", but padded!).',
+                    highlight: { goal: true },
+                    nextTrigger: 'auto',
+                    duration: 3000
+                },
+                {
+                    id: 'drag-universe',
+                    message: 'Drag the <strong>UNIVERSE</strong> cube (U).',
+                    highlight: { dice: [0] },
+                    validation: (game) => {
+                        return game.solutions[1].some(die => die.value === 'U');
+                    },
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-intersect',
+                    message: 'Drag the <strong>INTERSECTION</strong> cube.',
+                    highlight: { dice: [1] },
+                    validation: (game) => {
+                        return game.solutions[1].some(die => die.value === '∩');
+                    },
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-red',
+                    message: 'Drag the <strong>RED</strong> cube.',
+                    highlight: { dice: [2] },
+                    validation: (game) => {
+                        return game.solutions[1].some(die => die.value === 'red');
+                    },
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'explain-result',
+                    message: 'This means "ALL cards intersect red" = just red cards! But you used 3 cubes = MORE POINTS! ✓',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'submit',
+                    message: 'Try padding your solutions to boost scores! Click <strong>GO!</strong>',
+                    highlight: { goButton: true },
+                    validation: (game) => false,
+                    nextTrigger: 'submit'
+                }
+            ]
+        }
+    },
+    
+    6: {
+        // Level 6: Restrictions (simpler tutorial - just explain, don't force use)
+        cards: [1, 2, 3, 4, 5, 8, 9, 10],
+        dice: [
+            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-6-red' },
+            { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-6-union' },
+            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-6-blue' },
+            { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-6-green' },
+            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-6-intersect' },
+            { type: 'color', value: 'gold', name: 'GOLD', id: 'tutorial-6-gold' }
+        ],
+        goal: 5,
+        
+        walkthrough: {
+            enabled: true,
+            steps: [
+                {
+                    id: 'intro',
+                    message: 'Welcome to Level 6! <strong>Restrictions</strong> change everything. This is a game-changer!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 3000
+                },
+                {
+                    id: 'explain-restrictions',
+                    message: '<strong>Restrictions</strong> (Subset ⊆ and Equals =) modify the universe BEFORE you name a set.',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'explain-subset',
+                    message: '<strong>Subset</strong>: "A ⊆ B" means cards in A must contain B. Violating cards flip out!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'explain-equals',
+                    message: '<strong>Equals</strong>: "A = B" means A and B must be the same. Non-matching cards flip out!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'explain-rows',
+                    message: 'Use the TOP row for restrictions, BOTTOM row for your set name. Try it in regular play!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'practice',
+                    message: 'For now, let\'s practice a simple solution. Our goal is <strong>5 cards</strong>: "Red Union Blue".',
+                    highlight: { goal: true },
+                    nextTrigger: 'auto',
+                    duration: 3000
+                },
+                {
+                    id: 'drag-red',
+                    message: 'Drag <strong>RED</strong> to the solution.',
+                    highlight: { dice: [0] },
+                    validation: (game) => game.solutions[1].some(die => die.value === 'red'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-union',
+                    message: 'Drag <strong>UNION</strong>.',
+                    highlight: { dice: [1] },
+                    validation: (game) => game.solutions[1].some(die => die.value === '∪'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-blue',
+                    message: 'Drag <strong>BLUE</strong>.',
+                    highlight: { dice: [2] },
+                    validation: (game) => game.solutions[1].some(die => die.value === 'blue'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'submit',
+                    message: 'Restrictions are powerful! Experiment in real play. Click <strong>GO!</strong>',
+                    highlight: { goButton: true },
+                    validation: (game) => false,
+                    nextTrigger: 'submit'
+                }
+            ]
+        }
+    },
+    
+    7: {
+        // Level 7: Timer (simple explanation tutorial)
+        cards: [1, 2, 3, 4, 5, 8, 9, 10],
+        dice: [
+            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-7-red' },
+            { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-7-union' },
+            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-7-blue' },
+            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-7-intersect' },
+            { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-7-green' },
+            { type: 'operator', value: '−', name: 'DIFFERENCE', id: 'tutorial-7-diff' }
+        ],
+        goal: 5,
+        
+        walkthrough: {
+            enabled: true,
+            steps: [
+                {
+                    id: 'intro',
+                    message: 'Welcome to Level 7! Time to add some pressure... literally.',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 3000
+                },
+                {
+                    id: 'explain-timer',
+                    message: 'From now on, you have a <strong>time limit</strong>! Watch the timer at the top of the screen.',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'explain-timeout',
+                    message: 'If time runs out, the round ends. No points, but you can try again with a new puzzle!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'explain-strategy',
+                    message: 'Work quickly, but don\'t panic! Sometimes a simple solution is better than a complex one.',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'practice',
+                    message: 'Let\'s practice quickly. Goal: <strong>5 cards</strong>. Build "Red Union Blue".',
+                    highlight: { goal: true },
+                    nextTrigger: 'auto',
+                    duration: 3000
+                },
+                {
+                    id: 'drag-red',
+                    message: 'Drag <strong>RED</strong>.',
+                    highlight: { dice: [0] },
+                    validation: (game) => game.solutions[1].some(die => die.value === 'red'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-union',
+                    message: 'Drag <strong>UNION</strong>.',
+                    highlight: { dice: [1] },
+                    validation: (game) => game.solutions[1].some(die => die.value === '∪'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-blue',
+                    message: 'Drag <strong>BLUE</strong>.',
+                    highlight: { dice: [2] },
+                    validation: (game) => game.solutions[1].some(die => die.value === 'blue'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'submit',
+                    message: 'Beat the clock! Click <strong>GO!</strong>',
+                    highlight: { goButton: true },
+                    validation: (game) => false,
+                    nextTrigger: 'submit'
+                }
+            ]
+        }
+    },
+    
+    8: {
+        // Level 8: Required cubes
+        cards: [1, 2, 3, 4, 5, 8, 9, 10],
+        dice: [
+            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-8-red' },
+            { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-8-union' },
+            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-8-blue' },
+            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-8-intersect' },
+            { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-8-green' },
+            { type: 'operator', value: '−', name: 'DIFFERENCE', id: 'tutorial-8-diff' }
+        ],
+        goal: 5,
+        
+        walkthrough: {
+            enabled: true,
+            steps: [
+                {
+                    id: 'intro',
+                    message: 'Welcome to Level 8! Time for <strong>bonus points</strong> with Required Cubes!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 3000
+                },
+                {
+                    id: 'explain-required',
+                    message: '<strong>Required cubes</strong> have a green border and glow. You MUST use them in your solution!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'explain-value',
+                    message: 'Required cubes are worth <strong>50 bonus points</strong>! But they can make puzzles harder.',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'explain-impossible',
+                    message: 'Sometimes a required cube makes the puzzle impossible. That\'s when you use Pass!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'practice',
+                    message: 'Let\'s practice. Goal: <strong>5 cards</strong>. Build "Red Union Blue".',
+                    highlight: { goal: true },
+                    nextTrigger: 'auto',
+                    duration: 3000
+                },
+                {
+                    id: 'drag-red',
+                    message: 'Drag <strong>RED</strong>.',
+                    highlight: { dice: [0] },
+                    validation: (game) => game.solutions[1].some(die => die.value === 'red'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-union',
+                    message: 'Drag <strong>UNION</strong>.',
+                    highlight: { dice: [1] },
+                    validation: (game) => game.solutions[1].some(die => die.value === '∪'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-blue',
+                    message: 'Drag <strong>BLUE</strong>.',
+                    highlight: { dice: [2] },
+                    validation: (game) => game.solutions[1].some(die => die.value === 'blue'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'submit',
+                    message: 'Watch for that green glow! Click <strong>GO!</strong>',
+                    highlight: { goButton: true },
+                    validation: (game) => false,
+                    nextTrigger: 'submit'
+                }
+            ]
+        }
+    },
+    
+    9: {
+        // Level 9: Wild cubes
+        cards: [1, 2, 3, 4, 5, 8, 9, 10],
+        dice: [
+            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-9-red' },
+            { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-9-union' },
+            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-9-blue' },
+            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-9-intersect' },
+            { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-9-green' },
+            { type: 'operator', value: '−', name: 'DIFFERENCE', id: 'tutorial-9-diff' }
+        ],
+        goal: 5,
+        
+        walkthrough: {
+            enabled: true,
+            steps: [
+                {
+                    id: 'intro',
+                    message: 'Welcome to Level 9! Meet the <strong>Wild Cube</strong> - your flexible friend!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 3000
+                },
+                {
+                    id: 'explain-wild',
+                    message: '<strong>Wild cubes</strong> have a red border with a question mark. They can be ANY operator!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'explain-selection',
+                    message: 'When you drop a wild cube, choose which operator it becomes. Change it anytime!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'explain-value',
+                    message: 'Wild cubes are worth <strong>25 bonus points</strong>! Use them to find creative solutions.',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'practice',
+                    message: 'Let\'s practice. Goal: <strong>5 cards</strong>. Build "Red Union Blue".',
+                    highlight: { goal: true },
+                    nextTrigger: 'auto',
+                    duration: 3000
+                },
+                {
+                    id: 'drag-red',
+                    message: 'Drag <strong>RED</strong>.',
+                    highlight: { dice: [0] },
+                    validation: (game) => game.solutions[1].some(die => die.value === 'red'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-union',
+                    message: 'Drag <strong>UNION</strong>.',
+                    highlight: { dice: [1] },
+                    validation: (game) => game.solutions[1].some(die => die.value === '∪'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-blue',
+                    message: 'Drag <strong>BLUE</strong>.',
+                    highlight: { dice: [2] },
+                    validation: (game) => game.solutions[1].some(die => die.value === 'blue'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'submit',
+                    message: 'Wild cubes give you options! Click <strong>GO!</strong>',
+                    highlight: { goButton: true },
+                    validation: (game) => false,
+                    nextTrigger: 'submit'
+                }
+            ]
+        }
+    },
+    
+    10: {
+        // Level 10: Bonus cubes
+        cards: [1, 2, 3, 4, 5, 8, 9, 10],
+        dice: [
+            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-10-red' },
+            { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-10-union' },
+            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-10-blue' },
+            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-10-intersect' },
+            { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-10-green' },
+            { type: 'operator', value: '−', name: 'DIFFERENCE', id: 'tutorial-10-diff' }
+        ],
+        goal: 5,
+        
+        walkthrough: {
+            enabled: true,
+            steps: [
+                {
+                    id: 'intro',
+                    message: 'Welcome to Level 10! You made it to the final level! Here\'s your reward...',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 3000
+                },
+                {
+                    id: 'explain-bonus',
+                    message: '<strong>Bonus cubes</strong> look like regular cubes but with a special glow. Free points!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'explain-value',
+                    message: 'Bonus cubes are worth <strong>50 bonus points</strong> - same as required cubes, but no restrictions!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'explain-rarity',
+                    message: 'Bonus cubes are rare. When you get one, use it! Easy points.',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'congrats',
+                    message: 'You\'ve mastered all 10 levels! Now go for those high scores!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'practice',
+                    message: 'One last practice. Goal: <strong>5 cards</strong>. Build "Red Union Blue".',
+                    highlight: { goal: true },
+                    nextTrigger: 'auto',
+                    duration: 3000
+                },
+                {
+                    id: 'drag-red',
+                    message: 'Drag <strong>RED</strong>.',
+                    highlight: { dice: [0] },
+                    validation: (game) => game.solutions[1].some(die => die.value === 'red'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-union',
+                    message: 'Drag <strong>UNION</strong>.',
+                    highlight: { dice: [1] },
+                    validation: (game) => game.solutions[1].some(die => die.value === '∪'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-blue',
+                    message: 'Drag <strong>BLUE</strong>.',
+                    highlight: { dice: [2] },
+                    validation: (game) => game.solutions[1].some(die => die.value === 'blue'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'submit',
+                    message: 'You\'re a set theory master! Click <strong>GO!</strong>',
+                    highlight: { goButton: true },
+                    validation: (game) => false,
+                    nextTrigger: 'submit'
+                }
+            ]
+        }
     }
 };
 
