@@ -20,18 +20,18 @@ export class WildCubeManager {
     initializePopoverButtons() {
         // Create operator buttons
         const operators = [
-            { symbol: '∪', value: 'UNION' },
-            { symbol: '∩', value: 'INTERSECTION' },
-            { symbol: '−', value: 'DIFFERENCE' },
-            { symbol: '′', value: 'COMPLEMENT' }
+            { symbol: '∪', name: 'UNION' },
+            { symbol: '∩', name: 'INTERSECTION' },
+            { symbol: '−', name: 'DIFFERENCE' },
+            { symbol: '′', name: 'COMPLEMENT' }
         ];
         
         operators.forEach(op => {
             const btn = document.createElement('button');
             btn.className = 'wild-popover-btn';
-            btn.dataset.operator = op.value;
+            btn.dataset.operator = op.symbol; // Store symbol, not name
             btn.textContent = op.symbol;
-            btn.title = op.value;
+            btn.title = op.name;
             this.popover.appendChild(btn);
         });
     }

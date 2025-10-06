@@ -35,6 +35,10 @@ export class UIController {
             () => {
                 this.render();
                 this.evaluateSolutionHelper();
+            },
+            (rowIndex, dieIndex) => {
+                // Auto-show popover when wild cube is dropped
+                this.showWildCubePopoverByIndex(rowIndex, dieIndex);
             }
         );
         
@@ -553,6 +557,23 @@ export class UIController {
                 this.wildCubeManager.show(dieEl, rowIndex, dieIndex);
             });
         });
+    }
+    
+    /**
+     * Show wild cube popover by rowIndex and dieIndex (for auto-show on drop)
+     */
+    showWildCubePopoverByIndex(rowIndex, dieIndex) {
+        // Find the die element in the DOM
+        const row = this.solutionArea.querySelector(`.solution-row[data-row="${rowIndex}"]`);
+        if (row) {
+            const dieEl = row.querySelector(`.solution-die[data-index="${dieIndex}"]`);
+            if (dieEl) {
+                // Small delay to ensure DOM is fully rendered
+                setTimeout(() => {
+                    this.wildCubeManager.show(dieEl, rowIndex, dieIndex);
+                }, 50);
+            }
+        }
     }
     
     showTutorialIfNeeded() {

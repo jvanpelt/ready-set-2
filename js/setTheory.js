@@ -8,9 +8,8 @@ import { OPERATORS } from './levels.js';
  */
 function getEffectiveValue(die) {
     if (die.type === 'wild' && die.selectedOperator) {
-        // Map operator name to symbol
-        const operator = Object.values(OPERATORS).find(op => op.name === die.selectedOperator);
-        return operator ? operator.symbol : die.value;
+        // selectedOperator is already the symbol (e.g., '∪', '∩', '−', '′')
+        return die.selectedOperator;
     }
     return die.value;
 }

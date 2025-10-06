@@ -1,11 +1,12 @@
 // Drag and drop handling for dice (desktop and mobile)
 
 export class DragDropHandler {
-    constructor(game, diceContainer, solutionArea, onDrop) {
+    constructor(game, diceContainer, solutionArea, onDrop, onWildCubeDrop = null) {
         this.game = game;
         this.diceContainer = diceContainer;
         this.solutionArea = solutionArea;
         this.onDrop = onDrop; // Callback when dice are added/moved/removed
+        this.onWildCubeDrop = onWildCubeDrop; // Callback when wild cube is dropped (for auto-showing popover)
         
         // Drag state
         this.draggedDie = null;
@@ -260,6 +261,11 @@ export class DragDropHandler {
                 
                 this.game.updateDiePosition(rowIndex, newDieIndex, snappedPos.x, snappedPos.y);
                 
+                // Check if wild cube without selection - auto-show popover
+                if (newDie.type === 'wild' && !newDie.selectedOperator && this.onWildCubeDrop) {
+                    this.onWildCubeDrop(rowIndex, newDieIndex);
+                }
+                
                 this.draggedDie = null;
                 this.onDrop();
             }
@@ -292,6 +298,11 @@ export class DragDropHandler {
                     const snappedPos = this.smartSnapPosition(newDie, rowIndex, rowRect);
                     
                     this.game.updateDiePosition(rowIndex, newDieIndex, snappedPos.x, snappedPos.y);
+                    
+                    // Check if wild cube without selection - auto-show popover
+                    if (newDie.type === 'wild' && !newDie.selectedOperator && this.onWildCubeDrop) {
+                        this.onWildCubeDrop(rowIndex, newDieIndex);
+                    }
                     
                     this.draggedDie = null;
                     this.onDrop();
