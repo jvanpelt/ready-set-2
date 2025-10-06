@@ -1,5 +1,7 @@
 // Modal management - tutorials, menus, results, pass confirmations
 
+import { getTutorialScenario } from '../tutorialScenarios.js';
+
 export class ModalManager {
     constructor(game) {
         this.game = game;
@@ -34,6 +36,17 @@ export class ModalManager {
         // Timeout modal (Level 7+)
         this.timeoutModal = document.getElementById('timeout-modal');
         this.timeoutOkBtn = document.getElementById('timeout-ok');
+        
+        // Interstitial screen
+        this.interstitialScreen = document.getElementById('level-interstitial-screen');
+        this.interstitialLevel = document.getElementById('interstitial-level');
+        this.interstitialTitle = document.getElementById('interstitial-title');
+        this.interstitialSymbol = document.getElementById('interstitial-symbol');
+        this.interstitialFeatureName = document.getElementById('interstitial-feature-name');
+        this.interstitialFeatureDesc = document.getElementById('interstitial-feature-desc');
+        this.interstitialDescription = document.getElementById('interstitial-description');
+        this.tutorialAcceptBtn = document.getElementById('tutorial-accept-btn');
+        this.tutorialDeclineBtn = document.getElementById('tutorial-decline-btn');
         
         // Level selector (test mode)
         this.levelSelector = document.getElementById('level-selector');
@@ -82,14 +95,30 @@ export class ModalManager {
     /**
      * Hide result modal and advance game state
      */
-    hideResult(onHide) {
+    async hideResult(onHide) {
         this.resultModal.classList.add('hidden');
         
         // Check if can advance to next level
         if (this.game.canAdvanceLevel() && this.game.getState().hasNextLevel) {
+            const newLevel = this.game.level + 1;
+            
+            // Show interstitial screen
+            const wantsTutorial = await this.showInterstitialAsync(newLevel);
+            
+            // Start new level
             this.game.startNewLevel();
             onHide();
-            this.showTutorialIfNeeded();
+            
+            // Start tutorial if requested
+            if (wantsTutorial) {
+                const tutorialScenario = getTutorialScenario(newLevel);
+                if (tutorialScenario && window.uiController) {
+                    window.uiController.tutorialManager.start(tutorialScenario);
+                }
+            } else {
+                // Show old tutorial modal if no interactive tutorial chosen
+                this.showTutorialIfNeeded();
+            }
         } else {
             // Generate new round
             this.game.resetRound();
@@ -243,5 +272,70 @@ export class ModalManager {
         this.timeoutModal.classList.add('hidden');
         // Clear the onclick handler
         this.timeoutOkBtn.onclick = null;
+    }
+    
+    /**
+     * Show interstitial screen when advancing to a new level
+     * Returns a promise that resolves with true (tutorial) or false (skip)
+     */
+    showInterstitial(level, onChoice) {
+        // Get level config
+        const levelConfig = {
+            1: { title: 'Welcome to Ready, Set 2!', symbol: '∪', feature: 'Union & Intersection', desc: 'Combine sets with OR and AND' },
+            2: { title: 'Difference Operator', symbol: '−', feature: 'Difference', desc: 'Remove elements from a set' },
+            3: { title: 'Complement Operator', symbol: '′', feature: 'Complement', desc: 'Get everything EXCEPT a color' },
+            4: { title: 'More Operators!', symbol: '∪∩', feature: 'Duplicate Operators', desc: 'Build more complex expressions' },
+            5: { title: 'Universe & Null Set', symbol: 'U', feature: 'Universe & Null', desc: 'All cards or no cards' },
+            6: { title: 'Restrictions', symbol: '⊆', feature: 'Subset & Equals', desc: 'Modify the universe first' },
+            7: { title: 'Beat the Clock!', symbol: '⏱️', feature: 'Timer', desc: 'Solve puzzles before time runs out' },
+            8: { title: 'Required Cubes', symbol: '🟢', feature: 'Required Cubes', desc: 'Must use the green glowing cube' },
+            9: { title: 'Wild Cubes', symbol: '❓', feature: 'Wild Cubes', desc: 'Choose which operator to use' },
+            10: { title: 'Final Challenge', symbol: '⭐', feature: 'Bonus Cubes', desc: 'Free points for using special cubes' }
+        };
+        
+        const config = levelConfig[level] || { title: `Level ${level}`, symbol: '?', feature: 'New Features', desc: 'Keep learning!' };
+        
+        // Populate content
+        this.interstitialLevel.textContent = level;
+        this.interstitialTitle.textContent = config.title;
+        this.interstitialSymbol.textContent = config.symbol;
+        this.interstitialFeatureName.textContent = config.feature;
+        this.interstitialFeatureDesc.textContent = config.desc;
+        this.interstitialDescription.textContent = `Welcome to Level ${level}! ${config.desc}`;
+        
+        // Set up button handlers
+        const handleAccept = () => {
+            this.hideInterstitial();
+            onChoice(true);
+        };
+        
+        const handleDecline = () => {
+            this.hideInterstitial();
+            onChoice(false);
+        };
+        
+        this.tutorialAcceptBtn.onclick = handleAccept;
+        this.tutorialDeclineBtn.onclick = handleDecline;
+        
+        // Hide game board, show interstitial
+        document.getElementById('app').classList.add('hidden');
+        this.interstitialScreen.classList.remove('hidden');
+    }
+    
+    /**
+     * Hide interstitial and show game board
+     */
+    hideInterstitial() {
+        this.interstitialScreen.classList.add('hidden');
+        document.getElementById('app').classList.remove('hidden');
+    }
+    
+    /**
+     * Show interstitial and wait for user choice (async version)
+     */
+    async showInterstitialAsync(level) {
+        return new Promise((resolve) => {
+            this.showInterstitial(level, resolve);
+        });
     }
 }

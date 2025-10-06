@@ -5,6 +5,7 @@ import { DragDropHandler } from './DragDropHandler.js';
 import { ModalManager } from './ModalManager.js';
 import { WildCubeManager } from './WildCubeManager.js';
 import { PuzzleBuilderManager } from './PuzzleBuilderManager.js';
+import { TutorialManager } from './TutorialManager.js';
 import { evaluateExpression, hasRestriction, evaluateRestriction } from '../setTheory.js';
 import { hasPossibleSolution } from '../solutionFinder.js';
 import { getLevelConfig } from '../levels.js';
@@ -22,6 +23,7 @@ export class UIController {
             this.evaluateSolutionHelper(); // Update cards after wild cube selection
         });
         this.builderManager = new PuzzleBuilderManager(game, this);
+        this.tutorialManager = new TutorialManager(game, this);
         
         // Load settings
         this.settings = this.game.storage.loadSettings();
@@ -189,6 +191,11 @@ export class UIController {
     }
     
     handleGo() {
+        // Check if tutorial is active
+        if (this.tutorialManager.isActive) {
+            this.tutorialManager.advanceOnSubmit();
+        }
+        
         const result = this.game.submitSolution();
         
         if (result.valid) {

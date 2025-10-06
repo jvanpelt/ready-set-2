@@ -27,6 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         console.log('✅ UIController instance created');
         
+        // Make UI controller globally accessible for modal callbacks
+        window.uiController = ui;
+        
         // Initial render
         console.log('🖼️ Rendering initial UI...');
         ui.render();

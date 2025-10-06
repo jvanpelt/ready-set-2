@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Ready, Set 2 - Set Theory Puzzle Game</title>
-    <link rel="stylesheet" href="css/styles.css?v=2.16.9">
+    <link rel="stylesheet" href="css/styles.css?v=3.0.0">
 </head>
 <body>
     <div id="app">
@@ -239,7 +239,56 @@
         </div>
     </div>
 
-    <script type="module" src="js/main.js?v=2.16.9"></script>
+    <!-- Level Interstitial Screen (Full-page, replaces game board) -->
+    <div id="level-interstitial-screen" class="interstitial-screen hidden">
+        <div class="interstitial-container">
+            <div class="interstitial-badge">
+                <div class="badge-circle">
+                    <span class="badge-level" id="interstitial-level">2</span>
+                </div>
+                <div class="badge-label">LEVEL</div>
+            </div>
+            
+            <h1 id="interstitial-title" class="interstitial-title">New Level</h1>
+            
+            <div class="interstitial-feature">
+                <div class="feature-symbol" id="interstitial-symbol">∪</div>
+                <div class="feature-description">
+                    <strong id="interstitial-feature-name">New Feature</strong>
+                    <p id="interstitial-feature-desc">Description</p>
+                </div>
+            </div>
+            
+            <div class="interstitial-content">
+                <p id="interstitial-description" class="description-text">
+                    Level description goes here.
+                </p>
+            </div>
+            
+            <div class="interstitial-actions">
+                <button id="tutorial-accept-btn" class="btn btn-primary btn-large">
+                    <span class="btn-icon">🎓</span>
+                    Show Me How
+                </button>
+                <button id="tutorial-decline-btn" class="btn btn-secondary btn-large">
+                    I'll Figure It Out
+                </button>
+            </div>
+            
+            <div class="interstitial-footer">
+                <small>💡 Tip: You can replay tutorials from the menu anytime</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutorial Instruction Overlay -->
+    <div id="tutorial-instruction" class="tutorial-instruction hidden">
+        <div class="tutorial-step-badge" id="tutorial-step-badge">Step 1/8</div>
+        <p id="tutorial-instruction-text">Instruction text goes here</p>
+        <button id="tutorial-skip-btn" class="tutorial-skip-btn">Skip Tutorial</button>
+    </div>
+
+    <script type="module" src="js/main.js?v=3.0.0"></script>
 </body>
 </html>
 
