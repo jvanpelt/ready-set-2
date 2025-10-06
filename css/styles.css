@@ -660,28 +660,40 @@ body {
     }
     
     .status-bar {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr; /* 4 columns to match buttons */
         gap: 8px;
         margin-bottom: 10px;
+    }
+    
+    /* Score spans 2 columns (takes up half the width) */
+    .score-display {
+        grid-column: span 2;
+    }
+    
+    /* Timer and Goal each take 1 column */
+    .timer-display,
+    .goal-display {
+        grid-column: span 1;
     }
     
     .score-display,
     .timer-display,
     .goal-display {
-        padding: 10px 12px;
+        padding: 8px 10px;
     }
     
     .stat-label {
-        font-size: 11px;
-        margin-bottom: 3px;
+        font-size: 10px;
+        margin-bottom: 2px;
     }
     
     .stat-value {
-        font-size: 32px;
+        font-size: 24px;
+        line-height: 1;
     }
     
     .stat-divider {
-        font-size: 24px;
+        font-size: 18px;
     }
     
     .timer-display {
