@@ -126,6 +126,11 @@ body {
     justify-items: center;
 }
 
+/* 4 dice: 2x2 grid (2 columns, 2 rows) - for tutorials */
+.dice-container[data-dice-count="4"] {
+    grid-template-columns: repeat(2, 1fr);
+}
+
 /* 6 dice: 3x2 grid (3 columns, 2 rows) */
 .dice-container[data-dice-count="6"] {
     grid-template-columns: repeat(3, 1fr);
