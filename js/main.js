@@ -3,6 +3,13 @@
 import { Game } from './game.js';
 import { UIController } from './ui/UIController.js';
 
+// Extract and log version from script tag
+const scriptTag = document.querySelector('script[src*="main.js"]');
+const version = scriptTag ? new URLSearchParams(scriptTag.src.split('?')[1]).get('v') : 'unknown';
+console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+console.log('🎮 Ready, Set 2 - Version:', version);
+console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
 // Initialize the game when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 DOM loaded - initializing game');

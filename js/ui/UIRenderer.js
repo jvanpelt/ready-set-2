@@ -91,15 +91,12 @@ export class UIRenderer {
             
             // Add required class if this die is required (Level 8+)
             if (die.isRequired) {
-                console.log('🟩 Rendering REQUIRED die in dice area:', die.value, die.id);
                 dieEl.classList.add('required');
-                console.log('   Classes before type:', dieEl.className);
             }
             
             // Add content based on type
             if (die.type === 'color') {
                 dieEl.classList.add('color-circle');
-                if (die.isRequired) console.log('   Classes after color-circle:', dieEl.className);
                 const circle = document.createElement('div');
                 circle.className = `circle ${die.value}`;
                 dieEl.appendChild(circle);
@@ -166,15 +163,12 @@ export class UIRenderer {
                 
                 // Add required class if this die is required (Level 8+)
                 if (die.isRequired) {
-                    console.log('🟩 Rendering REQUIRED die in solution:', die.value, die.id);
                     dieEl.classList.add('required');
-                    console.log('   Classes:', dieEl.className);
                 }
                 
                 // Add content
                 if (die.type === 'color') {
                     dieEl.classList.add('color-circle');
-                    if (die.isRequired) console.log('   Classes after color-circle:', dieEl.className);
                     const circle = document.createElement('div');
                     circle.className = `circle ${die.value}`;
                     dieEl.appendChild(circle);
@@ -184,7 +178,6 @@ export class UIRenderer {
                     // Add type-specific styling class
                     const operatorClass = getOperatorClass(die.value);
                     dieEl.classList.add(operatorClass);
-                    if (die.isRequired) console.log('   Classes after operator:', dieEl.className);
                     
                     // Check if we should use SVG
                     const svg = getSVGForOperator(die.value);
@@ -194,8 +187,6 @@ export class UIRenderer {
                         dieEl.textContent = die.value;
                     }
                 }
-                
-                if (die.isRequired) console.log('   Final classes:', dieEl.className);
                 
                 row.appendChild(dieEl);
             });
