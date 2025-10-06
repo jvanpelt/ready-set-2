@@ -43,11 +43,19 @@ export class ScenarioManager {
         const allCards = this.getAllPossibleCards();
         return indices.map(i => {
             const card = allCards[i];
+            // Build colors array from boolean properties
+            const colors = [];
+            if (card.red) colors.push('red');
+            if (card.blue) colors.push('blue');
+            if (card.green) colors.push('green');
+            if (card.gold) colors.push('gold');
+            
             return {
                 red: card.red,
                 blue: card.blue,
                 green: card.green,
-                yellow: card.yellow
+                gold: card.gold,
+                colors: colors  // Renderer needs this array format
             };
         });
     }
