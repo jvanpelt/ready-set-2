@@ -81,7 +81,8 @@ export class ScenarioManager {
      * Load a scenario into the current game
      */
     loadScenario(scenario) {
-        console.log('📋 Loading scenario:', scenario.metadata.name);
+        const scenarioName = scenario.metadata?.name || 'Tutorial Scenario';
+        console.log('📋 Loading scenario:', scenarioName);
         
         this.currentScenario = scenario;
         
