@@ -350,10 +350,10 @@ body {
     background: white;
 }
 
-/* Required cubes (Level 8+): BRIGHT green border, must be used */
+/* Required cubes (Level 8+): Muted green border with green glow */
 .die.required,
 .solution-die.required {
-    border-color: #00ff00; /* Bright lime green - impossible to miss! */
+    border-color: #2b8103; /* Muted green border */
     border-width: 5px;
     box-shadow: 0 0 20px rgba(0, 255, 0, 0.8), 0 0 40px rgba(0, 255, 0, 0.4), 2px 2px 8px rgba(0, 0, 0, 0.3);
     animation: requiredPulse 2s ease-in-out infinite;
