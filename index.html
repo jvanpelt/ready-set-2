@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Ready, Set 2 - Set Theory Puzzle Game</title>
-    <link rel="stylesheet" href="css/styles.css?v=2.16.9">
+    <link rel="stylesheet" href="css/styles.css?v=2.17.0">
 </head>
 <body>
     <div id="app">
@@ -85,11 +86,14 @@
             <div class="modal-content">
                 <div id="menu-main-view">
                     <h2>Menu</h2>
-                    <button id="settings-btn" class="btn btn-primary">Settings</button>
-                    <button id="puzzle-builder-btn" class="btn btn-primary">🛠️ Puzzle Builder</button>
-                    <button id="tutorial-btn" class="btn btn-secondary">How to Play</button>
-                    <button id="new-game-btn" class="btn btn-secondary">New Game</button>
-                    <button id="resume-btn" class="btn btn-success">Resume</button>
+                    <ul class="menu-list">
+                        <li><button id="settings-btn" class="btn btn-primary">Settings</button></li>
+                        <li><button id="puzzle-builder-btn" class="btn btn-primary">🛠️ Puzzle Builder</button></li>
+                        <li><button id="tutorial-btn" class="btn btn-secondary">How to Play</button></li>
+                        <li><button id="new-game-btn" class="btn btn-secondary">New Game</button></li>
+                        <li><button id="refresh-btn" class="btn btn-secondary">🔄 Refresh</button></li>
+                        <li><button id="resume-btn" class="btn btn-success">Resume</button></li>
+                    </ul>
                 </div>
             <div id="menu-settings-view" class="hidden">
                 <h2>Settings</h2>
@@ -239,7 +243,7 @@
         </div>
     </div>
 
-    <script type="module" src="js/main.js?v=2.16.9"></script>
+    <script type="module" src="js/main.js?v=2.17.0"></script>
 </body>
 </html>
 
