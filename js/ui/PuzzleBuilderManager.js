@@ -324,6 +324,47 @@ export class PuzzleBuilderManager {
     }
     
     /**
+     * Play the current scenario
+     */
+    playScenario() {
+        console.log('🎮 Loading scenario for play...');
+        
+        if (this.selectedCards.length !== 8) {
+            alert('Please select exactly 8 cards.');
+            return;
+        }
+        
+        if (this.selectedColors.length !== 4) {
+            alert('Please select exactly 4 color dice.');
+            return;
+        }
+        
+        if (this.selectedOperators.length < 2) {
+            alert('Please select at least 2 operators.');
+            return;
+        }
+        
+        const goal = parseInt(document.getElementById('goal-selector').value);
+        const dice = this.buildDiceArray();
+        
+        const scenario = this.scenarioManager.createScenario(
+            this.selectedCards,
+            dice,
+            goal,
+            { name: 'Test Scenario' }
+        );
+        
+        // Load scenario into game
+        this.scenarioManager.loadScenario(scenario);
+        
+        // Close menu and refresh UI
+        this.uiController.modals.hideMenu();
+        this.uiController.render();
+        
+        console.log('✅ Scenario loaded! You can now play test it.');
+    }
+    
+    /**
      * Test if solutions exist
      */
     async testSolutions() {
@@ -480,6 +521,7 @@ export class PuzzleBuilderManager {
      * Setup event listeners
      */
     setupEventListeners() {
+        document.getElementById('play-scenario-btn').addEventListener('click', () => this.playScenario());
         document.getElementById('test-solution-btn').addEventListener('click', () => this.testSolutions());
         document.getElementById('export-json-btn').addEventListener('click', () => this.exportJSON());
         document.getElementById('save-scenario-btn').addEventListener('click', () => this.saveScenario());
