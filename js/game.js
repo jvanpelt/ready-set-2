@@ -339,8 +339,10 @@ export class Game {
             return { valid: false, message: 'Solution must use at least 2 cubes!' };
         }
         
-        // Check wild cubes (Level 9+): must have an operator selected
+        // Combine both rows for validation checks
         const allDice = [...restrictionRow, ...setNameRow];
+        
+        // Check wild cubes (Level 9+): must have an operator selected
         const wildCubesWithoutSelection = allDice.filter(die => 
             die.type === 'wild' && !die.selectedOperator
         );
@@ -415,7 +417,6 @@ export class Game {
         if (requiredDie) {
             console.log('🟩 Required cube check:');
             console.log('  - Required die:', requiredDie.value, 'ID:', requiredDie.id);
-            const allDice = [...restrictionRow, ...setNameRow];
             console.log('  - Solution dice IDs:', allDice.map(d => d.id));
             const usedRequiredCube = allDice.some(die => die.id === requiredDie.id);
             console.log('  - Used required cube?', usedRequiredCube);
@@ -435,7 +436,6 @@ export class Game {
         }
         
         // Calculate score (all dice from both rows)
-        const allDice = [...restrictionRow, ...setNameRow];
         let points = calculateScore(allDice);
         
         // Add bonus for using required cube (Level 8+)
