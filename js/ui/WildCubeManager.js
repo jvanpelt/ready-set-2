@@ -1,4 +1,4 @@
-import { getSVGForOperator } from './UIRenderer.js';
+import { getSVGForOperator } from '../svgSymbols.js';
 
 /**
  * WildCubeManager - Handles wild cube operator selection popover
