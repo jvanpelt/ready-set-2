@@ -22,7 +22,7 @@ export const TUTORIAL_SCENARIOS = {
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome! Let\'s learn <strong>Union (∪)</strong>. It means "either/or".',
+                    message: 'Welcome! Let\'s learn the <strong>Union</strong> operator. It means "either/or".',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 3000
@@ -36,7 +36,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-union',
-                    message: '<strong>Red ∪ Blue</strong> means "all cards with red OR blue (or both)".',
+                    message: '<strong>Red Union Blue</strong> means "all cards with red OR blue (or both)".',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
@@ -52,7 +52,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-union',
-                    message: 'Great! Now drag the <strong>UNION (∪)</strong> cube next to it.',
+                    message: 'Great! Now drag the <strong>UNION</strong> cube next to it. (It has two overlapping circles.)',
                     highlight: { dice: [2] },
                     validation: (game) => {
                         return game.solutions[1].some(die => die.value === '∪');
@@ -61,7 +61,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-blue',
-                    message: 'Perfect! Finally, drag the <strong>BLUE</strong> cube to complete "red ∪ blue".',
+                    message: 'Perfect! Finally, drag the <strong>BLUE</strong> cube to complete your solution.',
                     highlight: { dice: [1] },
                     validation: (game) => {
                         return game.solutions[1].some(die => die.value === 'blue');
@@ -109,28 +109,28 @@ export const TUTORIAL_SCENARIOS = {
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome to Level 2! Let\'s learn the <strong>Difference (−)</strong> operator.',
+                    message: 'Welcome to Level 2! Let\'s learn the <strong>Difference</strong> operator.',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 3000
                 },
                 {
                     id: 'explain-difference',
-                    message: '<strong>A − B</strong> means "cards in A, but NOT in B". It subtracts B from A.',
+                    message: '<strong>Difference</strong> means "cards in A, but NOT in B". It subtracts B from A.',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
                 },
                 {
                     id: 'identify-goal',
-                    message: 'Our goal is <strong>3 cards</strong>. Let\'s build "green − blue".',
+                    message: 'Our goal is <strong>3 cards</strong>. Let\'s build "Green Difference Blue".',
                     highlight: { goal: true },
                     nextTrigger: 'auto',
                     duration: 3000
                 },
                 {
                     id: 'explain-example',
-                    message: '<strong>Green − Blue</strong> = "All cards with green, but NOT blue". Think: green EXCEPT blue.',
+                    message: '<strong>Green Difference Blue</strong> = "All cards with green, but NOT blue". Think: green EXCEPT blue.',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
@@ -146,7 +146,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-diff',
-                    message: 'Great! Now drag the <strong>DIFFERENCE (−)</strong> cube.',
+                    message: 'Great! Now drag the <strong>DIFFERENCE</strong> cube. (It has a minus sign.)',
                     highlight: { dice: [1] },
                     validation: (game) => {
                         return game.solutions[1].some(die => die.value === '−');
@@ -155,7 +155,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-blue',
-                    message: 'Perfect! Finally, drag the <strong>BLUE</strong> cube to complete "green − blue".',
+                    message: 'Perfect! Finally, drag the <strong>BLUE</strong> cube to complete your solution.',
                     highlight: { dice: [2] },
                     validation: (game) => {
                         return game.solutions[1].some(die => die.value === 'blue');
