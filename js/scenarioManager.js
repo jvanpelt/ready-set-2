@@ -17,7 +17,7 @@ export class ScenarioManager {
      * Get all 16 possible cards (every combination of 4 colors)
      * Cards are indexed 0-15, representing binary combinations:
      * 0 = 0000 (no colors)
-     * 1 = 0001 (yellow only)
+     * 1 = 0001 (gold only)
      * 2 = 0010 (green only)
      * ...
      * 15 = 1111 (all colors)
@@ -30,7 +30,7 @@ export class ScenarioManager {
                 red: !!(i & 8),    // Bit 3
                 blue: !!(i & 4),   // Bit 2
                 green: !!(i & 2),  // Bit 1
-                yellow: !!(i & 1)  // Bit 0
+                gold: !!(i & 1)    // Bit 0
             });
         }
         return cards;
@@ -109,7 +109,7 @@ export class ScenarioManager {
             if (card.red) index |= 8;
             if (card.blue) index |= 4;
             if (card.green) index |= 2;
-            if (card.yellow) index |= 1;
+            if (card.gold) index |= 1;
             return index;
         });
         

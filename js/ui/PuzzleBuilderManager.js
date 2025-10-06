@@ -47,8 +47,8 @@ export class PuzzleBuilderManager {
             cardEl.dataset.index = card.index;
             
             // Create dot grid (2x2)
-            // Top-left (red), top-right (blue), bottom-left (green), bottom-right (yellow)
-            const positions = ['red', 'blue', 'green', 'yellow'];
+            // Top-left (red), top-right (blue), bottom-left (green), bottom-right (gold)
+            const positions = ['red', 'blue', 'green', 'gold'];
             positions.forEach(color => {
                 const dot = document.createElement('div');
                 dot.className = 'circle';
@@ -70,7 +70,7 @@ export class PuzzleBuilderManager {
      */
     renderColorSelector() {
         const selector = document.getElementById('color-selector');
-        const colors = ['red', 'blue', 'green', 'yellow'];
+        const colors = ['red', 'blue', 'green', 'gold'];
         
         selector.innerHTML = '';
         
