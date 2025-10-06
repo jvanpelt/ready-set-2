@@ -186,6 +186,18 @@ export class UIController {
             this.clearSolutionHelper();
         });
         
+        // Clear game data
+        document.getElementById('clear-data-btn').addEventListener('click', () => {
+            if (confirm('⚠️ Are you sure you want to clear all game data?\n\nThis will:\n• Reset your level to 1\n• Reset your score to 0\n• Clear all tutorial progress\n• Clear all settings\n\nThis action cannot be undone!')) {
+                // Clear all localStorage
+                localStorage.clear();
+                console.log('🗑️ All game data cleared');
+                
+                // Reload the page to start fresh
+                window.location.reload();
+            }
+        });
+        
         // Pass confirmation modal
         document.getElementById('pass-cancel').addEventListener('click', () => this.modals.hidePassModal());
     }
@@ -617,5 +629,20 @@ export class UIController {
     
     showTutorialIfNeeded() {
         this.modals.showTutorialIfNeeded();
+    }
+    
+    async showFirstTimeInterstitial() {
+        // Show Level 1 interstitial and wait for tutorial choice
+        const wantsTutorial = await this.modals.showInterstitialAsync(1);
+        
+        if (wantsTutorial) {
+            // Start interactive tutorial
+            const { getTutorialScenario } = await import('../tutorialScenarios.js');
+            const tutorialScenario = getTutorialScenario(1);
+            if (tutorialScenario) {
+                this.tutorialManager.start(tutorialScenario);
+            }
+        }
+        // If they decline, just continue with normal gameplay (already rendered)
     }
 }

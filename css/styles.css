@@ -614,6 +614,15 @@ body {
     font-size: 22px;
 }
 
+.btn-danger {
+    background: linear-gradient(135deg, #d9534f, #c9302c);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #c9302c, #ac2925);
+}
+
 /* Modals */
 .modal, .tutorial-overlay {
     position: fixed;
