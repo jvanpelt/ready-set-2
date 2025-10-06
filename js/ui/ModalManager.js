@@ -295,6 +295,9 @@ export class ModalManager {
         
         const config = levelConfig[level] || { title: `Level ${level}`, symbol: '?', feature: 'New Features', desc: 'Keep learning!' };
         
+        // Check if tutorial exists for this level
+        const hasTutorial = getTutorialScenario(level) !== null;
+        
         // Populate content
         this.interstitialLevel.textContent = level;
         this.interstitialTitle.textContent = config.title;
@@ -302,6 +305,15 @@ export class ModalManager {
         this.interstitialFeatureName.textContent = config.feature;
         this.interstitialFeatureDesc.textContent = config.desc;
         this.interstitialDescription.textContent = `Welcome to Level ${level}! ${config.desc}`;
+        
+        // Show/hide tutorial button based on availability
+        if (hasTutorial) {
+            this.tutorialAcceptBtn.style.display = 'flex';
+            this.tutorialDeclineBtn.innerHTML = 'I\'ll Figure It Out';
+        } else {
+            this.tutorialAcceptBtn.style.display = 'none';
+            this.tutorialDeclineBtn.innerHTML = 'Continue';
+        }
         
         // Set up button handlers
         const handleAccept = () => {
