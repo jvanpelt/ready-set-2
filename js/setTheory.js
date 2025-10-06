@@ -3,6 +3,19 @@
 import { OPERATORS } from './levels.js';
 
 /**
+ * Get the effective value of a die (handles wild cubes)
+ * For wild cubes, returns the selected operator symbol, otherwise returns the die's value
+ */
+function getEffectiveValue(die) {
+    if (die.type === 'wild' && die.selectedOperator) {
+        // Map operator name to symbol
+        const operator = Object.values(OPERATORS).find(op => op.name === die.selectedOperator);
+        return operator ? operator.symbol : die.value;
+    }
+    return die.value;
+}
+
+/**
  * Evaluates a set theory expression against a collection of cards
  * @param {Array} expression - Array of dice objects representing the expression
  * @param {Array} cards - Array of card configurations
@@ -121,7 +134,7 @@ function evaluateWithGroups(dice, groups, cards) {
         const sortedDice = dice
             .map((die, index) => ({ die, index }))
             .sort((a, b) => a.die.x - b.die.x);
-        const tokens = sortedDice.map(item => item.die.value);
+        const tokens = sortedDice.map(item => getEffectiveValue(item.die));
         return evaluate(tokens, cards);
     }
     
@@ -141,7 +154,7 @@ function evaluateWithGroups(dice, groups, cards) {
         const groupDice = group.map(i => dice[i]);
         // Sort group dice left-to-right for proper evaluation within group
         groupDice.sort((a, b) => a.x - b.x);
-        const groupTokens = groupDice.map(die => die.value);
+        const groupTokens = groupDice.map(die => getEffectiveValue(die));
         const result = evaluate(groupTokens, cards);
         
         // Use leftmost X position as group position
@@ -179,7 +192,7 @@ function evaluateWithGroups(dice, groups, cards) {
             items.push({
                 type: 'die',
                 x: die.x,
-                value: die.value
+                value: getEffectiveValue(die)
             });
         }
     });
@@ -455,6 +468,8 @@ export function calculateScore(expression) {
     expression.forEach(die => {
         if (die.type === 'color') {
             totalPoints += 5; // Base points for colors
+        } else if (die.type === 'wild') {
+            totalPoints += 25; // Wild cubes are worth 25 points (Level 9+)
         } else if (die.type === 'operator') {
             // Find operator points
             const operator = Object.values(OPERATORS).find(op => op.symbol === die.value);
@@ -594,6 +609,13 @@ function dicesToPatternString(dice) {
     return dice.map(die => {
         if (die.type === 'color') {
             return 'color';
+        } else if (die.type === 'wild') {
+            // Wild cubes are treated as operators based on their selection
+            const effectiveValue = getEffectiveValue(die);
+            if (effectiveValue === '′') {
+                return 'prime';
+            }
+            return 'operator';
         } else if (die.type === 'operator') {
             // Prime (complement) is special
             if (die.value === '′') {

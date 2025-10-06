@@ -339,6 +339,16 @@ export class Game {
             return { valid: false, message: 'Solution must use at least 2 cubes!' };
         }
         
+        // Check wild cubes (Level 9+): must have an operator selected
+        const allDice = [...restrictionRow, ...setNameRow];
+        const wildCubesWithoutSelection = allDice.filter(die => 
+            die.type === 'wild' && !die.selectedOperator
+        );
+        if (wildCubesWithoutSelection.length > 0) {
+            console.log('❌ VALIDATION FAILED: Wild cube without operator selection');
+            return { valid: false, message: 'Click the wild cube (?) to choose an operator!' };
+        }
+        
         // Validate patterns
         if (restriction && restriction.length > 0) {
             if (!isValidRestriction(restriction)) {

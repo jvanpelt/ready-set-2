@@ -47,7 +47,8 @@ export class DragDropHandler {
                     value: die.dataset.value,
                     name: die.dataset.name,
                     id: die.dataset.id,
-                    isRequired: die.dataset.isRequired === 'true' // Preserve required status
+                    isRequired: die.dataset.isRequired === 'true', // Preserve required status
+                    selectedOperator: die.dataset.selectedOperator || null // Preserve wild cube selection
                 };
                 this.draggedFromSolution = false;
                 this.draggedRowIndex = null;

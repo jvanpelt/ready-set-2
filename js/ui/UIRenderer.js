@@ -82,6 +82,7 @@ export class UIRenderer {
             dieEl.dataset.id = die.id;
             if (die.name) dieEl.dataset.name = die.name;
             if (die.isRequired) dieEl.dataset.isRequired = 'true'; // Store in dataset for drag-and-drop
+            if (die.selectedOperator) dieEl.dataset.selectedOperator = die.selectedOperator; // Store wild cube selection
             
             // Check if this specific die instance is used
             if (usedDiceIds.includes(die.id)) {
