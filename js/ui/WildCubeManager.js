@@ -1,3 +1,5 @@
+import { getSVGForOperator } from './UIRenderer.js';
+
 /**
  * WildCubeManager - Handles wild cube operator selection popover
  */
@@ -30,8 +32,16 @@ export class WildCubeManager {
             const btn = document.createElement('button');
             btn.className = 'wild-popover-btn';
             btn.dataset.operator = op.symbol; // Store symbol, not name
-            btn.textContent = op.symbol;
             btn.title = op.name;
+            
+            // Use SVG for Union and Intersection
+            const svg = getSVGForOperator(op.symbol);
+            if (svg) {
+                btn.innerHTML = svg;
+            } else {
+                btn.textContent = op.symbol;
+            }
+            
             this.popover.appendChild(btn);
         });
     }
@@ -117,10 +127,14 @@ export class WildCubeManager {
      * Select an operator for the wild cube
      */
     selectOperator(operator) {
+        console.log('🎲 Wild cube operator selected:', operator);
         if (this.currentRowIndex !== null && this.currentDieIndex !== null) {
             // Update the die in the game state
             const die = this.game.solutions[this.currentRowIndex][this.currentDieIndex];
+            console.log('   Before:', die.selectedOperator);
             die.selectedOperator = operator;
+            console.log('   After:', die.selectedOperator);
+            console.log('   Full die:', die);
             
             // Save state
             this.game.saveState();
@@ -130,6 +144,7 @@ export class WildCubeManager {
             
             // Trigger re-render
             if (this.onSelectionChange) {
+                console.log('   Triggering re-render...');
                 this.onSelectionChange();
             }
         }

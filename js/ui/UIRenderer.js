@@ -177,6 +177,7 @@ export class UIRenderer {
                     dieEl.classList.add('wild');
                     // Display selected operator or '?' if none selected
                     const displayValue = die.selectedOperator || '?';
+                    console.log('🎨 Rendering wild cube in solution:', die.selectedOperator, '→', displayValue);
                     const svg = getSVGForOperator(displayValue);
                     if (svg) {
                         dieEl.innerHTML = svg;

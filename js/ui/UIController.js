@@ -16,7 +16,10 @@ export class UIController {
         // Initialize sub-components
         this.renderer = new UIRenderer(game);
         this.modals = new ModalManager(game);
-        this.wildCubeManager = new WildCubeManager(game, () => this.render());
+        this.wildCubeManager = new WildCubeManager(game, () => {
+            this.render();
+            this.evaluateSolutionHelper(); // Update cards after wild cube selection
+        });
         
         // Load settings
         this.settings = this.game.storage.loadSettings();
