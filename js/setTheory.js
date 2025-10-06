@@ -615,16 +615,22 @@ function dicesToPatternString(dice) {
                 return 'prime';
             }
             return 'operator';
+        } else if (die.type === 'set-constant') {
+            // Universe and Null are "setName" types
+            return 'setName';
+        } else if (die.type === 'restriction') {
+            // Equals and Subset are "restriction" types
+            return 'restriction';
         } else if (die.type === 'operator') {
             // Prime (complement) is special
             if (die.value === '′') {
                 return 'prime';
             }
-            // U and ∅ are "setName" types
+            // U and ∅ are "setName" types (for backwards compatibility)
             if (die.value === 'U' || die.value === '∅') {
                 return 'setName';
             }
-            // Equals and Subset are "restriction" types
+            // Equals and Subset are "restriction" types (for backwards compatibility)
             if (die.value === '=' || die.value === '⊆') {
                 return 'restriction';
             }
