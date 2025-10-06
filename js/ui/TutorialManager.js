@@ -19,6 +19,72 @@ export class TutorialManager {
         
         this.skipBtn.addEventListener('click', () => this.skip());
         this.nextBtn.addEventListener('click', () => this.handleNextClick());
+        
+        // Make instruction box draggable
+        this.initDraggable();
+    }
+    
+    initDraggable() {
+        let isDragging = false;
+        let currentX;
+        let currentY;
+        let initialX;
+        let initialY;
+        let xOffset = 0;
+        let yOffset = 0;
+        
+        const dragStart = (e) => {
+            // Only drag from the badge or text area, not buttons
+            if (e.target.tagName === 'BUTTON') return;
+            
+            if (e.type === 'touchstart') {
+                initialX = e.touches[0].clientX - xOffset;
+                initialY = e.touches[0].clientY - yOffset;
+            } else {
+                initialX = e.clientX - xOffset;
+                initialY = e.clientY - yOffset;
+            }
+            
+            isDragging = true;
+            this.instructionEl.style.cursor = 'grabbing';
+        };
+        
+        const dragEnd = () => {
+            isDragging = false;
+            this.instructionEl.style.cursor = 'move';
+        };
+        
+        const drag = (e) => {
+            if (!isDragging) return;
+            
+            e.preventDefault();
+            
+            if (e.type === 'touchmove') {
+                currentX = e.touches[0].clientX - initialX;
+                currentY = e.touches[0].clientY - initialY;
+            } else {
+                currentX = e.clientX - initialX;
+                currentY = e.clientY - initialY;
+            }
+            
+            xOffset = currentX;
+            yOffset = currentY;
+            
+            // Override positioning
+            this.instructionEl.style.top = `${20 + yOffset}px`;
+            this.instructionEl.style.right = `${20 - xOffset}px`;
+            this.instructionEl.style.left = 'auto';
+            this.instructionEl.style.bottom = 'auto';
+            this.instructionEl.style.transform = 'none';
+        };
+        
+        this.instructionEl.addEventListener('mousedown', dragStart);
+        this.instructionEl.addEventListener('mouseup', dragEnd);
+        this.instructionEl.addEventListener('mousemove', drag);
+        
+        this.instructionEl.addEventListener('touchstart', dragStart, { passive: true });
+        this.instructionEl.addEventListener('touchend', dragEnd);
+        this.instructionEl.addEventListener('touchmove', drag, { passive: false });
     }
     
     start(scenarioData) {
@@ -66,10 +132,7 @@ export class TutorialManager {
             this.applyHighlights(step.highlight);
         }
         
-        // Position instruction
-        this.positionInstruction(step.highlight);
-        
-        // Show instruction
+        // Show instruction (now always top-right, draggable)
         this.instructionEl.classList.remove('hidden');
         
         // Handle progression based on step type
@@ -123,52 +186,6 @@ export class TutorialManager {
         });
     }
     
-    positionInstruction(highlight) {
-        if (!highlight) {
-            // Default: bottom center
-            this.instructionEl.style.bottom = '20px';
-            this.instructionEl.style.left = '50%';
-            this.instructionEl.style.top = 'auto';
-            this.instructionEl.style.transform = 'translateX(-50%)';
-            return;
-        }
-        
-        if (highlight.dice && highlight.dice.length > 0) {
-            const die = document.querySelector(`.die:not(.solution-die)[data-index="${highlight.dice[0]}"]`);
-            if (die) {
-                const rect = die.getBoundingClientRect();
-                let top = rect.top - this.instructionEl.offsetHeight - 15;
-                
-                // If too close to top, position below
-                if (top < 80) {
-                    top = rect.bottom + 15;
-                }
-                
-                this.instructionEl.style.position = 'fixed';
-                this.instructionEl.style.left = `${rect.left + rect.width/2}px`;
-                this.instructionEl.style.top = `${top}px`;
-                this.instructionEl.style.bottom = 'auto';
-                this.instructionEl.style.transform = 'translateX(-50%)';
-            }
-        } else if (highlight.goButton) {
-            const goBtn = document.getElementById('go-btn');
-            if (goBtn) {
-                const rect = goBtn.getBoundingClientRect();
-                this.instructionEl.style.position = 'fixed';
-                this.instructionEl.style.left = '50%';
-                this.instructionEl.style.top = `${rect.top - this.instructionEl.offsetHeight - 15}px`;
-                this.instructionEl.style.bottom = 'auto';
-                this.instructionEl.style.transform = 'translateX(-50%)';
-            }
-        } else {
-            // Default: bottom center
-            this.instructionEl.style.bottom = '20px';
-            this.instructionEl.style.left = '50%';
-            this.instructionEl.style.top = 'auto';
-            this.instructionEl.style.transform = 'translateX(-50%)';
-        }
-    }
-    
     startValidationLoop(validationFn) {
         // Check every 100ms if user completed the step
         this.validationInterval = setInterval(() => {
@@ -182,11 +199,11 @@ export class TutorialManager {
     }
     
     celebrateSuccess() {
-        // Quick visual feedback
-        this.instructionEl.style.transform = 'translateX(-50%) scale(1.1)';
+        // Quick visual feedback with glow effect
+        this.stepBadgeEl.style.animation = 'none';
         setTimeout(() => {
-            this.instructionEl.style.transform = 'translateX(-50%) scale(1)';
-        }, 200);
+            this.stepBadgeEl.style.animation = 'tutorialPulse 0.5s ease';
+        }, 10);
     }
     
     nextStep() {

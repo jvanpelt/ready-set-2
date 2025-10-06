@@ -5,7 +5,10 @@
 
 export const TUTORIAL_SCENARIOS = {
     1: {
-        cards: [3, 5, 6, 9, 10, 12, 13, 15], // Mix of red, blue, combos
+        // Cards: 3 without red/blue, 5 with red or blue
+        // 1=gold, 2=green, 3=green+gold (no red/blue)
+        // 4=blue, 5=blue+gold, 8=red, 9=red+gold, 10=red+green (have red/blue)
+        cards: [1, 2, 3, 4, 5, 8, 9, 10],
         dice: [
             { type: 'color', value: 'red', name: 'RED', id: 'tutorial-1-red' },
             { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-1-blue' },

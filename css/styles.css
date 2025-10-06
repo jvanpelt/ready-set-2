@@ -1290,6 +1290,8 @@ body {
 /* Tutorial Instruction (Floating) */
 .tutorial-instruction {
     position: fixed;
+    top: 20px;
+    right: 20px;
     background: rgba(255, 255, 255, 0.95);
     color: #333;
     padding: 20px 24px;
@@ -1299,6 +1301,7 @@ body {
     pointer-events: none;
     box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 2px rgba(0,0,0,0.1);
     animation: fadeInUp 0.3s ease;
+    cursor: move;
 }
 
 .tutorial-instruction.hidden {
@@ -1437,10 +1440,13 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
     }
     
     .tutorial-instruction {
-        max-width: 90%;
-        left: 5% !important;
-        right: 5% !important;
+        max-width: calc(100% - 20px);
+        top: 10px !important;
+        right: 10px !important;
+        left: auto !important;
+        bottom: auto !important;
         transform: none !important;
+        padding: 16px 18px;
     }
 }
 
