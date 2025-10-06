@@ -644,6 +644,12 @@ body {
         height: 32px;
     }
     
+    /* Ensure required cubes keep their 5px border on mobile */
+    .die.required,
+    .solution-die.required {
+        border-width: 5px;
+    }
+    
     .btn-add-row {
         padding: 6px 10px;
         font-size: 12px;
