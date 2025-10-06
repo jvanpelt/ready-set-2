@@ -153,6 +153,9 @@ export class UIController {
             this.clearSolutionHelper();
             this.modals.showTutorialIfNeeded();
         });
+        document.getElementById('refresh-btn').addEventListener('click', () => {
+            window.location.reload();
+        });
         document.getElementById('tutorial-btn').addEventListener('click', () => {
             this.modals.hideMenu();
             this.modals.showTutorial();

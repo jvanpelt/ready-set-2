@@ -672,6 +672,25 @@ body {
     width: auto;
 }
 
+/* Menu List (vertical stacking) */
+.menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.menu-list li {
+    width: 100%;
+}
+
+.menu-list .btn {
+    width: 100%;
+    margin: 0;
+}
+
 .result-score {
     font-size: 48px;
     font-weight: bold;
