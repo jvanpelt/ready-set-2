@@ -578,19 +578,25 @@ export class UIController {
      */
     showWildCubePopoverByIndex(rowIndex, dieIndex) {
         console.log('🎯 showWildCubePopoverByIndex called:', rowIndex, dieIndex);
-        // Find the die element in the DOM
-        const row = this.solutionArea.querySelector(`.solution-row[data-row="${rowIndex}"]`);
-        if (row) {
-            const dieEl = row.querySelector(`.solution-die[data-index="${dieIndex}"]`);
-            console.log('   Found die element?', !!dieEl);
-            if (dieEl) {
-                // Small delay to ensure DOM is fully rendered
-                setTimeout(() => {
-                    console.log('   Showing popover now');
-                    this.wildCubeManager.show(dieEl, rowIndex, dieIndex);
-                }, 50);
+        // Use requestAnimationFrame to ensure render is complete, then find element
+        requestAnimationFrame(() => {
+            const row = this.solutionArea.querySelector(`.solution-row[data-row="${rowIndex}"]`);
+            if (row) {
+                const dieEl = row.querySelector(`.solution-die[data-index="${dieIndex}"]`);
+                console.log('   Found die element?', !!dieEl);
+                if (dieEl) {
+                    // Small delay to ensure DOM is fully painted
+                    setTimeout(() => {
+                        console.log('   Showing popover now');
+                        this.wildCubeManager.show(dieEl, rowIndex, dieIndex);
+                    }, 50);
+                } else {
+                    console.log('   ❌ Die element not found in DOM!');
+                }
+            } else {
+                console.log('   ❌ Row not found in DOM!');
             }
-        }
+        });
     }
     
     showTutorialIfNeeded() {

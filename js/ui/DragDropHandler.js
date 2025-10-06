@@ -261,15 +261,18 @@ export class DragDropHandler {
                 
                 this.game.updateDiePosition(rowIndex, newDieIndex, snappedPos.x, snappedPos.y);
                 
-                // Check if wild cube without selection - auto-show popover
+                // Check if wild cube without selection - auto-show popover (after render)
+                const shouldShowWildPopover = newDie.type === 'wild' && !newDie.selectedOperator;
                 console.log('🎲 Dropped die:', newDie.type, 'selectedOperator:', newDie.selectedOperator);
-                if (newDie.type === 'wild' && !newDie.selectedOperator && this.onWildCubeDrop) {
-                    console.log('🎯 Auto-showing wild cube popover');
-                    this.onWildCubeDrop(rowIndex, newDieIndex);
-                }
                 
                 this.draggedDie = null;
-                this.onDrop();
+                this.onDrop(); // Render first!
+                
+                // Now show wild cube popover if needed (after DOM is updated)
+                if (shouldShowWildPopover && this.onWildCubeDrop) {
+                    console.log('🎯 Auto-showing wild cube popover (after render)');
+                    this.onWildCubeDrop(rowIndex, newDieIndex);
+                }
             }
         });
         
@@ -301,15 +304,18 @@ export class DragDropHandler {
                     
                     this.game.updateDiePosition(rowIndex, newDieIndex, snappedPos.x, snappedPos.y);
                     
-                    // Check if wild cube without selection - auto-show popover
+                    // Check if wild cube without selection - auto-show popover (after render)
+                    const shouldShowWildPopover = newDie.type === 'wild' && !newDie.selectedOperator;
                     console.log('🎲 Dropped die (mobile):', newDie.type, 'selectedOperator:', newDie.selectedOperator);
-                    if (newDie.type === 'wild' && !newDie.selectedOperator && this.onWildCubeDrop) {
-                        console.log('🎯 Auto-showing wild cube popover (mobile)');
-                        this.onWildCubeDrop(rowIndex, newDieIndex);
-                    }
                     
                     this.draggedDie = null;
-                    this.onDrop();
+                    this.onDrop(); // Render first!
+                    
+                    // Now show wild cube popover if needed (after DOM is updated)
+                    if (shouldShowWildPopover && this.onWildCubeDrop) {
+                        console.log('🎯 Auto-showing wild cube popover (mobile, after render)');
+                        this.onWildCubeDrop(rowIndex, newDieIndex);
+                    }
                 }
                 
                 if (this.sourceDieElement) {
