@@ -88,10 +88,15 @@ export class ScenarioManager {
         // Convert card indices to card objects
         const cards = this.cardsFromIndices(scenario.cards);
         
+        console.log('   Scenario goal:', scenario.goal);
+        console.log('   Game goalCards before:', this.game.goalCards);
+        
         // Apply to game state
         this.game.cards = cards;
         this.game.dice = scenario.dice;
-        this.game.goal = scenario.goal;
+        this.game.goalCards = scenario.goal;  // Use goalCards, not goal!
+        
+        console.log('   Game goalCards after:', this.game.goalCards);
         
         // Reset card states
         this.game.cardStates = new Array(8).fill('normal');
@@ -104,7 +109,7 @@ export class ScenarioManager {
         
         console.log('   Cards:', cards.length);
         console.log('   Dice:', scenario.dice.length);
-        console.log('   Goal:', scenario.goal);
+        console.log('   Goal (final check):', this.game.goalCards);
     }
     
     /**
