@@ -15,8 +15,10 @@ export class TutorialManager {
         this.stepBadgeEl = document.getElementById('tutorial-step-badge');
         this.instructionTextEl = document.getElementById('tutorial-instruction-text');
         this.skipBtn = document.getElementById('tutorial-skip-btn');
+        this.nextBtn = document.getElementById('tutorial-next-btn');
         
         this.skipBtn.addEventListener('click', () => this.skip());
+        this.nextBtn.addEventListener('click', () => this.handleNextClick());
     }
     
     start(scenarioData) {
@@ -70,13 +72,27 @@ export class TutorialManager {
         // Show instruction
         this.instructionEl.classList.remove('hidden');
         
-        // Handle progression
-        if (step.nextTrigger === 'auto') {
-            setTimeout(() => this.nextStep(), step.duration || 3000);
-        } else if (step.nextTrigger === 'validation') {
+        // Handle progression based on step type
+        if (step.nextTrigger === 'validation') {
+            // Hide Next button, wait for user to complete action
+            this.nextBtn.style.display = 'none';
             this.startValidationLoop(step.validation);
         } else if (step.nextTrigger === 'submit') {
-            // Will be advanced by submit handler
+            // Hide Next button, wait for GO button click
+            this.nextBtn.style.display = 'none';
+        } else {
+            // Show Next button for manual progression (including 'auto' steps)
+            this.nextBtn.style.display = 'block';
+        }
+    }
+    
+    handleNextClick() {
+        const step = this.scenario?.walkthrough?.steps[this.currentStep];
+        if (!step) return;
+        
+        // Only allow Next for non-validation, non-submit steps
+        if (step.nextTrigger !== 'validation' && step.nextTrigger !== 'submit') {
+            this.nextStep();
         }
     }
     

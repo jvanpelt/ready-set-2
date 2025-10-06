@@ -1290,14 +1290,14 @@ body {
 /* Tutorial Instruction (Floating) */
 .tutorial-instruction {
     position: fixed;
-    background: rgba(0, 0, 0, 0.95);
-    color: white;
-    padding: 16px 20px;
-    border-radius: 12px;
-    max-width: 350px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #333;
+    padding: 20px 24px;
+    border-radius: 16px;
+    max-width: 400px;
     z-index: 1500;
     pointer-events: none;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 2px rgba(0,0,0,0.1);
     animation: fadeInUp 0.3s ease;
 }
 
@@ -1317,30 +1317,56 @@ body {
     font-size: 12px;
     font-weight: bold;
     display: inline-block;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
 }
 
 .tutorial-instruction p {
-    margin: 8px 0;
+    margin: 8px 0 16px 0;
     font-size: 16px;
-    line-height: 1.4;
+    line-height: 1.5;
+    color: #222;
+}
+
+.tutorial-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 12px;
+}
+
+.tutorial-next-btn {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tutorial-next-btn:hover {
+    background: linear-gradient(135deg, #45a049, #3d8b40);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
 }
 
 .tutorial-skip-btn {
     background: transparent;
-    border: 1px solid rgba(255,255,255,0.3);
-    color: white;
-    padding: 6px 12px;
-    border-radius: 6px;
+    border: 1px solid rgba(0,0,0,0.2);
+    color: #666;
+    padding: 8px 16px;
+    border-radius: 8px;
     font-size: 13px;
-    margin-top: 8px;
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .tutorial-skip-btn:hover {
-    background: rgba(255,255,255,0.1);
-    border-color: rgba(255,255,255,0.5);
+    background: rgba(0,0,0,0.05);
+    border-color: rgba(0,0,0,0.3);
+    color: #333;
 }
 
 /* Tutorial highlights */
