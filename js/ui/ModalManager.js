@@ -89,7 +89,27 @@ export class ModalManager {
         this.resultTitle.textContent = title;
         this.resultMessage.textContent = message;
         this.resultScore.textContent = `+${points} points!`;
+        this.resultScore.style.display = 'block';
         this.resultModal.classList.remove('hidden');
+    }
+    
+    /**
+     * Show tutorial completion modal (no points)
+     */
+    showTutorialComplete(onContinue) {
+        this.resultTitle.textContent = '🎓 Tutorial Complete!';
+        this.resultMessage.textContent = 'Great job! Now you\'ve got it. Let\'s play for real!';
+        this.resultScore.style.display = 'none'; // Hide points for tutorial
+        this.resultModal.classList.remove('hidden');
+        
+        // Override the continue button to call onContinue callback
+        const continueBtn = document.getElementById('result-continue');
+        const handler = () => {
+            this.resultModal.classList.add('hidden');
+            continueBtn.removeEventListener('click', handler);
+            onContinue();
+        };
+        continueBtn.addEventListener('click', handler);
     }
     
     /**

@@ -221,12 +221,19 @@ export class TutorialManager {
     skip() {
         console.log('⏭️ Tutorial skipped');
         this.cleanup();
+        // Reset to a fresh round after skipping tutorial
+        this.game.resetRound();
+        this.ui.render();
     }
     
     complete() {
         console.log('✅ Tutorial complete!');
         this.cleanup();
-        // Could show completion modal here
+        // Show completion modal, then reset to fresh round
+        this.ui.modals.showTutorialComplete(() => {
+            this.game.resetRound();
+            this.ui.render();
+        });
     }
     
     cleanup() {

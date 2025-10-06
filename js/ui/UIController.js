@@ -203,9 +203,10 @@ export class UIController {
     }
     
     handleGo() {
-        // Check if tutorial is active
+        // Check if tutorial is active - don't submit/score during tutorial
         if (this.tutorialManager.isActive) {
             this.tutorialManager.advanceOnSubmit();
+            return; // Exit early - tutorial handles completion
         }
         
         const result = this.game.submitSolution();
