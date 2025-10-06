@@ -641,6 +641,8 @@ body {
     padding: 40px;
     max-width: 500px;
     width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
@@ -907,9 +909,51 @@ body {
 /* Puzzle Builder */
 .builder-section {
     background: rgba(0, 0, 0, 0.3);
-    padding: 15px;
     border-radius: 8px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s;
+}
+
+.builder-section[open] {
+    border-color: #4CAF50;
+}
+
+.builder-section summary {
+    padding: 12px 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #4CAF50;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.builder-section summary::-webkit-details-marker {
+    display: none;
+}
+
+.builder-section summary:hover {
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.builder-section summary::before {
+    content: '▶';
+    display: inline-block;
+    margin-right: 10px;
+    transition: transform 0.2s;
+    font-size: 14px;
+}
+
+.builder-section[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.builder-section-content {
+    padding: 0 15px 15px 15px;
 }
 
 .builder-section h3 {
