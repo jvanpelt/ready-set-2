@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Ready, Set 2 - Set Theory Puzzle Game</title>
-    <link rel="stylesheet" href="css/styles.css?v=2.15.3">
+    <link rel="stylesheet" href="css/styles.css?v=2.16.0">
 </head>
 <body>
     <div id="app">
@@ -86,6 +86,7 @@
                 <div id="menu-main-view">
                     <h2>Menu</h2>
                     <button id="settings-btn" class="btn btn-primary">Settings</button>
+                    <button id="puzzle-builder-btn" class="btn btn-primary">🛠️ Puzzle Builder</button>
                     <button id="tutorial-btn" class="btn btn-secondary">How to Play</button>
                     <button id="new-game-btn" class="btn btn-secondary">New Game</button>
                     <button id="resume-btn" class="btn btn-success">Resume</button>
@@ -126,6 +127,84 @@
                 </div>
                 <button id="settings-back-btn" class="btn btn-secondary">Back</button>
             </div>
+
+            <!-- Puzzle Builder View -->
+            <div id="menu-builder-view" class="hidden">
+                <h2>🛠️ Puzzle Builder</h2>
+                <p style="margin-bottom: 20px; opacity: 0.8; font-size: 14px;">
+                    Create custom puzzles for testing or export as tutorial scenarios.
+                </p>
+                
+                <!-- Card Selector -->
+                <div class="builder-section">
+                    <h3>1. Select 8 Cards</h3>
+                    <div id="card-palette" class="card-palette">
+                        <!-- Will be populated dynamically with all 16 possible cards -->
+                    </div>
+                    <div class="builder-info">
+                        Selected: <span id="selected-card-count">0</span> / 8
+                    </div>
+                </div>
+                
+                <!-- Dice Selector -->
+                <div class="builder-section">
+                    <h3>2. Select Dice</h3>
+                    <div class="builder-subsection">
+                        <strong>Colors (select 4):</strong>
+                        <div id="color-selector" class="dice-selector">
+                            <!-- Will be populated dynamically -->
+                        </div>
+                        <div class="builder-info">
+                            Selected: <span id="selected-color-count">0</span> / 4
+                        </div>
+                    </div>
+                    <div class="builder-subsection">
+                        <strong>Operators (select 2+):</strong>
+                        <div id="operator-selector" class="dice-selector">
+                            <!-- Will be populated dynamically -->
+                        </div>
+                    </div>
+                    <div class="builder-subsection">
+                        <strong>Special Flags:</strong>
+                        <div id="special-flags" class="dice-selector">
+                            <!-- Will be populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Goal Selector -->
+                <div class="builder-section">
+                    <h3>3. Set Goal</h3>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <label>Target number of cards:</label>
+                        <select id="goal-selector" class="level-select">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3" selected>3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Actions -->
+                <div class="builder-section">
+                    <h3>4. Actions</h3>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <button id="load-scenario-btn" class="btn btn-primary">📋 Load Scenario</button>
+                        <button id="test-solution-btn" class="btn btn-success">🔍 Check for Solutions</button>
+                        <button id="export-json-btn" class="btn btn-secondary">💾 Export as JSON</button>
+                        <button id="save-scenario-btn" class="btn btn-secondary">💾 Save to Browser</button>
+                    </div>
+                    <div id="test-results" class="builder-results hidden">
+                        <!-- Test results will appear here -->
+                    </div>
+                </div>
+                
+                <button id="builder-back-btn" class="btn btn-secondary">Back</button>
+            </div>
             </div>
         </div>
 
@@ -157,7 +236,7 @@
         </div>
     </div>
 
-    <script type="module" src="js/main.js?v=2.15.3"></script>
+    <script type="module" src="js/main.js?v=2.16.0"></script>
 </body>
 </html>
 

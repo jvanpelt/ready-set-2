@@ -4,6 +4,7 @@ import { UIRenderer } from './UIRenderer.js';
 import { DragDropHandler } from './DragDropHandler.js';
 import { ModalManager } from './ModalManager.js';
 import { WildCubeManager } from './WildCubeManager.js';
+import { PuzzleBuilderManager } from './PuzzleBuilderManager.js';
 import { evaluateExpression, hasRestriction, evaluateRestriction } from '../setTheory.js';
 import { hasPossibleSolution } from '../solutionFinder.js';
 import { getLevelConfig } from '../levels.js';
@@ -20,6 +21,7 @@ export class UIController {
             this.render();
             this.evaluateSolutionHelper(); // Update cards after wild cube selection
         });
+        this.builderManager = new PuzzleBuilderManager(game, this);
         
         // Load settings
         this.settings = this.game.storage.loadSettings();
@@ -157,6 +159,10 @@ export class UIController {
         // Settings
         document.getElementById('settings-btn').addEventListener('click', () => this.modals.showSettings());
         document.getElementById('settings-back-btn').addEventListener('click', () => this.modals.hideSettings());
+        
+        // Puzzle Builder
+        document.getElementById('puzzle-builder-btn').addEventListener('click', () => this.modals.showBuilder());
+        document.getElementById('builder-back-btn').addEventListener('click', () => this.modals.hideBuilder());
         
         this.solutionHelperToggle.addEventListener('change', (e) => {
             this.settings.solutionHelper = e.target.checked;

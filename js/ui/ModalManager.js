@@ -22,6 +22,7 @@ export class ModalManager {
         this.menuModal = document.getElementById('menu-modal');
         this.menuMainView = document.getElementById('menu-main-view');
         this.menuSettingsView = document.getElementById('menu-settings-view');
+        this.menuBuilderView = document.getElementById('menu-builder-view');
         
         // Pass confirmation
         this.passModal = document.getElementById('pass-modal');
@@ -103,6 +104,7 @@ export class ModalManager {
         this.menuModal.classList.remove('hidden');
         this.menuMainView.classList.remove('hidden');
         this.menuSettingsView.classList.add('hidden');
+        this.menuBuilderView.classList.add('hidden');
     }
     
     /**
@@ -112,6 +114,7 @@ export class ModalManager {
         this.menuModal.classList.add('hidden');
         this.menuMainView.classList.remove('hidden');
         this.menuSettingsView.classList.add('hidden');
+        this.menuBuilderView.classList.add('hidden');
     }
     
     /**
@@ -120,6 +123,7 @@ export class ModalManager {
     showSettings() {
         this.menuMainView.classList.add('hidden');
         this.menuSettingsView.classList.remove('hidden');
+        this.menuBuilderView.classList.add('hidden');
         // Update level selector to current level
         this.levelSelector.value = this.game.level.toString();
     }
@@ -130,6 +134,25 @@ export class ModalManager {
     hideSettings() {
         this.menuMainView.classList.remove('hidden');
         this.menuSettingsView.classList.add('hidden');
+        this.menuBuilderView.classList.add('hidden');
+    }
+    
+    /**
+     * Show puzzle builder view within menu
+     */
+    showBuilder() {
+        this.menuMainView.classList.add('hidden');
+        this.menuSettingsView.classList.add('hidden');
+        this.menuBuilderView.classList.remove('hidden');
+    }
+    
+    /**
+     * Hide builder view, return to main menu
+     */
+    hideBuilder() {
+        this.menuMainView.classList.remove('hidden');
+        this.menuSettingsView.classList.add('hidden');
+        this.menuBuilderView.classList.add('hidden');
     }
     
     /**
