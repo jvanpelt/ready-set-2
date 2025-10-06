@@ -39,8 +39,18 @@ export class UIController {
         );
         
         // Wire up timer callbacks (Level 7+)
-        this.game.onTimerTick = (timeRemaining) => this.updateTimer(timeRemaining);
+        this.game.onTimerTick = (timeRemaining) => {
+            console.log('⏱️ Timer tick callback:', timeRemaining);
+            this.updateTimer(timeRemaining);
+        };
         this.game.onTimeout = () => this.handleTimeout();
+        
+        // If timer is already running (restored from saved state), trigger immediate update
+        if (this.game.timeRemaining !== null) {
+            console.log('⏱️ Timer already running on init, remaining:', this.game.timeRemaining);
+            console.log('   Timer interval active?', this.game.timerInterval !== null);
+            this.updateTimer(this.game.timeRemaining);
+        }
     }
     
     initElements() {
@@ -458,6 +468,12 @@ export class UIController {
     }
     
     updateTimer(timeRemaining) {
+        // Defensive check - elements might not be initialized yet
+        if (!this.timerValue) {
+            console.warn('Timer value element not initialized yet');
+            return;
+        }
+        
         // Update timer display
         this.timerValue.textContent = timeRemaining;
         
