@@ -275,6 +275,10 @@ export class PuzzleBuilderManager {
     buildDiceArray() {
         const dice = [];
         
+        console.log('🎲 Building dice array...');
+        console.log('   Selected colors:', this.selectedColors);
+        console.log('   Selected operators:', this.selectedOperators);
+        
         // Add color dice
         this.selectedColors.forEach((color, index) => {
             dice.push({
@@ -287,7 +291,9 @@ export class PuzzleBuilderManager {
         
         // Add operator dice
         this.selectedOperators.forEach((operatorName, index) => {
+            console.log('   Looking for operator:', operatorName);
             const operator = Object.values(OPERATORS).find(op => op.name === operatorName);
+            console.log('   Found:', operator);
             if (operator) {
                 dice.push({
                     type: operator.type || 'operator',
@@ -345,7 +351,9 @@ export class PuzzleBuilderManager {
         }
         
         const goal = parseInt(document.getElementById('goal-selector').value);
+        console.log('📊 Goal selected:', goal);
         const dice = this.buildDiceArray();
+        console.log('📦 Final dice array:', dice);
         
         const scenario = this.scenarioManager.createScenario(
             this.selectedCards,
