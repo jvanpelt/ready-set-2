@@ -549,12 +549,26 @@ export class UIController {
         const wildCubes = this.solutionArea.querySelectorAll('.solution-die.wild');
         
         wildCubes.forEach(dieEl => {
-            dieEl.addEventListener('click', () => {
-                const rowIndex = parseInt(dieEl.closest('.solution-row').dataset.row);
-                const dieIndex = parseInt(dieEl.dataset.index);
+            // Use a click timer to distinguish single-click from double-click
+            let clickTimer = null;
+            
+            dieEl.addEventListener('click', (e) => {
+                // Clear any pending single-click
+                if (clickTimer) {
+                    clearTimeout(clickTimer);
+                    clickTimer = null;
+                    return; // This is part of a double-click, ignore it
+                }
                 
-                // Show the popover
-                this.wildCubeManager.show(dieEl, rowIndex, dieIndex);
+                // Wait to see if this is a double-click
+                clickTimer = setTimeout(() => {
+                    clickTimer = null;
+                    
+                    // This is a confirmed single-click - show popover
+                    const rowIndex = parseInt(dieEl.closest('.solution-row').dataset.row);
+                    const dieIndex = parseInt(dieEl.dataset.index);
+                    this.wildCubeManager.show(dieEl, rowIndex, dieIndex);
+                }, 250); // Standard double-click threshold
             });
         });
     }
@@ -563,13 +577,16 @@ export class UIController {
      * Show wild cube popover by rowIndex and dieIndex (for auto-show on drop)
      */
     showWildCubePopoverByIndex(rowIndex, dieIndex) {
+        console.log('🎯 showWildCubePopoverByIndex called:', rowIndex, dieIndex);
         // Find the die element in the DOM
         const row = this.solutionArea.querySelector(`.solution-row[data-row="${rowIndex}"]`);
         if (row) {
             const dieEl = row.querySelector(`.solution-die[data-index="${dieIndex}"]`);
+            console.log('   Found die element?', !!dieEl);
             if (dieEl) {
                 // Small delay to ensure DOM is fully rendered
                 setTimeout(() => {
+                    console.log('   Showing popover now');
                     this.wildCubeManager.show(dieEl, rowIndex, dieIndex);
                 }, 50);
             }
