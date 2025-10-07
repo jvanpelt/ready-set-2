@@ -139,13 +139,16 @@ export class TutorialManager {
         if (step.nextTrigger === 'validation') {
             // Hide Next button, wait for user to complete action
             this.nextBtn.style.display = 'none';
+            this.skipBtn.style.display = 'inline-block'; // Keep Skip visible
             this.startValidationLoop(step.validation);
         } else if (step.nextTrigger === 'submit') {
-            // Hide Next button, wait for GO button click
+            // Hide Next button and Skip button - user must submit
             this.nextBtn.style.display = 'none';
+            this.skipBtn.style.display = 'none';
         } else {
             // Show Next button for manual progression (including 'auto' steps)
             this.nextBtn.style.display = 'block';
+            this.skipBtn.style.display = 'inline-block'; // Keep Skip visible
         }
     }
     
