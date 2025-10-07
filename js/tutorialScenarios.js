@@ -685,17 +685,21 @@ export const TUTORIAL_SCENARIOS = {
     },
     
     7: {
-        // Level 7: Timer (simple explanation tutorial)
-        cards: [1, 2, 3, 4, 5, 8, 9, 10],
+        // Level 7: Timer + Padding trick (Red ∩ Red = Red)
+        // Cards: 1=yellow, 2=green, 4=blue, 8=red, 10=red+green, 12=red+blue, 14=red+blue+green
+        // Solution: (Red ∩ Red) ∪ Green = Red ∪ Green = 5 cards (2,8,10,12,14)
+        // Uses 5 cubes instead of 3!
+        cards: [1, 2, 4, 8, 10, 12, 14],
         dice: [
-            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-7-red' },
+            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-7-red-1' },
+            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-7-intersect-1' },
+            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-7-red-2' },
             { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-7-union' },
-            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-7-blue' },
-            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-7-intersect' },
             { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-7-green' },
-            { type: 'operator', value: '−', name: 'DIFFERENCE', id: 'tutorial-7-diff' }
+            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-7-blue' }
         ],
         goal: 5,
+        expectedSolution: ['red', '∩', 'red', '∪', 'green'],
         
         walkthrough: {
             enabled: true,
@@ -722,43 +726,64 @@ export const TUTORIAL_SCENARIOS = {
                     duration: 4000
                 },
                 {
-                    id: 'explain-strategy',
-                    message: 'Work quickly, but don\'t panic! Sometimes a simple solution is better than a complex one.',
+                    id: 'explain-padding-trick',
+                    message: 'Here\'s a useful trick: <strong>Red ∩ Red = Red</strong>. It doesn\'t change the result, but uses more cubes = more points!',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
                 },
                 {
-                    id: 'practice',
-                    message: 'Let\'s practice quickly. Goal: <strong>5 cards</strong>. Build "Red Union Blue".',
+                    id: 'goal',
+                    message: 'Goal: <strong>5 cards</strong>. We could just use "Red ∪ Green" (3 cubes), but let\'s pad it with "Red ∩ Red" first!',
                     highlight: { goal: true },
                     nextTrigger: 'auto',
-                    duration: 3000
+                    duration: 4000
                 },
                 {
-                    id: 'drag-red',
-                    message: 'Drag <strong>RED</strong>.',
+                    id: 'drag-red-1',
+                    message: 'Drag the first <strong>RED</strong> cube.',
                     highlight: { dice: [0] },
                     validation: (game) => game.solutions[1].some(die => die.value === 'red'),
                     nextTrigger: 'validation'
                 },
                 {
-                    id: 'drag-union',
-                    message: 'Drag <strong>UNION</strong>.',
+                    id: 'drag-intersect',
+                    message: 'Drag <strong>INTERSECTION</strong>.',
                     highlight: { dice: [1] },
+                    validation: (game) => game.solutions[1].some(die => die.value === '∩'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-red-2',
+                    message: 'Drag the second <strong>RED</strong> cube. Now we have "Red ∩ Red" which equals just "Red"!',
+                    highlight: { dice: [2] },
+                    validation: (game) => game.solutions[1].filter(die => die.value === 'red').length >= 2,
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-union',
+                    message: 'Now add <strong>UNION</strong> to combine with another color.',
+                    highlight: { dice: [3] },
                     validation: (game) => game.solutions[1].some(die => die.value === '∪'),
                     nextTrigger: 'validation'
                 },
                 {
-                    id: 'drag-blue',
-                    message: 'Drag <strong>BLUE</strong>.',
-                    highlight: { dice: [2] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'blue'),
+                    id: 'drag-green',
+                    message: 'Finally, add <strong>GREEN</strong>. We have "(Red ∩ Red) ∪ Green" = 5 cubes!',
+                    highlight: { dice: [4] },
+                    validation: (game) => game.solutions[1].some(die => die.value === 'green'),
                     nextTrigger: 'validation'
                 },
                 {
+                    id: 'explain-result',
+                    message: 'Perfect! Same result as "Red ∪ Green", but <strong>5 cubes instead of 3</strong> = way more points!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
                     id: 'submit',
-                    message: 'Beat the clock! Click <strong>GO!</strong>',
+                    message: 'This trick works at ANY level! Beat the clock! Click <strong>GO!</strong>',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'submit'
