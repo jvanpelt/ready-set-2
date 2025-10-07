@@ -672,6 +672,18 @@ body {
     width: auto;
 }
 
+/* Menu Level Indicator */
+.menu-level-indicator {
+    text-align: center;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    margin: -10px 0 20px 0;
+}
+
+.menu-level-indicator strong {
+    color: #fff;
+}
+
 /* Menu List (vertical stacking) */
 .menu-list {
     list-style: none;

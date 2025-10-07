@@ -177,6 +177,12 @@ export class ModalManager {
         this.menuMainView.classList.remove('hidden');
         this.menuSettingsView.classList.add('hidden');
         this.menuBuilderView.classList.add('hidden');
+        
+        // Update level indicator
+        const menuLevelEl = document.getElementById('menu-current-level');
+        if (menuLevelEl) {
+            menuLevelEl.textContent = this.game.level;
+        }
     }
     
     /**
