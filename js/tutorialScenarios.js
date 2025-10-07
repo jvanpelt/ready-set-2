@@ -728,17 +728,10 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-padding',
-                    message: 'Here\'s a trick: <strong>Red ∩ Red = Red</strong>. Uses 2 extra cubes but same result = more points!',
+                    message: 'But while we\'re here, a trick! <strong>Red ∩ Red = Red</strong> uses 2 extra cubes for the same result as a single <strong>Red</strong> cube.',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
-                },
-                {
-                    id: 'explain-grouping-matters',
-                    message: 'But <strong>GROUPING MATTERS</strong>! Let\'s see why...',
-                    highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 3000
                 },
                 {
                     id: 'goal',
@@ -866,17 +859,21 @@ export const TUTORIAL_SCENARIOS = {
     },
     
     8: {
-        // Level 8: Required cubes
-        cards: [1, 2, 3, 4, 5, 8, 9, 10],
+        // Level 8: Required cubes (Red is required)
+        // Cards: 1=yellow, 2=green, 3=green+yellow, 4=blue, 5=blue+yellow, 8=red, 9=red+yellow, 10=red+green
+        // Solution: Red ∪ Blue = 5 cards (4,5,8,9,12,13,14 - wait, need to verify)
+        // Actually simpler: Red ∪ Green = 5 cards
+        cards: [1, 2, 4, 5, 8, 9, 10, 12],
         dice: [
-            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-8-red' },
+            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-8-red', isRequired: true },
             { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-8-union' },
-            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-8-blue' },
-            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-8-intersect' },
             { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-8-green' },
-            { type: 'operator', value: '−', name: 'DIFFERENCE', id: 'tutorial-8-diff' }
+            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-8-intersect' },
+            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-8-blue' },
+            { type: 'color', value: 'gold', name: 'YELLOW', id: 'tutorial-8-yellow' }
         ],
         goal: 5,
+        expectedSolution: ['red', '∪', 'green'],
         
         walkthrough: {
             enabled: true,
@@ -891,7 +888,7 @@ export const TUTORIAL_SCENARIOS = {
                 {
                     id: 'explain-required',
                     message: '<strong>Required cubes</strong> have a green border and glow. You MUST use them in your solution!',
-                    highlight: null,
+                    highlight: { dice: [0] },
                     nextTrigger: 'auto',
                     duration: 4000
                 },
@@ -911,14 +908,14 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'practice',
-                    message: 'Let\'s practice. Goal: <strong>5 cards</strong>. Build "Red Union Blue".',
+                    message: 'Let\'s practice. Goal: <strong>5 cards</strong>. Build "Red ∪ Green" using the required cube.',
                     highlight: { goal: true },
                     nextTrigger: 'auto',
                     duration: 3000
                 },
                 {
                     id: 'drag-red',
-                    message: 'Drag <strong>RED</strong>.',
+                    message: 'Drag the <strong>RED</strong> required cube to the <strong>BOTTOM ROW</strong>.',
                     highlight: { dice: [0] },
                     validation: (game) => game.solutions[1].some(die => die.value === 'red'),
                     nextTrigger: 'validation'
@@ -931,10 +928,10 @@ export const TUTORIAL_SCENARIOS = {
                     nextTrigger: 'validation'
                 },
                 {
-                    id: 'drag-blue',
-                    message: 'Drag <strong>BLUE</strong>.',
+                    id: 'drag-green',
+                    message: 'Drag <strong>GREEN</strong>.',
                     highlight: { dice: [2] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'blue'),
+                    validation: (game) => game.solutions[1].some(die => die.value === 'green'),
                     nextTrigger: 'validation'
                 },
                 {
