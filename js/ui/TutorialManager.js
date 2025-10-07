@@ -247,27 +247,81 @@ export class TutorialManager {
     validateExpectedDice() {
         // Check if the solution uses the exact dice specified in expectedSolution
         const expected = this.scenario.expectedSolution;
-        const actual = this.game.solutions[1].map(die => die.value); // Row 1 (Set Name)
         
         console.log('🎓 Validating expected dice:');
         console.log('   Expected:', expected);
-        console.log('   Actual:', actual);
         
-        // Check if arrays match (same values in same order)
-        if (actual.length !== expected.length) {
-            console.log('   ❌ Wrong number of dice');
-            return false;
-        }
+        // Handle two formats:
+        // 1. Array (old format - levels 1-5): expectedSolution: ['red', '∪', 'blue']
+        // 2. Object (new format - level 6+): expectedSolution: { restriction: [...], setName: [...] }
         
-        for (let i = 0; i < expected.length; i++) {
-            if (actual[i] !== expected[i]) {
-                console.log(`   ❌ Mismatch at position ${i}: expected "${expected[i]}", got "${actual[i]}"`);
+        if (Array.isArray(expected)) {
+            // Old format: validate row 1 (set name)
+            const actual = this.game.solutions[1].map(die => die.value);
+            console.log('   Actual (set name):', actual);
+            
+            if (actual.length !== expected.length) {
+                console.log('   ❌ Wrong number of dice');
                 return false;
             }
+            
+            for (let i = 0; i < expected.length; i++) {
+                if (actual[i] !== expected[i]) {
+                    console.log(`   ❌ Mismatch at position ${i}: expected "${expected[i]}", got "${actual[i]}"`);
+                    return false;
+                }
+            }
+            
+            console.log('   ✅ Dice match!');
+            return true;
+        } else {
+            // New format: validate both restriction and set name
+            let valid = true;
+            
+            // Validate restriction (row 0)
+            if (expected.restriction) {
+                const actualRestriction = this.game.solutions[0].map(die => die.value);
+                console.log('   Expected restriction:', expected.restriction);
+                console.log('   Actual restriction:', actualRestriction);
+                
+                if (actualRestriction.length !== expected.restriction.length) {
+                    console.log('   ❌ Wrong number of restriction dice');
+                    valid = false;
+                } else {
+                    for (let i = 0; i < expected.restriction.length; i++) {
+                        if (actualRestriction[i] !== expected.restriction[i]) {
+                            console.log(`   ❌ Restriction mismatch at position ${i}: expected "${expected.restriction[i]}", got "${actualRestriction[i]}"`);
+                            valid = false;
+                        }
+                    }
+                }
+            }
+            
+            // Validate set name (row 1)
+            if (expected.setName) {
+                const actualSetName = this.game.solutions[1].map(die => die.value);
+                console.log('   Expected set name:', expected.setName);
+                console.log('   Actual set name:', actualSetName);
+                
+                if (actualSetName.length !== expected.setName.length) {
+                    console.log('   ❌ Wrong number of set name dice');
+                    valid = false;
+                } else {
+                    for (let i = 0; i < expected.setName.length; i++) {
+                        if (actualSetName[i] !== expected.setName[i]) {
+                            console.log(`   ❌ Set name mismatch at position ${i}: expected "${expected.setName[i]}", got "${actualSetName[i]}"`);
+                            valid = false;
+                        }
+                    }
+                }
+            }
+            
+            if (valid) {
+                console.log('   ✅ All dice match!');
+            }
+            
+            return valid;
         }
-        
-        console.log('   ✅ Dice match!');
-        return true;
     }
     
     skip() {

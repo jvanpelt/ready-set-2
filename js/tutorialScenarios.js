@@ -552,87 +552,130 @@ export const TUTORIAL_SCENARIOS = {
     },
     
     6: {
-        // Level 6: Restrictions (simpler tutorial - just explain, don't force use)
-        cards: [1, 2, 3, 4, 5, 8, 9, 10],
+        // Level 6: Restrictions - demonstrate Red ⊆ Blue
+        // Cards: 1=yellow, 2=green, 4=blue, 6=blue+green, 8=red, 12=red+blue, 13=red+blue+yellow, 14=red+blue+green
+        // Red ⊆ Blue removes: card 8 (red only, no blue)
+        // Remaining: 7 cards (1,2,4,6,12,13,14)
+        // Goal: 4 cards = green ∪ yellow (after restriction)
+        cards: [1, 2, 4, 6, 8, 12, 13, 14],
         dice: [
             { type: 'color', value: 'red', name: 'RED', id: 'tutorial-6-red' },
-            { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-6-union' },
+            { type: 'restriction', value: '⊆', name: 'SUBSET', id: 'tutorial-6-subset' },
             { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-6-blue' },
             { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-6-green' },
-            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-6-intersect' },
-            { type: 'color', value: 'gold', name: 'GOLD', id: 'tutorial-6-gold' }
+            { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-6-union' },
+            { type: 'color', value: 'gold', name: 'YELLOW', id: 'tutorial-6-yellow' }
         ],
-        goal: 5,
+        goal: 4,
+        expectedSolution: {
+            restriction: ['red', '⊆', 'blue'],
+            setName: ['green', '∪', 'gold']
+        },
         
         walkthrough: {
             enabled: true,
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome to Level 6! <strong>Restrictions</strong> change everything. This is a game-changer!',
+                    message: 'Welcome to Level 6! <strong>Restrictions</strong> are a game-changer!',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 3000
                 },
                 {
-                    id: 'explain-restrictions',
-                    message: '<strong>Restrictions</strong> (Subset ⊆ and Equals =) modify the universe BEFORE you name a set.',
+                    id: 'explain-two-rows',
+                    message: 'Notice you have <strong>two solution rows</strong> now. TOP = Restrictions, BOTTOM = Set Name.',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
                 },
                 {
                     id: 'explain-subset',
-                    message: '<strong>Subset</strong>: "A ⊆ B" means cards in A must contain B. Violating cards flip out!',
+                    message: '<strong>Subset (⊆)</strong>: "A ⊆ B" means cards in A must also be in B. Cards that violate this are <strong>removed from the universe</strong>.',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 5000
+                },
+                {
+                    id: 'explain-important',
+                    message: '<strong>Key point</strong>: Restrictions ONLY affect cards mentioned in the restriction. Other cards are unaffected!',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
                 },
                 {
-                    id: 'explain-equals',
-                    message: '<strong>Equals</strong>: "A = B" means A and B must be the same. Non-matching cards flip out!',
-                    highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
-                },
-                {
-                    id: 'explain-rows',
-                    message: 'Use the TOP row for restrictions, BOTTOM row for your set name. Try it in regular play!',
-                    highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
-                },
-                {
-                    id: 'practice',
-                    message: 'For now, let\'s practice a simple solution. Our goal is <strong>5 cards</strong>: "Red Union Blue".',
+                    id: 'goal',
+                    message: 'Goal: <strong>4 cards</strong>. Let\'s build "Red ⊆ Blue" to remove red-only cards, then name the remaining set.',
                     highlight: { goal: true },
                     nextTrigger: 'auto',
-                    duration: 3000
+                    duration: 4000
                 },
                 {
-                    id: 'drag-red',
-                    message: 'Drag <strong>RED</strong> to the solution.',
+                    id: 'drag-red-restriction',
+                    message: 'Drag <strong>RED</strong> to the <strong>TOP ROW</strong> (Restrictions).',
                     highlight: { dice: [0] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'red'),
+                    validation: (game) => game.solutions[0].some(die => die.value === 'red'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-subset',
+                    message: 'Drag <strong>SUBSET (⊆)</strong> to the TOP ROW.',
+                    highlight: { dice: [1] },
+                    validation: (game) => game.solutions[0].some(die => die.value === '⊆'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-blue-restriction',
+                    message: 'Drag <strong>BLUE</strong> to the TOP ROW.',
+                    highlight: { dice: [2] },
+                    validation: (game) => game.solutions[0].some(die => die.value === 'blue'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'explain-effect',
+                    message: '"Red ⊆ Blue" means: red cards must contain blue. Cards with ONLY red will be <strong>flipped and removed from play</strong>.',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 5000
+                },
+                {
+                    id: 'explain-setname-needed',
+                    message: '<strong>Important</strong>: Restrictions alone aren\'t enough! You must ALSO provide a set name in the BOTTOM ROW.',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'drag-green',
+                    message: 'Now for the set name. Drag <strong>GREEN</strong> to the <strong>BOTTOM ROW</strong>.',
+                    highlight: { dice: [3] },
+                    validation: (game) => game.solutions[1].some(die => die.value === 'green'),
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-union',
-                    message: 'Drag <strong>UNION</strong>.',
-                    highlight: { dice: [1] },
+                    message: 'Drag <strong>UNION (∪)</strong> to the BOTTOM ROW.',
+                    highlight: { dice: [4] },
                     validation: (game) => game.solutions[1].some(die => die.value === '∪'),
                     nextTrigger: 'validation'
                 },
                 {
-                    id: 'drag-blue',
-                    message: 'Drag <strong>BLUE</strong>.',
-                    highlight: { dice: [2] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'blue'),
+                    id: 'drag-yellow',
+                    message: 'Drag <strong>YELLOW</strong> to the BOTTOM ROW.',
+                    highlight: { dice: [5] },
+                    validation: (game) => game.solutions[1].some(die => die.value === 'gold'),
                     nextTrigger: 'validation'
                 },
                 {
+                    id: 'explain-result',
+                    message: 'Perfect! After removing red-only cards, we name the set "Green ∪ Yellow" = 4 cards. 6 cubes total = big points!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
                     id: 'submit',
-                    message: 'Restrictions are powerful! Experiment in real play. Click <strong>GO!</strong>',
+                    message: 'Restrictions unlock massive scores by using more cubes! Click <strong>GO!</strong>',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'submit'
