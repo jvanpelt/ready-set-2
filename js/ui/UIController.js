@@ -52,7 +52,6 @@ export class UIController {
         
         // Wire up timer callbacks (Level 7+)
         this.game.onTimerTick = (timeRemaining) => {
-            console.log('⏱️ Timer tick callback:', timeRemaining);
             this.updateTimer(timeRemaining);
         };
         this.game.onTimeout = () => this.handleTimeout();
