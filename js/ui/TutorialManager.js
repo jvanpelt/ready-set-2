@@ -97,6 +97,10 @@ export class TutorialManager {
         this.currentStep = 0;
         this.isActive = true;
         
+        // Set flag in Game to suppress timer timeout during tutorial
+        this.game.isTutorialActive = true;
+        console.log('⏰ Timer timeout suppressed during tutorial');
+        
         // Save user's Solution Helper preference and force it ON for tutorial
         this.savedSolutionHelperState = this.ui.settings.solutionHelper;
         console.log('💡 Solution Helper: Saved user preference:', this.savedSolutionHelperState);
@@ -361,6 +365,18 @@ export class TutorialManager {
         this.clearHighlights();
         this.instructionEl.classList.add('hidden');
         document.body.classList.remove('tutorial-active');
+        
+        // Clear tutorial flag in Game and handle expired timer
+        this.game.isTutorialActive = false;
+        console.log('⏰ Timer timeout re-enabled');
+        
+        // If timer expired during tutorial, start fresh round
+        if (this.game.timeRemaining !== null && this.game.timeRemaining <= 0) {
+            console.log('⏰ Timer expired during tutorial - starting fresh round');
+            this.game.stopTimer();
+            this.game.generateNewRound();
+            this.ui.render();
+        }
         
         // Restore user's Solution Helper preference
         if (this.savedSolutionHelperState !== null) {
