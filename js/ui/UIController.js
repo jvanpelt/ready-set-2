@@ -182,12 +182,15 @@ export class UIController {
         });
         
         // Test mode: Jump to level
-        this.jumpToLevelBtn.addEventListener('click', () => {
+        this.jumpToLevelBtn.addEventListener('click', async () => {
             const targetLevel = parseInt(document.getElementById('level-selector').value);
             this.game.jumpToLevel(targetLevel);
             this.modals.hideMenu();
             this.render();
             this.clearSolutionHelper();
+            
+            // Show tutorial for this level (if exists)
+            await this.showTutorialForLevel(targetLevel);
         });
         
         // Clear game data
@@ -670,5 +673,35 @@ export class UIController {
             // this.game.storage.markTutorialAsViewed(1);
         }
         // If they decline, just continue with normal gameplay (already rendered)
+    }
+    
+    async showTutorialForLevel(level) {
+        // Check if a tutorial exists for this level
+        const { getTutorialScenario } = await import('../tutorialScenarios.js');
+        const tutorialScenario = getTutorialScenario(level);
+        
+        if (!tutorialScenario) {
+            console.log(`🎓 No tutorial available for Level ${level}`);
+            return;
+        }
+        
+        console.log(`🎓 Showing tutorial for Level ${level}`);
+        
+        // Show interstitial and wait for user choice
+        const wantsTutorial = await this.modals.showInterstitialAsync(level);
+        
+        if (wantsTutorial) {
+            // Start interactive tutorial
+            this.tutorialManager.start(tutorialScenario);
+            
+            // Mark tutorial as viewed (COMMENTED OUT FOR TESTING)
+            // TODO: Uncomment this after testing complete
+            // this.game.storage.markTutorialAsViewed(level);
+        } else {
+            // User declined tutorial
+            // Mark as viewed so they don't see it again (COMMENTED OUT FOR TESTING)
+            // TODO: Uncomment this after testing complete
+            // this.game.storage.markTutorialAsViewed(level);
+        }
     }
 }
