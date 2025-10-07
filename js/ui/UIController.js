@@ -227,6 +227,12 @@ export class UIController {
     }
     
     handleReset() {
+        // Block reset during tutorial
+        if (this.tutorialManager.isActive) {
+            console.log('🎓 Tutorial active - Reset button disabled');
+            return;
+        }
+        
         this.game.clearSolution();
         this.render();
         this.clearSolutionHelper();
@@ -234,6 +240,12 @@ export class UIController {
     
     handlePass() {
         console.log('🔍 handlePass() called - checking for possible solution...');
+        
+        // Block pass during tutorial
+        if (this.tutorialManager.isActive) {
+            console.log('🎓 Tutorial active - Pass button disabled');
+            return;
+        }
         
         // Prevent duplicate processing
         if (this.isProcessingPass) {
