@@ -297,8 +297,8 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'duplicate-operators',
-                    message: 'Look at your dice! You have <strong>TWO Intersection operators</strong>. You can use the same operator multiple times!',
-                    highlight: { dice: [1, 3] },
+                    message: 'Look at your dice! You have <strong>TWO Intersection operators</strong> (the ones with overlapping circles). You can use the same operator multiple times!',
+                    highlight: null,
                     nextTrigger: 'auto',
                     duration: 5000
                 },
