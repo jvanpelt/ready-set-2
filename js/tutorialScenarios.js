@@ -688,8 +688,8 @@ export const TUTORIAL_SCENARIOS = {
         // Level 7: Timer + Grouping matters (Green ∪ (Red ∩ Red))
         // Cards: 1=yellow, 2=green, 4=blue, 5=blue+yellow, 8=red, 10=red+green, 12=red+blue, 14=red+blue+green
         // Solution: Green ∪ (Red ∩ Red) = Green ∪ Red = 5 cards (2,8,10,12,14)
-        // Without grouping: (Green ∪ Red) ∩ Red = just Red = 3 cards (WRONG!)
-        // Teaches: Grouping changes evaluation order
+        // Without grouping: (Green ∪ Red) ∩ Red = just Red = 4 cards (8,10,12,14) (WRONG!)
+        // Teaches: Grouping changes evaluation order + padding trick
         cards: [1, 2, 4, 5, 8, 10, 12, 14],
         dice: [
             { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-7-green' },
@@ -749,49 +749,56 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-green',
-                    message: 'Drag <strong>GREEN</strong> to the <strong>BOTTOM ROW</strong>.',
+                    message: 'Drag <strong>GREEN</strong> to the <strong>BOTTOM ROW</strong>. Keep it spaced out - don\'t group the cubes!',
                     highlight: { dice: [0] },
                     validation: (game) => game.solutions[1].some(die => die.value === 'green'),
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-union',
-                    message: 'Drag <strong>UNION</strong> next to it.',
+                    message: 'Drag <strong>UNION</strong> next to it. Keep them spaced apart.',
                     highlight: { dice: [1] },
                     validation: (game) => game.solutions[1].some(die => die.value === '∪'),
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-red-1',
-                    message: 'Drag the first <strong>RED</strong>.',
+                    message: 'Drag the first <strong>RED</strong>. Keep spacing them out.',
                     highlight: { dice: [2] },
                     validation: (game) => game.solutions[1].some(die => die.value === 'red'),
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-intersect',
-                    message: 'Drag <strong>INTERSECTION</strong>.',
+                    message: 'Drag <strong>INTERSECTION</strong>. Still keeping them apart.',
                     highlight: { dice: [3] },
                     validation: (game) => game.solutions[1].some(die => die.value === '∩'),
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-red-2',
-                    message: 'Drag the second <strong>RED</strong>. Now you have all 5 cubes!',
+                    message: 'Drag the second <strong>RED</strong>. All 5 cubes, nicely spaced!',
                     highlight: { dice: [4] },
                     validation: (game) => game.solutions[1].filter(die => die.value === 'red').length >= 2,
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'check-helper',
-                    message: '<strong>Wait!</strong> Look at Solution Helper - it highlights 3 cards, not 5! Something\'s wrong...',
+                    message: '<strong>Wait!</strong> Look at Solution Helper - it highlights 4 cards, not 5! Something\'s wrong...',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
                 },
                 {
-                    id: 'explain-problem',
-                    message: 'Without grouping, this evaluates left-to-right: "(Green ∪ Red) ∩ Red" = only Red cards!',
+                    id: 'explain-problem-1',
+                    message: 'Without grouping, this evaluates as "Green ∪ Red" first, then "... ∩ Red".',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'explain-problem-2',
+                    message: 'This means "All green or red cards that intersect with red cards" - which displays only red cards!',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
