@@ -220,6 +220,7 @@
 - Tutorial completion rewards/badges
 - Multi-language support for tutorials
 - **Smart grouping indicators**: Only show visual grouping boxes around cubes that form valid logical patterns (e.g., `Red ∪ Blue`), not just physical proximity. Need to consider UX during construction vs completed expressions.
+- **Background solution checking**: Run solution finder in Web Worker after 10-15s of inactivity, cache result for instant Pass feedback. Would improve UX but requires careful performance tuning.
 
 ---
 
