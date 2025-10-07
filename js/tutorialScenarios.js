@@ -429,6 +429,13 @@ export const TUTORIAL_SCENARIOS = {
                     duration: 4000
                 },
                 {
+                    id: 'explain-grouping',
+                    message: '<strong>NEW: Grouping!</strong> When cubes touch, they form a group that acts as one unit. This changes how expressions are evaluated!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
                     id: 'identify-goal',
                     message: 'Our goal is <strong>3 cards</strong>. Let\'s build "Universe minus (Red or Blue)" = all cards with neither red nor blue.',
                     highlight: { goal: true },
@@ -455,7 +462,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-red',
-                    message: 'Add <strong>RED</strong> cube.',
+                    message: 'Add <strong>RED</strong> cube to the right of the Difference cube.',
                     highlight: { dice: [2] },
                     validation: (game) => {
                         return game.solutions[1].some(die => die.value === 'red');
@@ -464,25 +471,54 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-union',
-                    message: 'Add <strong>UNION</strong> cube (∪) - "red OR blue".',
+                    message: 'Add <strong>UNION</strong> cube (∪) - place it <strong>close to RED</strong> so they touch! This groups them.',
                     highlight: { dice: [3] },
                     validation: (game) => {
-                        return game.solutions[1].some(die => die.value === '∪');
+                        // Check that union is in solution AND is grouped with red
+                        const solution = game.solutions[1];
+                        const hasUnion = solution.some(die => die.value === '∪');
+                        if (!hasUnion) return false;
+                        
+                        // Check for grouping - red and union should be adjacent and grouped
+                        const redIndex = solution.findIndex(die => die.value === 'red');
+                        const unionIndex = solution.findIndex(die => die.value === '∪');
+                        
+                        // They should be next to each other
+                        if (Math.abs(redIndex - unionIndex) !== 1) return false;
+                        
+                        // Check if they're in the same group (both should have groupId)
+                        const redDie = solution[redIndex];
+                        const unionDie = solution[unionIndex];
+                        
+                        return redDie.groupId && unionDie.groupId && redDie.groupId === unionDie.groupId;
                     },
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-blue',
-                    message: 'Add <strong>BLUE</strong> cube to complete the expression.',
+                    message: 'Add <strong>BLUE</strong> cube - place it <strong>close to UNION</strong> so all three are grouped together!',
                     highlight: { dice: [4] },
                     validation: (game) => {
-                        return game.solutions[1].some(die => die.value === 'blue');
+                        // Check that blue is in solution AND all three (red, union, blue) are grouped
+                        const solution = game.solutions[1];
+                        const hasBlue = solution.some(die => die.value === 'blue');
+                        if (!hasBlue) return false;
+                        
+                        // Find all three cubes
+                        const redDie = solution.find(die => die.value === 'red');
+                        const unionDie = solution.find(die => die.value === '∪');
+                        const blueDie = solution.find(die => die.value === 'blue');
+                        
+                        // All three should have the same groupId
+                        if (!redDie?.groupId || !unionDie?.groupId || !blueDie?.groupId) return false;
+                        
+                        return redDie.groupId === unionDie.groupId && unionDie.groupId === blueDie.groupId;
                     },
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'explain-result',
-                    message: 'This means "ALL cards minus (red or blue)" = cards with neither! 5 cubes = MORE POINTS! ✓',
+                    message: 'Perfect! The grouped cubes (Red ∪ Blue) act like a single unit. "U minus (Red or Blue)" = cards with neither! 5 cubes = MORE POINTS! ✓',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
