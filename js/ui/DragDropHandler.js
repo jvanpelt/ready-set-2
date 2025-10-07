@@ -486,9 +486,9 @@ export class DragDropHandler {
         console.log('🎓 Step highlight:', currentStep?.highlight);
         
         if (!currentStep || !currentStep.highlight || !currentStep.highlight.dice) {
-            // No dice restrictions on this step, allow all
-            console.log('🎓 No dice restrictions on this step, allowing all');
-            return true;
+            // No dice specified on this step = lock ALL dice during tutorial
+            console.log('🎓 No dice specified on this step, locking ALL dice');
+            return false;
         }
         
         // Get the allowed dice indices
