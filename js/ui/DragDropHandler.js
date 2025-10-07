@@ -262,10 +262,12 @@ export class DragDropHandler {
                 let x = e.clientX - rowRect.left - 40;
                 let y = e.clientY - rowRect.top - 40;
                 
+                console.log('🎲 Adding die to row:', rowIndex, 'die:', this.draggedDie);
                 this.game.addDieToSolution(this.draggedDie, rowIndex, x, y);
                 
                 const newDieIndex = this.game.solutions[rowIndex].length - 1;
                 const newDie = this.game.solutions[rowIndex][newDieIndex];
+                console.log('🎲 After adding - Row', rowIndex, 'now has', this.game.solutions[rowIndex].length, 'dice');
                 const snappedPos = this.smartSnapPosition(newDie, rowIndex, rowRect);
                 
                 this.game.updateDiePosition(rowIndex, newDieIndex, snappedPos.x, snappedPos.y);
