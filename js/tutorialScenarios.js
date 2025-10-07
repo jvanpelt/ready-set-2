@@ -743,7 +743,15 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'drag-red-1',
                     message: 'Drag the first <strong>RED</strong> cube.',
                     highlight: { dice: [0] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'red'),
+                    validation: (game) => {
+                        const hasRed = game.solutions[1].some(die => die.value === 'red');
+                        console.log('🎓 Level 7 - drag-red-1 validation:', {
+                            'Row 1 dice count': game.solutions[1].length,
+                            'Row 1 values': game.solutions[1].map(d => d.value),
+                            'Has red?': hasRed
+                        });
+                        return hasRed;
+                    },
                     nextTrigger: 'validation'
                 },
                 {
