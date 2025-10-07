@@ -268,53 +268,56 @@ export const TUTORIAL_SCENARIOS = {
     },
     
     4: {
-        // Level 4: Recap/mastery (no new mechanics, just practice)
-        // Example: red ∪ blue
-        cards: [1, 2, 3, 4, 5, 8, 9, 10],
+        // Level 4: Duplicate operators - use intersection twice!
+        // Example: red ∩ blue ∩ green = cards with ALL THREE colors
+        // Card 13 = red+blue+green (only 1 card with all three)
+        // Cards: 1=gold, 2=green, 4=blue, 6=blue+green, 8=red, 10=red+green, 12=red+blue, 13=red+blue+green
+        cards: [1, 2, 4, 6, 8, 10, 12, 13],
         dice: [
             { type: 'color', value: 'red', name: 'RED', id: 'tutorial-4-red' },
-            { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-4-union' },
+            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-4-intersect-1' },
             { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-4-blue' },
-            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-4-intersect' },
-            { type: 'operator', value: '−', name: 'DIFFERENCE', id: 'tutorial-4-diff' },
-            { type: 'operator', value: '′', name: 'COMPLEMENT', id: 'tutorial-4-prime' }
+            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-4-intersect-2' },
+            { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-4-green' },
+            { type: 'color', value: 'gold', name: 'YELLOW', id: 'tutorial-4-gold' }
         ],
-        goal: 5,
+        goal: 1,
+        expectedSolution: ['red', '∩', 'blue', '∩', 'green'], // Must use all 5 dice!
         
         walkthrough: {
             enabled: true,
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome to Level 4! No new operators, but things get more interesting...',
+                    message: 'Welcome to Level 4! Time to learn something powerful...',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 3000
                 },
                 {
-                    id: 'recap',
-                    message: 'You now have <strong>all four operators</strong>: Union, Intersection, Difference, and Complement.',
-                    highlight: null,
+                    id: 'duplicate-operators',
+                    message: 'Look at your dice! You have <strong>TWO Intersection operators</strong>. You can use the same operator multiple times!',
+                    highlight: { dice: [1, 3] },
                     nextTrigger: 'auto',
-                    duration: 4000
+                    duration: 5000
                 },
                 {
-                    id: 'challenge',
-                    message: 'From now on, you might get <strong>duplicate operators</strong> in your dice. Use them wisely!',
+                    id: 'explain-double-intersect',
+                    message: 'We can chain operators: <strong>Red ∩ Blue ∩ Green</strong> means "cards with red AND blue AND green".',
                     highlight: null,
                     nextTrigger: 'auto',
-                    duration: 4000
+                    duration: 5000
                 },
                 {
                     id: 'identify-goal',
-                    message: 'Let\'s practice. Our goal is <strong>5 cards</strong>. Try "Red Union Blue".',
+                    message: 'Our goal is <strong>1 card</strong>. Only one card has all three colors!',
                     highlight: { goal: true },
                     nextTrigger: 'auto',
                     duration: 3000
                 },
                 {
                     id: 'drag-red',
-                    message: 'Drag the <strong>RED</strong> cube.',
+                    message: 'Start with <strong>RED</strong>.',
                     highlight: { dice: [0] },
                     validation: (game) => {
                         return game.solutions[1].some(die => die.value === 'red');
@@ -322,17 +325,17 @@ export const TUTORIAL_SCENARIOS = {
                     nextTrigger: 'validation'
                 },
                 {
-                    id: 'drag-union',
-                    message: 'Drag the <strong>UNION</strong> cube.',
+                    id: 'drag-intersect-1',
+                    message: 'Now drag the first <strong>INTERSECTION</strong> cube.',
                     highlight: { dice: [1] },
                     validation: (game) => {
-                        return game.solutions[1].some(die => die.value === '∪');
+                        return game.solutions[1].filter(die => die.value === '∩').length >= 1;
                     },
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-blue',
-                    message: 'Drag the <strong>BLUE</strong> cube.',
+                    message: 'Add <strong>BLUE</strong>. Now we have "cards with red AND blue".',
                     highlight: { dice: [2] },
                     validation: (game) => {
                         return game.solutions[1].some(die => die.value === 'blue');
@@ -340,8 +343,33 @@ export const TUTORIAL_SCENARIOS = {
                     nextTrigger: 'validation'
                 },
                 {
+                    id: 'drag-intersect-2',
+                    message: 'Add the second <strong>INTERSECTION</strong> cube. We\'re not done yet!',
+                    highlight: { dice: [3] },
+                    validation: (game) => {
+                        return game.solutions[1].filter(die => die.value === '∩').length >= 2;
+                    },
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-green',
+                    message: 'Finally, add <strong>GREEN</strong>. Now we have all cards with red AND blue AND green!',
+                    highlight: { dice: [4] },
+                    validation: (game) => {
+                        return game.solutions[1].some(die => die.value === 'green');
+                    },
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'explain-result',
+                    message: 'Perfect! You used <strong>5 cubes</strong> to find 1 very specific card. More cubes = more points!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
                     id: 'submit',
-                    message: 'You\'re ready for the real challenge! Click <strong>GO!</strong>',
+                    message: 'Duplicate operators unlock complex solutions. Click <strong>GO!</strong>',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'submit'
