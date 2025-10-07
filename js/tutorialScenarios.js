@@ -686,10 +686,10 @@ export const TUTORIAL_SCENARIOS = {
     
     7: {
         // Level 7: Timer + Padding trick (Red ∩ Red = Red)
-        // Cards: 1=yellow, 2=green, 4=blue, 8=red, 10=red+green, 12=red+blue, 14=red+blue+green
+        // Cards: 1=yellow, 2=green, 4=blue, 5=blue+yellow, 8=red, 10=red+green, 12=red+blue, 14=red+blue+green
         // Solution: (Red ∩ Red) ∪ Green = Red ∪ Green = 5 cards (2,8,10,12,14)
         // Uses 5 cubes instead of 3!
-        cards: [1, 2, 4, 8, 10, 12, 14],
+        cards: [1, 2, 4, 5, 8, 10, 12, 14],
         dice: [
             { type: 'color', value: 'red', name: 'RED', id: 'tutorial-7-red-1' },
             { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-7-intersect-1' },
