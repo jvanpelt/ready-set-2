@@ -685,21 +685,22 @@ export const TUTORIAL_SCENARIOS = {
     },
     
     7: {
-        // Level 7: Timer + Padding trick (Red ∩ Red = Red)
+        // Level 7: Timer + Grouping matters (Green ∪ (Red ∩ Red))
         // Cards: 1=yellow, 2=green, 4=blue, 5=blue+yellow, 8=red, 10=red+green, 12=red+blue, 14=red+blue+green
-        // Solution: (Red ∩ Red) ∪ Green = Red ∪ Green = 5 cards (2,8,10,12,14)
-        // Uses 5 cubes instead of 3!
+        // Solution: Green ∪ (Red ∩ Red) = Green ∪ Red = 5 cards (2,8,10,12,14)
+        // Without grouping: (Green ∪ Red) ∩ Red = just Red = 3 cards (WRONG!)
+        // Teaches: Grouping changes evaluation order
         cards: [1, 2, 4, 5, 8, 10, 12, 14],
         dice: [
-            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-7-red-1' },
-            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-7-intersect-1' },
-            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-7-red-2' },
-            { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-7-union' },
             { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-7-green' },
+            { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-7-union' },
+            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-7-red-1' },
+            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-7-intersect' },
+            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-7-red-2' },
             { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-7-blue' }
         ],
         goal: 5,
-        expectedSolution: ['red', '∩', 'red', '∪', 'green'],
+        expectedSolution: ['green', '∪', 'red', '∩', 'red'],
         
         walkthrough: {
             enabled: true,
@@ -720,78 +721,135 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-timeout',
-                    message: 'If time runs out, the round ends. No points, but you can try again with a new puzzle!',
+                    message: 'If time runs out, the round ends. No points, but you can try again!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 3000
+                },
+                {
+                    id: 'explain-padding',
+                    message: 'Here\'s a trick: <strong>Red ∩ Red = Red</strong>. Uses 2 extra cubes but same result = more points!',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
                 },
                 {
-                    id: 'explain-padding-trick',
-                    message: 'Here\'s a useful trick: <strong>Red ∩ Red = Red</strong>. It doesn\'t change the result, but uses more cubes = more points!',
+                    id: 'explain-grouping-matters',
+                    message: 'But <strong>GROUPING MATTERS</strong>! Let\'s see why...',
                     highlight: null,
                     nextTrigger: 'auto',
-                    duration: 4000
+                    duration: 3000
                 },
                 {
                     id: 'goal',
-                    message: 'Goal: <strong>5 cards</strong>. We could just use "Red ∪ Green" (3 cubes), but let\'s pad it with "Red ∩ Red" first!',
+                    message: 'Goal: <strong>5 cards</strong>. Let\'s build "Green ∪ Red ∩ Red" and see what happens.',
                     highlight: { goal: true },
                     nextTrigger: 'auto',
-                    duration: 4000
+                    duration: 3000
+                },
+                {
+                    id: 'drag-green',
+                    message: 'Drag <strong>GREEN</strong> to the <strong>BOTTOM ROW</strong>.',
+                    highlight: { dice: [0] },
+                    validation: (game) => game.solutions[1].some(die => die.value === 'green'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-union',
+                    message: 'Drag <strong>UNION</strong> next to it.',
+                    highlight: { dice: [1] },
+                    validation: (game) => game.solutions[1].some(die => die.value === '∪'),
+                    nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-red-1',
-                    message: 'Drag the first <strong>RED</strong> cube.',
-                    highlight: { dice: [0] },
-                    validation: (game) => {
-                        const hasRed = game.solutions[1].some(die => die.value === 'red');
-                        console.log('🎓 Level 7 - drag-red-1 validation:', {
-                            'Row 1 dice count': game.solutions[1].length,
-                            'Row 1 values': game.solutions[1].map(d => d.value),
-                            'Has red?': hasRed
-                        });
-                        return hasRed;
-                    },
+                    message: 'Drag the first <strong>RED</strong>.',
+                    highlight: { dice: [2] },
+                    validation: (game) => game.solutions[1].some(die => die.value === 'red'),
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-intersect',
                     message: 'Drag <strong>INTERSECTION</strong>.',
-                    highlight: { dice: [1] },
+                    highlight: { dice: [3] },
                     validation: (game) => game.solutions[1].some(die => die.value === '∩'),
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-red-2',
-                    message: 'Drag the second <strong>RED</strong> cube. Now we have "Red ∩ Red" which equals just "Red"!',
-                    highlight: { dice: [2] },
+                    message: 'Drag the second <strong>RED</strong>. Now you have all 5 cubes!',
+                    highlight: { dice: [4] },
                     validation: (game) => game.solutions[1].filter(die => die.value === 'red').length >= 2,
                     nextTrigger: 'validation'
                 },
                 {
-                    id: 'drag-union',
-                    message: 'Now add <strong>UNION</strong> to combine with another color.',
-                    highlight: { dice: [3] },
-                    validation: (game) => game.solutions[1].some(die => die.value === '∪'),
+                    id: 'check-helper',
+                    message: '<strong>Wait!</strong> Look at Solution Helper - it highlights 3 cards, not 5! Something\'s wrong...',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'explain-problem',
+                    message: 'Without grouping, this evaluates left-to-right: "(Green ∪ Red) ∩ Red" = only Red cards!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'explain-fix',
+                    message: 'We need to group "Red ∩ Red" together so it\'s treated as ONE unit: "Green ∪ (Red ∩ Red)".',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'group-them',
+                    message: 'Move the <strong>Red-Intersect-Red cubes close together</strong> so they touch and form a group!',
+                    highlight: { dice: [2, 3, 4] },
+                    validation: (game) => {
+                        // Check that Red, Intersect, Red are all grouped together
+                        const solution = game.solutions[1];
+                        const redDice = solution.filter(die => die.value === 'red');
+                        const intersectDie = solution.find(die => die.value === '∩');
+                        
+                        if (redDice.length < 2 || !intersectDie) return false;
+                        
+                        // Helper to check if two dice are touching
+                        const areTouching = (die1, die2) => {
+                            const isMobile = window.innerWidth <= 768;
+                            const dieSize = isMobile ? 50 : 80;
+                            const touchThreshold = 15;
+                            const dx = Math.abs(die1.x - die2.x);
+                            const dy = Math.abs(die1.y - die2.y);
+                            return dx < dieSize + touchThreshold && dy < dieSize + touchThreshold;
+                        };
+                        
+                        // Check if all three form a connected group
+                        const red1TouchesIntersect = areTouching(redDice[0], intersectDie);
+                        const red2TouchesIntersect = areTouching(redDice[1], intersectDie);
+                        
+                        return red1TouchesIntersect && red2TouchesIntersect;
+                    },
                     nextTrigger: 'validation'
                 },
                 {
-                    id: 'drag-green',
-                    message: 'Finally, add <strong>GREEN</strong>. We have "(Red ∩ Red) ∪ Green" = 5 cubes!',
-                    highlight: { dice: [4] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'green'),
-                    nextTrigger: 'validation'
+                    id: 'success',
+                    message: 'Perfect! Now Solution Helper shows 5 cards! "Green ∪ (Red ∩ Red)" = Green ∪ Red = 5 cards!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
                 },
                 {
-                    id: 'explain-result',
-                    message: 'Perfect! Same result as "Red ∪ Green", but <strong>5 cubes instead of 3</strong> = way more points!',
+                    id: 'lesson',
+                    message: '<strong>Grouping changes order of operations!</strong> Use it to boost your score with padding.',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
                 },
                 {
                     id: 'submit',
-                    message: 'This trick works at ANY level! Beat the clock! Click <strong>GO!</strong>',
+                    message: 'This works at ANY level! Beat the clock! Click <strong>GO!</strong>',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'submit'
