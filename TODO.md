@@ -219,6 +219,7 @@
 - Skip individual steps (vs skip entire tutorial)
 - Tutorial completion rewards/badges
 - Multi-language support for tutorials
+- **Smart grouping indicators**: Only show visual grouping boxes around cubes that form valid logical patterns (e.g., `Red ∪ Blue`), not just physical proximity. Need to consider UX during construction vs completed expressions.
 
 ---
 
