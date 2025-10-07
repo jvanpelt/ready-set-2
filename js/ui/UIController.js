@@ -658,7 +658,16 @@ export class UIController {
             const tutorialScenario = getTutorialScenario(1);
             if (tutorialScenario) {
                 this.tutorialManager.start(tutorialScenario);
+                
+                // Mark tutorial as viewed (COMMENTED OUT FOR TESTING)
+                // TODO: Uncomment this after testing complete
+                // this.game.storage.markTutorialAsViewed(1);
             }
+        } else {
+            // User declined tutorial
+            // Mark as viewed so they don't see it again (COMMENTED OUT FOR TESTING)
+            // TODO: Uncomment this after testing complete
+            // this.game.storage.markTutorialAsViewed(1);
         }
         // If they decline, just continue with normal gameplay (already rendered)
     }

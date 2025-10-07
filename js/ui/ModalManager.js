@@ -122,22 +122,45 @@ export class ModalManager {
         if (this.game.canAdvanceLevel() && this.game.getState().hasNextLevel) {
             const newLevel = this.game.level + 1;
             
-            // Show interstitial screen
-            const wantsTutorial = await this.showInterstitialAsync(newLevel);
+            // Check if tutorial has been viewed for this level
+            const tutorialViewed = this.game.storage.hasTutorialBeenViewed(newLevel);
+            console.log(`🎓 Tutorial for Level ${newLevel} viewed: ${tutorialViewed}`);
             
-            // Start new level
-            this.game.startNewLevel();
-            onHide();
+            // FOR TESTING: Always show tutorial (ignore tutorialViewed status)
+            // TODO: After testing, remove this comment block and use tutorialViewed check
+            const shouldShowInterstitial = true; // tutorialViewed ? false : true;
             
-            // Start tutorial if requested
-            if (wantsTutorial) {
-                const tutorialScenario = getTutorialScenario(newLevel);
-                if (tutorialScenario && window.uiController) {
-                    window.uiController.tutorialManager.start(tutorialScenario);
+            if (shouldShowInterstitial) {
+                // Show interstitial screen and wait for user choice
+                const wantsTutorial = await this.showInterstitialAsync(newLevel);
+                
+                // Start new level
+                this.game.startNewLevel();
+                onHide();
+                
+                // Start tutorial if requested
+                if (wantsTutorial) {
+                    const tutorialScenario = getTutorialScenario(newLevel);
+                    if (tutorialScenario && window.uiController) {
+                        window.uiController.tutorialManager.start(tutorialScenario);
+                        
+                        // Mark tutorial as viewed (COMMENTED OUT FOR TESTING)
+                        // TODO: Uncomment this after testing complete
+                        // this.game.storage.markTutorialAsViewed(newLevel);
+                    }
+                } else {
+                    // User declined tutorial
+                    // Mark as viewed so they don't see it again (COMMENTED OUT FOR TESTING)
+                    // TODO: Uncomment this after testing complete
+                    // this.game.storage.markTutorialAsViewed(newLevel);
+                    
+                    // Show old tutorial modal if no interactive tutorial chosen
+                    this.showTutorialIfNeeded();
                 }
             } else {
-                // Show old tutorial modal if no interactive tutorial chosen
-                this.showTutorialIfNeeded();
+                // Tutorial already viewed, skip interstitial
+                this.game.startNewLevel();
+                onHide();
             }
         } else {
             // Generate new round
