@@ -183,10 +183,12 @@ export const TUTORIAL_SCENARIOS = {
     3: {
         // Level 3: Complement (Prime) operator
         // Example: gold' (all cards that are NOT gold)
-        // Cards: 5 without gold, 3 with gold
-        cards: [2, 4, 6, 8, 10, 12, 13, 15],
+        // Cards: 5 without gold (yellow), 3 with gold (yellow)
+        // 1=gold, 5=blue+gold, 9=red+gold (3 with gold)
+        // 2=green, 4=blue, 6=blue+green, 8=red, 10=red+green (5 without gold)
+        cards: [1, 2, 4, 5, 6, 8, 9, 10],
         dice: [
-            { type: 'color', value: 'gold', name: 'GOLD', id: 'tutorial-3-gold' },
+            { type: 'color', value: 'gold', name: 'YELLOW', id: 'tutorial-3-yellow' },
             { type: 'operator', value: '′', name: 'COMPLEMENT', id: 'tutorial-3-prime' },
             { type: 'color', value: 'red', name: 'RED', id: 'tutorial-3-red' },
             { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-3-intersect' },
@@ -214,14 +216,14 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'identify-goal',
-                    message: 'Our goal is <strong>5 cards</strong>. Let\'s build "Gold Complement" (all cards that are NOT gold).',
+                    message: 'Our goal is <strong>5 cards</strong>. Let\'s build "Yellow Complement" (all cards that are NOT yellow).',
                     highlight: { goal: true },
                     nextTrigger: 'auto',
                     duration: 3000
                 },
                 {
-                    id: 'drag-gold',
-                    message: 'First, drag the <strong>GOLD</strong> cube to the solution area.',
+                    id: 'drag-yellow',
+                    message: 'First, drag the <strong>YELLOW</strong> cube to the solution area.',
                     highlight: { dice: [0] },
                     validation: (game) => {
                         return game.solutions[1].some(die => die.value === 'gold');
@@ -239,7 +241,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-result',
-                    message: 'Your solution "Gold Complement" means: "All cards that are NOT gold". Count them - 5 cards! ✓',
+                    message: 'Your solution "Yellow Complement" means: "All cards that are NOT yellow". Count them - 5 cards! ✓',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000

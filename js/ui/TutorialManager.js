@@ -214,7 +214,19 @@ export class TutorialManager {
         // Called when user clicks GO during tutorial
         const currentStepData = this.scenario?.walkthrough?.steps[this.currentStep];
         if (currentStepData?.nextTrigger === 'submit') {
-            this.complete();
+            // Validate solution before completing tutorial
+            const result = this.game.validateSolution();
+            
+            if (result.valid) {
+                // Solution is correct, complete tutorial
+                this.complete();
+            } else {
+                // Solution is incorrect, show error but stay in tutorial
+                console.log('❌ Tutorial solution incorrect:', result.message);
+                this.ui.playErrorAnimation();
+                this.ui.playBonkSound();
+                // Don't advance - let them try again
+            }
         }
     }
     
