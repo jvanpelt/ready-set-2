@@ -270,9 +270,10 @@ export const TUTORIAL_SCENARIOS = {
     4: {
         // Level 4: Duplicate operators - use intersection twice!
         // Example: red ∩ blue ∩ green = cards with ALL THREE colors
-        // Card 11 = red+blue+green (ONLY card with all three - no card 15!)
-        // Cards: 1=red, 2=blue, 3=green, 4=gold, 5=red+blue, 8=blue+green, 9=blue+gold, 11=red+blue+green
-        cards: [1, 2, 3, 4, 5, 8, 9, 11],
+        // Card 14 (bitwise: 1110 = 8+4+2) = red+blue+green (ONLY card with all three - no card 15!)
+        // Bitwise encoding: bit3=red(8), bit2=blue(4), bit1=green(2), bit0=gold(1)
+        // Cards: 1=gold, 2=green, 4=blue, 6=blue+green, 8=red, 10=red+green, 12=red+blue, 14=red+blue+green
+        cards: [1, 2, 4, 6, 8, 10, 12, 14],
         dice: [
             { type: 'color', value: 'red', name: 'RED', id: 'tutorial-4-red' },
             { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-4-intersect-1' },
