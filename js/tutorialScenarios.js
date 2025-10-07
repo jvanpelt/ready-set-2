@@ -430,7 +430,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-grouping',
-                    message: '<strong>NEW: Grouping!</strong> When cubes touch, they form a group that acts as one unit. This changes how expressions are evaluated!',
+                    message: '<strong>Important: Grouping!</strong> When cubes touch, they form a group that acts as one unit. This changes how expressions are evaluated!',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
@@ -474,23 +474,26 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Add <strong>UNION</strong> cube (∪) - place it <strong>close to RED</strong> so they touch! This groups them.',
                     highlight: { dice: [3] },
                     validation: (game) => {
-                        // Check that union is in solution AND is grouped with red
+                        // Check that union is in solution AND is close to red
                         const solution = game.solutions[1];
                         const hasUnion = solution.some(die => die.value === '∪');
                         if (!hasUnion) return false;
                         
-                        // Check for grouping - red and union should be adjacent and grouped
-                        const redIndex = solution.findIndex(die => die.value === 'red');
-                        const unionIndex = solution.findIndex(die => die.value === '∪');
+                        // Find red and union dice
+                        const redDie = solution.find(die => die.value === 'red');
+                        const unionDie = solution.find(die => die.value === '∪');
                         
-                        // They should be next to each other
-                        if (Math.abs(redIndex - unionIndex) !== 1) return false;
+                        if (!redDie || !unionDie) return false;
                         
-                        // Check if they're in the same group (both should have groupId)
-                        const redDie = solution[redIndex];
-                        const unionDie = solution[unionIndex];
+                        // Check if they're touching (using same logic as grouping detection)
+                        const isMobile = window.innerWidth <= 768;
+                        const dieSize = isMobile ? 50 : 80;
+                        const touchThreshold = 15;
                         
-                        return redDie.groupId && unionDie.groupId && redDie.groupId === unionDie.groupId;
+                        const dx = Math.abs(redDie.x - unionDie.x);
+                        const dy = Math.abs(redDie.y - unionDie.y);
+                        
+                        return dx < dieSize + touchThreshold && dy < dieSize + touchThreshold;
                     },
                     nextTrigger: 'validation'
                 },
@@ -499,7 +502,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Add <strong>BLUE</strong> cube - place it <strong>close to UNION</strong> so all three are grouped together!',
                     highlight: { dice: [4] },
                     validation: (game) => {
-                        // Check that blue is in solution AND all three (red, union, blue) are grouped
+                        // Check that blue is in solution AND all three are close together
                         const solution = game.solutions[1];
                         const hasBlue = solution.some(die => die.value === 'blue');
                         if (!hasBlue) return false;
@@ -509,10 +512,24 @@ export const TUTORIAL_SCENARIOS = {
                         const unionDie = solution.find(die => die.value === '∪');
                         const blueDie = solution.find(die => die.value === 'blue');
                         
-                        // All three should have the same groupId
-                        if (!redDie?.groupId || !unionDie?.groupId || !blueDie?.groupId) return false;
+                        if (!redDie || !unionDie || !blueDie) return false;
                         
-                        return redDie.groupId === unionDie.groupId && unionDie.groupId === blueDie.groupId;
+                        // Helper to check if two dice are touching
+                        const areTouching = (die1, die2) => {
+                            const isMobile = window.innerWidth <= 768;
+                            const dieSize = isMobile ? 50 : 80;
+                            const touchThreshold = 15;
+                            const dx = Math.abs(die1.x - die2.x);
+                            const dy = Math.abs(die1.y - die2.y);
+                            return dx < dieSize + touchThreshold && dy < dieSize + touchThreshold;
+                        };
+                        
+                        // Check if all three form a connected group
+                        // Blue must touch union, and union must touch red (or blue touches red directly)
+                        const blueUnionTouch = areTouching(blueDie, unionDie);
+                        const unionRedTouch = areTouching(unionDie, redDie);
+                        
+                        return blueUnionTouch && unionRedTouch;
                     },
                     nextTrigger: 'validation'
                 },
