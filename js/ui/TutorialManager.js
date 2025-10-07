@@ -10,6 +10,7 @@ export class TutorialManager {
         this.currentStep = 0;
         this.isActive = false;
         this.validationInterval = null;
+        this.savedSolutionHelperState = null; // Store user's preference before tutorial
         
         this.instructionEl = document.getElementById('tutorial-instruction');
         this.stepBadgeEl = document.getElementById('tutorial-step-badge');
@@ -95,6 +96,13 @@ export class TutorialManager {
         this.scenario = scenarioData;
         this.currentStep = 0;
         this.isActive = true;
+        
+        // Save user's Solution Helper preference and force it ON for tutorial
+        this.savedSolutionHelperState = this.ui.settings.solutionHelper;
+        console.log('💡 Solution Helper: Saved user preference:', this.savedSolutionHelperState);
+        this.ui.settings.solutionHelper = true;
+        this.ui.solutionHelperToggle.checked = true;
+        console.log('💡 Solution Helper: Forced ON for tutorial');
         
         // Load the tutorial scenario
         this.scenarioManager.loadScenario(scenarioData);
@@ -353,6 +361,23 @@ export class TutorialManager {
         this.clearHighlights();
         this.instructionEl.classList.add('hidden');
         document.body.classList.remove('tutorial-active');
+        
+        // Restore user's Solution Helper preference
+        if (this.savedSolutionHelperState !== null) {
+            console.log('💡 Solution Helper: Restoring user preference:', this.savedSolutionHelperState);
+            this.ui.settings.solutionHelper = this.savedSolutionHelperState;
+            this.ui.solutionHelperToggle.checked = this.savedSolutionHelperState;
+            this.game.storage.saveSettings(this.ui.settings);
+            
+            // Clear or evaluate based on restored state
+            if (this.savedSolutionHelperState) {
+                setTimeout(() => this.ui.evaluateSolutionHelper(), 0);
+            } else {
+                this.ui.clearSolutionHelper();
+            }
+            
+            this.savedSolutionHelperState = null;
+        }
         
         this.scenario = null;
         this.currentStep = 0;
