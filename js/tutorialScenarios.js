@@ -381,19 +381,21 @@ export const TUTORIAL_SCENARIOS = {
     
     5: {
         // Level 5: Universe and Null set (8 dice, padding concept)
-        // Example: U ∩ red (same as red, but with padding)
-        cards: [1, 2, 3, 4, 5, 8, 9, 10],
+        // Example: U − (Red ∪ Blue) = all cards without red or blue
+        // Cards: 1=gold, 2=green, 3=green+gold (3 without red/blue), 4=blue, 8=red, 12=red+blue, 13=red+blue+gold, 14=red+blue+green (5 with red/blue)
+        cards: [1, 2, 3, 4, 8, 12, 13, 14],
         dice: [
             { type: 'set-constant', value: 'U', name: 'UNIVERSE', id: 'tutorial-5-universe' },
-            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-5-intersect' },
-            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-5-red' },
-            { type: 'set-constant', value: '∅', name: 'NULL', id: 'tutorial-5-null' },
             { type: 'operator', value: '−', name: 'DIFFERENCE', id: 'tutorial-5-diff' },
-            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-5-blue' },
+            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-5-red' },
             { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-5-union' },
+            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-5-blue' },
+            { type: 'set-constant', value: '∅', name: 'NULL', id: 'tutorial-5-null' },
+            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-5-intersect' },
             { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-5-green' }
         ],
-        goal: 4,
+        goal: 3,
+        expectedSolution: ['U', '−', 'red', '∪', 'blue'], // Must use these 5 cubes!
         
         walkthrough: {
             enabled: true,
@@ -407,7 +409,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-universe',
-                    message: '<strong>Universe (U)</strong> refers to ALL cards. It\'s like a wildcard for the entire board.',
+                    message: '<strong>Universe (U)</strong> refers to ALL cards on the board. It\'s a reference to the entire set of cards.',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
@@ -428,14 +430,14 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'identify-goal',
-                    message: 'Our goal is <strong>4 cards</strong>. Let\'s build "Universe Intersection Red" (same as just "Red", but padded!).',
+                    message: 'Our goal is <strong>3 cards</strong>. Let\'s build "Universe minus (Red or Blue)" = all cards with neither red nor blue.',
                     highlight: { goal: true },
                     nextTrigger: 'auto',
-                    duration: 3000
+                    duration: 4000
                 },
                 {
                     id: 'drag-universe',
-                    message: 'Drag the <strong>UNIVERSE</strong> cube (U).',
+                    message: 'Start with <strong>UNIVERSE</strong> cube (U) - all 8 cards.',
                     highlight: { dice: [0] },
                     validation: (game) => {
                         return game.solutions[1].some(die => die.value === 'U');
@@ -443,17 +445,17 @@ export const TUTORIAL_SCENARIOS = {
                     nextTrigger: 'validation'
                 },
                 {
-                    id: 'drag-intersect',
-                    message: 'Drag the <strong>INTERSECTION</strong> cube.',
+                    id: 'drag-diff',
+                    message: 'Add <strong>DIFFERENCE</strong> cube (−) - we\'re subtracting something.',
                     highlight: { dice: [1] },
                     validation: (game) => {
-                        return game.solutions[1].some(die => die.value === '∩');
+                        return game.solutions[1].some(die => die.value === '−');
                     },
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-red',
-                    message: 'Drag the <strong>RED</strong> cube.',
+                    message: 'Add <strong>RED</strong> cube.',
                     highlight: { dice: [2] },
                     validation: (game) => {
                         return game.solutions[1].some(die => die.value === 'red');
@@ -461,15 +463,33 @@ export const TUTORIAL_SCENARIOS = {
                     nextTrigger: 'validation'
                 },
                 {
+                    id: 'drag-union',
+                    message: 'Add <strong>UNION</strong> cube (∪) - "red OR blue".',
+                    highlight: { dice: [3] },
+                    validation: (game) => {
+                        return game.solutions[1].some(die => die.value === '∪');
+                    },
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-blue',
+                    message: 'Add <strong>BLUE</strong> cube to complete the expression.',
+                    highlight: { dice: [4] },
+                    validation: (game) => {
+                        return game.solutions[1].some(die => die.value === 'blue');
+                    },
+                    nextTrigger: 'validation'
+                },
+                {
                     id: 'explain-result',
-                    message: 'This means "ALL cards intersect red" = just red cards! But you used 3 cubes = MORE POINTS! ✓',
+                    message: 'This means "ALL cards minus (red or blue)" = cards with neither! 5 cubes = MORE POINTS! ✓',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
                 },
                 {
                     id: 'submit',
-                    message: 'Try padding your solutions to boost scores! Click <strong>GO!</strong>',
+                    message: 'Universe and Null let you use more cubes for higher scores! Click <strong>GO!</strong>',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'submit'
