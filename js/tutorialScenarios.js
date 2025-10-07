@@ -556,7 +556,7 @@ export const TUTORIAL_SCENARIOS = {
         // Cards: 1=yellow, 2=green, 4=blue, 6=blue+green, 8=red, 12=red+blue, 13=red+blue+yellow, 14=red+blue+green
         // Red ⊆ Blue removes: card 8 (red only, no blue)
         // Remaining: 7 cards (1,2,4,6,12,13,14)
-        // Goal: 4 cards = green ∪ yellow (after restriction)
+        // Goal: 5 cards = green ∪ yellow = cards 1,2,6,13,14
         cards: [1, 2, 4, 6, 8, 12, 13, 14],
         dice: [
             { type: 'color', value: 'red', name: 'RED', id: 'tutorial-6-red' },
@@ -566,7 +566,7 @@ export const TUTORIAL_SCENARIOS = {
             { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-6-union' },
             { type: 'color', value: 'gold', name: 'YELLOW', id: 'tutorial-6-yellow' }
         ],
-        goal: 4,
+        goal: 5,
         expectedSolution: {
             restriction: ['red', '⊆', 'blue'],
             setName: ['green', '∪', 'gold']
@@ -605,7 +605,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'goal',
-                    message: 'Goal: <strong>4 cards</strong>. Let\'s build "Red ⊆ Blue" to remove red-only cards, then name the remaining set.',
+                    message: 'Goal: <strong>5 cards</strong>. Let\'s build "Red ⊆ Blue" to remove red-only cards, then name the remaining set.',
                     highlight: { goal: true },
                     nextTrigger: 'auto',
                     duration: 4000
@@ -668,7 +668,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-result',
-                    message: 'Perfect! After removing red-only cards, we name the set "Green ∪ Yellow" = 4 cards. 6 cubes total = big points!',
+                    message: 'Perfect! After removing red-only cards, we name the set "Green ∪ Yellow" = 5 cards. 6 cubes total = big points!',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
