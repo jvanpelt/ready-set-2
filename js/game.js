@@ -232,7 +232,10 @@ export class Game {
         
         // Then tick every second
         this.timerInterval = setInterval(() => {
-            this.timeRemaining--;
+            // Don't go below 0
+            if (this.timeRemaining > 0) {
+                this.timeRemaining--;
+            }
             
             if (this.onTimerTick) {
                 this.onTimerTick(this.timeRemaining);
