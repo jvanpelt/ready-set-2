@@ -1,12 +1,13 @@
 // Drag and drop handling for dice (desktop and mobile)
 
 export class DragDropHandler {
-    constructor(game, diceContainer, solutionArea, onDrop, onWildCubeDrop = null) {
+    constructor(game, diceContainer, solutionArea, onDrop, onWildCubeDrop = null, tutorialManager = null) {
         this.game = game;
         this.diceContainer = diceContainer;
         this.solutionArea = solutionArea;
         this.onDrop = onDrop; // Callback when dice are added/moved/removed
         this.onWildCubeDrop = onWildCubeDrop; // Callback when wild cube is dropped (for auto-showing popover)
+        this.tutorialManager = tutorialManager; // For checking tutorial restrictions
         
         // Drag state
         this.draggedDie = null;
@@ -39,6 +40,14 @@ export class DragDropHandler {
         const handleDiceStart = (e) => {
             const die = e.target.closest('.die');
             if (die && !die.classList.contains('disabled')) {
+                // Check if tutorial restricts dragging this die
+                if (!this.isDieAllowedInTutorial(die)) {
+                    console.log('🎓 Tutorial: die not allowed yet');
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+                
                 if (e.type === 'touchstart') {
                     e.preventDefault();
                 }
@@ -453,5 +462,41 @@ export class DragDropHandler {
             x: Math.max(0, Math.min(newDie.x, rowRect.width - dieSize - 20)),
             y: Math.max(0, Math.min(newDie.y, rowRect.height - dieSize - 20))
         };
+    }
+    
+    /**
+     * Check if a die is allowed to be dragged during tutorial
+     * @param {HTMLElement} dieElement - The die DOM element
+     * @returns {boolean} - True if allowed, false if restricted
+     */
+    isDieAllowedInTutorial(dieElement) {
+        // If no tutorial is active, allow all dice
+        if (!this.tutorialManager || !this.tutorialManager.isActive) {
+            return true;
+        }
+        
+        // Get current tutorial step
+        const scenario = this.tutorialManager.scenario;
+        const currentStep = this.tutorialManager.scenario?.walkthrough?.steps[this.tutorialManager.currentStep];
+        
+        if (!currentStep || !currentStep.highlight || !currentStep.highlight.dice) {
+            // No dice restrictions on this step, allow all
+            return true;
+        }
+        
+        // Get the allowed dice indices
+        const allowedIndices = currentStep.highlight.dice;
+        
+        // Find this die's index in the dice array
+        const dieIndex = Array.from(this.diceContainer.querySelectorAll('.die')).indexOf(dieElement);
+        
+        // Check if this die's index is in the allowed list
+        const isAllowed = allowedIndices.includes(dieIndex);
+        
+        if (!isAllowed) {
+            console.log(`🎓 Tutorial: die at index ${dieIndex} not in allowed list [${allowedIndices.join(', ')}]`);
+        }
+        
+        return isAllowed;
     }
 }

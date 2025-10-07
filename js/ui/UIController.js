@@ -46,7 +46,8 @@ export class UIController {
             (rowIndex, dieIndex) => {
                 // Auto-show popover when wild cube is dropped
                 this.showWildCubePopoverByIndex(rowIndex, dieIndex);
-            }
+            },
+            this.tutorialManager // Pass tutorial manager for drag restrictions
         );
         
         // Wire up timer callbacks (Level 7+)
