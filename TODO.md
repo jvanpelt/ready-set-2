@@ -145,6 +145,59 @@
 
 ---
 
+### Phase 5: Redesign & Theming
+
+- [ ] **Design system audit**
+  - Review current color palette
+  - Assess typography choices
+  - Evaluate spacing/layout system
+  - Identify inconsistencies
+
+- [ ] **Theme architecture**
+  - Create CSS variables for all colors
+  - Organize theme tokens (primary, secondary, accent, etc.)
+  - Build theme switching mechanism
+  - Support light/dark mode
+
+- [ ] **Theme options**
+  - **Default theme** (current look)
+  - **Dark mode** (high contrast, OLED-friendly)
+  - **Light mode** (bright, clean)
+  - **Colorblind accessible themes**
+    - Deuteranopia (red-green)
+    - Protanopia (red-green)
+    - Tritanopia (blue-yellow)
+  - **High contrast** (accessibility)
+  - Custom theme builder? (future)
+
+- [ ] **Component updates**
+  - Refactor CSS to use theme variables
+  - Update cards to respect theme
+  - Update cubes/dice to respect theme
+  - Update UI chrome (buttons, modals, etc.)
+  - Ensure all states work (hover, active, disabled)
+
+- [ ] **Settings integration**
+  - Add "Theme" section to Settings
+  - Visual theme picker (show previews)
+  - Save theme preference to localStorage
+  - Apply theme on load
+  - Smooth transitions between themes
+
+- [ ] **Accessibility testing**
+  - Test with screen readers
+  - Verify keyboard navigation
+  - Check color contrast ratios (WCAG AA/AAA)
+  - Test with colorblind simulators
+  - Get feedback from accessibility community
+
+- [ ] **Documentation**
+  - Document theme system for future development
+  - Create style guide
+  - Document accessibility features
+
+---
+
 ## 📝 Notes
 
 ### Tutorial System Implementation
