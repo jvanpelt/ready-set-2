@@ -217,17 +217,54 @@ export class TutorialManager {
             // Validate solution before completing tutorial
             const result = this.game.validateSolution();
             
-            if (result.valid) {
-                // Solution is correct, complete tutorial
-                this.complete();
-            } else {
-                // Solution is incorrect, show error but stay in tutorial
+            if (!result.valid) {
+                // Solution is mathematically incorrect
                 console.log('❌ Tutorial solution incorrect:', result.message);
                 this.ui.playErrorAnimation();
                 this.ui.playBonkSound();
-                // Don't advance - let them try again
+                return; // Don't advance - let them try again
+            }
+            
+            // Check if they used the expected dice (if specified)
+            if (this.scenario.expectedSolution) {
+                const usedCorrectDice = this.validateExpectedDice();
+                if (!usedCorrectDice) {
+                    console.log('❌ Tutorial: must use the specific dice being taught');
+                    this.ui.playErrorAnimation();
+                    this.ui.playBonkSound();
+                    return; // Don't advance - let them try with the correct dice
+                }
+            }
+            
+            // Solution is correct AND uses the right dice - complete tutorial
+            this.complete();
+        }
+    }
+    
+    validateExpectedDice() {
+        // Check if the solution uses the exact dice specified in expectedSolution
+        const expected = this.scenario.expectedSolution;
+        const actual = this.game.solutions[1].map(die => die.value); // Row 1 (Set Name)
+        
+        console.log('🎓 Validating expected dice:');
+        console.log('   Expected:', expected);
+        console.log('   Actual:', actual);
+        
+        // Check if arrays match (same values in same order)
+        if (actual.length !== expected.length) {
+            console.log('   ❌ Wrong number of dice');
+            return false;
+        }
+        
+        for (let i = 0; i < expected.length; i++) {
+            if (actual[i] !== expected[i]) {
+                console.log(`   ❌ Mismatch at position ${i}: expected "${expected[i]}", got "${actual[i]}"`);
+                return false;
             }
         }
+        
+        console.log('   ✅ Dice match!');
+        return true;
     }
     
     skip() {

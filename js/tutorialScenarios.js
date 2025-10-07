@@ -16,6 +16,7 @@ export const TUTORIAL_SCENARIOS = {
             { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-1-green' }
         ],
         goal: 5,
+        expectedSolution: ['red', '∪', 'blue'], // Must use these exact dice
         
         walkthrough: {
             enabled: true,
@@ -103,6 +104,7 @@ export const TUTORIAL_SCENARIOS = {
             { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-2-intersect' }
         ],
         goal: 3,
+        expectedSolution: ['green', '−', 'blue'], // Must use these exact dice
         
         walkthrough: {
             enabled: true,
@@ -196,6 +198,7 @@ export const TUTORIAL_SCENARIOS = {
             { type: 'operator', value: '−', name: 'DIFFERENCE', id: 'tutorial-3-diff' }
         ],
         goal: 5,
+        expectedSolution: ['gold', '′'], // Must use these exact dice
         
         walkthrough: {
             enabled: true,
