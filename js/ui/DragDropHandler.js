@@ -472,15 +472,22 @@ export class DragDropHandler {
     isDieAllowedInTutorial(dieElement) {
         // If no tutorial is active, allow all dice
         if (!this.tutorialManager || !this.tutorialManager.isActive) {
+            console.log('🎓 Tutorial check: no tutorial active, allowing all dice');
             return true;
         }
+        
+        console.log('🎓 Tutorial check: tutorial IS active');
         
         // Get current tutorial step
         const scenario = this.tutorialManager.scenario;
         const currentStep = this.tutorialManager.scenario?.walkthrough?.steps[this.tutorialManager.currentStep];
         
+        console.log('🎓 Current step:', this.tutorialManager.currentStep);
+        console.log('🎓 Step highlight:', currentStep?.highlight);
+        
         if (!currentStep || !currentStep.highlight || !currentStep.highlight.dice) {
             // No dice restrictions on this step, allow all
+            console.log('🎓 No dice restrictions on this step, allowing all');
             return true;
         }
         
@@ -490,11 +497,15 @@ export class DragDropHandler {
         // Find this die's index in the dice array
         const dieIndex = Array.from(this.diceContainer.querySelectorAll('.die')).indexOf(dieElement);
         
+        console.log(`🎓 Checking die at index ${dieIndex}, allowed: [${allowedIndices.join(', ')}]`);
+        
         // Check if this die's index is in the allowed list
         const isAllowed = allowedIndices.includes(dieIndex);
         
         if (!isAllowed) {
-            console.log(`🎓 Tutorial: die at index ${dieIndex} not in allowed list [${allowedIndices.join(', ')}]`);
+            console.log(`🎓 ❌ Die at index ${dieIndex} NOT in allowed list [${allowedIndices.join(', ')}]`);
+        } else {
+            console.log(`🎓 ✅ Die at index ${dieIndex} IS in allowed list`);
         }
         
         return isAllowed;
