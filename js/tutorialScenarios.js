@@ -859,84 +859,164 @@ export const TUTORIAL_SCENARIOS = {
     },
     
     8: {
-        // Level 8: Required cubes (Red is required)
-        // Cards: 1=yellow, 2=green, 3=green+yellow, 4=blue, 5=blue+yellow, 8=red, 9=red+yellow, 10=red+green
-        // Solution: Red ∪ Blue = 5 cards (4,5,8,9,12,13,14 - wait, need to verify)
-        // Actually simpler: Red ∪ Green = 5 cards
-        cards: [1, 2, 4, 5, 8, 9, 10, 12],
+        // Level 8: Required cubes - Complement is required!
+        // Cards: [4, 8, 0, 9, 3, 1, 10, 13] = blue, red, blank, red+yellow, green+yellow, yellow, red+green, red+blue+yellow
+        // Progression teaches required cube + order of operations + grouping:
+        // 1. Yellow ∪ Blue (ungrouped) = 5 → Error (no required)
+        // 2. Yellow ∪ Blue ∪ ′ (ungrouped) = 3 → Wrong count
+        // 3. Yellow ∪ (Blue′) (grouped) = 7 → Wrong count
+        // 4. (Yellow′) ∪ Blue (grouped) = 5 → Success!
+        cards: [4, 8, 0, 9, 3, 1, 10, 13],
         dice: [
-            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-8-red', isRequired: true },
+            { type: 'color', value: 'gold', name: 'YELLOW', id: 'tutorial-8-yellow' },
             { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-8-union' },
-            { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-8-green' },
-            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-8-intersect' },
             { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-8-blue' },
-            { type: 'color', value: 'gold', name: 'YELLOW', id: 'tutorial-8-yellow' }
+            { type: 'operator', value: '′', name: 'COMPLEMENT', id: 'tutorial-8-prime', isRequired: true },
+            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-8-red' },
+            { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-8-green' }
         ],
         goal: 5,
-        expectedSolution: ['red', '∪', 'green'],
+        expectedSolution: ['gold', '′', '∪', 'blue'],
         
         walkthrough: {
             enabled: true,
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome to Level 8! Time for <strong>bonus points</strong> with Required Cubes!',
+                    message: 'Welcome to Level 8! <strong>Required Cubes</strong> - worth big points, but mandatory!',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 3000
                 },
                 {
                     id: 'explain-required',
-                    message: '<strong>Required cubes</strong> have a green border and glow. You MUST use them in your solution!',
-                    highlight: { dice: [0] },
+                    message: '<strong>Required cubes</strong> have a green border and glow. See the Complement cube? It\'s required!',
+                    highlight: { dice: [3] },
                     nextTrigger: 'auto',
                     duration: 4000
                 },
                 {
                     id: 'explain-value',
-                    message: 'Required cubes are worth <strong>50 bonus points</strong>! But they can make puzzles harder.',
+                    message: 'Required cubes are worth <strong>50 bonus points</strong>, but you MUST use them!',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
                 },
                 {
-                    id: 'explain-impossible',
-                    message: 'Sometimes a required cube makes the puzzle impossible. That\'s when you use Pass!',
-                    highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
-                },
-                {
-                    id: 'practice',
-                    message: 'Let\'s practice. Goal: <strong>5 cards</strong>. Build "Red ∪ Green" using the required cube.',
+                    id: 'goal',
+                    message: 'Goal: <strong>5 cards</strong>. Let\'s try building a solution. Start with "Yellow ∪ Blue".',
                     highlight: { goal: true },
                     nextTrigger: 'auto',
                     duration: 3000
                 },
                 {
-                    id: 'drag-red',
-                    message: 'Drag the <strong>RED</strong> required cube to the <strong>BOTTOM ROW</strong>.',
+                    id: 'drag-yellow',
+                    message: 'Drag <strong>YELLOW</strong> to the <strong>BOTTOM ROW</strong>. Keep cubes spaced apart.',
                     highlight: { dice: [0] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'red'),
+                    validation: (game) => game.solutions[1].some(die => die.value === 'gold'),
                     nextTrigger: 'validation'
                 },
                 {
-                    id: 'drag-union',
+                    id: 'drag-union-1',
                     message: 'Drag <strong>UNION</strong>.',
                     highlight: { dice: [1] },
                     validation: (game) => game.solutions[1].some(die => die.value === '∪'),
                     nextTrigger: 'validation'
                 },
                 {
-                    id: 'drag-green',
-                    message: 'Drag <strong>GREEN</strong>.',
+                    id: 'drag-blue-1',
+                    message: 'Drag <strong>BLUE</strong>. This should match 5 cards!',
                     highlight: { dice: [2] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'green'),
+                    validation: (game) => game.solutions[1].some(die => die.value === 'blue'),
                     nextTrigger: 'validation'
                 },
                 {
+                    id: 'check-helper-1',
+                    message: 'Perfect! Solution Helper shows 5 cards. But wait... we forgot the required cube!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'add-prime-1',
+                    message: 'Add the <strong>COMPLEMENT</strong> cube at the end (keep it spaced out).',
+                    highlight: { dice: [3] },
+                    validation: (game) => game.solutions[1].some(die => die.value === '′'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'check-helper-2',
+                    message: 'Hmm... now it only matches 3 cards! "Yellow ∪ Blue ∪ ′" evaluated left-to-right doesn\'t work.',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'group-blue-prime',
+                    message: 'Try grouping Complement with BLUE. Move them close together so they touch!',
+                    highlight: { dice: [2, 3] },
+                    validation: (game) => {
+                        const solution = game.solutions[1];
+                        const blueDie = solution.find(die => die.value === 'blue');
+                        const primeDie = solution.find(die => die.value === '′');
+                        
+                        if (!blueDie || !primeDie) return false;
+                        
+                        const isMobile = window.innerWidth <= 768;
+                        const dieSize = isMobile ? 50 : 80;
+                        const touchThreshold = 15;
+                        const dx = Math.abs(blueDie.x - primeDie.x);
+                        const dy = Math.abs(blueDie.y - primeDie.y);
+                        
+                        return dx < dieSize + touchThreshold && dy < dieSize + touchThreshold;
+                    },
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'check-helper-3',
+                    message: 'Now "Yellow ∪ (Blue′)" matches 7 cards! Too many. The grouping changes everything!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'group-yellow-prime',
+                    message: 'Try grouping Complement with YELLOW instead. Move them close together!',
+                    highlight: { dice: [0, 3] },
+                    validation: (game) => {
+                        const solution = game.solutions[1];
+                        const yellowDie = solution.find(die => die.value === 'gold');
+                        const primeDie = solution.find(die => die.value === '′');
+                        
+                        if (!yellowDie || !primeDie) return false;
+                        
+                        const isMobile = window.innerWidth <= 768;
+                        const dieSize = isMobile ? 50 : 80;
+                        const touchThreshold = 15;
+                        const dx = Math.abs(yellowDie.x - primeDie.x);
+                        const dy = Math.abs(yellowDie.y - primeDie.y);
+                        
+                        return dx < dieSize + touchThreshold && dy < dieSize + touchThreshold;
+                    },
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'success',
+                    message: 'Perfect! "(Yellow′) ∪ Blue" = 5 cards! Grouping with Yellow was the key!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'lesson',
+                    message: 'Required cubes force creative solutions. Position and grouping matter! 50 bonus points await!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
                     id: 'submit',
-                    message: 'Watch for that green glow! Click <strong>GO!</strong>',
+                    message: 'Watch for that green glow in real play! Click <strong>GO!</strong>',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'submit'
