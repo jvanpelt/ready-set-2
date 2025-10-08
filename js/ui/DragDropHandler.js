@@ -135,8 +135,9 @@ export class DragDropHandler {
                 const row = solutionDie.closest('.solution-row');
                 
                 this.draggedRowIndex = parseInt(row.dataset.row);
-                this.draggedDieIndex = parseInt(solutionDie.dataset.index);
-                this.draggedDie = this.game.solutions[this.draggedRowIndex][this.draggedDieIndex];
+                this.draggedDieId = solutionDie.dataset.id;  // Use ID instead of index
+                // Find die by ID in the array
+                this.draggedDie = this.game.solutions[this.draggedRowIndex].find(d => d.id === this.draggedDieId);
                 this.draggedFromSolution = true;
                 this.isDragging = true;
                 this.currentDragElement = solutionDie;
@@ -210,12 +211,19 @@ export class DragDropHandler {
                     let x = coords.clientX - rowRect.left - this.dragOffset.x;
                     let y = coords.clientY - rowRect.top - this.dragOffset.y;
                     
-                    const tempDie = this.game.solutions[rowIndex][this.draggedDieIndex];
+                    // Find die by ID instead of index
+                    const dieIndex = this.game.solutions[rowIndex].findIndex(d => d.id === this.draggedDieId);
+                    if (dieIndex === -1) {
+                        console.error('❌ Could not find die with ID:', this.draggedDieId);
+                        return;
+                    }
+                    
+                    const tempDie = this.game.solutions[rowIndex][dieIndex];
                     tempDie.x = x;
                     tempDie.y = y;
                     
                     const snappedPos = this.smartSnapPosition(tempDie, rowIndex, rowRect);
-                    this.game.updateDiePosition(rowIndex, this.draggedDieIndex, snappedPos.x, snappedPos.y);
+                    this.game.updateDiePosition(rowIndex, dieIndex, snappedPos.x, snappedPos.y);
                     
                     this.currentDragElement.classList.remove('dragging');
                     this.onDrop(); // Trigger re-render
@@ -343,9 +351,13 @@ export class DragDropHandler {
             if (solutionDie) {
                 const row = solutionDie.closest('.solution-row');
                 const rowIndex = parseInt(row.dataset.row);
-                const dieIndex = parseInt(solutionDie.dataset.index);
-                this.game.removeDieFromSolution(rowIndex, dieIndex);
-                this.onDrop();
+                const dieId = solutionDie.dataset.id;  // Use ID instead of index
+                // Find die by ID
+                const dieIndex = this.game.solutions[rowIndex].findIndex(d => d.id === dieId);
+                if (dieIndex !== -1) {
+                    this.game.removeDieFromSolution(rowIndex, dieIndex);
+                    this.onDrop();
+                }
             }
         });
         
@@ -366,9 +378,13 @@ export class DragDropHandler {
                 
                 const row = solutionDie.closest('.solution-row');
                 const rowIndex = parseInt(row.dataset.row);
-                const dieIndex = parseInt(solutionDie.dataset.index);
-                this.game.removeDieFromSolution(rowIndex, dieIndex);
-                this.onDrop();
+                const dieId = solutionDie.dataset.id;  // Use ID instead of index
+                // Find die by ID
+                const dieIndex = this.game.solutions[rowIndex].findIndex(d => d.id === dieId);
+                if (dieIndex !== -1) {
+                    this.game.removeDieFromSolution(rowIndex, dieIndex);
+                    this.onDrop();
+                }
                 
                 lastTap = 0;
                 lastTapTarget = null;

@@ -162,7 +162,7 @@ export class UIRenderer {
             solution.forEach((die, dieIndex) => {
                 const dieEl = document.createElement('div');
                 dieEl.className = 'solution-die';
-                dieEl.dataset.index = dieIndex;
+                dieEl.dataset.id = die.id;  // Use unique ID instead of array index
                 
                 // Position absolutely within row
                 dieEl.style.position = 'absolute';
