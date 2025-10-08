@@ -17,75 +17,10 @@ export class TutorialManager {
         this.instructionTextEl = document.getElementById('tutorial-instruction-text');
         this.skipBtn = document.getElementById('tutorial-skip-btn');
         this.nextBtn = document.getElementById('tutorial-next-btn');
+        this.statusBar = document.querySelector('.status-bar');
         
         this.skipBtn.addEventListener('click', () => this.skip());
         this.nextBtn.addEventListener('click', () => this.handleNextClick());
-        
-        // Make instruction box draggable
-        this.initDraggable();
-    }
-    
-    initDraggable() {
-        let isDragging = false;
-        let currentX;
-        let currentY;
-        let initialX;
-        let initialY;
-        let xOffset = 0;
-        let yOffset = 0;
-        
-        const dragStart = (e) => {
-            // Only drag from the badge or text area, not buttons
-            if (e.target.tagName === 'BUTTON') return;
-            
-            if (e.type === 'touchstart') {
-                initialX = e.touches[0].clientX - xOffset;
-                initialY = e.touches[0].clientY - yOffset;
-            } else {
-                initialX = e.clientX - xOffset;
-                initialY = e.clientY - yOffset;
-            }
-            
-            isDragging = true;
-            this.instructionEl.style.cursor = 'grabbing';
-        };
-        
-        const dragEnd = () => {
-            isDragging = false;
-            this.instructionEl.style.cursor = 'move';
-        };
-        
-        const drag = (e) => {
-            if (!isDragging) return;
-            
-            e.preventDefault();
-            
-            if (e.type === 'touchmove') {
-                currentX = e.touches[0].clientX - initialX;
-                currentY = e.touches[0].clientY - initialY;
-            } else {
-                currentX = e.clientX - initialX;
-                currentY = e.clientY - initialY;
-            }
-            
-            xOffset = currentX;
-            yOffset = currentY;
-            
-            // Override positioning
-            this.instructionEl.style.top = `${20 + yOffset}px`;
-            this.instructionEl.style.right = `${20 - xOffset}px`;
-            this.instructionEl.style.left = 'auto';
-            this.instructionEl.style.bottom = 'auto';
-            this.instructionEl.style.transform = 'none';
-        };
-        
-        this.instructionEl.addEventListener('mousedown', dragStart);
-        this.instructionEl.addEventListener('mouseup', dragEnd);
-        this.instructionEl.addEventListener('mousemove', drag);
-        
-        this.instructionEl.addEventListener('touchstart', dragStart, { passive: true });
-        this.instructionEl.addEventListener('touchend', dragEnd);
-        this.instructionEl.addEventListener('touchmove', drag, { passive: false });
     }
     
     start(scenarioData) {
@@ -116,6 +51,9 @@ export class TutorialManager {
         
         // Add tutorial-active class to body
         document.body.classList.add('tutorial-active');
+        
+        // Hide status bar and show tutorial instruction
+        this.statusBar.classList.add('tutorial-active');
         
         // Start first step
         this.showStep(0);
@@ -374,6 +312,9 @@ export class TutorialManager {
         this.clearHighlights();
         this.instructionEl.classList.add('hidden');
         document.body.classList.remove('tutorial-active');
+        
+        // Show status bar again
+        this.statusBar.classList.remove('tutorial-active');
         
         // Clear tutorial flag in Game and handle expired timer
         this.game.isTutorialActive = false;

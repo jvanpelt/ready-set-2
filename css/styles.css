@@ -805,7 +805,7 @@ body {
     }
     
     .solution-row {
-        min-height: 70px;
+        min-height: 60px;
     }
     
     .solution-die {
@@ -1365,29 +1365,25 @@ body {
     font-size: 14px;
 }
 
-/* Tutorial Instruction (Floating) */
+/* Hide status bar during tutorials */
+.status-bar.tutorial-active {
+    display: none;
+}
+
+/* Tutorial Instruction (replaces status bar during tutorials) */
 .tutorial-instruction {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: rgba(255, 255, 255, 0.95);
-    color: #333;
-    padding: 20px 24px;
-    border-radius: 16px;
-    max-width: 400px;
-    z-index: 1500;
-    pointer-events: none;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 2px rgba(0,0,0,0.1);
+    background: rgba(76, 175, 80, 0.15);
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 2px solid rgba(76, 175, 80, 0.3);
     animation: fadeInUp 0.3s ease;
-    cursor: move;
+    margin-bottom: 15px;
 }
 
 .tutorial-instruction.hidden {
     display: none;
-}
-
-.tutorial-instruction * {
-    pointer-events: auto;
 }
 
 .tutorial-step-badge {
@@ -1398,30 +1394,30 @@ body {
     font-size: 12px;
     font-weight: bold;
     display: inline-block;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .tutorial-instruction p {
-    margin: 8px 0 16px 0;
-    font-size: 16px;
-    line-height: 1.5;
-    color: #222;
+    margin: 8px 0 12px 0;
+    font-size: 15px;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.95);
 }
 
 .tutorial-buttons {
     display: flex;
     gap: 8px;
     justify-content: flex-end;
-    margin-top: 12px;
+    margin-top: 8px;
 }
 
 .tutorial-next-btn {
     background: linear-gradient(135deg, #4CAF50, #45a049);
     border: none;
     color: white;
-    padding: 10px 20px;
+    padding: 8px 16px;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
@@ -1435,8 +1431,8 @@ body {
 
 .tutorial-skip-btn {
     background: transparent;
-    border: 1px solid rgba(0,0,0,0.2);
-    color: #666;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.8);
     padding: 8px 16px;
     border-radius: 8px;
     font-size: 13px;
@@ -1445,9 +1441,9 @@ body {
 }
 
 .tutorial-skip-btn:hover {
-    background: rgba(0,0,0,0.05);
-    border-color: rgba(0,0,0,0.3);
-    color: #333;
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.5);
+    color: white;
 }
 
 /* Tutorial highlights */
@@ -1524,7 +1520,7 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
         left: auto !important;
         bottom: auto !important;
         transform: none !important;
-        padding: 16px 18px;
+        padding: 10px;
     }
 }
 
