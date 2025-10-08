@@ -890,15 +890,8 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-required',
-                    message: '<strong>Required cubes</strong> have a green border and glow. See the Complement cube? It\'s required!',
+                    message: '<strong>Required cubes</strong> have a green border and glow, and are worth  <strong>50 bonus points</strong>.',
                     highlight: { dice: [3] },
-                    nextTrigger: 'auto',
-                    duration: 4000
-                },
-                {
-                    id: 'explain-value',
-                    message: 'Required cubes are worth <strong>50 bonus points</strong>, but you MUST use them!',
-                    highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
                 },
@@ -925,7 +918,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-blue-1',
-                    message: 'Drag <strong>BLUE</strong>. This should match 5 cards!',
+                    message: 'Drag <strong>BLUE</strong>. This should match our goal, 5 cards!',
                     highlight: { dice: [2] },
                     validation: (game) => game.solutions[1].some(die => die.value === 'blue'),
                     nextTrigger: 'validation'
@@ -946,7 +939,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'check-helper-2',
-                    message: 'Hmm... now it only matches 3 cards! "Yellow ∪ Blue ∪ ′" evaluated left-to-right doesn\'t work.',
+                    message: 'Hmm... now it only matches 3 cards! "Yellow ∪ Blue ′" evaluated left-to-right doesn\'t work.',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
@@ -1026,17 +1019,22 @@ export const TUTORIAL_SCENARIOS = {
     },
     
     9: {
-        // Level 9: Wild cubes
-        cards: [1, 2, 3, 4, 5, 8, 9, 10],
+        // Level 9: Wild cubes - flexible operator choice
+        // Cards: [1, 2, 3, 4, 5, 8, 10, 12] = yellow, green, green+yellow, blue, blue+yellow, red, red+green, red+blue
+        // Solution: Red [wild=∪] Green = 5 cards (2,3,8,10,12)
+        // Alternative if wild=∩: Red ∩ Green = 1 card (10)
+        // Teaches: Wild cube can be set to different operators
+        cards: [1, 2, 3, 4, 5, 8, 10, 12],
         dice: [
             { type: 'color', value: 'red', name: 'RED', id: 'tutorial-9-red' },
-            { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-9-union' },
-            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-9-blue' },
-            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-9-intersect' },
+            { type: 'wild', value: null, name: 'WILD', id: 'tutorial-9-wild' },
             { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-9-green' },
-            { type: 'operator', value: '−', name: 'DIFFERENCE', id: 'tutorial-9-diff' }
+            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-9-blue' },
+            { type: 'color', value: 'gold', name: 'YELLOW', id: 'tutorial-9-yellow' },
+            { type: 'operator', value: '′', name: 'COMPLEMENT', id: 'tutorial-9-prime' }
         ],
         goal: 5,
+        expectedSolution: ['red', '∪', 'green'], // Wild cube set to Union
         
         walkthrough: {
             enabled: true,
@@ -1051,55 +1049,79 @@ export const TUTORIAL_SCENARIOS = {
                 {
                     id: 'explain-wild',
                     message: '<strong>Wild cubes</strong> have a red border with a question mark. They can be ANY operator!',
-                    highlight: null,
+                    highlight: { dice: [1] },
                     nextTrigger: 'auto',
                     duration: 4000
                 },
                 {
                     id: 'explain-selection',
-                    message: 'When you drop a wild cube, choose which operator it becomes. Change it anytime!',
+                    message: 'When you drop a wild cube, a menu appears. Pick which operator it should be. Change it anytime by clicking it!',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
                 },
                 {
                     id: 'explain-value',
-                    message: 'Wild cubes are worth <strong>25 bonus points</strong>! Use them to find creative solutions.',
+                    message: 'Wild cubes are worth <strong>25 bonus points</strong>! Great for creative solutions.',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
                 },
                 {
-                    id: 'practice',
-                    message: 'Let\'s practice. Goal: <strong>5 cards</strong>. Build "Red Union Blue".',
+                    id: 'goal',
+                    message: 'Goal: <strong>5 cards</strong>. Let\'s use the wild cube to build a solution!',
                     highlight: { goal: true },
                     nextTrigger: 'auto',
                     duration: 3000
                 },
                 {
                     id: 'drag-red',
-                    message: 'Drag <strong>RED</strong>.',
+                    message: 'Drag <strong>RED</strong> to the <strong>BOTTOM ROW</strong>.',
                     highlight: { dice: [0] },
                     validation: (game) => game.solutions[1].some(die => die.value === 'red'),
                     nextTrigger: 'validation'
                 },
                 {
-                    id: 'drag-union',
-                    message: 'Drag <strong>UNION</strong>.',
+                    id: 'drag-wild',
+                    message: 'Drag the <strong>WILD CUBE</strong> (the one with the ?). A menu will pop up!',
                     highlight: { dice: [1] },
-                    validation: (game) => game.solutions[1].some(die => die.value === '∪'),
+                    validation: (game) => game.solutions[1].some(die => die.type === 'wild'),
                     nextTrigger: 'validation'
                 },
                 {
-                    id: 'drag-blue',
-                    message: 'Drag <strong>BLUE</strong>.',
-                    highlight: { dice: [2] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'blue'),
+                    id: 'select-union',
+                    message: 'In the menu, select <strong>UNION (∪)</strong> - the overlapping circles icon.',
+                    highlight: null,
+                    validation: (game) => {
+                        const wildDie = game.solutions[1].find(die => die.type === 'wild');
+                        return wildDie && wildDie.selectedOperator === '∪';
+                    },
                     nextTrigger: 'validation'
+                },
+                {
+                    id: 'drag-green',
+                    message: 'Drag <strong>GREEN</strong> to complete the solution.',
+                    highlight: { dice: [2] },
+                    validation: (game) => game.solutions[1].some(die => die.value === 'green'),
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'check-result',
+                    message: 'Perfect! "Red ∪ Green" matches 5 cards. The wild cube became Union!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'lesson',
+                    message: 'Wild cubes give you flexibility when you need a specific operator. 25 bonus points!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
                 },
                 {
                     id: 'submit',
-                    message: 'Wild cubes give you options! Click <strong>GO!</strong>',
+                    message: 'Click the wild cube to change operators anytime! Click <strong>GO!</strong>',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'submit'
