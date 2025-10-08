@@ -88,6 +88,9 @@ export class UIController {
         this.solutionHelperToggle = document.getElementById('solution-helper-toggle');
         this.solutionHelperToggle.checked = this.settings.solutionHelper;
         
+        this.testModeToggle = document.getElementById('test-mode-toggle');
+        this.testModeToggle.checked = this.settings.testMode || false;
+        
         // Test mode
         this.jumpToLevelBtn = document.getElementById('jump-to-level-btn');
     }
@@ -161,6 +164,21 @@ export class UIController {
             } else {
                 this.clearSolutionHelper();
             }
+        });
+        
+        this.testModeToggle.addEventListener('change', (e) => {
+            this.settings.testMode = e.target.checked;
+            this.game.storage.saveSettings(this.settings);
+            
+            // Update the current level's goal score immediately
+            const config = getLevelConfig(this.game.level, this.settings.testMode);
+            this.game.goalScore = config.goalScore;
+            
+            console.log(`🔧 Test Mode ${e.target.checked ? 'ENABLED' : 'DISABLED'}`);
+            console.log(`   Goal score for Level ${this.game.level}: ${config.goalScore} points`);
+            
+            // Re-render to show new goal score
+            this.render();
         });
         
         // Test mode: Jump to level
@@ -538,7 +556,7 @@ export class UIController {
         const state = this.game.getState();
         
         // Show/hide timer display based on level config (Level 7+)
-        const config = getLevelConfig(this.game.level);
+        const config = getLevelConfig(this.game.level, this.settings.testMode);
         if (config && config.timeLimit) {
             this.timerDisplay.style.display = 'flex';
             // If timer isn't running, show the initial time

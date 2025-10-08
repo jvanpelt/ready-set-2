@@ -90,7 +90,8 @@ export class Game {
         }
         
         console.log('📊 Getting level config for level', this.level);
-        const config = getLevelConfig(this.level);
+        const settings = this.storage.loadSettings();
+        const config = getLevelConfig(this.level, settings.testMode);
         if (config) {
             this.goalScore = config.goalScore;
             console.log('✅ Level config loaded - goal score:', this.goalScore);
@@ -122,7 +123,8 @@ export class Game {
         }));
         
         // Start timer if level has time limit (Level 7+)
-        const config = getLevelConfig(this.level);
+        const settings = this.storage.loadSettings();
+        const config = getLevelConfig(this.level, settings.testMode);
         if (config.timeLimit) {
             this.startTimer(config.timeLimit);
         } else {
@@ -135,7 +137,8 @@ export class Game {
         this.tutorialShown = false; // Show tutorial for new level
         this.score = 0; // Reset score for new level
         this.generateNewRound();
-        const config = getLevelConfig(this.level);
+        const settings = this.storage.loadSettings();
+        const config = getLevelConfig(this.level, settings.testMode);
         this.goalScore = config.goalScore;
         this.saveState();
     }
@@ -151,7 +154,8 @@ export class Game {
         this.tutorialShown = false;
         this.storage.clear(); // Clear saved game
         this.generateNewRound();
-        const config = getLevelConfig(this.level);
+        const settings = this.storage.loadSettings();
+        const config = getLevelConfig(this.level, settings.testMode);
         this.goalScore = config.goalScore;
         this.saveState();
     }
@@ -165,7 +169,8 @@ export class Game {
         this.tutorialShown = false; // Show tutorial for new level
         this.generateNewRound();
         
-        const config = getLevelConfig(this.level);
+        const settings = this.storage.loadSettings();
+        const config = getLevelConfig(this.level, settings.testMode);
         this.goalScore = config.goalScore;
         
         // Update highest level if needed
@@ -557,7 +562,8 @@ export class Game {
     }
     
     getTutorial() {
-        const config = getLevelConfig(this.level);
+        const settings = this.storage.loadSettings();
+        const config = getLevelConfig(this.level, settings.testMode);
         return config.tutorial;
     }
     

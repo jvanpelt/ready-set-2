@@ -333,8 +333,18 @@ export function generateDiceForLevel(level) {
 }
 
 // Get level configuration
-export function getLevelConfig(level) {
-    return LEVEL_CONFIG[level - 1] || LEVEL_CONFIG[0];
+export function getLevelConfig(level, testMode = false) {
+    const config = LEVEL_CONFIG[level - 1] || LEVEL_CONFIG[0];
+    
+    // If test mode is enabled, override goal score to 50 for easy testing
+    if (testMode) {
+        return {
+            ...config,
+            goalScore: 50
+        };
+    }
+    
+    return config;
 }
 
 // Check if there are more levels
