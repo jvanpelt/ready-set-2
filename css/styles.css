@@ -761,7 +761,7 @@ body {
 @media (max-width: 768px) {
     #app {
         padding: 8px;
-        gap: 10px;
+        gap: 6px;
     }
     
     /* Keep cards in 4x2 grid on all screen sizes */
@@ -789,15 +789,15 @@ body {
     }
     
     .die {
-        width: 65px;
-        height: 65px;
-        font-size: 30px;
+        width: 60px;
+        height: 60px;
+        font-size: 28px;
         border-width: 2px;
     }
     
     .die .circle {
-        width: 40px;
-        height: 40px;
+        width: 38px;
+        height: 38px;
     }
     
     .solution-area {
@@ -1514,11 +1514,6 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
     }
     
     .tutorial-instruction {
-        max-width: calc(100% - 20px);
-        top: 10px !important;
-        right: 10px !important;
-        left: auto !important;
-        bottom: auto !important;
         transform: none !important;
         padding: 10px;
     }
