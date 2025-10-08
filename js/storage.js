@@ -191,7 +191,8 @@ export class GameStorage {
         
         // Return default settings
         return {
-            solutionHelper: false
+            solutionHelper: false,
+            testMode: false  // When enabled, use easy scores (50) for quick testing
         };
     }
     

@@ -90,7 +90,8 @@ export class Game {
         }
         
         console.log('📊 Getting level config for level', this.level);
-        const config = getLevelConfig(this.level);
+        const settings = this.storage.loadSettings();
+        const config = getLevelConfig(this.level, settings.testMode);
         if (config) {
             this.goalScore = config.goalScore;
             console.log('✅ Level config loaded - goal score:', this.goalScore);
@@ -122,7 +123,8 @@ export class Game {
         }));
         
         // Start timer if level has time limit (Level 7+)
-        const config = getLevelConfig(this.level);
+        const settings = this.storage.loadSettings();
+        const config = getLevelConfig(this.level, settings.testMode);
         if (config.timeLimit) {
             this.startTimer(config.timeLimit);
         } else {
@@ -135,7 +137,8 @@ export class Game {
         this.tutorialShown = false; // Show tutorial for new level
         this.score = 0; // Reset score for new level
         this.generateNewRound();
-        const config = getLevelConfig(this.level);
+        const settings = this.storage.loadSettings();
+        const config = getLevelConfig(this.level, settings.testMode);
         this.goalScore = config.goalScore;
         this.saveState();
     }
@@ -151,7 +154,8 @@ export class Game {
         this.tutorialShown = false;
         this.storage.clear(); // Clear saved game
         this.generateNewRound();
-        const config = getLevelConfig(this.level);
+        const settings = this.storage.loadSettings();
+        const config = getLevelConfig(this.level, settings.testMode);
         this.goalScore = config.goalScore;
         this.saveState();
     }
@@ -165,7 +169,8 @@ export class Game {
         this.tutorialShown = false; // Show tutorial for new level
         this.generateNewRound();
         
-        const config = getLevelConfig(this.level);
+        const settings = this.storage.loadSettings();
+        const config = getLevelConfig(this.level, settings.testMode);
         this.goalScore = config.goalScore;
         
         // Update highest level if needed
@@ -449,12 +454,28 @@ export class Game {
         // Calculate score (all dice from both rows)
         let points = calculateScore(allDice);
         
-        // Add bonus for using required cube (Level 8+)
+        // Add bonus for using special cubes
+        // Required cube: 50 points (Level 8+)
         if (requiredDie) {
             const usedRequiredCube = allDice.some(die => die.id === requiredDie.id);
             if (usedRequiredCube) {
-                points += 50; // Bonus points for required cube
+                points += 50;
+                console.log('✅ Required cube bonus: +50 points');
             }
+        }
+        
+        // Wild cube: 25 points (Level 9+)
+        const wildCubesUsed = allDice.filter(die => die.type === 'wild');
+        if (wildCubesUsed.length > 0) {
+            points += wildCubesUsed.length * 25;
+            console.log(`✅ Wild cube bonus: +${wildCubesUsed.length * 25} points (${wildCubesUsed.length} wild cubes)`);
+        }
+        
+        // Bonus cube: 50 points (Level 10)
+        const bonusCubesUsed = allDice.filter(die => die.isBonus);
+        if (bonusCubesUsed.length > 0) {
+            points += bonusCubesUsed.length * 50;
+            console.log(`✅ Bonus cube bonus: +${bonusCubesUsed.length * 50} points (${bonusCubesUsed.length} bonus cubes)`);
         }
         
         return {
@@ -541,7 +562,8 @@ export class Game {
     }
     
     getTutorial() {
-        const config = getLevelConfig(this.level);
+        const settings = this.storage.loadSettings();
+        const config = getLevelConfig(this.level, settings.testMode);
         return config.tutorial;
     }
     
