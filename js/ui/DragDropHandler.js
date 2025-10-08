@@ -78,6 +78,8 @@ export class DragDropHandler {
                     
                     this.touchDragClone = die.cloneNode(true);
                     this.touchDragClone.classList.add('touch-drag-clone');
+                    // Remove tutorial highlight to prevent layout issues from box-shadow
+                    this.touchDragClone.classList.remove('tutorial-highlight');
                     this.touchDragClone.style.position = 'fixed';
                     this.touchDragClone.style.pointerEvents = 'none';
                     this.touchDragClone.style.zIndex = '10000';
