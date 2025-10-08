@@ -42,7 +42,6 @@ export class DragDropHandler {
             if (die && !die.classList.contains('disabled')) {
                 // Check if tutorial restricts dragging this die
                 if (!this.isDieAllowedInTutorial(die)) {
-                    console.log('🎓 Tutorial: die not allowed yet');
                     e.preventDefault();
                     e.stopPropagation();
                     return false;
@@ -471,42 +470,24 @@ export class DragDropHandler {
     isDieAllowedInTutorial(dieElement) {
         // If no tutorial is active, allow all dice
         if (!this.tutorialManager || !this.tutorialManager.isActive) {
-            console.log('🎓 Tutorial check: no tutorial active, allowing all dice');
             return true;
         }
         
-        console.log('🎓 Tutorial check: tutorial IS active');
-        
         // Get current tutorial step
-        const scenario = this.tutorialManager.scenario;
         const currentStep = this.tutorialManager.scenario?.walkthrough?.steps[this.tutorialManager.currentStep];
-        
-        console.log('🎓 Current step:', this.tutorialManager.currentStep);
-        console.log('🎓 Step highlight:', currentStep?.highlight);
         
         if (!currentStep || !currentStep.highlight || !currentStep.highlight.dice) {
             // No dice specified on this step = lock ALL dice during tutorial
-            console.log('🎓 No dice specified on this step, locking ALL dice');
             return false;
         }
         
         // Get the allowed dice indices
         const allowedIndices = currentStep.highlight.dice;
         
-        // Find this die's index in the dice array
-        const dieIndex = Array.from(this.diceContainer.querySelectorAll('.die')).indexOf(dieElement);
-        
-        console.log(`🎓 Checking die at index ${dieIndex}, allowed: [${allowedIndices.join(', ')}]`);
+        // Find this die's index in the dice array (cache the nodeList for performance)
+        const dieIndex = parseInt(dieElement.dataset.index);
         
         // Check if this die's index is in the allowed list
-        const isAllowed = allowedIndices.includes(dieIndex);
-        
-        if (!isAllowed) {
-            console.log(`🎓 ❌ Die at index ${dieIndex} NOT in allowed list [${allowedIndices.join(', ')}]`);
-        } else {
-            console.log(`🎓 ✅ Die at index ${dieIndex} IS in allowed list`);
-        }
-        
-        return isAllowed;
+        return allowedIndices.includes(dieIndex);
     }
 }

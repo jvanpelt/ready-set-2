@@ -103,27 +103,10 @@ export class UIController {
             }
         });
         
-        // Control buttons with debug logging
-        this.goBtn.addEventListener('click', () => {
-            console.log('🎯 GO button clicked');
-            this.handleGo();
-        });
-        this.goBtn.addEventListener('mouseup', () => console.log('🖱️ GO mouseup'));
-        this.goBtn.addEventListener('touchend', () => console.log('👆 GO touchend'));
-        
-        this.resetBtn.addEventListener('click', () => {
-            console.log('🔄 RESET button clicked');
-            this.handleReset();
-        });
-        this.resetBtn.addEventListener('mouseup', () => console.log('🖱️ RESET mouseup'));
-        this.resetBtn.addEventListener('touchend', () => console.log('👆 RESET touchend'));
-        
-        this.passBtn.addEventListener('click', () => {
-            console.log('⏭️ PASS button clicked');
-            this.handlePass();
-        });
-        this.passBtn.addEventListener('mouseup', () => console.log('🖱️ PASS mouseup'));
-        this.passBtn.addEventListener('touchend', () => console.log('👆 PASS touchend'));
+        // Control buttons
+        this.goBtn.addEventListener('click', () => this.handleGo());
+        this.resetBtn.addEventListener('click', () => this.handleReset());
+        this.passBtn.addEventListener('click', () => this.handlePass());
         
         this.menuBtn.addEventListener('click', () => {
             console.log('📋 MENU button clicked');
