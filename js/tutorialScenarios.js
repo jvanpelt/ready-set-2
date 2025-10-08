@@ -25,22 +25,19 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'intro',
                     message: 'Welcome! Let\'s learn the <strong>Union</strong> operator. It means "either/or".',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 3000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'identify-goal',
                     message: 'Our goal is <strong>5 cards</strong>. Look at the goal number above.',
                     highlight: { goal: true },
-                    nextTrigger: 'auto',
-                    duration: 3000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-union',
                     message: '<strong>Red Union Blue</strong> means "all cards with red OR blue (or both)".',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'drag-red',
@@ -73,8 +70,7 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'explain-result',
                     message: 'Your solution says: "All cards with red OR blue". Count them - 5 cards! ✓',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'submit',
@@ -113,29 +109,25 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'intro',
                     message: 'Welcome to Level 2! Let\'s learn the <strong>Difference</strong> operator.',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 3000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-difference',
                     message: '<strong>Difference</strong> means "cards in A, but NOT in B". It subtracts B from A.',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'identify-goal',
                     message: 'Our goal is <strong>3 cards</strong>. Let\'s build "Green Difference Blue".',
                     highlight: { goal: true },
-                    nextTrigger: 'auto',
-                    duration: 3000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-example',
                     message: '<strong>Green Difference Blue</strong> = "All cards with green, but NOT blue". Think: green EXCEPT blue.',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'drag-green',
@@ -168,8 +160,7 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'explain-result',
                     message: 'Your solution says: "Cards with green, but NOT blue". Count them - 3 cards! ✓',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'submit',
@@ -207,22 +198,19 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'intro',
                     message: 'Welcome to Level 3! Meet the <strong>Complement</strong> operator. Think "Opposite Day."',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 3000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-complement',
                     message: '<strong>Complement</strong> (the prime symbol) means "NOT this". It\'s the opposite or inverse.',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'identify-goal',
                     message: 'Our goal is <strong>5 cards</strong>. Let\'s build "Yellow Complement" (all cards that are NOT yellow).',
                     highlight: { goal: true },
-                    nextTrigger: 'auto',
-                    duration: 3000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'drag-yellow',
@@ -246,15 +234,13 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'explain-result',
                     message: 'Your solution "Yellow Complement" means: "All cards that are NOT yellow". Count them - 5 cards! ✓',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-power',
                     message: 'Complement is powerful! It gets tricky when combined with other operators. Experiment!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'submit',
@@ -292,29 +278,25 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'intro',
                     message: 'Welcome to Level 4! Time to learn something powerful...',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 3000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'duplicate-operators',
                     message: 'Look at your dice! You have <strong>TWO Intersection operators</strong> (the ones with overlapping circles). You can use the same operator multiple times!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 5000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-double-intersect',
                     message: 'We can chain operators: <strong>Red ∩ Blue ∩ Green</strong> means "cards with red AND blue AND green".',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 5000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'identify-goal',
                     message: 'Our goal is <strong>1 card</strong>. Only one card has all three colors!',
                     highlight: { goal: true },
-                    nextTrigger: 'auto',
-                    duration: 3000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'drag-red',
@@ -365,8 +347,7 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'explain-result',
                     message: 'Perfect! You used <strong>5 cubes</strong> to find 1 very specific card. More cubes = more points!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'submit',
@@ -404,43 +385,37 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'intro',
                     message: 'Welcome to Level 5! Two new cubes: <strong>Universe</strong> and <strong>Null</strong>.',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 3000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-universe',
                     message: '<strong>Universe (U)</strong> refers to ALL cards on the board. It\'s a reference to the entire set of cards.',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-null',
                     message: '<strong>Null (∅)</strong> is an empty set with NO cards. Useful for padding!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-padding',
                     message: '<strong>Padding</strong> means using extra cubes that don\'t change the result. More cubes = MORE POINTS!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-grouping',
                     message: '<strong>Important: Grouping!</strong> When cubes touch, they form a group that acts as one unit. This changes how expressions are evaluated!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'identify-goal',
                     message: 'Our goal is <strong>3 cards</strong>. Let\'s build "Universe minus (Red or Blue)" = all cards with neither red nor blue.',
                     highlight: { goal: true },
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'drag-universe',
@@ -537,8 +512,7 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'explain-result',
                     message: 'Perfect! The grouped cubes (Red ∪ Blue) act like a single unit. "U minus (Red or Blue)" = cards with neither! 5 cubes = MORE POINTS! ✓',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'submit',
@@ -579,36 +553,31 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'intro',
                     message: 'Welcome to Level 6! <strong>Restrictions</strong> are a game-changer!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 3000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-two-rows',
                     message: 'Notice you have <strong>two solution rows</strong> now. TOP = Restrictions, BOTTOM = Set Name.',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-subset',
                     message: '<strong>Subset (⊆)</strong>: "A ⊆ B" means cards in A must also be in B. Cards that violate this are <strong>removed from the universe</strong>.',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 5000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-important',
                     message: '<strong>Key point</strong>: Restrictions ONLY affect cards mentioned in the restriction. Other cards are unaffected!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'goal',
                     message: 'Goal: <strong>5 cards</strong>. Let\'s build "Red ⊆ Blue" to remove red-only cards, then name the remaining set.',
                     highlight: { goal: true },
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'drag-red-restriction',
@@ -635,15 +604,13 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'explain-effect',
                     message: '"Red ⊆ Blue" means: red cards must contain blue. Cards with ONLY red will be <strong>flipped and removed from play</strong>.',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 5000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-setname-needed',
                     message: '<strong>Important</strong>: Restrictions alone aren\'t enough! You must ALSO provide a set name in the BOTTOM ROW.',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'drag-green',
@@ -670,8 +637,7 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'explain-result',
                     message: 'Perfect! After removing red-only cards, we name the set "Green ∪ Yellow" = 5 cards. 6 cubes total = big points!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'submit',
@@ -709,36 +675,31 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'intro',
                     message: 'Welcome to Level 7! Time to add some pressure... literally.',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 3000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-timer',
                     message: 'From now on, you have a <strong>time limit</strong>! Watch the timer at the top of the screen.',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-timeout',
                     message: 'If time runs out, the round ends. No points, but you can try again!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 3000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-padding',
                     message: 'But while we\'re here, a trick! <strong>Red ∩ Red = Red</strong> uses 2 extra cubes for the same result as a single <strong>Red</strong> cube.',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'goal',
                     message: 'Goal: <strong>5 cards</strong>. Let\'s build "Green ∪ Red ∩ Red" and see what happens.',
                     highlight: { goal: true },
-                    nextTrigger: 'auto',
-                    duration: 3000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'drag-green',
@@ -779,29 +740,25 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'check-helper',
                     message: '<strong>Wait!</strong> Look at Solution Helper - it highlights 4 cards, not 5! Something\'s wrong...',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-problem-1',
                     message: 'Without grouping, this evaluates as "Green ∪ Red" first, then "... ∩ Red".',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-problem-2',
                     message: 'This means "All green or red cards that intersect with red cards" - which displays only red cards!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-fix',
                     message: 'We need to group "Red ∩ Red" together so it\'s treated as ONE unit: "Green ∪ (Red ∩ Red)".',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'group-them',
@@ -837,15 +794,13 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'success',
                     message: 'Perfect! Now Solution Helper shows 5 cards! "Green ∪ (Red ∩ Red)" = Green ∪ Red = 5 cards!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'lesson',
                     message: '<strong>Grouping changes order of operations!</strong> Use it to boost your score with padding.',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'submit',
@@ -885,22 +840,19 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'intro',
                     message: 'Welcome to Level 8! <strong>Required Cubes</strong> - worth big points, but mandatory!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 3000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-required',
                     message: '<strong>Required cubes</strong> have a green border and glow, and are worth  <strong>50 bonus points</strong>.',
                     highlight: { dice: [3] },
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'goal',
                     message: 'Goal: <strong>5 cards</strong>. Let\'s try building a solution. Start with "Yellow ∪ Blue".',
                     highlight: { goal: true },
-                    nextTrigger: 'auto',
-                    duration: 3000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'drag-yellow',
@@ -927,8 +879,7 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'check-helper-1',
                     message: 'Perfect! Solution Helper shows 5 cards. But wait... we forgot the required cube!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'add-prime-1',
@@ -941,8 +892,7 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'check-helper-2',
                     message: 'Hmm... now it only matches 3 cards! "Yellow ∪ Blue ′" evaluated left-to-right doesn\'t work.',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'group-blue-prime',
@@ -969,8 +919,7 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'check-helper-3',
                     message: 'Now "Yellow ∪ (Blue′)" matches 7 cards! Too many. The grouping changes everything!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'group-yellow-prime',
@@ -997,15 +946,13 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'success',
                     message: 'Perfect! "(Yellow′) ∪ Blue" = 5 cards! Grouping with Yellow was the key!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'lesson',
                     message: 'Required cubes force creative solutions. Position and grouping matter! 50 bonus points await!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'submit',
@@ -1033,7 +980,7 @@ export const TUTORIAL_SCENARIOS = {
             { type: 'color', value: 'gold', name: 'YELLOW', id: 'tutorial-9-yellow' },
             { type: 'operator', value: '′', name: 'COMPLEMENT', id: 'tutorial-9-prime' }
         ],
-        goal: 1, // Placeholder - Red ∩ Green = 1 card (card 10: red+green)
+        goal: 1, // Red ∩ Green = 1 card (card 10: red+green)
         expectedSolution: ['red', '∩', 'green'], // Wild cube set to Intersection
         
         walkthrough: {
@@ -1043,36 +990,31 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'intro',
                     message: 'Welcome to Level 9! Meet the <strong>Wild Cube</strong> - your flexible friend!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 3000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-wild',
                     message: '<strong>Wild cubes</strong> have a red border with a question mark. They can be ANY operator!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-selection',
                     message: 'When you drop a wild cube, a menu appears. Pick which operator it should be. Change it anytime by clicking it!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-value',
                     message: 'Wild cubes are worth <strong>25 bonus points</strong>! Great for creative solutions.',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'goal',
-                    message: 'Goal: <strong>5 cards</strong>. Let\'s use the wild cube to build a solution!',
+                    message: 'Goal: <strong>1 card</strong>. Let\'s use the wild cube to build a solution!',
                     highlight: { goal: true },
-                    nextTrigger: 'auto',
-                    duration: 3000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'drag-red',
@@ -1109,15 +1051,13 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'check-wrong',
                     message: 'Hmm... "Red − Green" doesn\'t match our goal. Let\'s try a different operator!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-change',
                     message: '<strong>Click the wild cube</strong> to change which operator it represents!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 3000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'select-intersect',
@@ -1133,15 +1073,13 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'check-correct',
                     message: 'Perfect! "Red ∩ Green" matches our goal! Different operator, different result!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'lesson',
                     message: 'Wild cubes give you flexibility to experiment. Click them anytime to change! 25 bonus points!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'submit',
@@ -1174,43 +1112,37 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'intro',
                     message: 'Welcome to Level 10! You made it to the final level! Here\'s your reward...',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 3000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-bonus',
                     message: '<strong>Bonus cubes</strong> look like regular cubes but with a special glow. Free points!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-value',
                     message: 'Bonus cubes are worth <strong>50 bonus points</strong> - same as required cubes, but no restrictions!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-rarity',
                     message: 'Bonus cubes are rare. When you get one, use it! Easy points.',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'congrats',
                     message: 'You\'ve mastered all 10 levels! Now go for those high scores!',
                     highlight: null,
-                    nextTrigger: 'auto',
-                    duration: 4000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'practice',
                     message: 'One last practice. Goal: <strong>5 cards</strong>. Build "Red Union Blue".',
                     highlight: { goal: true },
-                    nextTrigger: 'auto',
-                    duration: 3000
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'drag-red',
