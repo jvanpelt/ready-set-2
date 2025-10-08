@@ -211,7 +211,10 @@
 - ✅ No points awarded for tutorial rounds
 
 ### Known Issues
-- **Solution area cube dragging bug**: Cubes in the solution area sometimes get their indexes confused, causing them to jump around when dragging. Also sends incorrect cube back to dice area on double-click. Likely related to position-based indexing vs DOM order mismatch.
+- None at this time! 🎉
+
+### Recently Fixed
+- ✅ **Solution area cube dragging bug** (v3.2.0): Fixed ID-based tracking for dice in solution area, replacing index-based approach. Cubes now maintain consistent identity during drag/reorder/removal operations.
 
 ### Future Considerations
 - Replay tutorial option from menu
