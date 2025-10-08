@@ -484,10 +484,22 @@ export class DragDropHandler {
         // Get the allowed dice indices
         const allowedIndices = currentStep.highlight.dice;
         
-        // Find this die's index in the dice array (cache the nodeList for performance)
-        const dieIndex = parseInt(dieElement.dataset.index);
+        // Find this die's index in the dice array
+        let dieIndex;
+        if (dieElement.dataset.index !== undefined) {
+            // Use cached index from data attribute (faster)
+            dieIndex = parseInt(dieElement.dataset.index, 10);
+            console.log('🔍 Using dataset.index:', dieIndex, 'allowed:', allowedIndices);
+        } else {
+            // Fallback: compute index from DOM (slower but reliable)
+            const allDice = Array.from(this.diceContainer.querySelectorAll('.die:not(.solution-die)'));
+            dieIndex = allDice.indexOf(dieElement);
+            console.log('🔍 Using DOM indexOf:', dieIndex, 'allowed:', allowedIndices, '(dataset.index was undefined)');
+        }
         
         // Check if this die's index is in the allowed list
-        return allowedIndices.includes(dieIndex);
+        const result = allowedIndices.includes(dieIndex);
+        console.log('🔍 Result:', result ? '✅ ALLOWED' : '❌ BLOCKED');
+        return result;
     }
 }

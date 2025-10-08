@@ -29,7 +29,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'identify-goal',
-                    message: 'Our goal is <strong>5 cards</strong>. Look at the goal number above.',
+                    message: 'Our goal is <strong>5 cards</strong>. check out the goal number.',
                     highlight: { goal: true },
                     nextTrigger: 'auto'
                 },
