@@ -211,7 +211,7 @@
 - ✅ No points awarded for tutorial rounds
 
 ### Known Issues
-- None currently blocking tutorial testing
+- **Solution area cube dragging bug**: Cubes in the solution area sometimes get their indexes confused, causing them to jump around when dragging. Also sends incorrect cube back to dice area on double-click. Likely related to position-based indexing vs DOM order mismatch.
 
 ### Future Considerations
 - Replay tutorial option from menu

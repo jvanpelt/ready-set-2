@@ -1405,7 +1405,7 @@ body {
 
 /* Tutorial highlights */
 .tutorial-highlight {
-    box-shadow: 0 0 30px 10px #FFD700 !important;
+    box-shadow: 0 0 15px 5px #FFD700 !important;
     animation: tutorialPulse 1.5s infinite;
     z-index: 1000 !important;
     position: relative !important;
@@ -1413,10 +1413,10 @@ body {
 
 @keyframes tutorialPulse {
     0%, 100% {
-        box-shadow: 0 0 30px 10px #FFD700;
+        box-shadow: 0 0 15px 5px #FFD700;
     }
     50% {
-        box-shadow: 0 0 40px 15px #FFD700;
+        box-shadow: 0 0 20px 8px #FFD700;
     }
 }
 
