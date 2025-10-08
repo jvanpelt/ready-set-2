@@ -17,7 +17,6 @@ export class TutorialManager {
         this.instructionTextEl = document.getElementById('tutorial-instruction-text');
         this.skipBtn = document.getElementById('tutorial-skip-btn');
         this.nextBtn = document.getElementById('tutorial-next-btn');
-        this.statusBar = document.querySelector('.status-bar');
         
         this.skipBtn.addEventListener('click', () => this.skip());
         this.nextBtn.addEventListener('click', () => this.handleNextClick());
@@ -51,9 +50,6 @@ export class TutorialManager {
         
         // Add tutorial-active class to body
         document.body.classList.add('tutorial-active');
-        
-        // Hide status bar and show tutorial instruction
-        this.statusBar.classList.add('tutorial-active');
         
         // Start first step
         this.showStep(0);
@@ -312,9 +308,6 @@ export class TutorialManager {
         this.clearHighlights();
         this.instructionEl.classList.add('hidden');
         document.body.classList.remove('tutorial-active');
-        
-        // Show status bar again
-        this.statusBar.classList.remove('tutorial-active');
         
         // Clear tutorial flag in Game and handle expired timer
         this.game.isTutorialActive = false;

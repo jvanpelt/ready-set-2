@@ -760,8 +760,8 @@ body {
 /* Responsive */
 @media (max-width: 768px) {
     #app {
-        padding: 6px;
-        gap: 4px;
+        padding: 8px;
+        gap: 10px;
     }
     
     /* Keep cards in 4x2 grid on all screen sizes */
@@ -789,24 +789,23 @@ body {
     }
     
     .die {
-        width: 60px;
-        height: 60px;
-        font-size: 28px;
+        width: 65px;
+        height: 65px;
+        font-size: 30px;
         border-width: 2px;
     }
     
     .die .circle {
-        width: 38px;
-        height: 38px;
+        width: 40px;
+        height: 40px;
     }
     
     .solution-area {
-        padding: 6px;
+        padding: 8px;
     }
     
     .solution-row {
-        min-height: 55px;
-        padding: 8px;
+        min-height: 70px;
     }
     
     .solution-die {
@@ -1366,21 +1365,20 @@ body {
     font-size: 14px;
 }
 
-/* Hide status bar during tutorials */
-.status-bar.tutorial-active {
-    display: none;
-}
-
-/* Tutorial Instruction (replaces status bar during tutorials) */
+/* Tutorial Instruction (fixed at bottom during tutorials) */
 .tutorial-instruction {
-    background: rgba(76, 175, 80, 0.15);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(76, 175, 80, 0.95);
     backdrop-filter: blur(10px);
     color: white;
-    padding: 12px 16px;
-    border-radius: 12px;
-    border: 2px solid rgba(76, 175, 80, 0.3);
-    animation: fadeInUp 0.3s ease;
-    margin-bottom: 12px;
+    padding: 16px 20px;
+    border-top: 2px solid rgba(76, 175, 80, 0.5);
+    z-index: 2000;
+    animation: slideUpFromBottom 0.3s ease;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .tutorial-instruction.hidden {
@@ -1515,32 +1513,7 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
     }
     
     .tutorial-instruction {
-        transform: none !important;
-        padding: 8px 12px;
-        margin-bottom: 8px;
-    }
-    
-    .tutorial-instruction p {
-        margin: 6px 0 8px 0;
-        font-size: 14px;
-        line-height: 1.3;
-    }
-    
-    .tutorial-step-badge {
-        margin-bottom: 6px;
-        padding: 3px 10px;
-        font-size: 11px;
-    }
-    
-    .tutorial-buttons {
-        margin-top: 6px;
-        gap: 6px;
-    }
-    
-    .tutorial-next-btn,
-    .tutorial-skip-btn {
-        padding: 6px 12px;
-        font-size: 12px;
+        padding: 12px 16px;
     }
 }
 
@@ -1551,6 +1524,15 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
     }
     to {
         opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUpFromBottom {
+    from {
+        transform: translateY(100%);
+    }
+    to {
         transform: translateY(0);
     }
 }
