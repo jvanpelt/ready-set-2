@@ -489,17 +489,13 @@ export class DragDropHandler {
         if (dieElement.dataset.index !== undefined) {
             // Use cached index from data attribute (faster)
             dieIndex = parseInt(dieElement.dataset.index, 10);
-            console.log('🔍 Using dataset.index:', dieIndex, 'allowed:', allowedIndices);
         } else {
             // Fallback: compute index from DOM (slower but reliable)
             const allDice = Array.from(this.diceContainer.querySelectorAll('.die:not(.solution-die)'));
             dieIndex = allDice.indexOf(dieElement);
-            console.log('🔍 Using DOM indexOf:', dieIndex, 'allowed:', allowedIndices, '(dataset.index was undefined)');
         }
         
         // Check if this die's index is in the allowed list
-        const result = allowedIndices.includes(dieIndex);
-        console.log('🔍 Result:', result ? '✅ ALLOWED' : '❌ BLOCKED');
-        return result;
+        return allowedIndices.includes(dieIndex);
     }
 }
