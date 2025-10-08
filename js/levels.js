@@ -20,7 +20,7 @@ export const COLORS = ['red', 'blue', 'green', 'gold'];
 export const LEVEL_CONFIG = [
     {
         level: 1,
-        goalScore: 500,
+        goalScore: 50, // goalScore: 500, (original - reduced for tutorial testing)
         operators: ['UNION', 'INTERSECTION'],
         tutorial: {
             title: 'Welcome to Level 1!',
@@ -37,7 +37,7 @@ Drag dice to the solution area and click GO!`
     },
     {
         level: 2,
-        goalScore: 750,
+        goalScore: 50, // goalScore: 750, (original - reduced for tutorial testing)
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE'],
         tutorial: {
             title: 'Level 2: Difference',
@@ -50,7 +50,7 @@ Drag dice to the solution area and click GO!`
     },
     {
         level: 3,
-        goalScore: 1000,
+        goalScore: 50, // goalScore: 1000, (original - reduced for tutorial testing)
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE', 'COMPLEMENT'],
         tutorial: {
             title: 'Level 3: Complement',
@@ -63,7 +63,7 @@ Drag dice to the solution area and click GO!`
     },
     {
         level: 4,
-        goalScore: 1500,
+        goalScore: 50, // goalScore: 1500, (original - reduced for tutorial testing)
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE', 'COMPLEMENT'],
         tutorial: {
             title: 'Level 4: Master the Basics',
@@ -76,7 +76,7 @@ Drag dice to the solution area and click GO!`
     },
     {
         level: 5,
-        goalScore: 2500,
+        goalScore: 50, // goalScore: 2500, (original - reduced for tutorial testing)
         numDice: 8, // Increase from 6 to 8 dice
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE', 'COMPLEMENT', 'UNIVERSE', 'NULL'],
         tutorial: {
@@ -97,7 +97,7 @@ Drag dice to the solution area and click GO!`
     },
     {
         level: 6,
-        goalScore: 5000,
+        goalScore: 50, // goalScore: 5000, (original - reduced for tutorial testing)
         numDice: 8,
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE', 'COMPLEMENT', 'UNIVERSE', 'NULL', 'EQUALS', 'SUBSET'],
         tutorial: {
@@ -123,7 +123,7 @@ Restrictions let you use ALL 8 cubes for MASSIVE points!`
     },
     {
         level: 7,
-        goalScore: 5000,
+        goalScore: 50, // goalScore: 5000, (original - reduced for tutorial testing)
         numDice: 8,
         timeLimit: 180, // 3 minutes
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE', 'COMPLEMENT', 'UNIVERSE', 'NULL', 'EQUALS', 'SUBSET'],
@@ -141,7 +141,7 @@ Work quickly but stay focused!`
     },
     {
         level: 8,
-        goalScore: 5000,
+        goalScore: 50, // goalScore: 5000, (original - reduced for tutorial testing)
         numDice: 8,
         timeLimit: 180, // 3 minutes
         requiredCubeChance: 0.5, // 50% chance of required cube
@@ -161,7 +161,7 @@ Keep an eye out for that green border!`
     },
     {
         level: 9,
-        goalScore: 7500,
+        goalScore: 50, // goalScore: 7500, (original - reduced for tutorial testing)
         numDice: 8,
         timeLimit: 150, // 2.5 minutes - harder!
         requiredCubeChance: 0.33, // 33% chance of required cube
@@ -182,7 +182,7 @@ Try different operators until one works - or strategize!`
     },
     {
         level: 10,
-        goalScore: 10000,
+        goalScore: 50, // goalScore: 10000, (original - reduced for tutorial testing)
         numDice: 8,
         timeLimit: 120, // 2 minutes - ultimate challenge!
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE', 'COMPLEMENT', 'UNIVERSE', 'NULL', 'EQUALS', 'SUBSET'],

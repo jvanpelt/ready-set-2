@@ -73,10 +73,11 @@ export class UIRenderer {
             });
         });
         
-        dice.forEach((die) => {
+        dice.forEach((die, index) => {
             const dieEl = document.createElement('div');
             dieEl.className = 'die';
             dieEl.draggable = true;
+            dieEl.dataset.index = index; // For tutorial drag restrictions
             dieEl.dataset.type = die.type;
             dieEl.dataset.value = die.value;
             dieEl.dataset.id = die.id;

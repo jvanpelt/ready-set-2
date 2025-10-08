@@ -5,6 +5,7 @@ import { DragDropHandler } from './DragDropHandler.js';
 import { ModalManager } from './ModalManager.js';
 import { WildCubeManager } from './WildCubeManager.js';
 import { PuzzleBuilderManager } from './PuzzleBuilderManager.js';
+import { TutorialManager } from './TutorialManager.js';
 import { evaluateExpression, hasRestriction, evaluateRestriction } from '../setTheory.js';
 import { hasPossibleSolution } from '../solutionFinder.js';
 import { getLevelConfig } from '../levels.js';
@@ -22,6 +23,7 @@ export class UIController {
             this.evaluateSolutionHelper(); // Update cards after wild cube selection
         });
         this.builderManager = new PuzzleBuilderManager(game, this);
+        this.tutorialManager = new TutorialManager(game, this);
         
         // Load settings
         this.settings = this.game.storage.loadSettings();
@@ -44,12 +46,12 @@ export class UIController {
             (rowIndex, dieIndex) => {
                 // Auto-show popover when wild cube is dropped
                 this.showWildCubePopoverByIndex(rowIndex, dieIndex);
-            }
+            },
+            this.tutorialManager // Pass tutorial manager for drag restrictions
         );
         
         // Wire up timer callbacks (Level 7+)
         this.game.onTimerTick = (timeRemaining) => {
-            console.log('⏱️ Timer tick callback:', timeRemaining);
             this.updateTimer(timeRemaining);
         };
         this.game.onTimeout = () => this.handleTimeout();
@@ -101,27 +103,10 @@ export class UIController {
             }
         });
         
-        // Control buttons with debug logging
-        this.goBtn.addEventListener('click', () => {
-            console.log('🎯 GO button clicked');
-            this.handleGo();
-        });
-        this.goBtn.addEventListener('mouseup', () => console.log('🖱️ GO mouseup'));
-        this.goBtn.addEventListener('touchend', () => console.log('👆 GO touchend'));
-        
-        this.resetBtn.addEventListener('click', () => {
-            console.log('🔄 RESET button clicked');
-            this.handleReset();
-        });
-        this.resetBtn.addEventListener('mouseup', () => console.log('🖱️ RESET mouseup'));
-        this.resetBtn.addEventListener('touchend', () => console.log('👆 RESET touchend'));
-        
-        this.passBtn.addEventListener('click', () => {
-            console.log('⏭️ PASS button clicked');
-            this.handlePass();
-        });
-        this.passBtn.addEventListener('mouseup', () => console.log('🖱️ PASS mouseup'));
-        this.passBtn.addEventListener('touchend', () => console.log('👆 PASS touchend'));
+        // Control buttons
+        this.goBtn.addEventListener('click', () => this.handleGo());
+        this.resetBtn.addEventListener('click', () => this.handleReset());
+        this.passBtn.addEventListener('click', () => this.handlePass());
         
         this.menuBtn.addEventListener('click', () => {
             console.log('📋 MENU button clicked');
@@ -179,12 +164,27 @@ export class UIController {
         });
         
         // Test mode: Jump to level
-        this.jumpToLevelBtn.addEventListener('click', () => {
+        this.jumpToLevelBtn.addEventListener('click', async () => {
             const targetLevel = parseInt(document.getElementById('level-selector').value);
             this.game.jumpToLevel(targetLevel);
             this.modals.hideMenu();
             this.render();
             this.clearSolutionHelper();
+            
+            // Show tutorial for this level (if exists)
+            await this.showTutorialForLevel(targetLevel);
+        });
+        
+        // Clear game data
+        document.getElementById('clear-data-btn').addEventListener('click', () => {
+            if (confirm('⚠️ Are you sure you want to clear all game data?\n\nThis will:\n• Reset your level to 1\n• Reset your score to 0\n• Clear all tutorial progress\n• Clear all settings\n\nThis action cannot be undone!')) {
+                // Clear all localStorage
+                localStorage.clear();
+                console.log('🗑️ All game data cleared');
+                
+                // Reload the page to start fresh
+                window.location.reload();
+            }
         });
         
         // Pass confirmation modal
@@ -192,6 +192,12 @@ export class UIController {
     }
     
     handleGo() {
+        // Check if tutorial is active - don't submit/score during tutorial
+        if (this.tutorialManager.isActive) {
+            this.tutorialManager.advanceOnSubmit();
+            return; // Exit early - tutorial handles completion
+        }
+        
         const result = this.game.submitSolution();
         
         if (result.valid) {
@@ -206,6 +212,12 @@ export class UIController {
     }
     
     handleReset() {
+        // Block reset during tutorial
+        if (this.tutorialManager.isActive) {
+            console.log('🎓 Tutorial active - Reset button disabled');
+            return;
+        }
+        
         this.game.clearSolution();
         this.render();
         this.clearSolutionHelper();
@@ -213,6 +225,12 @@ export class UIController {
     
     handlePass() {
         console.log('🔍 handlePass() called - checking for possible solution...');
+        
+        // Block pass during tutorial
+        if (this.tutorialManager.isActive) {
+            console.log('🎓 Tutorial active - Pass button disabled');
+            return;
+        }
         
         // Prevent duplicate processing
         if (this.isProcessingPass) {
@@ -613,5 +631,59 @@ export class UIController {
     
     showTutorialIfNeeded() {
         this.modals.showTutorialIfNeeded();
+    }
+    
+    async showFirstTimeInterstitial() {
+        // Show Level 1 interstitial and wait for tutorial choice
+        const wantsTutorial = await this.modals.showInterstitialAsync(1);
+        
+        if (wantsTutorial) {
+            // Start interactive tutorial
+            const { getTutorialScenario } = await import('../tutorialScenarios.js');
+            const tutorialScenario = getTutorialScenario(1);
+            if (tutorialScenario) {
+                this.tutorialManager.start(tutorialScenario);
+                
+                // Mark tutorial as viewed (COMMENTED OUT FOR TESTING)
+                // TODO: Uncomment this after testing complete
+                // this.game.storage.markTutorialAsViewed(1);
+            }
+        } else {
+            // User declined tutorial
+            // Mark as viewed so they don't see it again (COMMENTED OUT FOR TESTING)
+            // TODO: Uncomment this after testing complete
+            // this.game.storage.markTutorialAsViewed(1);
+        }
+        // If they decline, just continue with normal gameplay (already rendered)
+    }
+    
+    async showTutorialForLevel(level) {
+        // Check if a tutorial exists for this level
+        const { getTutorialScenario } = await import('../tutorialScenarios.js');
+        const tutorialScenario = getTutorialScenario(level);
+        
+        if (!tutorialScenario) {
+            console.log(`🎓 No tutorial available for Level ${level}`);
+            return;
+        }
+        
+        console.log(`🎓 Showing tutorial for Level ${level}`);
+        
+        // Show interstitial and wait for user choice
+        const wantsTutorial = await this.modals.showInterstitialAsync(level);
+        
+        if (wantsTutorial) {
+            // Start interactive tutorial
+            this.tutorialManager.start(tutorialScenario);
+            
+            // Mark tutorial as viewed (COMMENTED OUT FOR TESTING)
+            // TODO: Uncomment this after testing complete
+            // this.game.storage.markTutorialAsViewed(level);
+        } else {
+            // User declined tutorial
+            // Mark as viewed so they don't see it again (COMMENTED OUT FOR TESTING)
+            // TODO: Uncomment this after testing complete
+            // this.game.storage.markTutorialAsViewed(level);
+        }
     }
 }

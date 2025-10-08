@@ -14,6 +14,7 @@ export class Game {
         this.solutions = [[], []]; // Always 2 rows: [restriction row, set name row]
         this.goalCards = 3;
         this.tutorialShown = false;
+        this.isTutorialActive = false; // Set by TutorialManager to suppress timer timeout
         
         // Timer (Level 7+)
         this.timeRemaining = null;
@@ -231,7 +232,10 @@ export class Game {
         
         // Then tick every second
         this.timerInterval = setInterval(() => {
-            this.timeRemaining--;
+            // Don't go below 0
+            if (this.timeRemaining > 0) {
+                this.timeRemaining--;
+            }
             
             if (this.onTimerTick) {
                 this.onTimerTick(this.timeRemaining);
@@ -259,6 +263,13 @@ export class Game {
     
     handleTimeout() {
         console.log('⏰ Time expired!');
+        
+        // Suppress timeout during tutorials - let timer tick but don't end round
+        if (this.isTutorialActive) {
+            console.log('🎓 Tutorial active - suppressing timeout (timer will stay at 0:00)');
+            return;
+        }
+        
         this.stopTimer();
         
         if (this.onTimeout) {

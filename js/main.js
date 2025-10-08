@@ -27,15 +27,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         console.log('✅ UIController instance created');
         
+        // Make UI controller globally accessible for modal callbacks
+        window.uiController = ui;
+        
         // Initial render
         console.log('🖼️ Rendering initial UI...');
         ui.render();
         console.log('✅ Initial render complete');
         
-        // Show tutorial for first time players
-        console.log('📚 Checking for tutorial...');
-        ui.showTutorialIfNeeded();
-        console.log('✅ Tutorial check complete');
+        // Check if first time playing (Level 1, new game)
+        const isFirstTime = game.level === 1 && !localStorage.getItem('rs2_tutorialShown_1');
+        
+        if (isFirstTime) {
+            // Show Level 1 interstitial for new players
+            console.log('👋 First time player - showing Level 1 interstitial');
+            ui.showFirstTimeInterstitial();
+        } else {
+            // Show tutorial for returning players
+            console.log('📚 Checking for tutorial...');
+            ui.showTutorialIfNeeded();
+            console.log('✅ Tutorial check complete');
+        }
         
         // Make game accessible for debugging
         window.game = game;

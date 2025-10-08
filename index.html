@@ -8,7 +8,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Ready, Set 2 - Set Theory Puzzle Game</title>
-    <link rel="stylesheet" href="css/styles.css?v=2.17.0">
+    <link rel="stylesheet" href="css/styles.css?v=3.0.9">
 </head>
 <body>
     <div id="app">
@@ -86,6 +86,7 @@
             <div class="modal-content">
                 <div id="menu-main-view">
                     <h2>Menu</h2>
+                    <p class="menu-level-indicator">Currently on <strong>Level <span id="menu-current-level">1</span></strong></p>
                     <ul class="menu-list">
                         <li><button id="settings-btn" class="btn btn-primary">Settings</button></li>
                         <li><button id="puzzle-builder-btn" class="btn btn-primary">🛠️ Puzzle Builder</button></li>
@@ -128,6 +129,15 @@
                             <button id="jump-to-level-btn" class="btn btn-primary">Jump</button>
                         </div>
                     </label>
+                </div>
+                <div class="settings-group" style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 15px; margin-top: 15px;">
+                    <label class="setting-item">
+                        <span class="setting-label">
+                            <strong>🗑️ Clear Game Data</strong>
+                            <small>Reset all progress and start as a new player</small>
+                        </span>
+                    </label>
+                    <button id="clear-data-btn" class="btn btn-danger" style="margin-top: 10px; width: 100%;">Clear All Data</button>
                 </div>
                 <button id="settings-back-btn" class="btn btn-secondary">Back</button>
             </div>
@@ -243,7 +253,55 @@
         </div>
     </div>
 
-    <script type="module" src="js/main.js?v=2.17.0"></script>
+    <!-- Level Interstitial Screen (Full-page, replaces game board) -->
+    <div id="level-interstitial-screen" class="interstitial-screen hidden">
+        <div class="interstitial-container">
+            <div class="interstitial-badge">
+                <div class="badge-circle">
+                    <span class="badge-level" id="interstitial-level">2</span>
+                </div>
+                <div class="badge-label">LEVEL</div>
+            </div>
+            
+            <h1 id="interstitial-title" class="interstitial-title">New Level</h1>
+            
+            <div class="interstitial-feature">
+                <div class="feature-symbol" id="interstitial-symbol">∪</div>
+                <div class="feature-description">
+                    <strong id="interstitial-feature-name">New Feature</strong>
+                    <p id="interstitial-feature-desc">Description</p>
+                </div>
+            </div>
+            
+            <div class="interstitial-content">
+                <p id="interstitial-description" class="description-text">
+                    Level description goes here.
+                </p>
+            </div>
+            
+            <div class="interstitial-actions">
+                <button id="tutorial-accept-btn" class="btn btn-primary btn-large">
+                    <span class="btn-icon">🎓</span>
+                    Show Me How
+                </button>
+                <button id="tutorial-decline-btn" class="btn btn-secondary btn-large">
+                    I'll Figure It Out
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutorial Instruction Overlay -->
+    <div id="tutorial-instruction" class="tutorial-instruction hidden">
+        <div class="tutorial-step-badge" id="tutorial-step-badge">Step 1/8</div>
+        <p id="tutorial-instruction-text">Instruction text goes here</p>
+        <div class="tutorial-buttons">
+            <button id="tutorial-skip-btn" class="tutorial-skip-btn">Skip Tutorial</button>
+            <button id="tutorial-next-btn" class="tutorial-next-btn">Next</button>
+        </div>
+    </div>
+
+        <script type="module" src="js/main.js?v=3.1.15"></script>
 </body>
 </html>
 
