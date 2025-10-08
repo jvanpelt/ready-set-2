@@ -1019,11 +1019,11 @@ export const TUTORIAL_SCENARIOS = {
     },
     
     9: {
-        // Level 9: Wild cubes - flexible operator choice
+        // Level 9: Wild cubes - try different operators
         // Cards: [1, 2, 3, 4, 5, 8, 10, 12] = yellow, green, green+yellow, blue, blue+yellow, red, red+green, red+blue
-        // Solution: Red [wild=∪] Green = 5 cards (2,3,8,10,12)
-        // Alternative if wild=∩: Red ∩ Green = 1 card (10)
-        // Teaches: Wild cube can be set to different operators
+        // Wrong: Red − Green = ? cards
+        // Correct: Red ∩ Green = ? cards (goal TBD - test in Puzzle Builder)
+        // Teaches: Wild cube can be changed by clicking it
         cards: [1, 2, 3, 4, 5, 8, 10, 12],
         dice: [
             { type: 'color', value: 'red', name: 'RED', id: 'tutorial-9-red' },
@@ -1033,8 +1033,8 @@ export const TUTORIAL_SCENARIOS = {
             { type: 'color', value: 'gold', name: 'YELLOW', id: 'tutorial-9-yellow' },
             { type: 'operator', value: '′', name: 'COMPLEMENT', id: 'tutorial-9-prime' }
         ],
-        goal: 5,
-        expectedSolution: ['red', '∪', 'green'], // Wild cube set to Union
+        goal: 1, // Placeholder - Red ∩ Green = 1 card (card 10: red+green)
+        expectedSolution: ['red', '∩', 'green'], // Wild cube set to Intersection
         
         walkthrough: {
             enabled: true,
@@ -1089,12 +1089,12 @@ export const TUTORIAL_SCENARIOS = {
                     nextTrigger: 'validation'
                 },
                 {
-                    id: 'select-union',
-                    message: 'In the menu, select <strong>UNION (∪)</strong> - the overlapping circles icon.',
+                    id: 'select-difference',
+                    message: 'In the menu, select <strong>DIFFERENCE (−)</strong> - the minus sign.',
                     highlight: null,
                     validation: (game) => {
                         const wildDie = game.solutions[1].find(die => die.type === 'wild');
-                        return wildDie && wildDie.selectedOperator === '∪';
+                        return wildDie && wildDie.selectedOperator === '−';
                     },
                     nextTrigger: 'validation'
                 },
@@ -1106,15 +1106,39 @@ export const TUTORIAL_SCENARIOS = {
                     nextTrigger: 'validation'
                 },
                 {
-                    id: 'check-result',
-                    message: 'Perfect! "Red ∪ Green" matches 5 cards. The wild cube became Union!',
+                    id: 'check-wrong',
+                    message: 'Hmm... "Red − Green" doesn\'t match our goal. Let\'s try a different operator!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 4000
+                },
+                {
+                    id: 'explain-change',
+                    message: '<strong>Click the wild cube</strong> to change which operator it represents!',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    duration: 3000
+                },
+                {
+                    id: 'select-intersect',
+                    message: 'Select <strong>INTERSECTION (∩)</strong> from the menu.',
+                    highlight: null,
+                    validation: (game) => {
+                        const wildDie = game.solutions[1].find(die => die.type === 'wild');
+                        return wildDie && wildDie.selectedOperator === '∩';
+                    },
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'check-correct',
+                    message: 'Perfect! "Red ∩ Green" matches our goal! Different operator, different result!',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
                 },
                 {
                     id: 'lesson',
-                    message: 'Wild cubes give you flexibility when you need a specific operator. 25 bonus points!',
+                    message: 'Wild cubes give you flexibility to experiment. Click them anytime to change! 25 bonus points!',
                     highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
