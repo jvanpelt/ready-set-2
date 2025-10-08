@@ -449,12 +449,28 @@ export class Game {
         // Calculate score (all dice from both rows)
         let points = calculateScore(allDice);
         
-        // Add bonus for using required cube (Level 8+)
+        // Add bonus for using special cubes
+        // Required cube: 50 points (Level 8+)
         if (requiredDie) {
             const usedRequiredCube = allDice.some(die => die.id === requiredDie.id);
             if (usedRequiredCube) {
-                points += 50; // Bonus points for required cube
+                points += 50;
+                console.log('✅ Required cube bonus: +50 points');
             }
+        }
+        
+        // Wild cube: 25 points (Level 9+)
+        const wildCubesUsed = allDice.filter(die => die.type === 'wild');
+        if (wildCubesUsed.length > 0) {
+            points += wildCubesUsed.length * 25;
+            console.log(`✅ Wild cube bonus: +${wildCubesUsed.length * 25} points (${wildCubesUsed.length} wild cubes)`);
+        }
+        
+        // Bonus cube: 50 points (Level 10)
+        const bonusCubesUsed = allDice.filter(die => die.isBonus);
+        if (bonusCubesUsed.length > 0) {
+            points += bonusCubesUsed.length * 50;
+            console.log(`✅ Bonus cube bonus: +${bonusCubesUsed.length * 50} points (${bonusCubesUsed.length} bonus cubes)`);
         }
         
         return {

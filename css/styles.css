@@ -388,6 +388,39 @@ body {
     }
 }
 
+/* Bonus cubes (Level 10): Gold border with gold glow - FREE POINTS! */
+/* Higher specificity to override color/operator border colors */
+.die.bonus,
+.solution-die.bonus,
+.die.color-circle.bonus,
+.solution-die.color-circle.bonus,
+.die.operator-regular.bonus,
+.solution-die.operator-regular.bonus,
+.die.operator-restriction.bonus,
+.solution-die.operator-restriction.bonus,
+.die.set-constant.bonus,
+.solution-die.set-constant.bonus {
+    border-color: #FFD700 !important; /* Gold border */
+    border-width: 5px !important;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.4), 2px 2px 8px rgba(0, 0, 0, 0.3) !important;
+    animation: bonusPulse 2s ease-in-out infinite;
+}
+
+.die.bonus:hover,
+.solution-die.bonus:hover {
+    box-shadow: 0 0 25px rgba(255, 215, 0, 1), 0 0 50px rgba(255, 215, 0, 0.6), 0 6px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Pulsing animation for bonus cubes */
+@keyframes bonusPulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.4), 2px 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(255, 215, 0, 1), 0 0 60px rgba(255, 215, 0, 0.6), 2px 2px 8px rgba(0, 0, 0, 0.3);
+    }
+}
+
 /* Wild cubes (Level 9+): Red border with red glow, can be any operator */
 .die.wild,
 .solution-die.wild {
@@ -798,6 +831,20 @@ body {
     .solution-die.operator-restriction.required,
     .die.set-constant.required,
     .solution-die.set-constant.required {
+        border-width: 5px !important;
+    }
+    
+    /* Ensure bonus cubes keep their 5px border on mobile */
+    .die.bonus,
+    .solution-die.bonus,
+    .die.color-circle.bonus,
+    .solution-die.color-circle.bonus,
+    .die.operator-regular.bonus,
+    .solution-die.operator-regular.bonus,
+    .die.operator-restriction.bonus,
+    .solution-die.operator-restriction.bonus,
+    .die.set-constant.bonus,
+    .solution-die.set-constant.bonus {
         border-width: 5px !important;
     }
     

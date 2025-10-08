@@ -83,6 +83,7 @@ export class UIRenderer {
             dieEl.dataset.id = die.id;
             if (die.name) dieEl.dataset.name = die.name;
             if (die.isRequired) dieEl.dataset.isRequired = 'true'; // Store in dataset for drag-and-drop
+            if (die.isBonus) dieEl.dataset.isBonus = 'true'; // Store in dataset for drag-and-drop
             if (die.selectedOperator) dieEl.dataset.selectedOperator = die.selectedOperator; // Store wild cube selection
             
             // Check if this specific die instance is used
@@ -94,6 +95,11 @@ export class UIRenderer {
             // Add required class if this die is required (Level 8+)
             if (die.isRequired) {
                 dieEl.classList.add('required');
+            }
+            
+            // Add bonus class if this die is bonus (Level 10)
+            if (die.isBonus) {
+                dieEl.classList.add('bonus');
             }
             
             // Add content based on type
@@ -170,6 +176,11 @@ export class UIRenderer {
                 // Add required class if this die is required (Level 8+)
                 if (die.isRequired) {
                     dieEl.classList.add('required');
+                }
+                
+                // Add bonus class if this die is bonus (Level 10)
+                if (die.isBonus) {
+                    dieEl.classList.add('bonus');
                 }
                 
                 // Add content

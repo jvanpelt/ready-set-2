@@ -186,6 +186,10 @@ Try different operators until one works - or strategize!`
         numDice: 8,
         timeLimit: 120, // 2 minutes - ultimate challenge!
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE', 'COMPLEMENT', 'UNIVERSE', 'NULL', 'EQUALS', 'SUBSET'],
+        requiredCubeChance: 0.25,  // 25% chance of required cube
+        wildCubeChance: 0.25,       // 25% chance of wild cube
+        bonusCubeChance: 0.25,      // 25% chance of bonus cube (50 free points!)
+        // 25% chance of no special cube
         tutorial: {
             title: 'Level 10: Ultimate Challenge',
             text: `The final level!
