@@ -1,6 +1,26 @@
 # Ready, Set 2 - TODO List
 
-## 🎯 Current Focus
+## 🔄 Current Status (Oct 8, 2025)
+**Branch**: `feature/tutorial-below-status`  
+**Task**: Redesigning tutorial instruction layout for mobile
+
+**What we're doing**:
+- Moving tutorial instruction below status bar (same vertical position)
+- During tutorials: hide status bar, show tutorial instruction in its place
+- Goal: Fit tutorials on smallest screens (375×667px) without scrolling
+- No vertical layout scaling needed - simple swap/replace approach
+
+**Latest commit**: `0b9508a` - Tutorial instruction moved, styled as green semi-transparent box
+
+**Next steps**:
+1. Test on localhost (port 8000 running)
+2. Refine tutorial instruction styling/layout
+3. Test at 375×667px to ensure GO button stays visible
+4. Merge to main once layout feels right
+
+---
+
+## 🎯 Previous Focus (Completed)
 - [ ] **Testing and fixing tutorial scenarios (Levels 1-10)** - IN PROGRESS
   - [x] Level 1: Union
   - [x] Level 2: Difference
