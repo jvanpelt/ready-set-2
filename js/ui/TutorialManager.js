@@ -269,7 +269,10 @@ export class TutorialManager {
         
         if (Array.isArray(expected)) {
             // Old format: validate row 1 (set name)
-            const actual = this.game.solutions[1].map(die => die.value);
+            // For wild cubes, use selectedOperator; for others, use value
+            const actual = this.game.solutions[1].map(die => 
+                die.type === 'wild' ? die.selectedOperator : die.value
+            );
             console.log('   Actual (set name):', actual);
             
             if (actual.length !== expected.length) {
@@ -292,7 +295,10 @@ export class TutorialManager {
             
             // Validate restriction (row 0)
             if (expected.restriction) {
-                const actualRestriction = this.game.solutions[0].map(die => die.value);
+                // For wild cubes, use selectedOperator; for others, use value
+                const actualRestriction = this.game.solutions[0].map(die => 
+                    die.type === 'wild' ? die.selectedOperator : die.value
+                );
                 console.log('   Expected restriction:', expected.restriction);
                 console.log('   Actual restriction:', actualRestriction);
                 
@@ -311,7 +317,10 @@ export class TutorialManager {
             
             // Validate set name (row 1)
             if (expected.setName) {
-                const actualSetName = this.game.solutions[1].map(die => die.value);
+                // For wild cubes, use selectedOperator; for others, use value
+                const actualSetName = this.game.solutions[1].map(die => 
+                    die.type === 'wild' ? die.selectedOperator : die.value
+                );
                 console.log('   Expected set name:', expected.setName);
                 console.log('   Actual set name:', actualSetName);
                 

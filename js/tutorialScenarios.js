@@ -1049,7 +1049,7 @@ export const TUTORIAL_SCENARIOS = {
                 {
                     id: 'explain-wild',
                     message: '<strong>Wild cubes</strong> have a red border with a question mark. They can be ANY operator!',
-                    highlight: { dice: [1] },
+                    highlight: null,
                     nextTrigger: 'auto',
                     duration: 4000
                 },
