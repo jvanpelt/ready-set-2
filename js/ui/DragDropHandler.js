@@ -23,6 +23,13 @@ export class DragDropHandler {
         this.hasMoved = false;
         this.sourceDieElement = null;
         this.touchDragClone = null;
+        this.mouseDragClone = null;
+        
+        // Create invisible drag image once for desktop drag
+        this.invisibleDragImage = document.createElement('div');
+        this.invisibleDragImage.style.width = '1px';
+        this.invisibleDragImage.style.height = '1px';
+        this.invisibleDragImage.style.opacity = '0';
         
         this.init();
     }
@@ -71,12 +78,11 @@ export class DragDropHandler {
                     e.dataTransfer.setData('text/html', die.innerHTML);
                     
                     // Use invisible drag image - we'll show a visual clone instead
-                    const invisibleImg = new Image();
-                    invisibleImg.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-                    e.dataTransfer.setDragImage(invisibleImg, 0, 0);
+                    e.dataTransfer.setDragImage(this.invisibleDragImage, 0, 0);
                     
                     // Create visual clone that follows mouse (like mobile touch)
                     const dieRect = die.getBoundingClientRect();
+                    const appScale = this.getAppScale();
                     const visualWidth = dieRect.width;
                     const visualHeight = dieRect.height;
                     
@@ -88,8 +94,11 @@ export class DragDropHandler {
                     this.mouseDragClone.style.position = 'fixed';
                     this.mouseDragClone.style.pointerEvents = 'none';
                     this.mouseDragClone.style.zIndex = '10000';
-                    this.mouseDragClone.style.width = visualWidth + 'px';
-                    this.mouseDragClone.style.height = visualHeight + 'px';
+                    
+                    // Scale the entire element instead of setting width/height
+                    // This preserves content proportions
+                    this.mouseDragClone.style.transform = `scale(${appScale})`;
+                    this.mouseDragClone.style.transformOrigin = 'top left';
                     this.mouseDragClone.style.left = (e.clientX - visualWidth / 2) + 'px';
                     this.mouseDragClone.style.top = (e.clientY - visualHeight / 2) + 'px';
                     this.mouseDragClone.style.opacity = '0.8';
@@ -167,9 +176,10 @@ export class DragDropHandler {
         // Update clone position during mouse drag
         document.addEventListener('drag', (e) => {
             if (this.mouseDragClone && e.clientX !== 0 && e.clientY !== 0) {
-                // Clone is position: fixed in viewport
-                const halfWidth = this.mouseDragClone.offsetWidth / 2;
-                const halfHeight = this.mouseDragClone.offsetHeight / 2;
+                // Clone is scaled, so use visual dimensions for centering
+                const cloneRect = this.mouseDragClone.getBoundingClientRect();
+                const halfWidth = cloneRect.width / 2;
+                const halfHeight = cloneRect.height / 2;
                 
                 this.mouseDragClone.style.left = (e.clientX - halfWidth) + 'px';
                 this.mouseDragClone.style.top = (e.clientY - halfHeight) + 'px';
