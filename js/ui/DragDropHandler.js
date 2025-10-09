@@ -142,6 +142,7 @@ export class DragDropHandler {
                 
                 const coords = getEventCoords(e);
                 const row = solutionDie.closest('.solution-row');
+                const rowRect = row.getBoundingClientRect();
                 
                 this.draggedRowIndex = parseInt(row.dataset.row);
                 this.draggedDieId = solutionDie.dataset.id;  // Use ID instead of index
@@ -154,10 +155,34 @@ export class DragDropHandler {
                 
                 this.dragStartPos = { x: coords.clientX, y: coords.clientY };
                 
-                const rect = solutionDie.getBoundingClientRect();
+                // Get the current scale of #app
+                const computedStyle = window.getComputedStyle(this.app);
+                const transform = computedStyle.transform;
+                let appScale = 1;
+                if (transform && transform !== 'none') {
+                    const matrix = new DOMMatrix(transform);
+                    appScale = matrix.a; // Scale x value
+                }
+                
+                // Calculate mouse position relative to row (in scaled space)
+                const mouseInRowScaled = {
+                    x: coords.clientX - rowRect.left,
+                    y: coords.clientY - rowRect.top
+                };
+                
+                // Convert to unscaled space by dividing by scale
+                const mouseInRow = {
+                    x: mouseInRowScaled.x / appScale,
+                    y: mouseInRowScaled.y / appScale
+                };
+                
+                // Die's current position in CSS (unscaled coordinates)
+                const dieX = parseFloat(solutionDie.style.left) || 0;
+                const dieY = parseFloat(solutionDie.style.top) || 0;
+                
                 this.dragOffset = {
-                    x: coords.clientX - rect.left,
-                    y: coords.clientY - rect.top
+                    x: mouseInRow.x - dieX,
+                    y: mouseInRow.y - dieY
                 };
                 
                 solutionDie.style.zIndex = '100';
@@ -189,13 +214,30 @@ export class DragDropHandler {
                     const row = this.currentDragElement.closest('.solution-row');
                     const rowRect = row.getBoundingClientRect();
                     
-                    let x = coords.clientX - rowRect.left - this.dragOffset.x;
-                    let y = coords.clientY - rowRect.top - this.dragOffset.y;
+                    // Get the current scale of #app
+                    const computedStyle = window.getComputedStyle(this.app);
+                    const transform = computedStyle.transform;
+                    let appScale = 1;
+                    if (transform && transform !== 'none') {
+                        const matrix = new DOMMatrix(transform);
+                        appScale = matrix.a;
+                    }
+                    
+                    // Convert mouse position to unscaled space
+                    const mouseInRowScaled = {
+                        x: coords.clientX - rowRect.left,
+                        y: coords.clientY - rowRect.top
+                    };
+                    
+                    let x = (mouseInRowScaled.x / appScale) - this.dragOffset.x;
+                    let y = (mouseInRowScaled.y / appScale) - this.dragOffset.y;
                     
                     const dieWidth = 80;
                     const dieHeight = 80;
-                    x = Math.max(0, Math.min(x, rowRect.width - dieWidth - 20));
-                    y = Math.max(0, Math.min(y, rowRect.height - dieHeight - 20));
+                    const maxX = (rowRect.width / appScale) - dieWidth - 20;
+                    const maxY = (rowRect.height / appScale) - dieHeight - 20;
+                    x = Math.max(0, Math.min(x, maxX));
+                    y = Math.max(0, Math.min(y, maxY));
                     
                     this.currentDragElement.style.left = `${x}px`;
                     this.currentDragElement.style.top = `${y}px`;
@@ -217,8 +259,23 @@ export class DragDropHandler {
                     const rowRect = row.getBoundingClientRect();
                     const rowIndex = this.draggedRowIndex;
                     
-                    let x = coords.clientX - rowRect.left - this.dragOffset.x;
-                    let y = coords.clientY - rowRect.top - this.dragOffset.y;
+                    // Get the current scale of #app
+                    const computedStyle = window.getComputedStyle(this.app);
+                    const transform = computedStyle.transform;
+                    let appScale = 1;
+                    if (transform && transform !== 'none') {
+                        const matrix = new DOMMatrix(transform);
+                        appScale = matrix.a;
+                    }
+                    
+                    // Convert mouse position to unscaled space
+                    const mouseInRowScaled = {
+                        x: coords.clientX - rowRect.left,
+                        y: coords.clientY - rowRect.top
+                    };
+                    
+                    let x = (mouseInRowScaled.x / appScale) - this.dragOffset.x;
+                    let y = (mouseInRowScaled.y / appScale) - this.dragOffset.y;
                     
                     // Find die by ID instead of index
                     const dieIndex = this.game.solutions[rowIndex].findIndex(d => d.id === this.draggedDieId);
@@ -231,7 +288,7 @@ export class DragDropHandler {
                     tempDie.x = x;
                     tempDie.y = y;
                     
-                    const snappedPos = this.smartSnapPosition(tempDie, rowIndex, rowRect);
+                    const snappedPos = this.smartSnapPosition(tempDie, rowIndex, rowRect, appScale);
                     this.game.updateDiePosition(rowIndex, dieIndex, snappedPos.x, snappedPos.y);
                     
                     this.currentDragElement.classList.remove('dragging');
@@ -275,14 +332,29 @@ export class DragDropHandler {
                 const rowIndex = parseInt(row.dataset.row);
                 const rowRect = row.getBoundingClientRect();
                 
-                let x = e.clientX - rowRect.left - 40;
-                let y = e.clientY - rowRect.top - 40;
+                // Get the current scale of #app
+                const computedStyle = window.getComputedStyle(this.app);
+                const transform = computedStyle.transform;
+                let appScale = 1;
+                if (transform && transform !== 'none') {
+                    const matrix = new DOMMatrix(transform);
+                    appScale = matrix.a;
+                }
+                
+                // Convert drop position to unscaled space
+                const mouseInRowScaled = {
+                    x: e.clientX - rowRect.left,
+                    y: e.clientY - rowRect.top
+                };
+                
+                let x = (mouseInRowScaled.x / appScale) - 40;
+                let y = (mouseInRowScaled.y / appScale) - 40;
                 
                 this.game.addDieToSolution(this.draggedDie, rowIndex, x, y);
                 
                 const newDieIndex = this.game.solutions[rowIndex].length - 1;
                 const newDie = this.game.solutions[rowIndex][newDieIndex];
-                const snappedPos = this.smartSnapPosition(newDie, rowIndex, rowRect);
+                const snappedPos = this.smartSnapPosition(newDie, rowIndex, rowRect, appScale);
                 
                 this.game.updateDiePosition(rowIndex, newDieIndex, snappedPos.x, snappedPos.y);
                 
@@ -317,14 +389,29 @@ export class DragDropHandler {
                     const rowIndex = parseInt(row.dataset.row);
                     const rowRect = row.getBoundingClientRect();
                     
-                    let x = coords.clientX - rowRect.left - 40;
-                    let y = coords.clientY - rowRect.top - 40;
+                    // Get the current scale of #app
+                    const computedStyle = window.getComputedStyle(this.app);
+                    const transform = computedStyle.transform;
+                    let appScale = 1;
+                    if (transform && transform !== 'none') {
+                        const matrix = new DOMMatrix(transform);
+                        appScale = matrix.a;
+                    }
+                    
+                    // Convert drop position to unscaled space
+                    const mouseInRowScaled = {
+                        x: coords.clientX - rowRect.left,
+                        y: coords.clientY - rowRect.top
+                    };
+                    
+                    let x = (mouseInRowScaled.x / appScale) - 40;
+                    let y = (mouseInRowScaled.y / appScale) - 40;
                     
                     this.game.addDieToSolution(this.draggedDie, rowIndex, x, y);
                     
                     const newDieIndex = this.game.solutions[rowIndex].length - 1;
                     const newDie = this.game.solutions[rowIndex][newDieIndex];
-                    const snappedPos = this.smartSnapPosition(newDie, rowIndex, rowRect);
+                    const snappedPos = this.smartSnapPosition(newDie, rowIndex, rowRect, appScale);
                     
                     this.game.updateDiePosition(rowIndex, newDieIndex, snappedPos.x, snappedPos.y);
                     
@@ -431,16 +518,20 @@ export class DragDropHandler {
      * Smart snap: Find valid horizontal position with ≤20% overlap
      * Only adjusts horizontally, keeps y-position constant
      */
-    smartSnapPosition(newDie, rowIndex, rowRect) {
+    smartSnapPosition(newDie, rowIndex, rowRect, appScale = 1) {
         const isMobile = window.innerWidth <= 768;
         const dieSize = isMobile ? 50 : 80;
         const maxOverlapPercent = 20;
         const otherDice = this.game.solutions[rowIndex].filter(d => d !== newDie);
         
+        // Convert row dimensions to unscaled space
+        const unscaledRowWidth = rowRect.width / appScale;
+        const unscaledRowHeight = rowRect.height / appScale;
+        
         if (otherDice.length === 0) {
             return {
-                x: Math.max(0, Math.min(newDie.x, rowRect.width - dieSize - 20)),
-                y: Math.max(0, Math.min(newDie.y, rowRect.height - dieSize - 20))
+                x: Math.max(0, Math.min(newDie.x, unscaledRowWidth - dieSize - 20)),
+                y: Math.max(0, Math.min(newDie.y, unscaledRowHeight - dieSize - 20))
             };
         }
         
@@ -449,8 +540,8 @@ export class DragDropHandler {
         
         if (maxCurrentOverlap <= maxOverlapPercent) {
             return {
-                x: Math.max(0, Math.min(newDie.x, rowRect.width - dieSize - 20)),
-                y: Math.max(0, Math.min(newDie.y, rowRect.height - dieSize - 20))
+                x: Math.max(0, Math.min(newDie.x, unscaledRowWidth - dieSize - 20)),
+                y: Math.max(0, Math.min(newDie.y, unscaledRowHeight - dieSize - 20))
             };
         }
         
@@ -462,10 +553,10 @@ export class DragDropHandler {
             const rightOverlaps = otherDice.map(other => this.getOverlapPercentage(testDieRight, other));
             const maxRightOverlap = Math.max(...rightOverlaps);
             
-            if (maxRightOverlap <= maxOverlapPercent && testDieRight.x + dieSize <= rowRect.width - 20) {
+            if (maxRightOverlap <= maxOverlapPercent && testDieRight.x + dieSize <= unscaledRowWidth - 20) {
                 return {
                     x: testDieRight.x,
-                    y: Math.max(0, Math.min(newDie.y, rowRect.height - dieSize - 20))
+                    y: Math.max(0, Math.min(newDie.y, unscaledRowHeight - dieSize - 20))
                 };
             }
             
@@ -476,14 +567,14 @@ export class DragDropHandler {
             if (maxLeftOverlap <= maxOverlapPercent && testDieLeft.x >= 0) {
                 return {
                     x: testDieLeft.x,
-                    y: Math.max(0, Math.min(newDie.y, rowRect.height - dieSize - 20))
+                    y: Math.max(0, Math.min(newDie.y, unscaledRowHeight - dieSize - 20))
                 };
             }
         }
         
         return {
-            x: Math.max(0, Math.min(newDie.x, rowRect.width - dieSize - 20)),
-            y: Math.max(0, Math.min(newDie.y, rowRect.height - dieSize - 20))
+            x: Math.max(0, Math.min(newDie.x, unscaledRowWidth - dieSize - 20)),
+            y: Math.max(0, Math.min(newDie.y, unscaledRowHeight - dieSize - 20))
         };
     }
     
