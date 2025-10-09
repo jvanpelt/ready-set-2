@@ -70,26 +70,30 @@ export class DragDropHandler {
                     e.dataTransfer.effectAllowed = 'move';
                     e.dataTransfer.setData('text/html', die.innerHTML);
                     
-                    // Create custom drag image by cloning the die at visual size
-                    const appScale = this.getAppScale();
+                    // Create custom drag image matching the visual size
+                    const dieRect = die.getBoundingClientRect();
                     const dragImage = die.cloneNode(true);
                     
-                    // Set explicit base dimensions (unscaled), THEN apply scale transform
-                    // This preserves all proportions (content, borders, border-radius, etc.)
+                    console.log('🖱️ Desktop drag clone:', {
+                        offsetWidth: die.offsetWidth,
+                        offsetHeight: die.offsetHeight,
+                        visualWidth: dieRect.width,
+                        visualHeight: dieRect.height,
+                        appScale: this.getAppScale()
+                    });
+                    
+                    // Use the visual dimensions directly (already accounts for scale)
                     dragImage.style.position = 'absolute';
                     dragImage.style.top = '-9999px'; // Off-screen
                     dragImage.style.left = '-9999px';
-                    dragImage.style.width = die.offsetWidth + 'px';
-                    dragImage.style.height = die.offsetHeight + 'px';
-                    dragImage.style.transform = `scale(${appScale})`;
-                    dragImage.style.transformOrigin = 'top left';
+                    dragImage.style.width = dieRect.width + 'px';
+                    dragImage.style.height = dieRect.height + 'px';
+                    dragImage.style.transform = 'none'; // Don't apply additional scaling
                     
                     document.body.appendChild(dragImage);
                     
-                    // Set as drag image (center point accounts for scale)
-                    const centerX = (die.offsetWidth * appScale) / 2;
-                    const centerY = (die.offsetHeight * appScale) / 2;
-                    e.dataTransfer.setDragImage(dragImage, centerX, centerY);
+                    // Set as drag image (center at visual midpoint)
+                    e.dataTransfer.setDragImage(dragImage, dieRect.width / 2, dieRect.height / 2);
                     
                     // Clean up after drag starts
                     setTimeout(() => {
