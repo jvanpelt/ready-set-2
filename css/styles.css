@@ -25,7 +25,7 @@ body {
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Align to top for proper scaling */
+    align-items: center; /* Default: centered. AppScaler changes to flex-start during tutorials */
     padding-top: 20px; /* Add some top padding */
     user-select: none;
     /* Prevent pull-to-refresh and overscroll on mobile */

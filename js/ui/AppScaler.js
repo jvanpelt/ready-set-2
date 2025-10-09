@@ -63,9 +63,13 @@ export class AppScaler {
             // Add small gap between app and tutorial for breathing room
             const gap = 15;
             availableHeight = viewportHeight - tutorialHeight - gap - bodyPaddingTop;
+            // Align to top when tutorial is visible
+            document.body.style.alignItems = 'flex-start';
         } else {
             // No tutorial - use full viewport minus body padding
             availableHeight = viewportHeight - bodyPaddingTop;
+            // Center vertically when no tutorial
+            document.body.style.alignItems = 'center';
         }
         
         // Calculate precise scale factor
