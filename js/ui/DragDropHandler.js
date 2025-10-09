@@ -65,10 +65,24 @@ export class DragDropHandler {
                 this.draggedRowIndex = null;
                 die.classList.add('dragging');
                 
-                // For native drag-and-drop (desktop) - let browser handle it
+                // For native drag-and-drop (desktop)
                 if (e.dataTransfer) {
                     e.dataTransfer.effectAllowed = 'move';
                     e.dataTransfer.setData('text/html', die.innerHTML);
+                    
+                    // Create a simple clone for drag image to preserve rounded borders
+                    const dragImage = die.cloneNode(true);
+                    dragImage.style.position = 'absolute';
+                    dragImage.style.top = '-9999px';
+                    dragImage.style.left = '-9999px';
+                    document.body.appendChild(dragImage);
+                    
+                    // Let browser handle the drag image
+                    const rect = die.getBoundingClientRect();
+                    e.dataTransfer.setDragImage(dragImage, rect.width / 2, rect.height / 2);
+                    
+                    // Clean up after drag starts
+                    setTimeout(() => dragImage.remove(), 0);
                 }
                 
                 this.sourceDieElement = die;
