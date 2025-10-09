@@ -1,4 +1,10 @@
-# Major Refactor Plan
+# Major Refactor Plan - Version 1
+
+**Date**: October 9, 2025  
+**Branch**: `feature/major-refactor`  
+**Focus**: Code duplication, magic numbers, dual encoding documentation
+
+---
 
 ## 🎯 Goals
 1. Unify card/cube indexing systems
