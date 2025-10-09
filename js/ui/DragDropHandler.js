@@ -78,7 +78,15 @@ export class DragDropHandler {
                     
                     // Get position relative to #app
                     const appRect = this.app.getBoundingClientRect();
-                    const dieRect = die.getBoundingClientRect();
+                    
+                    // Get the current scale of #app
+                    const computedStyle = window.getComputedStyle(this.app);
+                    const transform = computedStyle.transform;
+                    let appScale = 1;
+                    if (transform && transform !== 'none') {
+                        const matrix = new DOMMatrix(transform);
+                        appScale = matrix.a;
+                    }
                     
                     this.touchDragClone = die.cloneNode(true);
                     this.touchDragClone.classList.add('touch-drag-clone');
@@ -90,9 +98,15 @@ export class DragDropHandler {
                     // Use natural dimensions from original die
                     this.touchDragClone.style.width = die.offsetWidth + 'px';
                     this.touchDragClone.style.height = die.offsetHeight + 'px';
-                    // Position relative to #app (accounts for scale automatically)
-                    this.touchDragClone.style.left = (coords.clientX - appRect.left - die.offsetWidth / 2) + 'px';
-                    this.touchDragClone.style.top = (coords.clientY - appRect.top - die.offsetHeight / 2) + 'px';
+                    
+                    // Convert viewport position to unscaled #app coordinate space
+                    const mouseInAppScaled = {
+                        x: coords.clientX - appRect.left,
+                        y: coords.clientY - appRect.top
+                    };
+                    
+                    this.touchDragClone.style.left = ((mouseInAppScaled.x / appScale) - die.offsetWidth / 2) + 'px';
+                    this.touchDragClone.style.top = ((mouseInAppScaled.y / appScale) - die.offsetHeight / 2) + 'px';
                     this.touchDragClone.style.opacity = '0.8';
                     this.app.appendChild(this.touchDragClone);
                 }
@@ -108,9 +122,24 @@ export class DragDropHandler {
                 e.preventDefault();
                 const coords = getEventCoords(e);
                 const appRect = this.app.getBoundingClientRect();
-                // Position relative to #app
-                this.touchDragClone.style.left = (coords.clientX - appRect.left - this.touchDragClone.offsetWidth / 2) + 'px';
-                this.touchDragClone.style.top = (coords.clientY - appRect.top - this.touchDragClone.offsetHeight / 2) + 'px';
+                
+                // Get the current scale of #app
+                const computedStyle = window.getComputedStyle(this.app);
+                const transform = computedStyle.transform;
+                let appScale = 1;
+                if (transform && transform !== 'none') {
+                    const matrix = new DOMMatrix(transform);
+                    appScale = matrix.a;
+                }
+                
+                // Convert viewport position to unscaled #app coordinate space
+                const mouseInAppScaled = {
+                    x: coords.clientX - appRect.left,
+                    y: coords.clientY - appRect.top
+                };
+                
+                this.touchDragClone.style.left = ((mouseInAppScaled.x / appScale) - this.touchDragClone.offsetWidth / 2) + 'px';
+                this.touchDragClone.style.top = ((mouseInAppScaled.y / appScale) - this.touchDragClone.offsetHeight / 2) + 'px';
             }
         }, { passive: false });
         
