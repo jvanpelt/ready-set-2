@@ -70,31 +70,29 @@ export class DragDropHandler {
                     e.dataTransfer.effectAllowed = 'move';
                     e.dataTransfer.setData('text/html', die.innerHTML);
                     
-                    // Create custom drag image that matches visual size (accounts for #app scale)
+                    // Create custom drag image by cloning the die at visual size
                     const dieRect = die.getBoundingClientRect();
-                    const canvas = document.createElement('canvas');
-                    canvas.width = dieRect.width;
-                    canvas.height = dieRect.height;
-                    const ctx = canvas.getContext('2d');
+                    const dragImage = die.cloneNode(true);
                     
-                    // Draw a representation of the die
-                    ctx.fillStyle = window.getComputedStyle(die).backgroundColor || 'white';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    ctx.strokeStyle = window.getComputedStyle(die).borderColor || '#555';
-                    ctx.lineWidth = 3;
-                    ctx.strokeRect(0, 0, canvas.width, canvas.height);
+                    // Style the clone to match visual size
+                    dragImage.style.position = 'absolute';
+                    dragImage.style.top = '-9999px'; // Off-screen
+                    dragImage.style.left = '-9999px';
+                    dragImage.style.width = dieRect.width + 'px';
+                    dragImage.style.height = dieRect.height + 'px';
+                    dragImage.style.transform = 'none'; // Remove any inherited transforms
                     
-                    // Draw the die content (text)
-                    const text = die.textContent.trim();
-                    if (text) {
-                        ctx.fillStyle = 'black';
-                        ctx.font = `bold ${dieRect.height * 0.4}px Arial`;
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
-                        ctx.fillText(text, canvas.width / 2, canvas.height / 2);
-                    }
+                    document.body.appendChild(dragImage);
                     
-                    e.dataTransfer.setDragImage(canvas, dieRect.width / 2, dieRect.height / 2);
+                    // Set as drag image
+                    e.dataTransfer.setDragImage(dragImage, dieRect.width / 2, dieRect.height / 2);
+                    
+                    // Clean up after drag starts
+                    setTimeout(() => {
+                        if (dragImage.parentNode) {
+                            dragImage.parentNode.removeChild(dragImage);
+                        }
+                    }, 0);
                 }
                 
                 this.sourceDieElement = die;
