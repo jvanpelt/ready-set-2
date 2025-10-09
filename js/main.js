@@ -2,6 +2,7 @@
 
 import { Game } from './game.js';
 import { UIController } from './ui/UIController.js';
+import { AppScaler } from './ui/AppScaler.js';
 
 // Extract and log version from script tag
 const scriptTag = document.querySelector('script[src*="main.js"]');
@@ -34,6 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('🖼️ Rendering initial UI...');
         ui.render();
         console.log('✅ Initial render complete');
+        
+        // Initialize app scaler (scales #app to fit above tutorial bar)
+        console.log('📐 Initializing AppScaler...');
+        const appScaler = new AppScaler();
+        window.appScaler = appScaler; // Make accessible globally
+        console.log('✅ AppScaler initialized');
         
         // Check if first time playing (Level 1, new game)
         const isFirstTime = game.level === 1 && !localStorage.getItem('rs2_tutorialShown_1');

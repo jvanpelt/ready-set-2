@@ -1371,7 +1371,8 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(76, 175, 80, 0.15);
+    height: 180px;
+    background: rgba(98, 168, 101, 35%);
     backdrop-filter: blur(12px);
     color: white;
     padding: 16px 20px;
@@ -1411,7 +1412,7 @@ body {
 }
 
 .tutorial-next-btn {
-    background: linear-gradient(135deg, #4CAF50, #45a049);
+    background: #4CAF50;
     border: none;
     color: white;
     padding: 8px 16px;
@@ -1430,7 +1431,7 @@ body {
 
 .tutorial-skip-btn {
     background: transparent;
-    border: 1px solid rgba(255,255,255,0.3);
+    border: 1px solid #4CAF50;
     color: rgba(255,255,255,0.8);
     padding: 8px 16px;
     border-radius: 8px;
