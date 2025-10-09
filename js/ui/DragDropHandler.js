@@ -23,13 +23,6 @@ export class DragDropHandler {
         this.hasMoved = false;
         this.sourceDieElement = null;
         this.touchDragClone = null;
-        this.mouseDragClone = null;
-        
-        // Create invisible drag image once for desktop drag
-        this.invisibleDragImage = document.createElement('div');
-        this.invisibleDragImage.style.width = '1px';
-        this.invisibleDragImage.style.height = '1px';
-        this.invisibleDragImage.style.opacity = '0';
         
         this.init();
     }
@@ -72,38 +65,10 @@ export class DragDropHandler {
                 this.draggedRowIndex = null;
                 die.classList.add('dragging');
                 
-                // For native drag-and-drop (desktop)
+                // For native drag-and-drop (desktop) - let browser handle it
                 if (e.dataTransfer) {
                     e.dataTransfer.effectAllowed = 'move';
                     e.dataTransfer.setData('text/html', die.innerHTML);
-                    
-                    // Use invisible drag image - we'll show a visual clone instead
-                    e.dataTransfer.setDragImage(this.invisibleDragImage, 0, 0);
-                    
-                    // Create visual clone that follows mouse (like mobile touch)
-                    const dieRect = die.getBoundingClientRect();
-                    const appScale = this.getAppScale();
-                    const visualWidth = dieRect.width;
-                    const visualHeight = dieRect.height;
-                    
-                    this.mouseDragClone = die.cloneNode(true);
-                    this.mouseDragClone.classList.add('mouse-drag-clone');
-                    this.mouseDragClone.classList.remove('tutorial-highlight');
-                    
-                    // Use fixed positioning in viewport
-                    this.mouseDragClone.style.position = 'fixed';
-                    this.mouseDragClone.style.pointerEvents = 'none';
-                    this.mouseDragClone.style.zIndex = '10000';
-                    
-                    // Scale the entire element instead of setting width/height
-                    // This preserves content proportions
-                    this.mouseDragClone.style.transform = `scale(${appScale})`;
-                    this.mouseDragClone.style.transformOrigin = 'top left';
-                    this.mouseDragClone.style.left = (e.clientX - visualWidth / 2) + 'px';
-                    this.mouseDragClone.style.top = (e.clientY - visualHeight / 2) + 'px';
-                    this.mouseDragClone.style.opacity = '0.8';
-                    
-                    document.body.appendChild(this.mouseDragClone);
                 }
                 
                 this.sourceDieElement = die;
@@ -173,19 +138,6 @@ export class DragDropHandler {
             }
         }, { passive: false });
         
-        // Update clone position during mouse drag
-        document.addEventListener('drag', (e) => {
-            if (this.mouseDragClone && e.clientX !== 0 && e.clientY !== 0) {
-                // Clone is scaled, so use visual dimensions for centering
-                const cloneRect = this.mouseDragClone.getBoundingClientRect();
-                const halfWidth = cloneRect.width / 2;
-                const halfHeight = cloneRect.height / 2;
-                
-                this.mouseDragClone.style.left = (e.clientX - halfWidth) + 'px';
-                this.mouseDragClone.style.top = (e.clientY - halfHeight) + 'px';
-            }
-        });
-        
         const handleDiceEnd = (e) => {
             const die = e.target.closest('.die');
             if (die) {
@@ -198,10 +150,6 @@ export class DragDropHandler {
             if (this.touchDragClone) {
                 this.touchDragClone.remove();
                 this.touchDragClone = null;
-            }
-            if (this.mouseDragClone) {
-                this.mouseDragClone.remove();
-                this.mouseDragClone = null;
             }
         };
         
