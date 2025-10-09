@@ -1,4 +1,5 @@
 // Drag and drop handling for dice (desktop and mobile)
+import { LAYOUT, getDieSize } from '../constants.js';
 
 export class DragDropHandler {
     constructor(game, diceContainer, solutionArea, onDrop, onWildCubeDrop = null, tutorialManager = null) {
@@ -75,18 +76,7 @@ export class DragDropHandler {
                 // Create visual clone for touch dragging
                 if (e.type === 'touchstart') {
                     const coords = getEventCoords(e);
-                    
-                    // Get position relative to #app
-                    const appRect = this.app.getBoundingClientRect();
-                    
-                    // Get the current scale of #app
-                    const computedStyle = window.getComputedStyle(this.app);
-                    const transform = computedStyle.transform;
-                    let appScale = 1;
-                    if (transform && transform !== 'none') {
-                        const matrix = new DOMMatrix(transform);
-                        appScale = matrix.a;
-                    }
+                    const appPos = this.screenToApp(coords.clientX, coords.clientY);
                     
                     this.touchDragClone = die.cloneNode(true);
                     this.touchDragClone.classList.add('touch-drag-clone');
@@ -98,15 +88,9 @@ export class DragDropHandler {
                     // Use natural dimensions from original die
                     this.touchDragClone.style.width = die.offsetWidth + 'px';
                     this.touchDragClone.style.height = die.offsetHeight + 'px';
-                    
-                    // Convert viewport position to unscaled #app coordinate space
-                    const mouseInAppScaled = {
-                        x: coords.clientX - appRect.left,
-                        y: coords.clientY - appRect.top
-                    };
-                    
-                    this.touchDragClone.style.left = ((mouseInAppScaled.x / appScale) - die.offsetWidth / 2) + 'px';
-                    this.touchDragClone.style.top = ((mouseInAppScaled.y / appScale) - die.offsetHeight / 2) + 'px';
+                    // Position relative to #app (helper method handles scale conversion)
+                    this.touchDragClone.style.left = (appPos.x - die.offsetWidth / 2) + 'px';
+                    this.touchDragClone.style.top = (appPos.y - die.offsetHeight / 2) + 'px';
                     this.touchDragClone.style.opacity = '0.8';
                     this.app.appendChild(this.touchDragClone);
                 }
@@ -121,25 +105,10 @@ export class DragDropHandler {
             if (this.touchDragClone) {
                 e.preventDefault();
                 const coords = getEventCoords(e);
-                const appRect = this.app.getBoundingClientRect();
+                const appPos = this.screenToApp(coords.clientX, coords.clientY);
                 
-                // Get the current scale of #app
-                const computedStyle = window.getComputedStyle(this.app);
-                const transform = computedStyle.transform;
-                let appScale = 1;
-                if (transform && transform !== 'none') {
-                    const matrix = new DOMMatrix(transform);
-                    appScale = matrix.a;
-                }
-                
-                // Convert viewport position to unscaled #app coordinate space
-                const mouseInAppScaled = {
-                    x: coords.clientX - appRect.left,
-                    y: coords.clientY - appRect.top
-                };
-                
-                this.touchDragClone.style.left = ((mouseInAppScaled.x / appScale) - this.touchDragClone.offsetWidth / 2) + 'px';
-                this.touchDragClone.style.top = ((mouseInAppScaled.y / appScale) - this.touchDragClone.offsetHeight / 2) + 'px';
+                this.touchDragClone.style.left = (appPos.x - this.touchDragClone.offsetWidth / 2) + 'px';
+                this.touchDragClone.style.top = (appPos.y - this.touchDragClone.offsetHeight / 2) + 'px';
             }
         }, { passive: false });
         
@@ -184,25 +153,11 @@ export class DragDropHandler {
                 
                 this.dragStartPos = { x: coords.clientX, y: coords.clientY };
                 
-                // Get the current scale of #app
-                const computedStyle = window.getComputedStyle(this.app);
-                const transform = computedStyle.transform;
-                let appScale = 1;
-                if (transform && transform !== 'none') {
-                    const matrix = new DOMMatrix(transform);
-                    appScale = matrix.a; // Scale x value
-                }
-                
-                // Calculate mouse position relative to row (in scaled space)
-                const mouseInRowScaled = {
-                    x: coords.clientX - rowRect.left,
-                    y: coords.clientY - rowRect.top
-                };
-                
-                // Convert to unscaled space by dividing by scale
+                // Convert screen coordinates to app space
+                const appScale = this.getAppScale();
                 const mouseInRow = {
-                    x: mouseInRowScaled.x / appScale,
-                    y: mouseInRowScaled.y / appScale
+                    x: (coords.clientX - rowRect.left) / appScale,
+                    y: (coords.clientY - rowRect.top) / appScale
                 };
                 
                 // Die's current position in CSS (unscaled coordinates)
@@ -228,7 +183,7 @@ export class DragDropHandler {
                 const dx = Math.abs(coords.clientX - this.dragStartPos.x);
                 const dy = Math.abs(coords.clientY - this.dragStartPos.y);
                 
-                if (dx > 5 || dy > 5) {
+                if (dx > LAYOUT.DRAG_THRESHOLD || dy > LAYOUT.DRAG_THRESHOLD) {
                     this.hasMoved = true;
                     if (!this.currentDragElement.classList.contains('dragging')) {
                         this.currentDragElement.classList.add('dragging');
@@ -242,29 +197,15 @@ export class DragDropHandler {
                     
                     const row = this.currentDragElement.closest('.solution-row');
                     const rowRect = row.getBoundingClientRect();
-                    
-                    // Get the current scale of #app
-                    const computedStyle = window.getComputedStyle(this.app);
-                    const transform = computedStyle.transform;
-                    let appScale = 1;
-                    if (transform && transform !== 'none') {
-                        const matrix = new DOMMatrix(transform);
-                        appScale = matrix.a;
-                    }
+                    const appScale = this.getAppScale();
                     
                     // Convert mouse position to unscaled space
-                    const mouseInRowScaled = {
-                        x: coords.clientX - rowRect.left,
-                        y: coords.clientY - rowRect.top
-                    };
+                    let x = ((coords.clientX - rowRect.left) / appScale) - this.dragOffset.x;
+                    let y = ((coords.clientY - rowRect.top) / appScale) - this.dragOffset.y;
                     
-                    let x = (mouseInRowScaled.x / appScale) - this.dragOffset.x;
-                    let y = (mouseInRowScaled.y / appScale) - this.dragOffset.y;
-                    
-                    const dieWidth = 80;
-                    const dieHeight = 80;
-                    const maxX = (rowRect.width / appScale) - dieWidth - 20;
-                    const maxY = (rowRect.height / appScale) - dieHeight - 20;
+                    const dieSize = getDieSize();
+                    const maxX = (rowRect.width / appScale) - dieSize - 20;
+                    const maxY = (rowRect.height / appScale) - dieSize - 20;
                     x = Math.max(0, Math.min(x, maxX));
                     y = Math.max(0, Math.min(y, maxY));
                     
@@ -287,24 +228,11 @@ export class DragDropHandler {
                     const row = this.currentDragElement.closest('.solution-row');
                     const rowRect = row.getBoundingClientRect();
                     const rowIndex = this.draggedRowIndex;
-                    
-                    // Get the current scale of #app
-                    const computedStyle = window.getComputedStyle(this.app);
-                    const transform = computedStyle.transform;
-                    let appScale = 1;
-                    if (transform && transform !== 'none') {
-                        const matrix = new DOMMatrix(transform);
-                        appScale = matrix.a;
-                    }
+                    const appScale = this.getAppScale();
                     
                     // Convert mouse position to unscaled space
-                    const mouseInRowScaled = {
-                        x: coords.clientX - rowRect.left,
-                        y: coords.clientY - rowRect.top
-                    };
-                    
-                    let x = (mouseInRowScaled.x / appScale) - this.dragOffset.x;
-                    let y = (mouseInRowScaled.y / appScale) - this.dragOffset.y;
+                    let x = ((coords.clientX - rowRect.left) / appScale) - this.dragOffset.x;
+                    let y = ((coords.clientY - rowRect.top) / appScale) - this.dragOffset.y;
                     
                     // Find die by ID instead of index
                     const dieIndex = this.game.solutions[rowIndex].findIndex(d => d.id === this.draggedDieId);
@@ -360,24 +288,11 @@ export class DragDropHandler {
                 
                 const rowIndex = parseInt(row.dataset.row);
                 const rowRect = row.getBoundingClientRect();
-                
-                // Get the current scale of #app
-                const computedStyle = window.getComputedStyle(this.app);
-                const transform = computedStyle.transform;
-                let appScale = 1;
-                if (transform && transform !== 'none') {
-                    const matrix = new DOMMatrix(transform);
-                    appScale = matrix.a;
-                }
+                const appScale = this.getAppScale();
                 
                 // Convert drop position to unscaled space
-                const mouseInRowScaled = {
-                    x: e.clientX - rowRect.left,
-                    y: e.clientY - rowRect.top
-                };
-                
-                let x = (mouseInRowScaled.x / appScale) - 40;
-                let y = (mouseInRowScaled.y / appScale) - 40;
+                let x = ((e.clientX - rowRect.left) / appScale) - 40;
+                let y = ((e.clientY - rowRect.top) / appScale) - 40;
                 
                 this.game.addDieToSolution(this.draggedDie, rowIndex, x, y);
                 
@@ -417,24 +332,11 @@ export class DragDropHandler {
                     
                     const rowIndex = parseInt(row.dataset.row);
                     const rowRect = row.getBoundingClientRect();
-                    
-                    // Get the current scale of #app
-                    const computedStyle = window.getComputedStyle(this.app);
-                    const transform = computedStyle.transform;
-                    let appScale = 1;
-                    if (transform && transform !== 'none') {
-                        const matrix = new DOMMatrix(transform);
-                        appScale = matrix.a;
-                    }
+                    const appScale = this.getAppScale();
                     
                     // Convert drop position to unscaled space
-                    const mouseInRowScaled = {
-                        x: coords.clientX - rowRect.left,
-                        y: coords.clientY - rowRect.top
-                    };
-                    
-                    let x = (mouseInRowScaled.x / appScale) - 40;
-                    let y = (mouseInRowScaled.y / appScale) - 40;
+                    let x = ((coords.clientX - rowRect.left) / appScale) - 40;
+                    let y = ((coords.clientY - rowRect.top) / appScale) - 40;
                     
                     this.game.addDieToSolution(this.draggedDie, rowIndex, x, y);
                     
@@ -548,9 +450,8 @@ export class DragDropHandler {
      * Only adjusts horizontally, keeps y-position constant
      */
     smartSnapPosition(newDie, rowIndex, rowRect, appScale = 1) {
-        const isMobile = window.innerWidth <= 768;
-        const dieSize = isMobile ? 50 : 80;
-        const maxOverlapPercent = 20;
+        const dieSize = getDieSize();
+        const maxOverlapPercent = LAYOUT.MAX_OVERLAP_PERCENT;
         const otherDice = this.game.solutions[rowIndex].filter(d => d !== newDie);
         
         // Convert row dimensions to unscaled space
@@ -574,8 +475,8 @@ export class DragDropHandler {
             };
         }
         
-        const step = 5;
-        const maxSteps = 50;
+        const step = LAYOUT.SNAP_STEP;
+        const maxSteps = LAYOUT.SNAP_MAX_STEPS;
         
         for (let distance = step; distance <= maxSteps * step; distance += step) {
             const testDieRight = { ...newDie, x: newDie.x + distance };
@@ -642,5 +543,36 @@ export class DragDropHandler {
         
         // Check if this die's index is in the allowed list
         return allowedIndices.includes(dieIndex);
+    }
+    
+    // ========================================
+    // HELPER METHODS (refactored to DRY up code)
+    // ========================================
+    
+    /**
+     * Get the current scale of #app element
+     * Replaces ~50 lines of duplicated scale detection code
+     */
+    getAppScale() {
+        const transform = window.getComputedStyle(this.app).transform;
+        if (transform && transform !== 'none') {
+            return new DOMMatrix(transform).a; // Scale x value
+        }
+        return 1;
+    }
+    
+    /**
+     * Convert screen coordinates to app coordinates (accounting for scale)
+     * @param {number} screenX - clientX from event
+     * @param {number} screenY - clientY from event
+     * @param {number} appScale - Optional cached scale value
+     * @returns {{x: number, y: number}} - Coordinates in #app space
+     */
+    screenToApp(screenX, screenY, appScale = this.getAppScale()) {
+        const appRect = this.app.getBoundingClientRect();
+        return {
+            x: (screenX - appRect.left) / appScale,
+            y: (screenY - appRect.top) / appScale
+        };
     }
 }
