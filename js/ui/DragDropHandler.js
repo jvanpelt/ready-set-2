@@ -83,6 +83,11 @@ export class DragDropHandler {
                     const visualWidth = dieRect.width;
                     const visualHeight = dieRect.height;
                     
+                    console.log('🎲 Creating drag clone:');
+                    console.log('  App scale:', appScale);
+                    console.log('  Original die visual size:', visualWidth, 'x', visualHeight);
+                    console.log('  Original die offset size:', die.offsetWidth, 'x', die.offsetHeight);
+                    
                     this.touchDragClone = die.cloneNode(true);
                     this.touchDragClone.classList.add('touch-drag-clone');
                     // Remove tutorial highlight to prevent layout issues from box-shadow
@@ -97,12 +102,20 @@ export class DragDropHandler {
                     this.touchDragClone.style.width = visualWidth + 'px';
                     this.touchDragClone.style.height = visualHeight + 'px';
                     
+                    console.log('  Clone style.width set to:', this.touchDragClone.style.width);
+                    
                     // Position in viewport, centered on finger
                     this.touchDragClone.style.left = (coords.clientX - visualWidth / 2) + 'px';
                     this.touchDragClone.style.top = (coords.clientY - visualHeight / 2) + 'px';
                     this.touchDragClone.style.opacity = '0.8';
                     
                     document.body.appendChild(this.touchDragClone);
+                    
+                    // Check actual rendered size after append
+                    setTimeout(() => {
+                        const cloneRect = this.touchDragClone.getBoundingClientRect();
+                        console.log('  Clone ACTUAL rendered size:', cloneRect.width, 'x', cloneRect.height);
+                    }, 0);
                 }
             }
         };
