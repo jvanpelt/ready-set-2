@@ -60,8 +60,10 @@ export class AppScaler {
             availableHeight = viewportHeight;
         }
         
-        // Calculate scale factor
-        const scale = Math.min(1, availableHeight / this.naturalHeight);
+        // Calculate scale factor with slight buffer to maximize space usage
+        const rawScale = availableHeight / this.naturalHeight;
+        const adjustedScale = rawScale * 1.05; // 5% more to fill space better
+        const scale = Math.min(1, adjustedScale);
         
         // Apply scale
         this.app.style.transform = `scale(${scale.toFixed(4)})`;
