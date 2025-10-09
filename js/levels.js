@@ -1,4 +1,43 @@
-// Level configuration and card generation
+/**
+ * Level Configuration and Card Generation
+ * 
+ * ═══════════════════════════════════════════════════════════════════════════
+ * CARD ENCODING SYSTEM (COLOR ARRAYS)
+ * ═══════════════════════════════════════════════════════════════════════════
+ * 
+ * This file uses HUMAN-READABLE COLOR ARRAYS for cards.
+ * This is intuitive for game logic and debugging.
+ * 
+ * Each card is an object with:
+ * - Boolean properties: {red, blue, green, gold}
+ * - colors array: ['red', 'blue', ...]
+ * 
+ * EXAMPLE CARDS:
+ *   { colors: [] }                  → Empty card
+ *   { colors: ['red'] }             → Red only
+ *   { colors: ['red', 'blue'] }     → Red + Blue
+ *   { colors: ['red', 'blue', 'green', 'gold'] } → All colors
+ * 
+ * Generated cards also include boolean flags:
+ *   { red: true, blue: true, green: false, gold: false, colors: ['red', 'blue'] }
+ * 
+ * WHY COLOR ARRAYS?
+ * - Human-readable: Easy to see what colors a card has
+ * - Natural for game logic: Can map(), filter(), includes()
+ * - Perfect for dynamic card generation
+ * - Easy to debug: console.log shows ['red', 'blue'] not "10"
+ * 
+ * CONTRAST WITH scenarioManager.js:
+ * - scenarioManager.js uses bitwise integers (0-15)
+ * - Compact for JSON storage in tutorials
+ * - See scenarioManager.js for that system's documentation
+ * 
+ * CONVERSION:
+ * - When loading tutorial scenarios, scenarioManager converts:
+ *   Bitwise (10) → Color arrays (['red', 'green'])
+ * - This happens in scenarioManager.cardsFromIndices()
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
 
 // All non-color dice (operators, set constants, and restrictions)
 export const OPERATORS = {
@@ -230,7 +269,26 @@ export function generateGoal() {
     return goalArray[rndm];
 }
 
-// Generate a random card configuration by selecting unique combinations
+/**
+ * Generate a random card configuration by selecting unique combinations
+ * 
+ * This is the main card generation function for normal gameplay.
+ * It randomly selects 8 cards from all 16 possible combinations.
+ * 
+ * RETURNS: Array of card objects with colors array
+ * Example output:
+ * [
+ *   { colors: ['red'] },
+ *   { colors: ['blue', 'green'] },
+ *   { colors: [] },
+ *   { colors: ['red', 'blue', 'green', 'gold'] },
+ *   ...
+ * ]
+ * 
+ * NOTE: This generates cards in COLOR ARRAY format.
+ * Contrast with tutorial scenarios which use bitwise integers.
+ * See top of file for full explanation of this encoding system.
+ */
 export function generateCardConfig(numCards = 8) {
     // Shuffle all 16 combinations
     const shuffled = [...ALL_CARD_COMBINATIONS].sort(() => Math.random() - 0.5);

@@ -1,22 +1,51 @@
 /**
- * CardEncoder - Unified card representation system
+ * CardEncoder - Unified card representation utility
  * 
- * Problem: Two different indexing systems existed:
- * - levels.js: Sequential 0-15
- * - scenarioManager.js: Bitwise encoding (red=1, blue=2, green=4, gold=8)
+ * ═══════════════════════════════════════════════════════════════════════════
+ * BRIDGING THE TWO CARD ENCODING SYSTEMS
+ * ═══════════════════════════════════════════════════════════════════════════
  * 
- * Solution: This utility bridges both systems
- * - Internal storage uses bitwise (compact for JSON)
- * - Provides conversion methods for both systems
- * - Single source of truth for card representation
+ * This utility provides conversion methods between the game's two card systems:
+ * 
+ * SYSTEM 1 (levels.js): Color Arrays
+ * - Format: { colors: ['red', 'blue'] }
+ * - Used by: game.js, setTheory.js, UIRenderer.js
+ * - Purpose: Human-readable, easy to work with
+ * 
+ * SYSTEM 2 (scenarioManager.js): Bitwise Integers
+ * - Format: 10 (binary: 1010 = red + green)
+ * - Used by: Tutorial scenarios, Puzzle Builder
+ * - Purpose: Compact JSON storage
+ * 
+ * WHY THIS UTILITY EXISTS:
+ * - Both systems work well for their use cases
+ * - This provides conversion methods if needed
+ * - Could be used to unify the systems in the future
+ * 
+ * CURRENT STATUS:
+ * - Created during refactoring but not actively used
+ * - Both encoding systems coexist peacefully in the codebase
+ * - Available if/when unification is desired
+ * 
+ * BITWISE ENCODING REFERENCE:
+ *   Bit 3 (8)  = Red
+ *   Bit 2 (4)  = Blue
+ *   Bit 1 (2)  = Green
+ *   Bit 0 (1)  = Gold
+ * 
+ * Examples:
+ *   5  = 0101 = Red + Green   = ['red', 'green']
+ *   10 = 1010 = Red + Blue    = ['red', 'blue']
+ *   15 = 1111 = All 4 colors  = ['red', 'blue', 'green', 'gold']
+ * ═══════════════════════════════════════════════════════════════════════════
  */
 
 export class CardEncoder {
-    // Bitwise color flags
-    static RED = 1;
-    static BLUE = 2;
-    static GREEN = 4;
-    static GOLD = 8;
+    // Bitwise color flags (MUST match scenarioManager.js bit positions!)
+    static RED = 8;    // Bit 3: 1000
+    static BLUE = 4;   // Bit 2: 0100
+    static GREEN = 2;  // Bit 1: 0010
+    static GOLD = 1;   // Bit 0: 0001
     
     /**
      * Convert bitwise encoding to sequential index (0-15)
