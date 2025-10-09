@@ -85,12 +85,13 @@ export class DragDropHandler {
                     this.touchDragClone.style.position = 'absolute';
                     this.touchDragClone.style.pointerEvents = 'none';
                     this.touchDragClone.style.zIndex = '10000';
-                    // Use natural dimensions from original die
-                    this.touchDragClone.style.width = die.offsetWidth + 'px';
-                    this.touchDragClone.style.height = die.offsetHeight + 'px';
+                    // Don't set explicit width/height - let it inherit from CSS classes
+                    // This allows it to scale naturally with #app's transform
+                    const dieHalfWidth = die.offsetWidth / 2;
+                    const dieHalfHeight = die.offsetHeight / 2;
                     // Position relative to #app (helper method handles scale conversion)
-                    this.touchDragClone.style.left = (appPos.x - die.offsetWidth / 2) + 'px';
-                    this.touchDragClone.style.top = (appPos.y - die.offsetHeight / 2) + 'px';
+                    this.touchDragClone.style.left = (appPos.x - dieHalfWidth) + 'px';
+                    this.touchDragClone.style.top = (appPos.y - dieHalfHeight) + 'px';
                     this.touchDragClone.style.opacity = '0.8';
                     this.app.appendChild(this.touchDragClone);
                 }
