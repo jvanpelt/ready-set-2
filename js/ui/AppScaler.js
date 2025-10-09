@@ -48,12 +48,18 @@ export class AppScaler {
     }
     
     updateScale() {
-        if (!this.naturalHeight) return;
+        if (!this.naturalHeight) {
+            console.warn('⚠️ AppScaler: naturalHeight not set, skipping scale update');
+            return;
+        }
         
         const viewportHeight = window.innerHeight;
         const isTutorialVisible = !this.tutorialInstruction.classList.contains('hidden');
         const isMobile = window.innerWidth <= LAYOUT.MOBILE_BREAKPOINT;
         const bodyPaddingTop = isMobile ? LAYOUT.BODY_PADDING_MOBILE : LAYOUT.BODY_PADDING_DESKTOP;
+        
+        console.log(`📱 Device Check: ${isMobile ? 'MOBILE' : 'DESKTOP'} (width: ${window.innerWidth}px)`);
+        console.log(`👁️ Tutorial Visible: ${isTutorialVisible} (hidden class: ${this.tutorialInstruction.classList.contains('hidden')})`);
         
         let tutorialHeight = 0;
         let availableHeight;
