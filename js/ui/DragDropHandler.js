@@ -69,6 +69,32 @@ export class DragDropHandler {
                 if (e.dataTransfer) {
                     e.dataTransfer.effectAllowed = 'move';
                     e.dataTransfer.setData('text/html', die.innerHTML);
+                    
+                    // Create custom drag image that matches visual size (accounts for #app scale)
+                    const dieRect = die.getBoundingClientRect();
+                    const canvas = document.createElement('canvas');
+                    canvas.width = dieRect.width;
+                    canvas.height = dieRect.height;
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Draw a representation of the die
+                    ctx.fillStyle = window.getComputedStyle(die).backgroundColor || 'white';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.strokeStyle = window.getComputedStyle(die).borderColor || '#555';
+                    ctx.lineWidth = 3;
+                    ctx.strokeRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Draw the die content (text)
+                    const text = die.textContent.trim();
+                    if (text) {
+                        ctx.fillStyle = 'black';
+                        ctx.font = `bold ${dieRect.height * 0.4}px Arial`;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+                    }
+                    
+                    e.dataTransfer.setDragImage(canvas, dieRect.width / 2, dieRect.height / 2);
                 }
                 
                 this.sourceDieElement = die;
