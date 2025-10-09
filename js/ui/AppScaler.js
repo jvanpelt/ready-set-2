@@ -57,7 +57,9 @@ export class AppScaler {
         if (isTutorialVisible) {
             // Measure actual rendered height of tutorial (includes padding, border, etc.)
             tutorialHeight = this.tutorialInstruction.offsetHeight;
-            availableHeight = viewportHeight - tutorialHeight;
+            // Add small gap between app and tutorial for breathing room
+            const gap = 15;
+            availableHeight = viewportHeight - tutorialHeight - gap;
         } else {
             // No tutorial - use full viewport
             availableHeight = viewportHeight;
