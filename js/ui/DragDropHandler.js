@@ -71,15 +71,16 @@ export class DragDropHandler {
                     e.dataTransfer.setData('text/html', die.innerHTML);
                     
                     // Create custom drag image by cloning the die at visual size
-                    const dieRect = die.getBoundingClientRect();
                     const appScale = this.getAppScale();
                     const dragImage = die.cloneNode(true);
                     
-                    // Style the clone to match visual size using scale transform
+                    // Set explicit base dimensions (unscaled), THEN apply scale transform
                     // This preserves all proportions (content, borders, border-radius, etc.)
                     dragImage.style.position = 'absolute';
                     dragImage.style.top = '-9999px'; // Off-screen
                     dragImage.style.left = '-9999px';
+                    dragImage.style.width = die.offsetWidth + 'px';
+                    dragImage.style.height = die.offsetHeight + 'px';
                     dragImage.style.transform = `scale(${appScale})`;
                     dragImage.style.transformOrigin = 'top left';
                     
