@@ -70,32 +70,31 @@ export class DragDropHandler {
                     e.dataTransfer.effectAllowed = 'move';
                     e.dataTransfer.setData('text/html', die.innerHTML);
                     
-                    // Create custom drag image at scaled size
-                    const appScale = this.getAppScale();
+                    // Use invisible drag image - we'll show a visual clone instead
+                    const invisibleImg = new Image();
+                    invisibleImg.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+                    e.dataTransfer.setDragImage(invisibleImg, 0, 0);
+                    
+                    // Create visual clone that follows mouse (like mobile touch)
                     const dieRect = die.getBoundingClientRect();
-                    const dragImage = die.cloneNode(true);
+                    const visualWidth = dieRect.width;
+                    const visualHeight = dieRect.height;
                     
-                    // Set to FULL size (offsetWidth), then scale down
-                    // This keeps content (circles, text) proportional
-                    dragImage.style.position = 'absolute';
-                    dragImage.style.top = '-9999px'; // Off-screen
-                    dragImage.style.left = '-9999px';
-                    dragImage.style.width = die.offsetWidth + 'px';
-                    dragImage.style.height = die.offsetHeight + 'px';
-                    dragImage.style.transform = `scale(${appScale})`;
-                    dragImage.style.transformOrigin = 'center center';
+                    this.mouseDragClone = die.cloneNode(true);
+                    this.mouseDragClone.classList.add('mouse-drag-clone');
+                    this.mouseDragClone.classList.remove('tutorial-highlight');
                     
-                    document.body.appendChild(dragImage);
+                    // Use fixed positioning in viewport
+                    this.mouseDragClone.style.position = 'fixed';
+                    this.mouseDragClone.style.pointerEvents = 'none';
+                    this.mouseDragClone.style.zIndex = '10000';
+                    this.mouseDragClone.style.width = visualWidth + 'px';
+                    this.mouseDragClone.style.height = visualHeight + 'px';
+                    this.mouseDragClone.style.left = (e.clientX - visualWidth / 2) + 'px';
+                    this.mouseDragClone.style.top = (e.clientY - visualHeight / 2) + 'px';
+                    this.mouseDragClone.style.opacity = '0.8';
                     
-                    // Set as drag image (center point uses full dimensions)
-                    e.dataTransfer.setDragImage(dragImage, die.offsetWidth / 2, die.offsetHeight / 2);
-                    
-                    // Clean up after drag starts
-                    setTimeout(() => {
-                        if (dragImage.parentNode) {
-                            dragImage.parentNode.removeChild(dragImage);
-                        }
-                    }, 0);
+                    document.body.appendChild(this.mouseDragClone);
                 }
                 
                 this.sourceDieElement = die;
@@ -165,6 +164,18 @@ export class DragDropHandler {
             }
         }, { passive: false });
         
+        // Update clone position during mouse drag
+        document.addEventListener('drag', (e) => {
+            if (this.mouseDragClone && e.clientX !== 0 && e.clientY !== 0) {
+                // Clone is position: fixed in viewport
+                const halfWidth = this.mouseDragClone.offsetWidth / 2;
+                const halfHeight = this.mouseDragClone.offsetHeight / 2;
+                
+                this.mouseDragClone.style.left = (e.clientX - halfWidth) + 'px';
+                this.mouseDragClone.style.top = (e.clientY - halfHeight) + 'px';
+            }
+        });
+        
         const handleDiceEnd = (e) => {
             const die = e.target.closest('.die');
             if (die) {
@@ -177,6 +188,10 @@ export class DragDropHandler {
             if (this.touchDragClone) {
                 this.touchDragClone.remove();
                 this.touchDragClone = null;
+            }
+            if (this.mouseDragClone) {
+                this.mouseDragClone.remove();
+                this.mouseDragClone = null;
             }
         };
         
