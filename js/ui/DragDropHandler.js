@@ -70,30 +70,25 @@ export class DragDropHandler {
                     e.dataTransfer.effectAllowed = 'move';
                     e.dataTransfer.setData('text/html', die.innerHTML);
                     
-                    // Create custom drag image matching the visual size
+                    // Create custom drag image at scaled size
+                    const appScale = this.getAppScale();
                     const dieRect = die.getBoundingClientRect();
                     const dragImage = die.cloneNode(true);
                     
-                    console.log('🖱️ Desktop drag clone:', {
-                        offsetWidth: die.offsetWidth,
-                        offsetHeight: die.offsetHeight,
-                        visualWidth: dieRect.width,
-                        visualHeight: dieRect.height,
-                        appScale: this.getAppScale()
-                    });
-                    
-                    // Use the visual dimensions directly (already accounts for scale)
+                    // Set to FULL size (offsetWidth), then scale down
+                    // This keeps content (circles, text) proportional
                     dragImage.style.position = 'absolute';
                     dragImage.style.top = '-9999px'; // Off-screen
                     dragImage.style.left = '-9999px';
-                    dragImage.style.width = dieRect.width + 'px';
-                    dragImage.style.height = dieRect.height + 'px';
-                    dragImage.style.transform = 'none'; // Don't apply additional scaling
+                    dragImage.style.width = die.offsetWidth + 'px';
+                    dragImage.style.height = die.offsetHeight + 'px';
+                    dragImage.style.transform = `scale(${appScale})`;
+                    dragImage.style.transformOrigin = 'center center';
                     
                     document.body.appendChild(dragImage);
                     
-                    // Set as drag image (center at visual midpoint)
-                    e.dataTransfer.setDragImage(dragImage, dieRect.width / 2, dieRect.height / 2);
+                    // Set as drag image (center point uses full dimensions)
+                    e.dataTransfer.setDragImage(dragImage, die.offsetWidth / 2, die.offsetHeight / 2);
                     
                     // Clean up after drag starts
                     setTimeout(() => {
