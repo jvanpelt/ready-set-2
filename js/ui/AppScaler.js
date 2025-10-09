@@ -8,6 +8,8 @@
  * - Apply transform: scale(availableHeight / naturalHeight) to #app
  */
 
+import { LAYOUT } from '../constants.js';
+
 export class AppScaler {
     constructor() {
         this.app = document.getElementById('app');
@@ -50,9 +52,8 @@ export class AppScaler {
         
         const viewportHeight = window.innerHeight;
         const isTutorialVisible = !this.tutorialInstruction.classList.contains('hidden');
-        // Body padding-top: 20px on desktop, 8px on mobile (768px breakpoint)
-        const isMobile = window.innerWidth <= 768;
-        const bodyPaddingTop = isMobile ? 8 : 20;
+        const isMobile = window.innerWidth <= LAYOUT.MOBILE_BREAKPOINT;
+        const bodyPaddingTop = isMobile ? LAYOUT.BODY_PADDING_MOBILE : LAYOUT.BODY_PADDING_DESKTOP;
         
         let tutorialHeight = 0;
         let availableHeight;
@@ -61,8 +62,7 @@ export class AppScaler {
             // Measure actual rendered height of tutorial (includes padding, border, etc.)
             tutorialHeight = this.tutorialInstruction.offsetHeight;
             // Add small gap between app and tutorial for breathing room
-            const gap = 15;
-            availableHeight = viewportHeight - tutorialHeight - gap - bodyPaddingTop;
+            availableHeight = viewportHeight - tutorialHeight - LAYOUT.TUTORIAL_GAP - bodyPaddingTop;
             // Align to top when tutorial is visible
             document.body.style.alignItems = 'flex-start';
         } else {
