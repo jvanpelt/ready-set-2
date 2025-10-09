@@ -77,30 +77,32 @@ export class DragDropHandler {
                 if (e.type === 'touchstart') {
                     const coords = getEventCoords(e);
                     const appScale = this.getAppScale();
-                    const appPos = this.screenToApp(coords.clientX, coords.clientY, appScale);
+                    
+                    // Get the visual size of the original die
+                    const dieRect = die.getBoundingClientRect();
+                    const visualWidth = dieRect.width;
+                    const visualHeight = dieRect.height;
                     
                     this.touchDragClone = die.cloneNode(true);
                     this.touchDragClone.classList.add('touch-drag-clone');
                     // Remove tutorial highlight to prevent layout issues from box-shadow
                     this.touchDragClone.classList.remove('tutorial-highlight');
-                    this.touchDragClone.style.position = 'absolute';
+                    
+                    // Use fixed positioning in viewport (not affected by #app's transform)
+                    this.touchDragClone.style.position = 'fixed';
                     this.touchDragClone.style.pointerEvents = 'none';
                     this.touchDragClone.style.zIndex = '10000';
                     
-                    // Explicitly apply #app's scale to match the original die's visual size
-                    // Even though clone is inside #app, position: absolute seems to break transform inheritance
-                    this.touchDragClone.style.transform = `scale(${appScale})`;
-                    this.touchDragClone.style.transformOrigin = 'top left';
+                    // Set explicit size to match visual size of original
+                    this.touchDragClone.style.width = visualWidth + 'px';
+                    this.touchDragClone.style.height = visualHeight + 'px';
                     
-                    // With transform-origin top-left, we need to account for scale in positioning
-                    // To center: position top-left at (center - (size * scale / 2))
-                    const scaledHalfWidth = (die.offsetWidth * appScale) / 2;
-                    const scaledHalfHeight = (die.offsetHeight * appScale) / 2;
-                    // Position relative to #app (helper method handles scale conversion)
-                    this.touchDragClone.style.left = (appPos.x - scaledHalfWidth) + 'px';
-                    this.touchDragClone.style.top = (appPos.y - scaledHalfHeight) + 'px';
+                    // Position in viewport, centered on finger
+                    this.touchDragClone.style.left = (coords.clientX - visualWidth / 2) + 'px';
+                    this.touchDragClone.style.top = (coords.clientY - visualHeight / 2) + 'px';
                     this.touchDragClone.style.opacity = '0.8';
-                    this.app.appendChild(this.touchDragClone);
+                    
+                    document.body.appendChild(this.touchDragClone);
                 }
             }
         };
@@ -113,15 +115,13 @@ export class DragDropHandler {
             if (this.touchDragClone) {
                 e.preventDefault();
                 const coords = getEventCoords(e);
-                const appScale = this.getAppScale();
-                const appPos = this.screenToApp(coords.clientX, coords.clientY, appScale);
                 
-                // Account for the explicit scale applied to the clone
-                const scaledHalfWidth = (this.touchDragClone.offsetWidth * appScale) / 2;
-                const scaledHalfHeight = (this.touchDragClone.offsetHeight * appScale) / 2;
+                // Clone is position: fixed in viewport, so use viewport coordinates directly
+                const halfWidth = this.touchDragClone.offsetWidth / 2;
+                const halfHeight = this.touchDragClone.offsetHeight / 2;
                 
-                this.touchDragClone.style.left = (appPos.x - scaledHalfWidth) + 'px';
-                this.touchDragClone.style.top = (appPos.y - scaledHalfHeight) + 'px';
+                this.touchDragClone.style.left = (coords.clientX - halfWidth) + 'px';
+                this.touchDragClone.style.top = (coords.clientY - halfHeight) + 'px';
             }
         }, { passive: false });
         
