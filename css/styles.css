@@ -43,6 +43,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    position: relative; /* For absolute positioning of drag clones */
     /* Prevent scrolling when touching game elements */
     touch-action: none;
 }

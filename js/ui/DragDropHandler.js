@@ -8,6 +8,7 @@ export class DragDropHandler {
         this.onDrop = onDrop; // Callback when dice are added/moved/removed
         this.onWildCubeDrop = onWildCubeDrop; // Callback when wild cube is dropped (for auto-showing popover)
         this.tutorialManager = tutorialManager; // For checking tutorial restrictions
+        this.app = document.getElementById('app'); // For cloning within scaled container
         
         // Drag state
         this.draggedDie = null;
@@ -74,35 +75,26 @@ export class DragDropHandler {
                 // Create visual clone for touch dragging
                 if (e.type === 'touchstart') {
                     const coords = getEventCoords(e);
-                    const rect = die.getBoundingClientRect();
                     
-                    // Get the app's current scale (applied by AppScaler)
-                    const app = document.getElementById('app');
-                    const computedStyle = window.getComputedStyle(app);
-                    const transform = computedStyle.transform;
-                    let appScale = 1;
-                    if (transform && transform !== 'none') {
-                        const matrix = new DOMMatrix(transform);
-                        appScale = matrix.a; // Scale x value
-                    }
+                    // Get position relative to #app
+                    const appRect = this.app.getBoundingClientRect();
+                    const dieRect = die.getBoundingClientRect();
                     
                     this.touchDragClone = die.cloneNode(true);
                     this.touchDragClone.classList.add('touch-drag-clone');
                     // Remove tutorial highlight to prevent layout issues from box-shadow
                     this.touchDragClone.classList.remove('tutorial-highlight');
-                    this.touchDragClone.style.position = 'fixed';
+                    this.touchDragClone.style.position = 'absolute';
                     this.touchDragClone.style.pointerEvents = 'none';
                     this.touchDragClone.style.zIndex = '10000';
-                    // Apply the same scale as the app
-                    this.touchDragClone.style.transform = `scale(${appScale})`;
-                    this.touchDragClone.style.transformOrigin = 'center center';
-                    // Use natural size (the clone already has proper dimensions)
+                    // Use natural dimensions from original die
                     this.touchDragClone.style.width = die.offsetWidth + 'px';
                     this.touchDragClone.style.height = die.offsetHeight + 'px';
-                    this.touchDragClone.style.left = (coords.clientX - (die.offsetWidth * appScale) / 2) + 'px';
-                    this.touchDragClone.style.top = (coords.clientY - (die.offsetHeight * appScale) / 2) + 'px';
+                    // Position relative to #app (accounts for scale automatically)
+                    this.touchDragClone.style.left = (coords.clientX - appRect.left - die.offsetWidth / 2) + 'px';
+                    this.touchDragClone.style.top = (coords.clientY - appRect.top - die.offsetHeight / 2) + 'px';
                     this.touchDragClone.style.opacity = '0.8';
-                    document.body.appendChild(this.touchDragClone);
+                    this.app.appendChild(this.touchDragClone);
                 }
             }
         };
@@ -115,9 +107,10 @@ export class DragDropHandler {
             if (this.touchDragClone) {
                 e.preventDefault();
                 const coords = getEventCoords(e);
-                const rect = this.touchDragClone.getBoundingClientRect();
-                this.touchDragClone.style.left = (coords.clientX - rect.width / 2) + 'px';
-                this.touchDragClone.style.top = (coords.clientY - rect.height / 2) + 'px';
+                const appRect = this.app.getBoundingClientRect();
+                // Position relative to #app
+                this.touchDragClone.style.left = (coords.clientX - appRect.left - this.touchDragClone.offsetWidth / 2) + 'px';
+                this.touchDragClone.style.top = (coords.clientY - appRect.top - this.touchDragClone.offsetHeight / 2) + 'px';
             }
         }, { passive: false });
         
