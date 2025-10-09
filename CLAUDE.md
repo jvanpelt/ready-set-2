@@ -1,7 +1,7 @@
 # Ready, Set 2 - AI Context Guide
 
-**Last Updated:** October 2025  
-**Version:** 2.9.0  
+**Last Updated:** October 9, 2025  
+**Version:** 3.4.2  
 **Purpose:** This document provides comprehensive context for AI assistants working on this codebase.
 
 ---
@@ -215,6 +215,10 @@ Each level requires reaching a **goal score** to advance. Score resets on new le
 ```
 /
 ├── index.html              # Main HTML structure
+├── CLAUDE.md              # AI context guide (this file)
+├── TODO.md                # Task list and roadmap
+├── REFACTOR_PLAN_v1.md    # v1 refactor documentation
+├── REFACTOR_SUMMARY_v1.md # v1 refactor summary
 ├── css/
 │   └── styles.css          # All styling (responsive, animations)
 ├── js/
@@ -225,11 +229,18 @@ Each level requires reaching a **goal score** to advance. Score resets on new le
 │   ├── storage.js         # localStorage persistence
 │   ├── solutionFinder.js  # Algorithm to find possible solutions
 │   ├── svgSymbols.js      # SVG generation for operators
+│   ├── constants.js       # Centralized layout/game constants
+│   ├── scenarioManager.js # Custom puzzle scenarios (tutorial system)
 │   └── ui/
-│       ├── UIController.js    # Main UI orchestrator
-│       ├── UIRenderer.js      # Rendering logic
-│       ├── DragDropHandler.js # Drag & drop + touch events
-│       └── ModalManager.js    # Tutorial, menu, result modals
+│       ├── UIController.js       # Main UI orchestrator
+│       ├── UIRenderer.js         # Rendering logic
+│       ├── DragDropHandler.js    # Drag & drop + touch events
+│       ├── ModalManager.js       # Tutorial, menu, result modals
+│       ├── AppScaler.js          # Dynamic scaling for tutorials
+│       ├── WildCubeManager.js    # Wild cube operator selection
+│       ├── PuzzleBuilderManager.js # Debug puzzle builder
+│       ├── TutorialManager.js    # Interactive tutorial system
+│       └── ScenarioManager.js    # Tutorial scenario loader
 └── old game files/        # Reference files from original game
 ```
 
@@ -267,6 +278,18 @@ Each level requires reaching a **goal score** to advance. Score resets on new le
 - Used for Smart Pass system
 - Brute force: tries all combinations & permutations
 - Respects required cube constraints
+
+**`constants.js`**
+- Centralized configuration values
+- `LAYOUT` constants (breakpoints, sizes, thresholds)
+- `GAME` constants (points, timers, dice generation rules)
+- `COLORS` and `OPERATORS` enums
+- Helper functions: `getDieSize()`, `isMobile()`
+
+**`scenarioManager.js`**
+- Loads custom puzzle scenarios (for tutorials)
+- Bitwise card encoding/decoding
+- `getAllPossibleCards()` and `cardsFromIndices()`
 
 **`ui/UIController.js`**
 - Coordinates all UI modules
@@ -446,6 +469,122 @@ return false  // No solution found
 ```
 
 **Performance:** Can be slow (seconds) for 8 dice with many operators. We show "Checking puzzle..." modal during execution.
+
+---
+
+## Constants Architecture
+
+### Purpose
+
+The `js/constants.js` file centralizes all "magic numbers" and configuration values to improve maintainability and reduce duplication across the codebase.
+
+### Structure
+
+**`LAYOUT` constants:**
+```javascript
+MOBILE_BREAKPOINT: 768,     // Width threshold for mobile vs desktop
+BODY_PADDING_DESKTOP: 20,   // Body top padding on desktop
+BODY_PADDING_MOBILE: 8,     // Body top padding on mobile
+TUTORIAL_GAP: 15,           // Gap between app and tutorial instruction
+DIE_SIZE_DESKTOP: 100,      // Die width/height on desktop
+DIE_SIZE_MOBILE: 70,        // Die width/height on mobile
+MAX_OVERLAP_PERCENT: 20,    // Smart Snap max overlap threshold
+DRAG_THRESHOLD: 5,          // Pixels moved before registering as drag
+SNAP_STEP: 5,               // Pixel increment for Smart Snap adjustments
+SNAP_MAX_STEPS: 100         // Max iterations for Smart Snap algorithm
+```
+
+**`GAME` constants:**
+```javascript
+COLORS: ['red', 'blue', 'green', 'gold'],
+OPERATORS: { UNION, INTERSECTION, DIFFERENCE, COMPLEMENT, ... },
+POINTS: { color: 10, operator: 10, complement: 15, ... },
+SPECIAL_CUBE_CHANCES: { required: {...}, wild: {...}, bonus: {...} }
+```
+
+**Helper functions:**
+- `getDieSize()` - Returns current die size based on screen width
+- `isMobile()` - Returns true if screen width < MOBILE_BREAKPOINT
+
+### Usage
+
+Import specific constants or helpers:
+```javascript
+import { LAYOUT, getDieSize, isMobile } from './constants.js';
+
+const dieSize = getDieSize();
+if (isMobile()) { ... }
+```
+
+### Benefits
+
+- Single source of truth for configuration
+- Easier to adjust values during development
+- Clear documentation of thresholds and limits
+- Reduces errors from inconsistent magic numbers
+- Improves code readability
+
+---
+
+## Coordinate System & Scaling
+
+### The Scaling Challenge
+
+The game uses `transform: scale()` on the `#app` element to fit content within small mobile viewports (especially when tutorials are visible). This creates a **coordinate system mismatch** between:
+- **Viewport coordinates** (from mouse/touch events)
+- **Scaled `#app` coordinates** (where game elements live)
+
+### The Solution
+
+**Helper functions in `DragDropHandler.js`:**
+
+```javascript
+getAppScale() {
+    // Detects current transform: scale() value on #app
+    const transform = window.getComputedStyle(this.app).transform;
+    // Extract scale value from matrix
+    return scaleValue;
+}
+
+screenToApp(clientX, clientY) {
+    // Converts viewport coordinates to #app space
+    const appRect = this.app.getBoundingClientRect();
+    const appScale = this.getAppScale();
+    
+    return {
+        x: (clientX - appRect.left) / appScale,
+        y: (clientY - appRect.top) / appScale
+    };
+}
+```
+
+### Why This Matters
+
+**Without conversion:**
+- Dragged dice appear offset from cursor
+- Drop positions are incorrect
+- Smart Snap calculations fail
+- Visual clone sizes are wrong
+
+**With conversion:**
+- Cursor tracks properly
+- Dice drop exactly where expected
+- All positioning math works correctly
+- Visual feedback matches user intent
+
+### Implementation Notes
+
+**Mobile touch (works perfectly):**
+- Clone appended to `document.body` with `position: fixed`
+- Size set explicitly to match visual size (`getBoundingClientRect()`)
+- Position updated using viewport coordinates directly
+- No coordinate conversion needed because clone is outside scaled container
+
+**Desktop drag (uses native browser):**
+- Attempted custom drag images, but browser's `setDragImage()` doesn't respect scaled contexts
+- Performance issues from manual tracking during drag
+- Reverted to native browser drag (simpler, faster, reliable)
+- Trade-off: slightly less polished visual, but fully functional
 
 ---
 
@@ -746,6 +885,28 @@ id: `die-${index}-${Date.now()}`
 - `[∪][∩]` touching → INVALID (two operators)
 
 **Impact:** Invalid "groups" are ignored, dice evaluated left-to-right instead.
+
+### 11. Desktop Drag Uses Native Browser Cursor
+
+**Problem:** The `#app` element uses `transform: scale()` for mobile tutorials, creating a coordinate system mismatch.
+
+**Attempted solution:** Custom drag images via `setDragImage()` and manual position tracking.
+
+**Why it failed:**
+- Browser's drag image rendering doesn't respect scaled contexts
+- Content appeared oversized (red circles too big, misaligned)
+- Manual tracking caused performance issues and lag
+- Complex coordinate conversion required for every frame
+
+**Current solution:** Use native browser drag on desktop.
+
+**Trade-offs:**
+- ✅ Fast, reliable, no performance issues
+- ✅ Simple, maintainable code
+- ❌ Less polished visual (browser default cursor)
+- ✅ Mobile touch drag works perfectly (custom implementation)
+
+**When to revisit:** If we remove scaling or find a better approach for handling scaled drag images.
 
 ---
 

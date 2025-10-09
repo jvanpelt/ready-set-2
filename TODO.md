@@ -1,22 +1,31 @@
 # Ready, Set 2 - TODO List
 
-## 🔄 Current Status (Oct 8, 2025)
-**Branch**: `feature/tutorial-below-status`  
-**Task**: Redesigning tutorial instruction layout for mobile
+## 🔄 Current Status (Oct 9, 2025)
+**Branch**: `main`  
+**Version**: `3.4.2-final`
+**Task**: Major refactor completed, ready for next phase
 
-**What we're doing**:
-- Moving tutorial instruction below status bar (same vertical position)
-- During tutorials: hide status bar, show tutorial instruction in its place
-- Goal: Fit tutorials on smallest screens (375×667px) without scrolling
-- No vertical layout scaling needed - simple swap/replace approach
+**What we just completed**:
+- ✅ **Major codebase refactor (v3.2.x → v3.4.x)**
+  - Created `js/constants.js` for centralized layout/game constants
+  - Documented card encoding systems (bitwise vs array) in `levels.js` and `scenarioManager.js`
+  - Removed unused `CardEncoder.js` utility
+  - Refactored `DragDropHandler.js` with cleaner coordinate helpers
+  - Updated `AppScaler.js` to use constants
+  - Created `REFACTOR_PLAN_v1.md` and `REFACTOR_SUMMARY_v1.md`
+- ✅ **Tutorial system improvements**
+  - Fixed mobile scaling for tutorials (transform: scale on #app)
+  - Fixed tutorial instruction positioning (fixed at bottom)
+  - Resolved drag-and-drop issues with scaled layouts
+- ✅ **Solution Helper set to ON by default** for new players
 
-**Latest commit**: `0b9508a` - Tutorial instruction moved, styled as green semi-transparent box
+**Known limitations**:
+- Desktop drag cursor is native browser (no custom clone due to scaling complexity)
+- Mobile drag works perfectly with custom touch implementation
 
 **Next steps**:
-1. Test on localhost (port 8000 running)
-2. Refine tutorial instruction styling/layout
-3. Test at 375×667px to ensure GO button stays visible
-4. Merge to main once layout feels right
+1. Choose next phase from roadmap below
+2. Consider: Code cleanup, home screen, Level 0 tutorial, or theming
 
 ---
 
