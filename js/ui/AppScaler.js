@@ -50,6 +50,9 @@ export class AppScaler {
         
         const viewportHeight = window.innerHeight;
         const isTutorialVisible = !this.tutorialInstruction.classList.contains('hidden');
+        // Body padding-top: 20px on desktop, 8px on mobile (768px breakpoint)
+        const isMobile = window.innerWidth <= 768;
+        const bodyPaddingTop = isMobile ? 8 : 20;
         
         let tutorialHeight = 0;
         let availableHeight;
@@ -59,10 +62,10 @@ export class AppScaler {
             tutorialHeight = this.tutorialInstruction.offsetHeight;
             // Add small gap between app and tutorial for breathing room
             const gap = 15;
-            availableHeight = viewportHeight - tutorialHeight - gap;
+            availableHeight = viewportHeight - tutorialHeight - gap - bodyPaddingTop;
         } else {
-            // No tutorial - use full viewport
-            availableHeight = viewportHeight;
+            // No tutorial - use full viewport minus body padding
+            availableHeight = viewportHeight - bodyPaddingTop;
         }
         
         // Calculate precise scale factor

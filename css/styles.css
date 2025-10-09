@@ -25,7 +25,8 @@ body {
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* Align to top for proper scaling */
+    padding-top: 20px; /* Add some top padding */
     user-select: none;
     /* Prevent pull-to-refresh and overscroll on mobile */
     overscroll-behavior: none;
@@ -759,6 +760,10 @@ body {
 
 /* Responsive */
 @media (max-width: 768px) {
+    body {
+        padding-top: 8px; /* Less padding on mobile */
+    }
+    
     #app {
         padding: 8px;
         gap: 10px;
