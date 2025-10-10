@@ -1564,31 +1564,27 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
     opacity: 0;
 }
 
-.home-menu-btn {
+/* Overlay Menu Button (appears on home screen and interstitials) */
+.overlay-menu-btn {
     position: absolute;
     top: 20px;
     right: 20px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: none;
-    background: linear-gradient(135deg, #2196F3, #1976D2);
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    transition: all 0.2s ease;
     z-index: 3001;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.home-menu-btn:hover {
-    background: linear-gradient(135deg, #42A5F5, #2196F3);
-    transform: scale(1.05);
+.overlay-menu-btn:hover {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
 }
 
-.home-menu-btn:active {
-    transform: scale(0.95);
+@media (max-width: 768px) {
+    .overlay-menu-btn {
+        top: 12px;
+        right: 12px;
+        font-size: 14px;
+        padding: 8px 16px;
+    }
 }
 
 .home-container {

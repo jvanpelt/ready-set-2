@@ -42,12 +42,18 @@ export class ModalManager {
         this.interstitialDescription = document.getElementById('interstitial-description');
         this.tutorialAcceptBtn = document.getElementById('tutorial-accept-btn');
         this.tutorialDeclineBtn = document.getElementById('tutorial-decline-btn');
+        this.interstitialMenuBtn = document.getElementById('interstitial-menu-btn');
         
         // Level selector (test mode)
         this.levelSelector = document.getElementById('level-selector');
         
-        // Hook up cancel button
+        // Hook up buttons
         this.passCancelBtn.addEventListener('click', () => this.hidePassModal());
+        this.interstitialMenuBtn.addEventListener('click', () => {
+            console.log('📋 Menu button clicked from interstitial');
+            this.hideInterstitial();
+            this.showMenu();
+        });
     }
     
     /**
