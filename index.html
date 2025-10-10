@@ -60,6 +60,12 @@
             <button id="pass-btn" class="btn btn-warning">Pass</button>
             <button id="go-btn" class="btn btn-success">GO!</button>
         </div>
+
+        <!-- Wild Cube Operator Selection Popover (stays inside #app as game element) -->
+        <div id="wild-popover-backdrop" class="wild-popover-backdrop"></div>
+        <div id="wild-popover" class="wild-popover">
+            <!-- Buttons will be populated dynamically -->
+        </div>
     </div>
 
     <!-- Modals (moved outside #app to avoid scaling issues) -->
@@ -247,12 +253,6 @@
             <p>Time expired! Starting a new puzzle...</p>
             <button id="timeout-ok" class="btn btn-primary">OK</button>
         </div>
-    </div>
-
-    <!-- Wild Cube Operator Selection Popover -->
-    <div id="wild-popover-backdrop" class="wild-popover-backdrop"></div>
-    <div id="wild-popover" class="wild-popover">
-        <!-- Buttons will be populated dynamically -->
     </div>
 
     <!-- Tutorial Instruction (shown during tutorials, replaces status bar) -->
