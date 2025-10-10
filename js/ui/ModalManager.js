@@ -349,8 +349,7 @@ export class ModalManager {
         this.tutorialAcceptBtn.onclick = handleAccept;
         this.tutorialDeclineBtn.onclick = handleDecline;
         
-        // Hide game board, show interstitial
-        document.getElementById('app').classList.add('hidden');
+        // Show interstitial (game board stays visible underneath)
         this.interstitialScreen.classList.remove('hidden');
     }
     
@@ -366,7 +365,6 @@ export class ModalManager {
         setTimeout(() => {
             this.interstitialScreen.classList.add('hidden');
             this.interstitialScreen.classList.remove('fade-out');
-            document.getElementById('app').classList.remove('hidden');
         }, 400); // Match CSS transition duration
     }
     
