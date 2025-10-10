@@ -49,12 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Show Level 1 interstitial for new players
             console.log('👋 First time player - showing Level 1 interstitial');
             ui.showFirstTimeInterstitial();
-        } else {
-            // Show tutorial for returning players
-            console.log('📚 Checking for tutorial...');
-            ui.showTutorialIfNeeded();
-            console.log('✅ Tutorial check complete');
         }
+        // Returning players will see interstitials when advancing levels
         
         // Make game accessible for debugging
         window.game = game;

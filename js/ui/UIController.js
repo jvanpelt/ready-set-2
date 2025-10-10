@@ -118,10 +118,6 @@ export class UIController {
         this.menuBtn.addEventListener('mouseup', () => console.log('🖱️ MENU mouseup'));
         this.menuBtn.addEventListener('touchend', () => console.log('👆 MENU touchend'));
         
-        // Tutorial
-        document.getElementById('tutorial-next').addEventListener('click', () => this.modals.hideTutorial());
-        document.getElementById('tutorial-skip').addEventListener('click', () => this.modals.hideTutorial());
-        
         // Result modal
         document.getElementById('result-continue').addEventListener('click', () => {
             this.modals.hideResult(() => {
@@ -137,7 +133,6 @@ export class UIController {
             this.modals.hideMenu();
             this.render();
             this.clearSolutionHelper();
-            this.modals.showTutorialIfNeeded();
         });
         document.getElementById('refresh-btn').addEventListener('click', () => {
             window.location.reload();
@@ -548,7 +543,6 @@ export class UIController {
             this.game.resetRound();
             this.render();
             this.clearSolutionHelper();
-            this.modals.showTutorialIfNeeded();
         });
     }
     
@@ -645,10 +639,6 @@ export class UIController {
                 console.log('   ❌ Row not found in DOM!');
             }
         });
-    }
-    
-    showTutorialIfNeeded() {
-        this.modals.showTutorialIfNeeded();
     }
     
     async showFirstTimeInterstitial() {

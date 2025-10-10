@@ -664,7 +664,7 @@ body {
 }
 
 /* Modals */
-.modal, .tutorial-overlay {
+.modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -679,12 +679,12 @@ body {
     transition: opacity 0.3s ease;
 }
 
-.modal.hidden, .tutorial-overlay.hidden {
+.modal.hidden {
     display: none;
     opacity: 0;
 }
 
-.modal-content, .tutorial-content {
+.modal-content {
     background: var(--color-bg-medium);
     border-radius: 16px;
     padding: 40px;
@@ -695,13 +695,13 @@ body {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
-.modal-content h2, .tutorial-content h2 {
+.modal-content h2 {
     margin-bottom: 20px;
     font-size: 28px;
     color: white;
 }
 
-.modal-content .btn, .tutorial-content .btn {
+.modal-content .btn {
     margin-top: 20px;
     margin-right: 10px;
     width: auto;
@@ -750,13 +750,6 @@ body {
     font-size: 18px;
     margin: 15px 0;
     line-height: 1.6;
-}
-
-#tutorial-text {
-    font-size: 16px;
-    line-height: 1.8;
-    margin: 20px 0;
-    color: rgba(255, 255, 255, 0.9);
 }
 
 /* Responsive */

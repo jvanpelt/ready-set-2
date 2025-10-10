@@ -9,11 +9,6 @@ export class ModalManager {
     }
     
     initElements() {
-        // Tutorial
-        this.tutorialOverlay = document.getElementById('tutorial-overlay');
-        this.tutorialTitle = document.getElementById('tutorial-title');
-        this.tutorialText = document.getElementById('tutorial-text');
-        
         // Result
         this.resultModal = document.getElementById('result-modal');
         this.resultTitle = document.getElementById('result-title');
@@ -53,33 +48,6 @@ export class ModalManager {
         
         // Hook up cancel button
         this.passCancelBtn.addEventListener('click', () => this.hidePassModal());
-    }
-    
-    /**
-     * Show tutorial if needed
-     */
-    showTutorialIfNeeded() {
-        if (this.game.shouldShowTutorial()) {
-            this.showTutorial();
-        }
-    }
-    
-    /**
-     * Show tutorial overlay
-     */
-    showTutorial() {
-        const tutorial = this.game.getTutorial();
-        this.tutorialTitle.textContent = tutorial.title;
-        this.tutorialText.innerHTML = tutorial.text.replace(/\n/g, '<br>');
-        this.tutorialOverlay.classList.remove('hidden');
-    }
-    
-    /**
-     * Hide tutorial overlay
-     */
-    hideTutorial() {
-        this.tutorialOverlay.classList.add('hidden');
-        this.game.markTutorialShown();
     }
     
     /**
@@ -149,13 +117,10 @@ export class ModalManager {
                         // this.game.storage.markTutorialAsViewed(newLevel);
                     }
                 } else {
-                    // User declined tutorial
+                    // User declined tutorial - nothing more to do
                     // Mark as viewed so they don't see it again (COMMENTED OUT FOR TESTING)
                     // TODO: Uncomment this after testing complete
                     // this.game.storage.markTutorialAsViewed(newLevel);
-                    
-                    // Show old tutorial modal if no interactive tutorial chosen
-                    this.showTutorialIfNeeded();
                 }
             } else {
                 // Tutorial already viewed, skip interstitial
