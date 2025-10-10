@@ -92,7 +92,7 @@ const IntroAnimations = {
      */
     animateRedToSolution() {
         console.log('🎬 animateRedToSolution() called');
-        const redCube = document.getElementById('intro-red');
+        const redCube = document.querySelector('.die[data-id="intro-red"]');
         const solutionRow = document.getElementById('solution1');
         
         console.log('RED cube:', redCube);
@@ -156,9 +156,14 @@ const IntroAnimations = {
      * Step 7: Animate OR and BLUE cubes to solution
      */
     animateOrAndBlue() {
-        const orCube = document.getElementById('intro-union');
-        const blueCube = document.getElementById('intro-blue');
+        console.log('🎬 animateOrAndBlue() called');
+        const orCube = document.querySelector('.die[data-id="intro-union"]');
+        const blueCube = document.querySelector('.die[data-id="intro-blue"]');
         const solutionRow = document.getElementById('solution1');
+        
+        console.log('OR cube:', orCube);
+        console.log('BLUE cube:', blueCube);
+        console.log('Solution row:', solutionRow);
         
         if (!orCube || !blueCube || !solutionRow) {
             console.warn('⚠️ OR/BLUE cubes or solution row not found');
@@ -219,8 +224,12 @@ const IntroAnimations = {
      * Step 8: Animate OR back, AND to solution
      */
     animateAndReplaceOr() {
-        const andCube = document.getElementById('intro-intersect');
+        console.log('🎬 animateAndReplaceOr() called');
+        const andCube = document.querySelector('.die[data-id="intro-intersect"]');
         const solutionRow = document.getElementById('solution1');
+        
+        console.log('AND cube:', andCube);
+        console.log('Solution row:', solutionRow);
         
         if (!andCube || !solutionRow) {
             console.warn('⚠️ AND cube or solution row not found');
