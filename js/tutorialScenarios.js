@@ -39,15 +39,15 @@ const IntroAnimations = {
      */
     animateGoal() {
         console.log('🎬 animateGoal() called');
-        const goalContainer = document.querySelector('.goal-container');
-        console.log('Goal container:', goalContainer);
-        if (!goalContainer) {
-            console.warn('⚠️ Goal container not found');
+        const goalDisplay = document.querySelector('.goal-display');
+        console.log('Goal display:', goalDisplay);
+        if (!goalDisplay) {
+            console.warn('⚠️ Goal display not found');
             return;
         }
         
-        gsap.killTweensOf(goalContainer);
-        gsap.to(goalContainer, {
+        gsap.killTweensOf(goalDisplay);
+        gsap.to(goalDisplay, {
             scale: 1.1,
             duration: 0.4,
             ease: 'power2.out',
@@ -63,26 +63,26 @@ const IntroAnimations = {
      */
     animateCubes() {
         console.log('🎬 animateCubes() called');
-        const cubes = document.querySelectorAll('.cube');
-        console.log('Found cubes:', cubes.length);
+        const dice = document.querySelectorAll('.die:not(.solution-die)');
+        console.log('Found dice:', dice.length);
         
-        if (cubes.length === 0) {
-            console.warn('⚠️ No cubes found');
+        if (dice.length === 0) {
+            console.warn('⚠️ No dice found');
             return;
         }
         
-        gsap.killTweensOf(cubes);
+        gsap.killTweensOf(dice);
         
-        cubes.forEach((cube, i) => {
-            gsap.to(cube, {
+        dice.forEach((die, i) => {
+            gsap.to(die, {
                 rotation: 15,
                 duration: 0.6,
                 delay: i * 0.1,
                 ease: 'elastic.out(1, 0.5)',
                 yoyo: true,
                 repeat: 1,
-                onStart: () => console.log(`✅ Cube ${i} animation started`),
-                onComplete: () => console.log(`✅ Cube ${i} animation complete`)
+                onStart: () => console.log(`✅ Die ${i} animation started`),
+                onComplete: () => console.log(`✅ Die ${i} animation complete`)
             });
         });
     },
@@ -315,7 +315,7 @@ export const TUTORIAL_SCENARIOS = {
                 {
                     id: 'universe',
                     message: 'The 8 cards up top are called the <strong>UNIVERSE</strong>. Each card has a unique combination of colored dots.',
-                    highlight: { cards: 'all' },
+                    highlight: null, // Cards highlighting not supported yet
                     nextTrigger: 'auto',
                     onEnter: () => {
                         setTimeout(() => IntroAnimations.animateCards(), 100);
@@ -333,7 +333,7 @@ export const TUTORIAL_SCENARIOS = {
                 {
                     id: 'cubes',
                     message: 'Use <strong>CUBES</strong> to build a formula. Each cube has a color or operator symbol.',
-                    highlight: { dice: 'all' },
+                    highlight: { dice: [0, 1, 2, 3] }, // All 4 dice
                     nextTrigger: 'auto',
                     onEnter: () => {
                         setTimeout(() => IntroAnimations.animateCubes(), 100);
@@ -342,7 +342,7 @@ export const TUTORIAL_SCENARIOS = {
                 {
                     id: 'set-name',
                     message: 'Drag cubes to the <strong>SOLUTION AREA</strong> to create a "set name" - a formula that selects cards.',
-                    highlight: { solution: true },
+                    highlight: null, // Solution area highlighting not supported yet
                     nextTrigger: 'auto'
                 },
                 {
