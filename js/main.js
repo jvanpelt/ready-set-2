@@ -3,6 +3,7 @@
 import { Game } from './game.js';
 import { UIController } from './ui/UIController.js';
 import { AppScaler } from './ui/AppScaler.js';
+import { HomeScreenManager } from './ui/HomeScreenManager.js';
 
 // Extract and log version from script tag
 const scriptTag = document.querySelector('script[src*="main.js"]');
@@ -42,15 +43,18 @@ document.addEventListener('DOMContentLoaded', () => {
         window.appScaler = appScaler; // Make accessible globally
         console.log('✅ AppScaler initialized');
         
-        // Check if first time playing (Level 1, new game)
-        const isFirstTime = game.level === 1 && !localStorage.getItem('rs2_tutorialShown_1');
+        // Initialize home screen
+        console.log('🏠 Initializing HomeScreenManager...');
+        const homeScreen = new HomeScreenManager(game);
+        window.homeScreen = homeScreen; // Make accessible globally
+        console.log('✅ HomeScreenManager initialized');
         
-        if (isFirstTime) {
-            // Show Level 1 interstitial for new players
-            console.log('👋 First time player - showing Level 1 interstitial');
-            ui.showFirstTimeInterstitial();
-        }
-        // Returning players will see interstitials when advancing levels
+        // Show home screen on load
+        console.log('🏠 Showing home screen');
+        homeScreen.show();
+        
+        // Check if first time playing (Level 1, new game) - only trigger after home screen is dismissed
+        // We'll handle this in the HomeScreenManager's play button click
         
         // Make game accessible for debugging
         window.game = game;

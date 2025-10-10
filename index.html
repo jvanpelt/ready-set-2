@@ -81,6 +81,7 @@
                         <li><button id="settings-btn" class="btn btn-primary">Settings</button></li>
                         <li><button id="puzzle-builder-btn" class="btn btn-primary">🛠️ Puzzle Builder</button></li>
                         <li><button id="tutorial-btn" class="btn btn-secondary">How to Play</button></li>
+                        <li><button id="home-menu-btn" class="btn btn-secondary">🏠 Home</button></li>
                         <li><button id="new-game-btn" class="btn btn-secondary">New Game</button></li>
                         <li><button id="refresh-btn" class="btn btn-secondary">🔄 Refresh</button></li>
                         <li><button id="resume-btn" class="btn btn-success">Resume</button></li>
@@ -299,7 +300,28 @@
         </div>
     </div>
 
-        <script type="module" src="js/main.js?v=3.5.0-no-old-modals"></script>
+    <!-- Home Screen -->
+    <div id="home-screen" class="home-screen hidden">
+        <div class="home-container">
+            <h1 class="home-title">Ready, Set 2</h1>
+            <p class="home-subtitle">A Set Theory Puzzle Game</p>
+            
+            <div class="home-buttons">
+                <button id="home-play-btn" class="btn btn-primary btn-xlarge">
+                    Play
+                </button>
+                <button id="home-how-to-play-btn" class="btn btn-secondary btn-large">
+                    How to Play
+                </button>
+            </div>
+            
+            <div class="home-level-info">
+                <p id="home-level-text">Continue from Level <span id="home-current-level">1</span></p>
+            </div>
+        </div>
+    </div>
+
+        <script type="module" src="js/main.js?v=3.6.0-home-screen"></script>
 </body>
 </html>
 

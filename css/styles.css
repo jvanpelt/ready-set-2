@@ -1203,7 +1203,8 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+    background: rgba(98, 168, 101, 0.95);
+    backdrop-filter: blur(20px);
     z-index: 2000;
     display: flex;
     align-items: center;
@@ -1538,6 +1539,102 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
     }
     to {
         transform: translateY(0);
+    }
+}
+
+/* Home Screen */
+.home-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(98, 168, 101, 0.95);
+    backdrop-filter: blur(20px);
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.home-screen.hidden {
+    display: none;
+    opacity: 0;
+}
+
+.home-container {
+    max-width: 600px;
+    padding: 60px 40px;
+    text-align: center;
+    animation: fadeInUp 0.6s ease;
+}
+
+.home-title {
+    font-size: 72px;
+    font-weight: bold;
+    color: white;
+    margin: 0 0 10px 0;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    letter-spacing: -2px;
+}
+
+.home-subtitle {
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 60px 0;
+    font-weight: 300;
+}
+
+.home-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 40px;
+}
+
+.btn-xlarge {
+    font-size: 32px;
+    padding: 20px 60px;
+    min-width: 280px;
+}
+
+.home-level-info {
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.home-level-info p {
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+}
+
+.home-level-info span {
+    font-weight: bold;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .home-title {
+        font-size: 48px;
+    }
+    
+    .home-subtitle {
+        font-size: 18px;
+        margin-bottom: 40px;
+    }
+    
+    .btn-xlarge {
+        font-size: 24px;
+        padding: 16px 40px;
+        min-width: 240px;
+    }
+    
+    .home-container {
+        padding: 40px 20px;
     }
 }
 

@@ -139,7 +139,14 @@ export class UIController {
         });
         document.getElementById('tutorial-btn').addEventListener('click', () => {
             this.modals.hideMenu();
-            this.modals.showTutorial();
+            // Show Level 1 interstitial as "How to Play"
+            this.showFirstTimeInterstitial();
+        });
+        document.getElementById('home-menu-btn').addEventListener('click', () => {
+            this.modals.hideMenu();
+            if (window.homeScreen) {
+                window.homeScreen.show();
+            }
         });
         
         // Settings
