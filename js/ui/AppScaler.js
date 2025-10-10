@@ -80,8 +80,13 @@ export class AppScaler {
         console.log(`🔍 updateScale() called (call #${this.scaleCount})`);
         
         if (!this.naturalHeight) {
-            console.warn('⚠️ AppScaler: naturalHeight not set, skipping scale update');
-            return;
+            console.warn('⚠️ AppScaler: naturalHeight not set, measuring now...');
+            this.measureNaturalHeight();
+            
+            if (!this.naturalHeight) {
+                console.error('❌ AppScaler: Failed to measure naturalHeight, aborting scale');
+                return;
+            }
         }
         
         const viewportHeight = window.innerHeight;
