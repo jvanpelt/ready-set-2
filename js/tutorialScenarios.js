@@ -3,6 +3,249 @@
  * These are used when players choose "Show Me How" on the interstitial screen
  */
 
+// ═══════════════════════════════════════════════════════════════════════════
+// INTRO TUTORIAL ANIMATIONS (GSAP)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Animation helper functions for intro tutorial
+ * These use GSAP for smooth, professional motion
+ */
+const IntroAnimations = {
+    /**
+     * Step 2: Wave of card animations
+     */
+    animateCards() {
+        const cards = document.querySelectorAll('.card');
+        
+        // Kill any existing animations
+        gsap.killTweensOf(cards);
+        
+        // Animate each card with overlapping timing
+        cards.forEach((card, i) => {
+            gsap.to(card, {
+                scale: 1.15,
+                duration: 0.3,
+                delay: i * 0.08, // Overlapping wave effect
+                ease: 'power2.out',
+                yoyo: true,
+                repeat: 1
+            });
+        });
+    },
+    
+    /**
+     * Step 3: Goal pulse
+     */
+    animateGoal() {
+        const goalContainer = document.querySelector('.goal-container');
+        if (!goalContainer) return;
+        
+        gsap.killTweensOf(goalContainer);
+        gsap.to(goalContainer, {
+            scale: 1.1,
+            duration: 0.4,
+            ease: 'power2.out',
+            yoyo: true,
+            repeat: 1
+        });
+    },
+    
+    /**
+     * Step 4: Rotate cubes with elastic ease
+     */
+    animateCubes() {
+        const cubes = document.querySelectorAll('.cube');
+        
+        gsap.killTweensOf(cubes);
+        
+        cubes.forEach((cube, i) => {
+            gsap.to(cube, {
+                rotation: 15,
+                duration: 0.6,
+                delay: i * 0.1,
+                ease: 'elastic.out(1, 0.5)',
+                yoyo: true,
+                repeat: 1
+            });
+        });
+    },
+    
+    /**
+     * Step 6: Animate RED cube to solution row 1
+     */
+    animateRedToSolution() {
+        const redCube = document.getElementById('intro-red');
+        const solutionRow = document.getElementById('solution1');
+        
+        if (!redCube || !solutionRow) {
+            console.warn('⚠️ RED cube or solution row not found');
+            return;
+        }
+        
+        // Clone the cube for animation
+        const clone = redCube.cloneNode(true);
+        clone.style.position = 'fixed';
+        clone.style.pointerEvents = 'none';
+        clone.style.zIndex = '9999';
+        document.body.appendChild(clone);
+        
+        // Get start and end positions
+        const startRect = redCube.getBoundingClientRect();
+        const endRect = solutionRow.getBoundingClientRect();
+        
+        // Position clone at start
+        gsap.set(clone, {
+            left: startRect.left,
+            top: startRect.top,
+            width: startRect.width,
+            height: startRect.height
+        });
+        
+        // Animate with bezier curve
+        gsap.to(clone, {
+            duration: 0.8,
+            delay: 0.3,
+            motionPath: {
+                path: [
+                    { x: startRect.left, y: startRect.top },
+                    { x: (startRect.left + endRect.left) / 2, y: startRect.top - 50 }, // Arc upward
+                    { x: endRect.left + 10, y: endRect.top }
+                ],
+                curviness: 1.5
+            },
+            ease: 'power2.inOut',
+            onComplete: () => {
+                // Remove clone, show actual cube in solution
+                clone.remove();
+                // The actual game logic would handle this, but we're just animating
+            }
+        });
+    },
+    
+    /**
+     * Step 7: Animate OR and BLUE cubes to solution
+     */
+    animateOrAndBlue() {
+        const orCube = document.getElementById('intro-union');
+        const blueCube = document.getElementById('intro-blue');
+        const solutionRow = document.getElementById('solution1');
+        
+        if (!orCube || !blueCube || !solutionRow) {
+            console.warn('⚠️ OR/BLUE cubes or solution row not found');
+            return;
+        }
+        
+        // Create clones
+        const orClone = orCube.cloneNode(true);
+        const blueClone = blueCube.cloneNode(true);
+        [orClone, blueClone].forEach(clone => {
+            clone.style.position = 'fixed';
+            clone.style.pointerEvents = 'none';
+            clone.style.zIndex = '9999';
+            document.body.appendChild(clone);
+        });
+        
+        // Get positions
+        const orStart = orCube.getBoundingClientRect();
+        const blueStart = blueCube.getBoundingClientRect();
+        const solutionRect = solutionRow.getBoundingClientRect();
+        
+        // Position OR clone
+        gsap.set(orClone, {
+            left: orStart.left,
+            top: orStart.top,
+            width: orStart.width,
+            height: orStart.height
+        });
+        
+        // Animate OR cube
+        gsap.to(orClone, {
+            duration: 0.6,
+            left: solutionRect.left + 80,
+            top: solutionRect.top,
+            ease: 'power2.inOut',
+            onComplete: () => orClone.remove()
+        });
+        
+        // Position BLUE clone and animate (starts halfway through OR animation)
+        gsap.set(blueClone, {
+            left: blueStart.left,
+            top: blueStart.top,
+            width: blueStart.width,
+            height: blueStart.height
+        });
+        
+        gsap.to(blueClone, {
+            duration: 0.6,
+            delay: 0.3, // Start halfway through OR animation
+            left: solutionRect.left + 160,
+            top: solutionRect.top,
+            ease: 'power2.inOut',
+            onComplete: () => blueClone.remove()
+        });
+    },
+    
+    /**
+     * Step 8: Animate OR back, AND to solution
+     */
+    animateAndReplaceOr() {
+        const andCube = document.getElementById('intro-intersect');
+        const solutionRow = document.getElementById('solution1');
+        
+        if (!andCube || !solutionRow) {
+            console.warn('⚠️ AND cube or solution row not found');
+            return;
+        }
+        
+        // Create AND clone
+        const andClone = andCube.cloneNode(true);
+        andClone.style.position = 'fixed';
+        andClone.style.pointerEvents = 'none';
+        andClone.style.zIndex = '9999';
+        document.body.appendChild(andClone);
+        
+        const andStart = andCube.getBoundingClientRect();
+        const solutionRect = solutionRow.getBoundingClientRect();
+        
+        // Position AND clone
+        gsap.set(andClone, {
+            left: andStart.left,
+            top: andStart.top,
+            width: andStart.width,
+            height: andStart.height
+        });
+        
+        // Animate AND to solution
+        gsap.to(andClone, {
+            duration: 0.7,
+            left: solutionRect.left + 80,
+            top: solutionRect.top,
+            ease: 'power2.inOut',
+            onComplete: () => andClone.remove()
+        });
+    },
+    
+    /**
+     * Step 9: Pulse GO button
+     */
+    animateGoButton() {
+        const goBtn = document.getElementById('go-btn');
+        if (!goBtn) return;
+        
+        gsap.killTweensOf(goBtn);
+        gsap.to(goBtn, {
+            scale: 1.1,
+            duration: 0.5,
+            ease: 'power2.inOut',
+            yoyo: true,
+            repeat: 2
+        });
+    }
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+
 export const TUTORIAL_SCENARIOS = {
     intro: {
         // Intro Tutorial: Non-interactive walkthrough of game concepts
@@ -28,27 +271,36 @@ export const TUTORIAL_SCENARIOS = {
             steps: [
                 {
                     id: 'welcome',
-                    message: 'Welcome! This is a game of set theory. Let\'s learn the basics.',
+                    message: '<strong>Ready, Set!</strong> is a game of set theory. Let\'s start with the basics.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'universe',
-                    message: 'These 8 cards are called the <strong>UNIVERSE</strong>. Each card has colored dots.',
+                    message: 'The 8 cards up top are called the <strong>UNIVERSE</strong>. Each card has a unique combination of colored dots.',
                     highlight: { cards: 'all' },
-                    nextTrigger: 'auto'
+                    nextTrigger: 'auto',
+                    onEnter: () => {
+                        setTimeout(() => IntroAnimations.animateCards(), 100);
+                    }
                 },
                 {
                     id: 'goal',
-                    message: 'Your goal is to select exactly <strong>3 cards</strong> from the UNIVERSE.',
+                    message: 'In this example, your goal is to select exactly <strong>3 cards</strong> from the UNIVERSE.',
                     highlight: { goal: true },
-                    nextTrigger: 'auto'
+                    nextTrigger: 'auto',
+                    onEnter: () => {
+                        setTimeout(() => IntroAnimations.animateGoal(), 100);
+                    }
                 },
                 {
                     id: 'cubes',
                     message: 'Use <strong>CUBES</strong> to build a formula. Each cube has a color or operator symbol.',
                     highlight: { dice: 'all' },
-                    nextTrigger: 'auto'
+                    nextTrigger: 'auto',
+                    onEnter: () => {
+                        setTimeout(() => IntroAnimations.animateCubes(), 100);
+                    }
                 },
                 {
                     id: 'set-name',
@@ -61,27 +313,36 @@ export const TUTORIAL_SCENARIOS = {
                     message: '<strong>RED</strong> selects all cards with red dots. That\'s 4 cards... but we need 3!',
                     highlight: { dice: [0] },
                     nextTrigger: 'auto',
-                    // TODO: Animation - show RED cube in solution, highlight 4 red cards
+                    onEnter: () => {
+                        IntroAnimations.animateRedToSolution();
+                    }
                 },
                 {
                     id: 'or-wrong',
                     message: 'The <strong>OR</strong> operator (∪) combines sets. <strong>RED OR BLUE</strong> selects 5 cards - still too many!',
                     highlight: { dice: [2] },
                     nextTrigger: 'auto',
-                    // TODO: Animation - show RED ∪ BLUE in solution, highlight 5 cards
+                    onEnter: () => {
+                        IntroAnimations.animateOrAndBlue();
+                    }
                 },
                 {
                     id: 'and-correct',
                     message: 'The <strong>AND</strong> operator (∩) finds overlap. <strong>RED AND BLUE</strong> selects only cards with BOTH colors. That\'s exactly 3! ✓',
                     highlight: { dice: [3] },
                     nextTrigger: 'auto',
-                    // TODO: Animation - show RED ∩ BLUE in solution, highlight 3 cards
+                    onEnter: () => {
+                        IntroAnimations.animateAndReplaceOr();
+                    }
                 },
                 {
                     id: 'ready',
                     message: 'When you have a solution, press <strong>GO</strong> to check it. Ready to try Level 1?',
                     highlight: { goButton: true },
-                    nextTrigger: 'auto'
+                    nextTrigger: 'auto',
+                    onEnter: () => {
+                        setTimeout(() => IntroAnimations.animateGoButton(), 100);
+                    }
                 }
             ]
         }

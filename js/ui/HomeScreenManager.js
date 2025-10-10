@@ -28,7 +28,7 @@ export class HomeScreenManager {
         
         this.howToPlayBtn.addEventListener('click', () => {
             console.log('🏠 How to Play clicked - showing intro tutorial');
-            this.hide();
+            this.hide(800); // Slower fade for intro tutorial
             
             // Show intro tutorial when "How to Play" is clicked
             if (window.uiController) {
@@ -51,8 +51,12 @@ export class HomeScreenManager {
         this.homeScreen.classList.remove('hidden');
     }
     
-    hide() {
-        console.log('🏠 Hiding home screen with fade');
+    hide(duration = 400) {
+        console.log(`🏠 Hiding home screen with fade (${duration}ms)`);
+        
+        // Set custom transition duration
+        this.homeScreen.style.transition = `opacity ${duration}ms ease`;
+        
         // First fade out
         this.homeScreen.classList.add('fade-out');
         
@@ -60,7 +64,9 @@ export class HomeScreenManager {
         setTimeout(() => {
             this.homeScreen.classList.add('hidden');
             this.homeScreen.classList.remove('fade-out');
-        }, 400); // Match CSS transition duration
+            // Reset transition to default
+            this.homeScreen.style.transition = '';
+        }, duration);
     }
     
     isVisible() {

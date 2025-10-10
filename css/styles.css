@@ -1215,7 +1215,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(98, 168, 101, 0.75);
+    background: rgba(41, 172, 211, 0.75);
     backdrop-filter: blur(20px);
     z-index: var(--z-interstitial);
     display: flex;
@@ -1388,7 +1388,7 @@ body {
     left: 0;
     right: 0;
     height: 180px;
-    background: rgba(98, 168, 101, 35%);
+    background: rgba(41, 172, 211, 0.35);
     backdrop-filter: blur(12px);
     color: white;
     padding: 16px 20px;
@@ -1565,7 +1565,7 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(98, 168, 101, 0.75);
+    background: rgba(41, 172, 211, 0.75);
     backdrop-filter: blur(20px);
     z-index: var(--z-home);
     display: flex;

@@ -81,6 +81,12 @@ export class TutorialManager {
         // Show instruction (now always top-right, draggable)
         this.instructionEl.classList.remove('hidden');
         
+        // Call onEnter callback if defined (for animations, etc.)
+        if (typeof step.onEnter === 'function') {
+            console.log('🎬 Running step onEnter callback');
+            step.onEnter();
+        }
+        
         // Handle progression based on step type
         if (step.nextTrigger === 'validation') {
             // Hide Next button, wait for user to complete action
