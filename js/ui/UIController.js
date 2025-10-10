@@ -380,9 +380,9 @@ export class UIController {
     
     updateSolutionHelperDescription(isEnabled) {
         if (isEnabled) {
-            this.solutionHelperDescription.textContent = 'Guided mode: automatically highlight cards that match your current solution.';
+            this.solutionHelperDescription.textContent = 'Guided mode: automatically highlights cards that match your current solution.';
         } else {
-            this.solutionHelperDescription.textContent = 'Advanced mode: manually notate your solution by highlighting and flip cards to match.';
+            this.solutionHelperDescription.textContent = 'Advanced mode: manually tap cards to highlight and flip them to help visualize your solution.';
         }
     }
     
