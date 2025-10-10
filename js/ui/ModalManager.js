@@ -51,7 +51,7 @@ export class ModalManager {
         this.passCancelBtn.addEventListener('click', () => this.hidePassModal());
         this.interstitialMenuBtn.addEventListener('click', () => {
             console.log('📋 Menu button clicked from interstitial');
-            this.hideInterstitial();
+            // Don't hide interstitial - menu modal will layer on top with higher z-index
             this.showMenu();
         });
     }
