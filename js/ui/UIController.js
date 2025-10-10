@@ -86,7 +86,9 @@ export class UIController {
         
         // Settings
         this.solutionHelperToggle = document.getElementById('solution-helper-toggle');
+        this.solutionHelperDescription = document.getElementById('solution-helper-description');
         this.solutionHelperToggle.checked = this.settings.solutionHelper;
+        this.updateSolutionHelperDescription(this.settings.solutionHelper);
         
         this.testModeToggle = document.getElementById('test-mode-toggle');
         this.testModeToggle.checked = this.settings.testMode || false;
@@ -162,6 +164,7 @@ export class UIController {
         this.solutionHelperToggle.addEventListener('change', (e) => {
             this.settings.solutionHelper = e.target.checked;
             this.game.storage.saveSettings(this.settings);
+            this.updateSolutionHelperDescription(e.target.checked);
             
             if (this.settings.solutionHelper) {
                 setTimeout(() => this.evaluateSolutionHelper(), 0);
@@ -372,6 +375,14 @@ export class UIController {
             oscillator.stop(audioContext.currentTime + 0.2);
         } catch (e) {
             console.log('Audio not supported');
+        }
+    }
+    
+    updateSolutionHelperDescription(isEnabled) {
+        if (isEnabled) {
+            this.solutionHelperDescription.textContent = 'Guided mode: automatically highlight cards that match your current solution.';
+        } else {
+            this.solutionHelperDescription.textContent = 'Advanced mode: manually notate your solution by highlighting and flip cards to match.';
         }
     }
     
