@@ -4,6 +4,89 @@
  */
 
 export const TUTORIAL_SCENARIOS = {
+    intro: {
+        // Intro Tutorial: Non-interactive walkthrough of game concepts
+        // Goal: Teach vocabulary and basic operators without requiring player actions
+        // Cards chosen so RED AND BLUE = 3 (matches goal)
+        // Bitwise: 1=gold, 2=green, 3=green+gold, 4=blue, 8=red, 12=red+blue, 13=red+blue+gold, 14=red+blue+green
+        // RED = [8,12,13,14] = 4 cards
+        // BLUE = [4,12,13,14] = 4 cards
+        // RED OR BLUE = [4,8,12,13,14] = 5 cards (wrong!)
+        // RED AND BLUE = [12,13,14] = 3 cards (correct!)
+        cards: [1, 2, 3, 4, 8, 12, 13, 14],
+        dice: [
+            { type: 'color', value: 'red', name: 'RED', id: 'intro-red' },
+            { type: 'color', value: 'blue', name: 'BLUE', id: 'intro-blue' },
+            { type: 'operator', value: '∪', name: 'OR', id: 'intro-union' },
+            { type: 'operator', value: '∩', name: 'AND', id: 'intro-intersect' }
+        ],
+        goal: 3,
+        expectedSolution: ['red', '∩', 'blue'],
+        
+        walkthrough: {
+            enabled: true,
+            steps: [
+                {
+                    id: 'welcome',
+                    message: 'Welcome! This is a game of set theory. Let\'s learn the basics.',
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'universe',
+                    message: 'These 8 cards are called the <strong>UNIVERSE</strong>. Each card has colored dots.',
+                    highlight: { cards: 'all' },
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'goal',
+                    message: 'Your goal is to select exactly <strong>3 cards</strong> from the UNIVERSE.',
+                    highlight: { goal: true },
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'cubes',
+                    message: 'Use <strong>CUBES</strong> to build a formula. Each cube has a color or operator symbol.',
+                    highlight: { dice: 'all' },
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'set-name',
+                    message: 'Drag cubes to the <strong>SOLUTION AREA</strong> to create a "set name" - a formula that selects cards.',
+                    highlight: { solution: true },
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'red-example',
+                    message: '<strong>RED</strong> selects all cards with red dots. That\'s 4 cards... but we need 3!',
+                    highlight: { dice: [0] },
+                    nextTrigger: 'auto',
+                    // TODO: Animation - show RED cube in solution, highlight 4 red cards
+                },
+                {
+                    id: 'or-wrong',
+                    message: 'The <strong>OR</strong> operator (∪) combines sets. <strong>RED OR BLUE</strong> selects 5 cards - still too many!',
+                    highlight: { dice: [2] },
+                    nextTrigger: 'auto',
+                    // TODO: Animation - show RED ∪ BLUE in solution, highlight 5 cards
+                },
+                {
+                    id: 'and-correct',
+                    message: 'The <strong>AND</strong> operator (∩) finds overlap. <strong>RED AND BLUE</strong> selects only cards with BOTH colors. That\'s exactly 3! ✓',
+                    highlight: { dice: [3] },
+                    nextTrigger: 'auto',
+                    // TODO: Animation - show RED ∩ BLUE in solution, highlight 3 cards
+                },
+                {
+                    id: 'ready',
+                    message: 'When you have a solution, press <strong>GO</strong> to check it. Ready to try Level 1?',
+                    highlight: { goButton: true },
+                    nextTrigger: 'auto'
+                }
+            ]
+        }
+    },
+    
     1: {
         // Cards: 3 without red/blue, 5 with red or blue
         // 1=gold, 2=green, 3=green+gold (no red/blue)

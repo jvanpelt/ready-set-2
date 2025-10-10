@@ -27,12 +27,12 @@ export class HomeScreenManager {
         });
         
         this.howToPlayBtn.addEventListener('click', () => {
-            console.log('🏠 How to Play clicked - forcing Level 1 tutorial');
+            console.log('🏠 How to Play clicked - showing intro tutorial');
             this.hide();
             
-            // Always show Level 1 interstitial when "How to Play" is clicked
+            // Show intro tutorial when "How to Play" is clicked
             if (window.uiController) {
-                window.uiController.showFirstTimeInterstitial();
+                window.uiController.showIntroTutorial();
             }
         });
         

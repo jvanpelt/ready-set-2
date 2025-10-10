@@ -143,8 +143,8 @@ export class UIController {
         });
         document.getElementById('tutorial-btn').addEventListener('click', () => {
             this.modals.hideMenu();
-            // Show Level 1 interstitial as "How to Play"
-            this.showFirstTimeInterstitial();
+            // Show intro tutorial for "How to Play"
+            this.showIntroTutorial();
         });
         document.getElementById('menu-home-btn').addEventListener('click', () => {
             this.modals.hideMenu();
@@ -659,6 +659,19 @@ export class UIController {
                 console.log('   ❌ Row not found in DOM!');
             }
         });
+    }
+    
+    async showIntroTutorial() {
+        // Load and start the intro tutorial (non-interactive walkthrough)
+        console.log('📚 Starting intro tutorial');
+        const { getTutorialScenario } = await import('../tutorialScenarios.js');
+        const introScenario = getTutorialScenario('intro');
+        
+        if (introScenario) {
+            this.tutorialManager.start(introScenario);
+        } else {
+            console.error('❌ Intro tutorial scenario not found!');
+        }
     }
     
     async showFirstTimeInterstitial() {
