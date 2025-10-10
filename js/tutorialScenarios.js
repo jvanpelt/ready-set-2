@@ -93,7 +93,7 @@ const IntroAnimations = {
     animateRedToSolution() {
         console.log('🎬 animateRedToSolution() called');
         const redCube = document.querySelector('.die[data-id="intro-red"]');
-        const solutionRow = document.getElementById('solution1');
+        const solutionRow = document.querySelector('.solution-row[data-row="1"]');
         
         console.log('RED cube:', redCube);
         console.log('Solution row:', solutionRow);
@@ -159,7 +159,7 @@ const IntroAnimations = {
         console.log('🎬 animateOrAndBlue() called');
         const orCube = document.querySelector('.die[data-id="intro-union"]');
         const blueCube = document.querySelector('.die[data-id="intro-blue"]');
-        const solutionRow = document.getElementById('solution1');
+        const solutionRow = document.querySelector('.solution-row[data-row="1"]');
         
         console.log('OR cube:', orCube);
         console.log('BLUE cube:', blueCube);
@@ -226,7 +226,7 @@ const IntroAnimations = {
     animateAndReplaceOr() {
         console.log('🎬 animateAndReplaceOr() called');
         const andCube = document.querySelector('.die[data-id="intro-intersect"]');
-        const solutionRow = document.getElementById('solution1');
+        const solutionRow = document.querySelector('.solution-row[data-row="1"]');
         
         console.log('AND cube:', andCube);
         console.log('Solution row:', solutionRow);
