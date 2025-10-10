@@ -60,33 +60,36 @@
             <button id="pass-btn" class="btn btn-warning">Pass</button>
             <button id="go-btn" class="btn btn-success">GO!</button>
         </div>
+    </div>
 
-        <!-- Result Modal -->
-        <div id="result-modal" class="modal hidden">
-            <div class="modal-content">
-                <h2 id="result-title"></h2>
-                <div id="result-message"></div>
-                <div id="result-score" class="result-score"></div>
-                <button id="result-continue" class="btn btn-success">Continue</button>
-            </div>
+    <!-- Modals (moved outside #app to avoid scaling issues) -->
+    
+    <!-- Result Modal -->
+    <div id="result-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2 id="result-title"></h2>
+            <div id="result-message"></div>
+            <div id="result-score" class="result-score"></div>
+            <button id="result-continue" class="btn btn-success">Continue</button>
         </div>
+    </div>
 
-        <!-- Menu Modal -->
-        <div id="menu-modal" class="modal hidden">
-            <div class="modal-content">
-                <div id="menu-main-view">
-                    <h2>Menu</h2>
-                    <p class="menu-level-indicator">Currently on <strong>Level <span id="menu-current-level">1</span></strong></p>
-                    <ul class="menu-list">
-                        <li><button id="settings-btn" class="btn btn-primary">Settings</button></li>
-                        <li><button id="puzzle-builder-btn" class="btn btn-primary">🛠️ Puzzle Builder</button></li>
-                        <li><button id="tutorial-btn" class="btn btn-secondary">How to Play</button></li>
-                        <li><button id="home-menu-btn" class="btn btn-secondary">🏠 Home</button></li>
-                        <li><button id="new-game-btn" class="btn btn-secondary">New Game</button></li>
-                        <li><button id="refresh-btn" class="btn btn-secondary">🔄 Refresh</button></li>
-                        <li><button id="resume-btn" class="btn btn-success">Resume</button></li>
-                    </ul>
-                </div>
+    <!-- Menu Modal -->
+    <div id="menu-modal" class="modal hidden">
+        <div class="modal-content">
+            <div id="menu-main-view">
+                <h2>Menu</h2>
+                <p class="menu-level-indicator">Currently on <strong>Level <span id="menu-current-level">1</span></strong></p>
+                <ul class="menu-list">
+                    <li><button id="settings-btn" class="btn btn-primary">Settings</button></li>
+                    <li><button id="puzzle-builder-btn" class="btn btn-primary">🛠️ Puzzle Builder</button></li>
+                    <li><button id="tutorial-btn" class="btn btn-secondary">How to Play</button></li>
+                    <li><button id="home-menu-btn" class="btn btn-secondary">🏠 Home</button></li>
+                    <li><button id="new-game-btn" class="btn btn-secondary">New Game</button></li>
+                    <li><button id="refresh-btn" class="btn btn-secondary">🔄 Refresh</button></li>
+                    <li><button id="resume-btn" class="btn btn-success">Resume</button></li>
+                </ul>
+            </div>
             <div id="menu-settings-view" class="hidden">
                 <h2>Settings</h2>
                 <div class="settings-group">
@@ -223,33 +226,33 @@
             </div>
             </div>
         </div>
+    </div>
 
-        <!-- Pass Confirmation Modal -->
-        <div id="pass-modal" class="modal hidden">
-            <div class="modal-content">
-                <h2 id="pass-title"></h2>
-                <div id="pass-message"></div>
-                <div id="pass-buttons">
-                    <button id="pass-continue" class="btn btn-warning">Continue</button>
-                    <button id="pass-cancel" class="btn btn-secondary">Cancel</button>
-                </div>
+    <!-- Pass Confirmation Modal -->
+    <div id="pass-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2 id="pass-title"></h2>
+            <div id="pass-message"></div>
+            <div id="pass-buttons">
+                <button id="pass-continue" class="btn btn-warning">Continue</button>
+                <button id="pass-cancel" class="btn btn-secondary">Cancel</button>
             </div>
         </div>
+    </div>
 
-        <!-- Timeout Modal (Level 7+) -->
-        <div id="timeout-modal" class="modal hidden">
-            <div class="modal-content">
-                <h2>⏰ Time's Up!</h2>
-                <p>Time expired! Starting a new puzzle...</p>
-                <button id="timeout-ok" class="btn btn-primary">OK</button>
-            </div>
+    <!-- Timeout Modal (Level 7+) -->
+    <div id="timeout-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>⏰ Time's Up!</h2>
+            <p>Time expired! Starting a new puzzle...</p>
+            <button id="timeout-ok" class="btn btn-primary">OK</button>
         </div>
+    </div>
 
-        <!-- Wild Cube Operator Selection Popover -->
-        <div id="wild-popover-backdrop" class="wild-popover-backdrop"></div>
-        <div id="wild-popover" class="wild-popover">
-            <!-- Buttons will be populated dynamically -->
-        </div>
+    <!-- Wild Cube Operator Selection Popover -->
+    <div id="wild-popover-backdrop" class="wild-popover-backdrop"></div>
+    <div id="wild-popover" class="wild-popover">
+        <!-- Buttons will be populated dynamically -->
     </div>
 
     <!-- Tutorial Instruction (shown during tutorials, replaces status bar) -->
