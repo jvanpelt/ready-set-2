@@ -10,6 +10,18 @@
     --color-card-gray: #c8c8c8;
     --color-border: #1a1a1a;
     --color-highlight: #ff6b6b;
+    
+    /* Z-index layers (organized by stacking context) */
+    --z-game: 1;                    /* Base game elements */
+    --z-game-hover: 10;             /* Hovering dice */
+    --z-wild-popover-backdrop: 999; /* Wild cube backdrop */
+    --z-wild-popover: 1000;         /* Wild cube selection */
+    --z-tutorial-highlight: 1000;   /* Tutorial highlights */
+    --z-interstitial: 2000;         /* Level interstitial screens */
+    --z-tutorial-bar: 2000;         /* Tutorial instruction bar */
+    --z-home: 3000;                 /* Home screen */
+    --z-overlay-button: 3001;       /* Menu buttons on overlays */
+    --z-modal: 4000;                /* All modals (highest) */
 }
 
 * {
@@ -305,12 +317,12 @@ body {
     position: absolute;
     user-select: none;
     color: #333;
-    z-index: 1;
+    z-index: var(--z-game);
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .solution-die:hover:not(.dragging) {
-    z-index: 10;
+    z-index: var(--z-game-hover);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
@@ -460,7 +472,7 @@ body {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.1);
-    z-index: 999;
+    z-index: var(--z-wild-popover-backdrop);
     display: none;
 }
 
@@ -475,7 +487,7 @@ body {
     border-radius: 12px;
     padding: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
+    z-index: var(--z-wild-popover);
     display: none;
 }
 
@@ -674,7 +686,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: var(--z-modal);
     opacity: 1;
     transition: opacity 0.3s ease;
 }
@@ -1205,7 +1217,7 @@ body {
     bottom: 0;
     background: rgba(98, 168, 101, 0.75);
     backdrop-filter: blur(20px);
-    z-index: 2000;
+    z-index: var(--z-interstitial);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1381,7 +1393,7 @@ body {
     color: white;
     padding: 16px 20px;
     border-top: 3px solid rgba(76, 175, 80, 0.4);
-    z-index: 2000;
+    z-index: var(--z-tutorial-bar);
     animation: slideUpFromBottom 0.3s ease;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
 }
@@ -1454,7 +1466,7 @@ body {
 .tutorial-highlight {
     box-shadow: 0 0 15px 5px #FFD700 !important;
     animation: tutorialPulse 1.5s infinite;
-    z-index: 1000 !important;
+    z-index: var(--z-tutorial-highlight) !important;
     position: relative !important;
 }
 
@@ -1555,7 +1567,7 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
     bottom: 0;
     background: rgba(98, 168, 101, 0.75);
     backdrop-filter: blur(20px);
-    z-index: 3000;
+    z-index: var(--z-home);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1577,7 +1589,7 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
     position: absolute;
     top: 20px;
     right: 20px;
-    z-index: 3001;
+    z-index: var(--z-overlay-button);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
