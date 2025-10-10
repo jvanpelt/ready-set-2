@@ -6,6 +6,7 @@ export class HomeScreenManager {
         this.homeScreen = document.getElementById('home-screen');
         this.playBtn = document.getElementById('home-play-btn');
         this.howToPlayBtn = document.getElementById('home-how-to-play-btn');
+        this.menuBtn = document.getElementById('home-menu-btn');
         this.currentLevelSpan = document.getElementById('home-current-level');
         
         this.setupEventListeners();
@@ -32,6 +33,13 @@ export class HomeScreenManager {
             // Always show Level 1 interstitial when "How to Play" is clicked
             if (window.uiController) {
                 window.uiController.showFirstTimeInterstitial();
+            }
+        });
+        
+        this.menuBtn.addEventListener('click', () => {
+            console.log('🏠 Menu button clicked from home screen');
+            if (window.uiController && window.uiController.modals) {
+                window.uiController.modals.showMenu();
             }
         });
     }
