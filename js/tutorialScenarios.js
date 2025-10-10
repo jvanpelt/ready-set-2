@@ -91,78 +91,112 @@ const IntroAnimations = {
      * Step 6: Animate RED cube to solution row 1
      */
     animateRedToSolution() {
+        console.log('🎬 ============================================');
         console.log('🎬 animateRedToSolution() called');
+        console.log('🎬 ============================================');
+        
         const redCube = document.querySelector('.die[data-id="intro-red"]');
         const solutionRow = document.querySelector('.solution-row[data-row="1"]');
+        const app = document.getElementById('app');
         
-        console.log('RED cube:', redCube);
-        console.log('Solution row:', solutionRow);
+        console.log('📍 Elements found:');
+        console.log('  RED cube:', redCube);
+        console.log('  Solution row:', solutionRow);
+        console.log('  #app:', app);
         
-        if (!redCube || !solutionRow) {
-            console.warn('⚠️ RED cube or solution row not found');
+        if (!redCube || !solutionRow || !app) {
+            console.warn('⚠️ Required elements not found!');
             return;
         }
         
-        // Clone the cube for animation
+        // Get app's bounding rect and transform scale
+        const appRect = app.getBoundingClientRect();
+        const appStyle = window.getComputedStyle(app);
+        const transform = appStyle.transform;
+        console.log('📐 #app transform:', transform);
+        console.log('📐 #app rect:', appRect);
+        
+        // Get visual positions (accounting for scale)
+        const redRect = redCube.getBoundingClientRect();
+        const solutionRect = solutionRow.getBoundingClientRect();
+        
+        console.log('📍 RED cube visual rect:', redRect);
+        console.log('📍 Solution row visual rect:', solutionRect);
+        
+        // Create clone
         const clone = redCube.cloneNode(true);
+        clone.id = 'animation-clone-red'; // Give it an ID for debugging
         clone.style.position = 'absolute';
         clone.style.pointerEvents = 'none';
         clone.style.zIndex = '9999';
-        document.getElementById('app').appendChild(clone);
+        clone.style.margin = '0'; // Remove any margins
+        clone.style.border = '3px solid yellow'; // DEBUG: Make it very visible
+        clone.style.background = 'rgba(255, 0, 0, 0.5)'; // DEBUG: Red background
         
-        // Get positions relative to #app (use offsetTop/offsetLeft for positioned elements)
-        const getPositionInApp = (element) => {
-            let el = element;
-            let left = 0;
-            let top = 0;
-            while (el && el.id !== 'app') {
-                left += el.offsetLeft;
-                top += el.offsetTop;
-                el = el.offsetParent;
-            }
-            return { left, top };
-        };
+        app.appendChild(clone);
+        console.log('✅ Clone appended to #app');
+        console.log('   Clone element:', clone);
         
-        const startPos = getPositionInApp(redCube);
-        const endPos = getPositionInApp(solutionRow);
+        // Calculate positions relative to #app's top-left
+        // We need to subtract app's position from element positions
+        const startLeft = redRect.left - appRect.left;
+        const startTop = redRect.top - appRect.top;
+        const endLeft = solutionRect.left - appRect.left;
+        const endTop = solutionRect.top - appRect.top;
         
-        console.log('Start position:', startPos);
-        console.log('End position:', endPos);
-        console.log('Red cube size:', redCube.offsetWidth, 'x', redCube.offsetHeight);
+        console.log('🎯 Calculated positions (relative to #app):');
+        console.log('  Start: left=' + startLeft + 'px, top=' + startTop + 'px');
+        console.log('  End: left=' + endLeft + 'px, top=' + endTop + 'px');
+        console.log('  Size: ' + redRect.width + 'px x ' + redRect.height + 'px');
         
-        // Position clone at start
+        // Set initial position
         gsap.set(clone, {
-            left: startPos.left,
-            top: startPos.top,
-            width: redCube.offsetWidth,
-            height: redCube.offsetHeight
+            left: startLeft + 'px',
+            top: startTop + 'px',
+            width: redRect.width + 'px',
+            height: redRect.height + 'px'
         });
         
-        // Animate with arc effect using timeline
+        console.log('📍 Clone positioned at start');
+        console.log('   Computed style:', window.getComputedStyle(clone).cssText);
+        
+        // Animate with timeline
         const tl = gsap.timeline({
             delay: 0.3,
-            onStart: () => console.log('✅ RED cube animation started'),
+            onStart: () => {
+                console.log('✅ GSAP animation STARTED');
+                console.log('   Clone still exists:', document.contains(clone));
+            },
+            onUpdate: () => {
+                const currentLeft = clone.style.left;
+                const currentTop = clone.style.top;
+                console.log('🔄 Animation frame: left=' + currentLeft + ', top=' + currentTop);
+            },
             onComplete: () => {
-                console.log('✅ RED cube animation complete');
+                console.log('✅ GSAP animation COMPLETE');
                 clone.remove();
             }
         });
         
-        // Animate to midpoint with upward arc
+        // Animate to midpoint with arc
         tl.to(clone, {
             duration: 0.4,
-            left: (startPos.left + endPos.left) / 2,
-            top: startPos.top - 50,
-            ease: 'power2.out'
+            left: ((startLeft + endLeft) / 2) + 'px',
+            top: (startTop - 50) + 'px',
+            ease: 'power2.out',
+            onUpdate: () => console.log('  Arc phase: moving up')
         });
         
         // Animate to final position
         tl.to(clone, {
             duration: 0.4,
-            left: endPos.left + 10,
-            top: endPos.top,
-            ease: 'power2.in'
+            left: (endLeft + 10) + 'px',
+            top: endTop + 'px',
+            ease: 'power2.in',
+            onUpdate: () => console.log('  Descent phase: moving to target')
         });
+        
+        console.log('🎬 Timeline created and should be animating...');
     },
     
     /**
