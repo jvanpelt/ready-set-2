@@ -123,33 +123,41 @@ const IntroAnimations = {
         console.log('📍 RED cube visual rect:', redRect);
         console.log('📍 Solution row visual rect:', solutionRect);
         
-        // Create clone
-        const clone = redCube.cloneNode(true);
-        clone.id = 'animation-clone-red'; // Give it an ID for debugging
-        
-        // Clear all inherited classes that might have CSS positioning
+        // Create a SIMPLE cube representation instead of cloning
+        // (cloning has too many inherited styles/structure issues)
+        const clone = document.createElement('div');
+        clone.id = 'animation-clone-red';
         clone.className = 'animation-clone';
         
-        // Set styles explicitly - override everything
+        // Create inner circle (like the real die)
+        const circle = document.createElement('div');
+        circle.style.width = '70%';
+        circle.style.height = '70%';
+        circle.style.borderRadius = '50%';
+        circle.style.background = '#ff4444'; // Bright red
+        circle.style.boxShadow = 'inset 0 2px 4px rgba(0,0,0,0.2)';
+        clone.appendChild(circle);
+        
+        // Set clone styles - make it SUPER visible
         clone.style.position = 'absolute';
         clone.style.pointerEvents = 'none';
-        clone.style.zIndex = '99999'; // Higher z-index
+        clone.style.zIndex = '99999';
         clone.style.margin = '0';
         clone.style.padding = '0';
-        clone.style.transform = 'none'; // Clear any inherited transforms
-        clone.style.translate = 'none';
-        clone.style.rotate = 'none';
-        clone.style.scale = 'none';
-        clone.style.border = '5px solid yellow'; // Thicker border
-        clone.style.background = 'rgba(255, 0, 0, 0.8)'; // More opaque
-        clone.style.boxShadow = '0 0 20px rgba(255, 255, 0, 0.8)'; // Yellow glow
+        clone.style.border = '5px solid yellow'; // Yellow border
+        clone.style.background = 'rgba(0, 0, 0, 0.3)'; // Dark background like real die
+        clone.style.borderRadius = '8px';
+        clone.style.boxShadow = '0 0 30px rgba(255, 255, 0, 1)'; // Bright yellow glow
         clone.style.opacity = '1';
         clone.style.visibility = 'visible';
         clone.style.display = 'flex';
+        clone.style.alignItems = 'center';
+        clone.style.justifyContent = 'center';
         
         app.appendChild(clone);
-        console.log('✅ Clone appended to #app');
+        console.log('✅ Simple clone created and appended to #app');
         console.log('   Clone element:', clone);
+        console.log('   Clone has circle child:', clone.children.length > 0);
         
         // Calculate positions relative to #app's top-left
         // We need to subtract app's position from element positions
