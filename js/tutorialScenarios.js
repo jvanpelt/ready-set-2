@@ -105,24 +105,37 @@ const IntroAnimations = {
         
         // Clone the cube for animation
         const clone = redCube.cloneNode(true);
-        clone.style.position = 'fixed';
+        clone.style.position = 'absolute';
         clone.style.pointerEvents = 'none';
         clone.style.zIndex = '9999';
-        document.body.appendChild(clone);
+        document.getElementById('app').appendChild(clone);
         
-        // Get start and end positions
-        const startRect = redCube.getBoundingClientRect();
-        const endRect = solutionRow.getBoundingClientRect();
+        // Get positions relative to #app (use offsetTop/offsetLeft for positioned elements)
+        const getPositionInApp = (element) => {
+            let el = element;
+            let left = 0;
+            let top = 0;
+            while (el && el.id !== 'app') {
+                left += el.offsetLeft;
+                top += el.offsetTop;
+                el = el.offsetParent;
+            }
+            return { left, top };
+        };
         
-        console.log('Start rect:', startRect);
-        console.log('End rect:', endRect);
+        const startPos = getPositionInApp(redCube);
+        const endPos = getPositionInApp(solutionRow);
+        
+        console.log('Start position:', startPos);
+        console.log('End position:', endPos);
+        console.log('Red cube size:', redCube.offsetWidth, 'x', redCube.offsetHeight);
         
         // Position clone at start
         gsap.set(clone, {
-            left: startRect.left,
-            top: startRect.top,
-            width: startRect.width,
-            height: startRect.height
+            left: startPos.left,
+            top: startPos.top,
+            width: redCube.offsetWidth,
+            height: redCube.offsetHeight
         });
         
         // Animate with arc effect using timeline
@@ -138,16 +151,16 @@ const IntroAnimations = {
         // Animate to midpoint with upward arc
         tl.to(clone, {
             duration: 0.4,
-            left: (startRect.left + endRect.left) / 2,
-            top: startRect.top - 50,
+            left: (startPos.left + endPos.left) / 2,
+            top: startPos.top - 50,
             ease: 'power2.out'
         });
         
         // Animate to final position
         tl.to(clone, {
             duration: 0.4,
-            left: endRect.left + 10,
-            top: endRect.top,
+            left: endPos.left + 10,
+            top: endPos.top,
             ease: 'power2.in'
         });
     },
@@ -170,51 +183,64 @@ const IntroAnimations = {
             return;
         }
         
+        // Helper to get position relative to #app
+        const getPositionInApp = (element) => {
+            let el = element;
+            let left = 0;
+            let top = 0;
+            while (el && el.id !== 'app') {
+                left += el.offsetLeft;
+                top += el.offsetTop;
+                el = el.offsetParent;
+            }
+            return { left, top };
+        };
+        
         // Create clones
         const orClone = orCube.cloneNode(true);
         const blueClone = blueCube.cloneNode(true);
         [orClone, blueClone].forEach(clone => {
-            clone.style.position = 'fixed';
+            clone.style.position = 'absolute';
             clone.style.pointerEvents = 'none';
             clone.style.zIndex = '9999';
-            document.body.appendChild(clone);
+            document.getElementById('app').appendChild(clone);
         });
         
         // Get positions
-        const orStart = orCube.getBoundingClientRect();
-        const blueStart = blueCube.getBoundingClientRect();
-        const solutionRect = solutionRow.getBoundingClientRect();
+        const orPos = getPositionInApp(orCube);
+        const bluePos = getPositionInApp(blueCube);
+        const solutionPos = getPositionInApp(solutionRow);
         
         // Position OR clone
         gsap.set(orClone, {
-            left: orStart.left,
-            top: orStart.top,
-            width: orStart.width,
-            height: orStart.height
+            left: orPos.left,
+            top: orPos.top,
+            width: orCube.offsetWidth,
+            height: orCube.offsetHeight
         });
         
         // Animate OR cube
         gsap.to(orClone, {
             duration: 0.6,
-            left: solutionRect.left + 80,
-            top: solutionRect.top,
+            left: solutionPos.left + 80,
+            top: solutionPos.top,
             ease: 'power2.inOut',
             onComplete: () => orClone.remove()
         });
         
         // Position BLUE clone and animate (starts halfway through OR animation)
         gsap.set(blueClone, {
-            left: blueStart.left,
-            top: blueStart.top,
-            width: blueStart.width,
-            height: blueStart.height
+            left: bluePos.left,
+            top: bluePos.top,
+            width: blueCube.offsetWidth,
+            height: blueCube.offsetHeight
         });
         
         gsap.to(blueClone, {
             duration: 0.6,
             delay: 0.3, // Start halfway through OR animation
-            left: solutionRect.left + 160,
-            top: solutionRect.top,
+            left: solutionPos.left + 160,
+            top: solutionPos.top,
             ease: 'power2.inOut',
             onComplete: () => blueClone.remove()
         });
@@ -236,29 +262,42 @@ const IntroAnimations = {
             return;
         }
         
+        // Helper to get position relative to #app
+        const getPositionInApp = (element) => {
+            let el = element;
+            let left = 0;
+            let top = 0;
+            while (el && el.id !== 'app') {
+                left += el.offsetLeft;
+                top += el.offsetTop;
+                el = el.offsetParent;
+            }
+            return { left, top };
+        };
+        
         // Create AND clone
         const andClone = andCube.cloneNode(true);
-        andClone.style.position = 'fixed';
+        andClone.style.position = 'absolute';
         andClone.style.pointerEvents = 'none';
         andClone.style.zIndex = '9999';
-        document.body.appendChild(andClone);
+        document.getElementById('app').appendChild(andClone);
         
-        const andStart = andCube.getBoundingClientRect();
-        const solutionRect = solutionRow.getBoundingClientRect();
+        const andPos = getPositionInApp(andCube);
+        const solutionPos = getPositionInApp(solutionRow);
         
         // Position AND clone
         gsap.set(andClone, {
-            left: andStart.left,
-            top: andStart.top,
-            width: andStart.width,
-            height: andStart.height
+            left: andPos.left,
+            top: andPos.top,
+            width: andCube.offsetWidth,
+            height: andCube.offsetHeight
         });
         
         // Animate AND to solution
         gsap.to(andClone, {
             duration: 0.7,
-            left: solutionRect.left + 80,
-            top: solutionRect.top,
+            left: solutionPos.left + 80,
+            top: solutionPos.top,
             ease: 'power2.inOut',
             onComplete: () => andClone.remove()
         });
