@@ -126,12 +126,26 @@ const IntroAnimations = {
         // Create clone
         const clone = redCube.cloneNode(true);
         clone.id = 'animation-clone-red'; // Give it an ID for debugging
+        
+        // Clear all inherited classes that might have CSS positioning
+        clone.className = 'animation-clone';
+        
+        // Set styles explicitly - override everything
         clone.style.position = 'absolute';
         clone.style.pointerEvents = 'none';
-        clone.style.zIndex = '9999';
-        clone.style.margin = '0'; // Remove any margins
-        clone.style.border = '3px solid yellow'; // DEBUG: Make it very visible
-        clone.style.background = 'rgba(255, 0, 0, 0.5)'; // DEBUG: Red background
+        clone.style.zIndex = '99999'; // Higher z-index
+        clone.style.margin = '0';
+        clone.style.padding = '0';
+        clone.style.transform = 'none'; // Clear any inherited transforms
+        clone.style.translate = 'none';
+        clone.style.rotate = 'none';
+        clone.style.scale = 'none';
+        clone.style.border = '5px solid yellow'; // Thicker border
+        clone.style.background = 'rgba(255, 0, 0, 0.8)'; // More opaque
+        clone.style.boxShadow = '0 0 20px rgba(255, 255, 0, 0.8)'; // Yellow glow
+        clone.style.opacity = '1';
+        clone.style.visibility = 'visible';
+        clone.style.display = 'flex';
         
         app.appendChild(clone);
         console.log('✅ Clone appended to #app');

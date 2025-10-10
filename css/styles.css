@@ -1686,3 +1686,16 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
     display: none !important;
 }
 
+
+/* Animation Clone - for tutorial cube animations */
+.animation-clone {
+    position: absolute !important;
+    z-index: 999999 !important;
+    pointer-events: none !important;
+    transform: none !important;
+    translate: none !important;
+    rotate: none !important;
+    scale: none !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
