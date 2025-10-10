@@ -358,8 +358,16 @@ export class ModalManager {
      * Hide interstitial and show game board
      */
     hideInterstitial() {
-        this.interstitialScreen.classList.add('hidden');
-        document.getElementById('app').classList.remove('hidden');
+        console.log('🎯 Hiding interstitial with fade');
+        // First fade out
+        this.interstitialScreen.classList.add('fade-out');
+        
+        // Then hide after transition completes
+        setTimeout(() => {
+            this.interstitialScreen.classList.add('hidden');
+            this.interstitialScreen.classList.remove('fade-out');
+            document.getElementById('app').classList.remove('hidden');
+        }, 400); // Match CSS transition duration
     }
     
     /**

@@ -52,8 +52,15 @@ export class HomeScreenManager {
     }
     
     hide() {
-        console.log('🏠 Hiding home screen');
-        this.homeScreen.classList.add('hidden');
+        console.log('🏠 Hiding home screen with fade');
+        // First fade out
+        this.homeScreen.classList.add('fade-out');
+        
+        // Then hide after transition completes
+        setTimeout(() => {
+            this.homeScreen.classList.add('hidden');
+            this.homeScreen.classList.remove('fade-out');
+        }, 400); // Match CSS transition duration
     }
     
     isVisible() {

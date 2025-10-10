@@ -1203,19 +1203,23 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(98, 168, 101, 0.95);
+    background: rgba(98, 168, 101, 0.8);
     backdrop-filter: blur(20px);
     z-index: 2000;
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 1;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.4s ease;
+}
+
+.interstitial-screen.fade-out {
+    opacity: 0;
+    pointer-events: none;
 }
 
 .interstitial-screen.hidden {
     display: none;
-    opacity: 0;
 }
 
 .interstitial-container {
@@ -1549,19 +1553,23 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(98, 168, 101, 0.95);
+    background: rgba(98, 168, 101, 0.8);
     backdrop-filter: blur(20px);
     z-index: 3000;
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 1;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.4s ease;
+}
+
+.home-screen.fade-out {
+    opacity: 0;
+    pointer-events: none;
 }
 
 .home-screen.hidden {
     display: none;
-    opacity: 0;
 }
 
 /* Overlay Menu Button (appears on home screen and interstitials) */
