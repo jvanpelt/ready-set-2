@@ -38,8 +38,13 @@ const IntroAnimations = {
      * Step 3: Goal pulse
      */
     animateGoal() {
+        console.log('🎬 animateGoal() called');
         const goalContainer = document.querySelector('.goal-container');
-        if (!goalContainer) return;
+        console.log('Goal container:', goalContainer);
+        if (!goalContainer) {
+            console.warn('⚠️ Goal container not found');
+            return;
+        }
         
         gsap.killTweensOf(goalContainer);
         gsap.to(goalContainer, {
@@ -47,7 +52,9 @@ const IntroAnimations = {
             duration: 0.4,
             ease: 'power2.out',
             yoyo: true,
-            repeat: 1
+            repeat: 1,
+            onStart: () => console.log('✅ Goal animation started'),
+            onComplete: () => console.log('✅ Goal animation complete')
         });
     },
     
@@ -55,7 +62,14 @@ const IntroAnimations = {
      * Step 4: Rotate cubes with elastic ease
      */
     animateCubes() {
+        console.log('🎬 animateCubes() called');
         const cubes = document.querySelectorAll('.cube');
+        console.log('Found cubes:', cubes.length);
+        
+        if (cubes.length === 0) {
+            console.warn('⚠️ No cubes found');
+            return;
+        }
         
         gsap.killTweensOf(cubes);
         
@@ -66,7 +80,9 @@ const IntroAnimations = {
                 delay: i * 0.1,
                 ease: 'elastic.out(1, 0.5)',
                 yoyo: true,
-                repeat: 1
+                repeat: 1,
+                onStart: () => console.log(`✅ Cube ${i} animation started`),
+                onComplete: () => console.log(`✅ Cube ${i} animation complete`)
             });
         });
     },
@@ -75,8 +91,12 @@ const IntroAnimations = {
      * Step 6: Animate RED cube to solution row 1
      */
     animateRedToSolution() {
+        console.log('🎬 animateRedToSolution() called');
         const redCube = document.getElementById('intro-red');
         const solutionRow = document.getElementById('solution1');
+        
+        console.log('RED cube:', redCube);
+        console.log('Solution row:', solutionRow);
         
         if (!redCube || !solutionRow) {
             console.warn('⚠️ RED cube or solution row not found');
@@ -94,6 +114,9 @@ const IntroAnimations = {
         const startRect = redCube.getBoundingClientRect();
         const endRect = solutionRow.getBoundingClientRect();
         
+        console.log('Start rect:', startRect);
+        console.log('End rect:', endRect);
+        
         // Position clone at start
         gsap.set(clone, {
             left: startRect.left,
@@ -102,24 +125,30 @@ const IntroAnimations = {
             height: startRect.height
         });
         
-        // Animate with bezier curve
-        gsap.to(clone, {
-            duration: 0.8,
+        // Animate with arc effect using timeline
+        const tl = gsap.timeline({
             delay: 0.3,
-            motionPath: {
-                path: [
-                    { x: startRect.left, y: startRect.top },
-                    { x: (startRect.left + endRect.left) / 2, y: startRect.top - 50 }, // Arc upward
-                    { x: endRect.left + 10, y: endRect.top }
-                ],
-                curviness: 1.5
-            },
-            ease: 'power2.inOut',
+            onStart: () => console.log('✅ RED cube animation started'),
             onComplete: () => {
-                // Remove clone, show actual cube in solution
+                console.log('✅ RED cube animation complete');
                 clone.remove();
-                // The actual game logic would handle this, but we're just animating
             }
+        });
+        
+        // Animate to midpoint with upward arc
+        tl.to(clone, {
+            duration: 0.4,
+            left: (startRect.left + endRect.left) / 2,
+            top: startRect.top - 50,
+            ease: 'power2.out'
+        });
+        
+        // Animate to final position
+        tl.to(clone, {
+            duration: 0.4,
+            left: endRect.left + 10,
+            top: endRect.top,
+            ease: 'power2.in'
         });
     },
     
@@ -230,8 +259,14 @@ const IntroAnimations = {
      * Step 9: Pulse GO button
      */
     animateGoButton() {
+        console.log('🎬 animateGoButton() called');
         const goBtn = document.getElementById('go-btn');
-        if (!goBtn) return;
+        console.log('GO button:', goBtn);
+        
+        if (!goBtn) {
+            console.warn('⚠️ GO button not found');
+            return;
+        }
         
         gsap.killTweensOf(goBtn);
         gsap.to(goBtn, {
@@ -239,7 +274,9 @@ const IntroAnimations = {
             duration: 0.5,
             ease: 'power2.inOut',
             yoyo: true,
-            repeat: 2
+            repeat: 2,
+            onStart: () => console.log('✅ GO button animation started'),
+            onComplete: () => console.log('✅ GO button animation complete')
         });
     }
 };
