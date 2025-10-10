@@ -133,6 +133,8 @@ export class UIController {
             this.modals.hideMenu();
             this.render();
             this.clearSolutionHelper();
+            // Show Level 1 interstitial for new game
+            this.showFirstTimeInterstitial();
         });
         document.getElementById('refresh-btn').addEventListener('click', () => {
             window.location.reload();
@@ -142,7 +144,7 @@ export class UIController {
             // Show Level 1 interstitial as "How to Play"
             this.showFirstTimeInterstitial();
         });
-        document.getElementById('home-menu-btn').addEventListener('click', () => {
+        document.getElementById('menu-home-btn').addEventListener('click', () => {
             this.modals.hideMenu();
             if (window.homeScreen) {
                 window.homeScreen.show();
