@@ -128,34 +128,56 @@ const IntroAnimations = {
             }
         }
         
-        // Calculate SOLUTION ROW position in visual (scaled) coordinates
-        const leftVisual = solutionRect.left - appRect.left;
-        const topVisual = solutionRect.top - appRect.top;
+        // Calculate START position (RED cube) in visual coordinates
+        const startLeftVisual = redRect.left - appRect.left;
+        const startTopVisual = redRect.top - appRect.top;
         
-        // Convert back to unscaled coordinates by dividing by scale
-        const leftUnscaled = leftVisual / scale;
-        const topUnscaled = topVisual / scale;
+        // Calculate END position (solution row) in visual coordinates
+        const endLeftVisual = solutionRect.left - appRect.left;
+        const endTopVisual = solutionRect.top - appRect.top;
+        
+        // Add offset using cube width (scales properly)
+        const cubeWidthUnscaled = redRect.width / scale;
+        const offsetLeft = cubeWidthUnscaled * 0.15; // 15% of cube width from left edge
+        
+        // Convert both to unscaled coordinates
+        const startLeft = startLeftVisual / scale;
+        const startTop = startTopVisual / scale;
+        const endLeft = endLeftVisual / scale + offsetLeft;
+        const endTop = endTopVisual / scale;
         
         console.log('📍 RED cube rect:', redRect);
         console.log('📍 Solution row rect:', solutionRect);
-        console.log('📍 #app rect:', appRect);
         console.log('📍 #app scale:', scale);
-        console.log('📍 Solution position (visual/scaled): left=' + leftVisual + ', top=' + topVisual);
-        console.log('📍 Solution position (unscaled): left=' + leftUnscaled + ', top=' + topUnscaled);
+        console.log('📍 Cube width (unscaled):', cubeWidthUnscaled);
+        console.log('📍 Start position (unscaled): left=' + startLeft + ', top=' + startTop);
+        console.log('📍 End position (unscaled): left=' + endLeft + ', top=' + endTop);
         
-        // Minimal styling - just what's needed
+        // Set up clone styling
         clone.style.position = 'absolute';
-        clone.style.left = leftUnscaled + 'px';
-        clone.style.top = topUnscaled + 'px';
-        clone.style.zIndex = '99999'; // Above everything
-        clone.style.pointerEvents = 'none'; // Don't interfere with clicks
+        clone.style.zIndex = '99999';
+        clone.style.pointerEvents = 'none';
         
         // Append to #app
         app.appendChild(clone);
         
-        console.log('✅ Clone appended to #app at Step 6');
-        console.log('✅ Clone positioned at: left=' + clone.style.left + ', top=' + clone.style.top);
-        console.log('✅ Clone should appear at the SOLUTION ROW (not animated, just testing position)');
+        // Use GSAP to animate from start to end
+        gsap.set(clone, {
+            left: startLeft + 'px',
+            top: startTop + 'px'
+        });
+        
+        gsap.to(clone, {
+            duration: 0.8,
+            delay: 0.3,
+            left: endLeft + 'px',
+            top: endTop + 'px',
+            ease: 'power2.inOut',
+            onStart: () => console.log('✅ Animation started'),
+            onComplete: () => console.log('✅ Animation complete')
+        });
+        
+        console.log('✅ Clone appended and animating from RED cube to solution row');
     },
     
     /**
