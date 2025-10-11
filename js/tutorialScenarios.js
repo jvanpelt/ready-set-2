@@ -107,28 +107,43 @@ const IntroAnimations = {
         // Clone the red cube
         const clone = redCube.cloneNode(true);
         clone.id = 'test-clone-red';
+        clone.classList.remove('tutorial-highlight')
         // Keep all original classes - don't change the look!
         
         // Get the red cube's position relative to #app
         const appRect = app.getBoundingClientRect();
         const redRect = redCube.getBoundingClientRect();
         
-        const leftRelativeToApp = redRect.left - appRect.left;
-        const topRelativeToApp = redRect.top - appRect.top;
+        // Extract scale from transform matrix
+        const appStyle = window.getComputedStyle(app);
+        const transform = appStyle.transform;
+        let scale = 1;
+        if (transform && transform !== 'none') {
+            const matrix = transform.match(/matrix\(([^)]+)\)/);
+            if (matrix) {
+                const values = matrix[1].split(',').map(parseFloat);
+                scale = values[0]; // First value is scaleX
+            }
+        }
+        
+        // Calculate position in visual (scaled) coordinates
+        const leftVisual = redRect.left - appRect.left;
+        const topVisual = redRect.top - appRect.top;
+        
+        // Convert back to unscaled coordinates by dividing by scale
+        const leftUnscaled = leftVisual / scale;
+        const topUnscaled = topVisual / scale;
         
         console.log('📍 RED cube rect:', redRect);
         console.log('📍 #app rect:', appRect);
-        console.log('📍 Position relative to #app: left=' + leftRelativeToApp + ', top=' + topRelativeToApp);
-        console.log('📍 Size: ' + redRect.width + ' x ' + redRect.height);
+        console.log('📍 #app scale:', scale);
+        console.log('📍 Position (visual/scaled): left=' + leftVisual + ', top=' + topVisual);
+        console.log('📍 Position (unscaled): left=' + leftUnscaled + ', top=' + topUnscaled);
         
         // Minimal styling - just what's needed
         clone.style.position = 'absolute';
-        clone.style.left = (leftRelativeToApp + redRect.width + 10) + 'px'; // Offset to the right
-        clone.style.top = topRelativeToApp + 'px';
-        clone.style.width = redRect.width + 'px';
-        clone.style.height = redRect.height + 'px';
-        clone.style.border = '3px solid yellow'; // For visibility
-        clone.style.boxShadow = '0 0 10px yellow'; // For visibility
+        clone.style.left = leftUnscaled + 'px';
+        clone.style.top = topUnscaled + 'px';
         clone.style.zIndex = '99999'; // Above everything
         clone.style.pointerEvents = 'none'; // Don't interfere with clicks
         
