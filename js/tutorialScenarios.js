@@ -91,134 +91,58 @@ const IntroAnimations = {
      * Step 6: Animate RED cube to solution row 1
      */
     animateRedToSolution() {
-        console.log('🎬 ============================================');
-        console.log('🎬 animateRedToSolution() called');
-        console.log('🎬 ============================================');
+        console.log('🎬 Testing RED cube clone positioning');
         
         const redCube = document.querySelector('.die[data-id="intro-red"]');
-        const solutionRow = document.querySelector('.solution-row[data-row="1"]');
         const app = document.getElementById('app');
         
-        console.log('📍 Elements found:');
-        console.log('  RED cube:', redCube);
-        console.log('  Solution row:', solutionRow);
-        console.log('  #app:', app);
-        
-        if (!redCube || !solutionRow || !app) {
-            console.warn('⚠️ Required elements not found!');
+        if (!redCube || !app) {
+            console.warn('⚠️ RED cube or #app not found');
             return;
         }
         
-        // Get app's bounding rect and transform scale
-        const appRect = app.getBoundingClientRect();
-        const appStyle = window.getComputedStyle(app);
-        const transform = appStyle.transform;
-        console.log('📐 #app transform:', transform);
-        console.log('📐 #app rect:', appRect);
+        console.log('✅ Found RED cube:', redCube);
+        console.log('✅ Found #app:', app);
         
-        // Get visual positions (accounting for scale)
-        const redRect = redCube.getBoundingClientRect();
-        const solutionRect = solutionRow.getBoundingClientRect();
+        // Clone the red cube
+        const clone = redCube.cloneNode(true);
+        clone.id = 'test-clone-red';
         
-        console.log('📍 RED cube visual rect:', redRect);
-        console.log('📍 Solution row visual rect:', solutionRect);
-        
-        // Create a SIMPLE cube representation instead of cloning
-        // (cloning has too many inherited styles/structure issues)
-        const clone = document.createElement('div');
-        clone.id = 'animation-clone-red';
-        clone.className = 'animation-clone';
-        
-        // Create inner circle (like the real die)
-        const circle = document.createElement('div');
-        circle.style.width = '70%';
-        circle.style.height = '70%';
-        circle.style.borderRadius = '50%';
-        circle.style.background = '#ff4444'; // Bright red
-        circle.style.boxShadow = 'inset 0 2px 4px rgba(0,0,0,0.2)';
-        clone.appendChild(circle);
-        
-        // Set clone styles - make it SUPER visible
+        // Style the clone for visibility
         clone.style.position = 'absolute';
-        clone.style.pointerEvents = 'none';
-        clone.style.zIndex = '99999';
-        clone.style.margin = '0';
-        clone.style.padding = '0';
-        clone.style.border = '5px solid yellow'; // Yellow border
-        clone.style.background = 'rgba(0, 0, 0, 0.3)'; // Dark background like real die
-        clone.style.borderRadius = '8px';
-        clone.style.boxShadow = '0 0 30px rgba(255, 255, 0, 1)'; // Bright yellow glow
-        clone.style.opacity = '1';
-        clone.style.visibility = 'visible';
-        clone.style.display = 'flex';
-        clone.style.alignItems = 'center';
-        clone.style.justifyContent = 'center';
+        clone.style.border = '3px solid yellow';
+        clone.style.boxShadow = '0 0 10px yellow';
         
+        // Get the red cube's position relative to #app
+        const appRect = app.getBoundingClientRect();
+        const redRect = redCube.getBoundingClientRect();
+        
+        const leftRelativeToApp = redRect.left - appRect.left;
+        const topRelativeToApp = redRect.top - appRect.top;
+        
+        console.log('📍 RED cube rect:', redRect);
+        console.log('📍 #app rect:', appRect);
+        console.log('📍 Calculated position (relative to #app):');
+        console.log('   left:', leftRelativeToApp);
+        console.log('   top:', topRelativeToApp);
+        console.log('   width:', redRect.width);
+        console.log('   height:', redRect.height);
+        
+        // Position clone to the RIGHT of the original (offset by width + 10px gap)
+        clone.style.left = (leftRelativeToApp + redRect.width + 10) + 'px';
+        clone.style.top = topRelativeToApp + 'px';
+        clone.style.width = redRect.width + 'px';
+        clone.style.height = redRect.height + 'px';
+        
+        console.log('📍 Clone positioned at:');
+        console.log('   left:', clone.style.left);
+        console.log('   top:', clone.style.top);
+        
+        // Append to #app
         app.appendChild(clone);
-        console.log('✅ Simple clone created and appended to #app');
-        console.log('   Clone element:', clone);
-        console.log('   Clone has circle child:', clone.children.length > 0);
         
-        // Calculate positions relative to #app's top-left
-        // We need to subtract app's position from element positions
-        const startLeft = redRect.left - appRect.left;
-        const startTop = redRect.top - appRect.top;
-        const endLeft = solutionRect.left - appRect.left;
-        const endTop = solutionRect.top - appRect.top;
-        
-        console.log('🎯 Calculated positions (relative to #app):');
-        console.log('  Start: left=' + startLeft + 'px, top=' + startTop + 'px');
-        console.log('  End: left=' + endLeft + 'px, top=' + endTop + 'px');
-        console.log('  Size: ' + redRect.width + 'px x ' + redRect.height + 'px');
-        
-        // Set initial position
-        gsap.set(clone, {
-            left: startLeft + 'px',
-            top: startTop + 'px',
-            width: redRect.width + 'px',
-            height: redRect.height + 'px'
-        });
-        
-        console.log('📍 Clone positioned at start');
-        console.log('   Computed style:', window.getComputedStyle(clone).cssText);
-        
-        // Animate with timeline
-        const tl = gsap.timeline({
-            delay: 0.3,
-            onStart: () => {
-                console.log('✅ GSAP animation STARTED');
-                console.log('   Clone still exists:', document.contains(clone));
-            },
-            onUpdate: () => {
-                const currentLeft = clone.style.left;
-                const currentTop = clone.style.top;
-                console.log('🔄 Animation frame: left=' + currentLeft + ', top=' + currentTop);
-            },
-            onComplete: () => {
-                console.log('✅ GSAP animation COMPLETE');
-                clone.remove();
-            }
-        });
-        
-        // Animate to midpoint with arc
-        tl.to(clone, {
-            duration: 0.4,
-            left: ((startLeft + endLeft) / 2) + 'px',
-            top: (startTop - 50) + 'px',
-            ease: 'power2.out',
-            onUpdate: () => console.log('  Arc phase: moving up')
-        });
-        
-        // Animate to final position
-        tl.to(clone, {
-            duration: 0.4,
-            left: (endLeft + 10) + 'px',
-            top: endTop + 'px',
-            ease: 'power2.in',
-            onUpdate: () => console.log('  Descent phase: moving to target')
-        });
-        
-        console.log('🎬 Timeline created and should be animating...');
+        console.log('✅ Clone appended to #app');
+        console.log('✅ You should see a yellow-bordered clone to the RIGHT of the original RED cube');
     },
     
     /**
