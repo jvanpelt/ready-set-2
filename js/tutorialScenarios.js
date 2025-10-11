@@ -9,10 +9,10 @@
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * No animations needed - the interactive tutorial system handles everything!
+ * Animation helper functions for intro tutorial (currently unused - interactive mode)
+ * Keeping this code in case we want to add visual polish later
  */
-
-// ═══════════════════════════════════════════════════════════════════════════
+const IntroAnimations = {
     /**
      * Step 2: Wave of card animations
      */
