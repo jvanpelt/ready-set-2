@@ -94,10 +94,11 @@ const IntroAnimations = {
         console.log('🎬 Testing RED cube clone positioning');
         
         const redCube = document.querySelector('.die[data-id="intro-red"]');
+        const solutionRow = document.querySelector('.solution-row[data-row="1"]');
         const app = document.getElementById('app');
         
-        if (!redCube || !app) {
-            console.warn('⚠️ RED cube or #app not found');
+        if (!redCube || !solutionRow || !app) {
+            console.warn('⚠️ RED cube, solution row, or #app not found');
             return;
         }
         
@@ -110,9 +111,10 @@ const IntroAnimations = {
         clone.classList.remove('tutorial-highlight')
         // Keep all original classes - don't change the look!
         
-        // Get the red cube's position relative to #app
+        // Get positions relative to #app
         const appRect = app.getBoundingClientRect();
         const redRect = redCube.getBoundingClientRect();
+        const solutionRect = solutionRow.getBoundingClientRect();
         
         // Extract scale from transform matrix
         const appStyle = window.getComputedStyle(app);
@@ -126,19 +128,20 @@ const IntroAnimations = {
             }
         }
         
-        // Calculate position in visual (scaled) coordinates
-        const leftVisual = redRect.left - appRect.left;
-        const topVisual = redRect.top - appRect.top;
+        // Calculate SOLUTION ROW position in visual (scaled) coordinates
+        const leftVisual = solutionRect.left - appRect.left;
+        const topVisual = solutionRect.top - appRect.top;
         
         // Convert back to unscaled coordinates by dividing by scale
         const leftUnscaled = leftVisual / scale;
         const topUnscaled = topVisual / scale;
         
         console.log('📍 RED cube rect:', redRect);
+        console.log('📍 Solution row rect:', solutionRect);
         console.log('📍 #app rect:', appRect);
         console.log('📍 #app scale:', scale);
-        console.log('📍 Position (visual/scaled): left=' + leftVisual + ', top=' + topVisual);
-        console.log('📍 Position (unscaled): left=' + leftUnscaled + ', top=' + topUnscaled);
+        console.log('📍 Solution position (visual/scaled): left=' + leftVisual + ', top=' + topVisual);
+        console.log('📍 Solution position (unscaled): left=' + leftUnscaled + ', top=' + topUnscaled);
         
         // Minimal styling - just what's needed
         clone.style.position = 'absolute';
@@ -152,7 +155,7 @@ const IntroAnimations = {
         
         console.log('✅ Clone appended to #app at Step 6');
         console.log('✅ Clone positioned at: left=' + clone.style.left + ', top=' + clone.style.top);
-        console.log('✅ Look to the RIGHT of the RED cube for a yellow-bordered duplicate');
+        console.log('✅ Clone should appear at the SOLUTION ROW (not animated, just testing position)');
     },
     
     /**
