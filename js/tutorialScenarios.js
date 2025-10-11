@@ -24,13 +24,17 @@ const IntroAnimations = {
         
         // Animate each card with overlapping timing
         cards.forEach((card, i) => {
-            gsap.to(card, {
-                scale: 1.15,
-                duration: 0.3,
-                delay: i * 0.08, // Overlapping wave effect
-                ease: 'power2.out',
-                yoyo: true,
-                repeat: 1
+            // Instantly set glow and scale
+            gsap.set(card, { filter: 'drop-shadow(0 0 10px rgba(255, 215, 0, 0.75))'});
+            
+            const tl = gsap.timeline({ delay: i * 0.15 });
+            tl.to(card, {duration: 0.4, scale: 1.1, ease: 'power2.inOut'}),
+            tl.to(card, {
+                scale: 1,
+                filter: 'drop-shadow(0 0 0px rgb(255, 215, 0))',
+                duration: 0.4,
+                delay: 0.2,  // Hold at full glow for 0.2s
+                ease: 'power2.inOut'
             });
         });
     },
@@ -50,6 +54,7 @@ const IntroAnimations = {
         gsap.killTweensOf(goalDisplay);
         gsap.to(goalDisplay, {
             scale: 1.1,
+            boxShadow: '0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.4)',
             duration: 0.4,
             ease: 'power2.out',
             yoyo: true,
@@ -75,16 +80,15 @@ const IntroAnimations = {
         gsap.killTweensOf(dice);
         
         dice.forEach((die, i) => {
-            gsap.to(die, {
-                rotation: 15,
-                duration: 0.6,
-                delay: i * 0.1,
-                ease: 'elastic.out(1, 0.5)',
-                yoyo: true,
-                repeat: 1,
-                onStart: () => console.log(`✅ Die ${i} animation started`),
-                onComplete: () => console.log(`✅ Die ${i} animation complete`)
-            });
+            const tl = gsap.timeline({ delay: i * 0.15 });
+            tl.to(die, { rotation: 30, duration: 0.2, ease: 'sine.in' })
+              .to(die, { rotation: "-20", duration: 0.2, ease: 'sine.inOut' }, 0.225)
+              .to(die, { 
+                  rotation: 0, 
+                  duration: 1.5,
+                  ease: 'elastic.out(6, 0.2)',  // Higher amplitude (3), more visible oscillation
+                  onComplete: () => console.log(`✅ Die ${i} animation complete`)
+              }, 0.5);
         });
     },
     
@@ -454,7 +458,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'swap-and',
-                    message: 'Remove the <strong>OR</strong> cube and replace it with the <strong>AND</strong> operator (∩).',
+                    message: 'Double-tap the <strong>OR</strong> cube to remove it, then replace it with the <strong>AND</strong> operator.',
                     highlight: { dice: [3] },
                     nextTrigger: 'solution'  // Wait for correct solution
                 },
