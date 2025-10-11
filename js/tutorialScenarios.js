@@ -161,6 +161,14 @@ const IntroAnimations = {
         // Append to #app
         app.appendChild(clone);
         
+        // Check if GSAP is available
+        if (typeof gsap === 'undefined') {
+            console.error('❌ GSAP not loaded! Animation will not work.');
+            return;
+        }
+        
+        console.log('✅ GSAP loaded:', gsap.version);
+        
         // Use GSAP to animate from start to end
         gsap.set(clone, {
             left: startLeft + 'px',
@@ -168,11 +176,11 @@ const IntroAnimations = {
         });
         
         gsap.to(clone, {
-            duration: 0.8,
-            delay: 0.3,
+            duration: 1,
+            //delay: 0.3,
             left: endLeft + 'px',
             top: endTop + 'px',
-            ease: 'power2.inOut',
+            ease: 'none', // Try linear first to see if it's smoother
             onStart: () => console.log('✅ Animation started'),
             onComplete: () => console.log('✅ Animation complete')
         });
