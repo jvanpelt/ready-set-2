@@ -69,6 +69,25 @@ export class DragDropHandler {
                 if (e.dataTransfer) {
                     e.dataTransfer.effectAllowed = 'move';
                     e.dataTransfer.setData('text/html', die.innerHTML);
+                    
+                    // Create a clean drag image to avoid hover/transform artifacts
+                    // Clone the die and ensure it's in its default (non-hover) state
+                    const dragImageClone = die.cloneNode(true);
+                    dragImageClone.style.position = 'absolute';
+                    dragImageClone.style.top = '-9999px';
+                    dragImageClone.style.left = '-9999px';
+                    dragImageClone.style.transform = 'none'; // Remove any transforms
+                    dragImageClone.style.transition = 'none'; // Disable transitions
+                    dragImageClone.style.pointerEvents = 'none';
+                    dragImageClone.classList.remove('dragging'); // Remove dragging state
+                    document.body.appendChild(dragImageClone);
+                    
+                    // Set as drag image at center of cursor
+                    const rect = die.getBoundingClientRect();
+                    e.dataTransfer.setDragImage(dragImageClone, rect.width / 2, rect.height / 2);
+                    
+                    // Clean up after a short delay (browser has captured the image by then)
+                    setTimeout(() => dragImageClone.remove(), 0);
                 }
                 
                 this.sourceDieElement = die;
