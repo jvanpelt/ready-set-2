@@ -107,11 +107,7 @@ const IntroAnimations = {
         // Clone the red cube
         const clone = redCube.cloneNode(true);
         clone.id = 'test-clone-red';
-        
-        // Style the clone for visibility
-        clone.style.position = 'absolute';
-        clone.style.border = '3px solid yellow';
-        clone.style.boxShadow = '0 0 10px yellow';
+        clone.className = 'animation-clone'; // Use our CSS class
         
         // Get the red cube's position relative to #app
         const appRect = app.getBoundingClientRect();
@@ -122,34 +118,35 @@ const IntroAnimations = {
         
         console.log('📍 RED cube rect:', redRect);
         console.log('📍 #app rect:', appRect);
-        console.log('📍 Calculated position (relative to #app):');
-        console.log('   left:', leftRelativeToApp);
-        console.log('   top:', topRelativeToApp);
-        console.log('   width:', redRect.width);
-        console.log('   height:', redRect.height);
+        console.log('📍 Position relative to #app: left=' + leftRelativeToApp + ', top=' + topRelativeToApp);
+        console.log('📍 Size: ' + redRect.width + ' x ' + redRect.height);
         
-        // Position clone to the RIGHT of the original (offset by width + 10px gap)
-        clone.style.left = (leftRelativeToApp + redRect.width + 10) + 'px';
+        // Minimal styling - just what's needed
+        clone.style.position = 'absolute';
+        clone.style.left = (leftRelativeToApp + redRect.width + 10) + 'px'; // Offset to the right
         clone.style.top = topRelativeToApp + 'px';
         clone.style.width = redRect.width + 'px';
         clone.style.height = redRect.height + 'px';
-        
-        console.log('📍 Clone positioned at:');
-        console.log('   left:', clone.style.left);
-        console.log('   top:', clone.style.top);
+        clone.style.border = '3px solid yellow'; // For visibility
+        clone.style.boxShadow = '0 0 10px yellow'; // For visibility
+        clone.style.zIndex = '99999'; // Above everything
+        clone.style.pointerEvents = 'none'; // Don't interfere with clicks
         
         // Append to #app
         app.appendChild(clone);
         
-        console.log('✅ Clone appended to #app');
-        console.log('✅ You should see a yellow-bordered clone to the RIGHT of the original RED cube');
+        console.log('✅ Clone appended to #app at Step 6');
+        console.log('✅ Clone positioned at: left=' + clone.style.left + ', top=' + clone.style.top);
+        console.log('✅ Look to the RIGHT of the RED cube for a yellow-bordered duplicate');
     },
     
     /**
      * Step 7: Animate OR and BLUE cubes to solution
      */
     animateOrAndBlue() {
-        console.log('🎬 animateOrAndBlue() called');
+        console.log('🎬 animateOrAndBlue() - DISABLED for testing');
+        return; // Temporarily disabled while testing step 6
+        
         const orCube = document.querySelector('.die[data-id="intro-union"]');
         const blueCube = document.querySelector('.die[data-id="intro-blue"]');
         const solutionRow = document.querySelector('.solution-row[data-row="1"]');
@@ -230,7 +227,9 @@ const IntroAnimations = {
      * Step 8: Animate OR back, AND to solution
      */
     animateAndReplaceOr() {
-        console.log('🎬 animateAndReplaceOr() called');
+        console.log('🎬 animateAndReplaceOr() - DISABLED for testing');
+        return; // Temporarily disabled while testing step 6
+        
         const andCube = document.querySelector('.die[data-id="intro-intersect"]');
         const solutionRow = document.querySelector('.solution-row[data-row="1"]');
         
