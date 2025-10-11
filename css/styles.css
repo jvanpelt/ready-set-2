@@ -1622,11 +1622,16 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
     letter-spacing: -2px;
 }
 
+.home-logo {
+    width: 50vw;
+    max-width: 100%;
+}
+
 .home-subtitle {
     font-size: 24px;
     color: rgba(255, 255, 255, 0.9);
     margin: 0 0 60px 0;
-    font-weight: 300;
+    font-weight: 500;
 }
 
 .home-buttons {
@@ -1663,6 +1668,10 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
     .home-title {
         font-size: 48px;
     }
+
+    .home-logo {
+        width: 100%;
+    }
     
     .home-subtitle {
         font-size: 18px;
@@ -1677,6 +1686,7 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
     
     .home-container {
         padding: 40px 20px;
+        width: 60vw;
     }
 }
 
