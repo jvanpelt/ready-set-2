@@ -107,7 +107,7 @@ const IntroAnimations = {
         // Clone the red cube
         const clone = redCube.cloneNode(true);
         clone.id = 'test-clone-red';
-        clone.className = 'animation-clone'; // Use our CSS class
+        // Keep all original classes - don't change the look!
         
         // Get the red cube's position relative to #app
         const appRect = app.getBoundingClientRect();
