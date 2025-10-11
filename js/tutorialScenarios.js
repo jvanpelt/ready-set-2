@@ -384,19 +384,28 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'universe',
                     message: 'The 8 cards up top are called the <strong>UNIVERSE</strong>. Each card has a unique combination of colored dots.',
                     highlight: null,
-                    nextTrigger: 'auto'
+                    nextTrigger: 'auto',
+                    onEnter: () => {
+                        setTimeout(() => IntroAnimations.animateCards(), 100);
+                    }
                 },
                 {
                     id: 'goal',
                     message: 'In this example, your goal is to select exactly <strong>3 cards</strong> from the UNIVERSE.',
                     highlight: { goal: true },
-                    nextTrigger: 'auto'
+                    nextTrigger: 'auto',
+                    onEnter: () => {
+                        setTimeout(() => IntroAnimations.animateGoal(), 100);
+                    }
                 },
                 {
                     id: 'cubes',
                     message: 'Use <strong>CUBES</strong> to build a formula. Each cube has a color or operator symbol.',
                     highlight: { dice: [0, 1, 2, 3] },
-                    nextTrigger: 'auto'
+                    nextTrigger: 'auto',
+                    onEnter: () => {
+                        setTimeout(() => IntroAnimations.animateCubes(), 100);
+                    }
                 },
                 {
                     id: 'set-name',
