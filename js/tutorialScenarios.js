@@ -4,14 +4,15 @@
  */
 
 // ═══════════════════════════════════════════════════════════════════════════
-// INTRO TUTORIAL ANIMATIONS (GSAP)
+// INTRO TUTORIAL - Now Interactive! 
+// Players learn by doing, not watching
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Animation helper functions for intro tutorial
- * These use GSAP for smooth, professional motion
+ * No animations needed - the interactive tutorial system handles everything!
  */
-const IntroAnimations = {
+
+// ═══════════════════════════════════════════════════════════════════════════
     /**
      * Step 2: Wave of card animations
      */
@@ -161,14 +162,6 @@ const IntroAnimations = {
         // Append to #app
         app.appendChild(clone);
         
-        // Check if GSAP is available
-        if (typeof gsap === 'undefined') {
-            console.error('❌ GSAP not loaded! Animation will not work.');
-            return;
-        }
-        
-        console.log('✅ GSAP loaded:', gsap.version);
-        
         // Use GSAP to animate from start to end
         gsap.set(clone, {
             left: startLeft + 'px',
@@ -180,7 +173,7 @@ const IntroAnimations = {
             //delay: 0.3,
             left: endLeft + 'px',
             top: endTop + 'px',
-            ease: 'none', // Try linear first to see if it's smoother
+            ease: 'sine.inOut',
             onStart: () => console.log('✅ Animation started'),
             onComplete: () => console.log('✅ Animation complete')
         });
@@ -360,8 +353,8 @@ const IntroAnimations = {
 
 export const TUTORIAL_SCENARIOS = {
     intro: {
-        // Intro Tutorial: Non-interactive walkthrough of game concepts
-        // Goal: Teach vocabulary and basic operators without requiring player actions
+        // Intro Tutorial: Now INTERACTIVE! Players learn by doing.
+        // Goal: Teach vocabulary and basic operators through hands-on practice
         // Cards chosen so RED AND BLUE = 3 (matches goal)
         // Bitwise: 1=gold, 2=green, 3=green+gold, 4=blue, 8=red, 12=red+blue, 13=red+blue+gold, 14=red+blue+green
         // RED = [8,12,13,14] = 4 cards
@@ -390,71 +383,68 @@ export const TUTORIAL_SCENARIOS = {
                 {
                     id: 'universe',
                     message: 'The 8 cards up top are called the <strong>UNIVERSE</strong>. Each card has a unique combination of colored dots.',
-                    highlight: null, // Cards highlighting not supported yet
-                    nextTrigger: 'auto',
-                    onEnter: () => {
-                        setTimeout(() => IntroAnimations.animateCards(), 100);
-                    }
+                    highlight: null,
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'goal',
                     message: 'In this example, your goal is to select exactly <strong>3 cards</strong> from the UNIVERSE.',
                     highlight: { goal: true },
-                    nextTrigger: 'auto',
-                    onEnter: () => {
-                        setTimeout(() => IntroAnimations.animateGoal(), 100);
-                    }
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'cubes',
                     message: 'Use <strong>CUBES</strong> to build a formula. Each cube has a color or operator symbol.',
-                    highlight: { dice: [0, 1, 2, 3] }, // All 4 dice
-                    nextTrigger: 'auto',
-                    onEnter: () => {
-                        setTimeout(() => IntroAnimations.animateCubes(), 100);
-                    }
-                },
-                {
-                    id: 'set-name',
-                    message: 'Drag cubes to the <strong>SOLUTION AREA</strong> to create a "set name" - a formula that selects cards.',
-                    highlight: null, // Solution area highlighting not supported yet
+                    highlight: { dice: [0, 1, 2, 3] },
                     nextTrigger: 'auto'
                 },
                 {
-                    id: 'red-example',
-                    message: '<strong>RED</strong> selects all cards with red dots. That\'s 4 cards... but we need 3!',
+                    id: 'set-name',
+                    message: 'Drag cubes to the <strong>SOLUTION AREA</strong> to create a "set name" - a formula that selects cards. <strong>Your formula is read left-to-right, just like a math equation.</strong>',
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'drag-red',
+                    message: 'Try it! Drag the <strong>RED</strong> cube to the solution area.',
                     highlight: { dice: [0] },
-                    nextTrigger: 'auto',
-                    onEnter: () => {
-                        IntroAnimations.animateRedToSolution();
-                    }
+                    nextTrigger: 'dice'  // Wait for them to drag RED
                 },
                 {
-                    id: 'or-wrong',
-                    message: 'The <strong>OR</strong> operator (∪) combines sets. <strong>RED OR BLUE</strong> selects 5 cards - still too many!',
-                    highlight: { dice: [2] },
-                    nextTrigger: 'auto',
-                    onEnter: () => {
-                        IntroAnimations.animateOrAndBlue();
-                    }
+                    id: 'red-result',
+                    message: '<strong>RED</strong> selects all cards with red dots. That\'s 4 cards... but we need exactly 3!',
+                    highlight: null,
+                    nextTrigger: 'auto'
                 },
                 {
-                    id: 'and-correct',
-                    message: 'The <strong>AND</strong> operator (∩) finds overlap. <strong>RED AND BLUE</strong> selects only cards with BOTH colors. That\'s exactly 3! ✓',
+                    id: 'add-or-blue',
+                    message: 'Now add the <strong>OR</strong> operator and <strong>BLUE</strong> cube. (Drag them in order: OR, then BLUE)',
+                    highlight: { dice: [1, 2] },
+                    nextTrigger: 'dice'  // Wait for them to add OR and BLUE
+                },
+                {
+                    id: 'or-result',
+                    message: '<strong>RED OR BLUE</strong> (read left-to-right) selects cards with red dots OR blue dots. That\'s 5 cards - still too many!',
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'swap-and',
+                    message: 'Remove the <strong>OR</strong> cube and replace it with the <strong>AND</strong> operator (∩).',
                     highlight: { dice: [3] },
-                    nextTrigger: 'auto',
-                    onEnter: () => {
-                        IntroAnimations.animateAndReplaceOr();
-                    }
+                    nextTrigger: 'solution'  // Wait for correct solution
                 },
                 {
-                    id: 'ready',
+                    id: 'and-success',
+                    message: 'Perfect! <strong>RED AND BLUE</strong> finds only cards with BOTH colors. That\'s exactly 3 cards! ✓',
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'press-go',
                     message: 'When you have a solution, press <strong>GO</strong> to check it. Ready to try Level 1?',
                     highlight: { goButton: true },
-                    nextTrigger: 'auto',
-                    onEnter: () => {
-                        setTimeout(() => IntroAnimations.animateGoButton(), 100);
-                    }
+                    nextTrigger: 'auto'
                 }
             ]
         }
