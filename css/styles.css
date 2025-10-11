@@ -1686,7 +1686,8 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
     
     .home-container {
         padding: 40px 20px;
-        width: 60vw;
+        width: 80vw;
+        max-width: 384px;
     }
 }
 
