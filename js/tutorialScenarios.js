@@ -417,7 +417,10 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'drag-red',
                     message: 'Try it! Drag the <strong>RED</strong> cube to the solution area.',
                     highlight: { dice: [0] },
-                    nextTrigger: 'dice'  // Wait for them to drag RED
+                    validation: (game) => {
+                        return game.solutions[1].some(die => die.value === 'red');
+                    },
+                    nextTrigger: 'validation'
                 },
                 {
                     id: 'red-result',
@@ -426,10 +429,22 @@ export const TUTORIAL_SCENARIOS = {
                     nextTrigger: 'auto'
                 },
                 {
-                    id: 'add-or-blue',
-                    message: 'Now add the <strong>OR</strong> operator and <strong>BLUE</strong> cube. (Drag them in order: OR, then BLUE)',
-                    highlight: { dice: [1, 2] },
-                    nextTrigger: 'dice'  // Wait for them to add OR and BLUE
+                    id: 'add-or',
+                    message: 'Now add the <strong>OR</strong> operator (∪) - it has two overlapping circles.',
+                    highlight: { dice: [2] },
+                    validation: (game) => {
+                        return game.solutions[1].some(die => die.value === '∪');
+                    },
+                    nextTrigger: 'validation'
+                },
+                {
+                    id: 'add-blue',
+                    message: 'Great! Now add the <strong>BLUE</strong> cube to complete the formula.',
+                    highlight: { dice: [1] },
+                    validation: (game) => {
+                        return game.solutions[1].some(die => die.value === 'blue');
+                    },
+                    nextTrigger: 'validation'
                 },
                 {
                     id: 'or-result',
