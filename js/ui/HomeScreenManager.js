@@ -65,12 +65,13 @@ export class HomeScreenManager {
         // Update level display
         this.currentLevelSpan.textContent = this.game.level;
         
-        // Show Continue button only if player has progress (level > 1)
-        if (this.game.level > 1) {
+        // Show Continue button if player has any saved game data (has played before)
+        const hasSavedGame = localStorage.getItem('rs2_level') !== null;
+        if (hasSavedGame) {
             console.log(`🏠 Showing Continue button for Level ${this.game.level}`);
             this.continueBtn.classList.remove('hidden');
         } else {
-            console.log('🏠 Hiding Continue button (no progress yet)');
+            console.log('🏠 Hiding Continue button (no saved game data)');
             this.continueBtn.classList.add('hidden');
         }
         
