@@ -6,6 +6,7 @@ export class ModalManager {
     constructor(game) {
         this.game = game;
         this.initElements();
+        this.initBackdropHandlers();
     }
     
     initElements() {
@@ -53,6 +54,16 @@ export class ModalManager {
             console.log('📋 Menu button clicked from interstitial');
             // Don't hide interstitial - menu modal will layer on top with higher z-index
             this.showMenu();
+        });
+    }
+    
+    initBackdropHandlers() {
+        // Click on menu modal backdrop to close
+        this.menuModal.addEventListener('click', (e) => {
+            // Only close if clicking the backdrop (not the modal content)
+            if (e.target === this.menuModal) {
+                this.hideMenu();
+            }
         });
     }
     

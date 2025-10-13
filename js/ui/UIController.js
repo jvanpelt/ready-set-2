@@ -129,7 +129,7 @@ export class UIController {
         });
         
         // Menu buttons
-        document.getElementById('resume-btn').addEventListener('click', () => this.modals.hideMenu());
+        document.getElementById('menu-close-btn').addEventListener('click', () => this.modals.hideMenu());
         document.getElementById('refresh-btn').addEventListener('click', () => {
             window.location.reload();
         });
