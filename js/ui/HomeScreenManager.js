@@ -65,13 +65,22 @@ export class HomeScreenManager {
         // Update level display
         this.currentLevelSpan.textContent = this.game.level;
         
-        // Show Continue button if player has any saved game data (has played before)
-        const hasSavedGame = localStorage.getItem('rs2_level') !== null;
+        // Show Continue button if player has played before
+        // Check if there's saved game data by looking at the loaded game state
+        const savedState = this.game.storage.loadGameState();
+        const hasSavedGame = savedState && savedState.cards && savedState.cards.length > 0;
+        
+        console.log('🏠 Continue button check:', {
+            hasSavedGame,
+            level: this.game.level,
+            cardsCount: savedState?.cards?.length || 0
+        });
+        
         if (hasSavedGame) {
-            console.log(`🏠 Showing Continue button for Level ${this.game.level}`);
+            console.log(`🏠 ✅ Showing Continue button for Level ${this.game.level}`);
             this.continueBtn.classList.remove('hidden');
         } else {
-            console.log('🏠 Hiding Continue button (no saved game data)');
+            console.log('🏠 ❌ Hiding Continue button (no saved game)');
             this.continueBtn.classList.add('hidden');
         }
         
