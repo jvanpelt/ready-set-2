@@ -91,7 +91,6 @@
                     <li><button id="puzzle-builder-btn" class="btn btn-primary">🛠️ Puzzle Builder</button></li>
                     <li><button id="tutorial-btn" class="btn btn-secondary">How to Play</button></li>
                     <li><button id="menu-home-btn" class="btn btn-secondary">🏠 Home</button></li>
-                    <li><button id="new-game-btn" class="btn btn-secondary">New Game</button></li>
                     <li><button id="refresh-btn" class="btn btn-secondary">🔄 Refresh</button></li>
                     <li><button id="resume-btn" class="btn btn-success">Resume</button></li>
                 </ul>
@@ -313,16 +312,15 @@
             <p class="home-subtitle">A Set Theory Puzzle Game</p>
             
             <div class="home-buttons">
-                <button id="home-play-btn" class="btn btn-primary btn-xlarge">
-                    Play
+                <button id="home-continue-btn" class="btn btn-primary btn-xlarge hidden">
+                    Continue Level <span id="home-current-level">1</span>
+                </button>
+                <button id="home-new-game-btn" class="btn btn-primary btn-xlarge">
+                    New Game
                 </button>
                 <button id="home-how-to-play-btn" class="btn btn-secondary btn-large">
                     How to Play
                 </button>
-            </div>
-            
-            <div class="home-level-info">
-                <p id="home-level-text">Continue from Level <span id="home-current-level">1</span></p>
             </div>
         </div>
     </div>
@@ -330,7 +328,7 @@
         <!-- GSAP Animation Library -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
         
-        <script type="module" src="js/main.js?v=3.11.0-interactive-intro"></script>
+        <script type="module" src="js/main.js?v=3.12.0-tutorial-cleanup-home-redesign"></script>
 </body>
 </html>
 

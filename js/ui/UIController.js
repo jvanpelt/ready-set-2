@@ -130,14 +130,6 @@ export class UIController {
         
         // Menu buttons
         document.getElementById('resume-btn').addEventListener('click', () => this.modals.hideMenu());
-        document.getElementById('new-game-btn').addEventListener('click', () => {
-            this.game.newGame();
-            this.modals.hideMenu();
-            this.render();
-            this.clearSolutionHelper();
-            // Show Level 1 interstitial for new game
-            this.showFirstTimeInterstitial();
-        });
         document.getElementById('refresh-btn').addEventListener('click', () => {
             window.location.reload();
         });
@@ -147,6 +139,12 @@ export class UIController {
             this.showIntroTutorial();
         });
         document.getElementById('menu-home-btn').addEventListener('click', () => {
+            // Cleanup tutorial if active
+            if (this.tutorialManager.isActive) {
+                console.log('🧹 Cleaning up tutorial before going home');
+                this.tutorialManager.cleanup();
+            }
+            
             this.modals.hideMenu();
             if (window.homeScreen) {
                 window.homeScreen.show();
@@ -190,6 +188,12 @@ export class UIController {
         
         // Test mode: Jump to level
         this.jumpToLevelBtn.addEventListener('click', async () => {
+            // Cleanup tutorial if active
+            if (this.tutorialManager.isActive) {
+                console.log('🧹 Cleaning up tutorial before jumping to level');
+                this.tutorialManager.cleanup();
+            }
+            
             const targetLevel = parseInt(document.getElementById('level-selector').value);
             this.game.jumpToLevel(targetLevel);
             this.modals.hideMenu();
@@ -662,8 +666,14 @@ export class UIController {
     }
     
     async showIntroTutorial() {
-        // Load and start the intro tutorial (non-interactive walkthrough)
+        // Load and start the intro tutorial
         console.log('📚 Starting intro tutorial');
+        
+        // Reset game state for clean tutorial experience
+        this.game.score = 0;
+        this.game.stopTimer(); // Stop any running timer
+        this.game.timeRemaining = null; // Clear timer display
+        
         const { getTutorialScenario } = await import('../tutorialScenarios.js');
         const introScenario = getTutorialScenario('intro');
         

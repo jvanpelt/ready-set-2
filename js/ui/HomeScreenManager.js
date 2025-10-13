@@ -4,7 +4,8 @@ export class HomeScreenManager {
     constructor(game) {
         this.game = game;
         this.homeScreen = document.getElementById('home-screen');
-        this.playBtn = document.getElementById('home-play-btn');
+        this.continueBtn = document.getElementById('home-continue-btn');
+        this.newGameBtn = document.getElementById('home-new-game-btn');
         this.howToPlayBtn = document.getElementById('home-how-to-play-btn');
         this.menuBtn = document.getElementById('home-menu-btn');
         this.currentLevelSpan = document.getElementById('home-current-level');
@@ -13,29 +14,43 @@ export class HomeScreenManager {
     }
     
     setupEventListeners() {
-        this.playBtn.addEventListener('click', () => {
-            console.log('🏠 Play button clicked');
+        // Continue button - resume current level
+        this.continueBtn.addEventListener('click', () => {
+            console.log('🏠 Continue button clicked');
             this.hide();
+        });
+        
+        // New Game button - start from Level 1
+        this.newGameBtn.addEventListener('click', () => {
+            console.log('🏠 New Game button clicked');
             
-            // Check if first time playing
-            const isFirstTime = this.game.level === 1 && !localStorage.getItem('rs2_tutorialShown_1');
+            // Cleanup tutorial if active
+            if (window.uiController && window.uiController.tutorialManager.isActive) {
+                console.log('🧹 Cleaning up tutorial before starting new game');
+                window.uiController.tutorialManager.cleanup();
+            }
             
-            if (isFirstTime && window.uiController) {
-                console.log('👋 First time player - showing Level 1 interstitial');
+            this.hide();
+            this.game.newGame();
+            
+            if (window.uiController) {
+                window.uiController.render();
+                window.uiController.clearSolutionHelper();
                 window.uiController.showFirstTimeInterstitial();
             }
         });
         
+        // How to Play button - show intro tutorial
         this.howToPlayBtn.addEventListener('click', () => {
             console.log('🏠 How to Play clicked - showing intro tutorial');
             this.hide(800); // Slower fade for intro tutorial
             
-            // Show intro tutorial when "How to Play" is clicked
             if (window.uiController) {
                 window.uiController.showIntroTutorial();
             }
         });
         
+        // Menu button
         this.menuBtn.addEventListener('click', () => {
             console.log('🏠 Menu button clicked from home screen');
             if (window.uiController && window.uiController.modals) {
@@ -46,8 +61,19 @@ export class HomeScreenManager {
     
     show() {
         console.log('🏠 Showing home screen');
+        
         // Update level display
         this.currentLevelSpan.textContent = this.game.level;
+        
+        // Show Continue button only if player has progress (level > 1)
+        if (this.game.level > 1) {
+            console.log(`🏠 Showing Continue button for Level ${this.game.level}`);
+            this.continueBtn.classList.remove('hidden');
+        } else {
+            console.log('🏠 Hiding Continue button (no progress yet)');
+            this.continueBtn.classList.add('hidden');
+        }
+        
         this.homeScreen.classList.remove('hidden');
     }
     
