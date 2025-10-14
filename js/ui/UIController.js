@@ -123,7 +123,7 @@ export class UIController {
         // Result modal
         document.getElementById('result-continue').addEventListener('click', () => {
             this.modals.hideResult(() => {
-                this.render();
+                this.render({ animate: true }); // Animate new round
                 this.clearSolutionHelper();
             });
         });
@@ -203,7 +203,7 @@ export class UIController {
             const targetLevel = parseInt(document.getElementById('level-selector').value);
             this.game.jumpToLevel(targetLevel);
             this.modals.hideMenu();
-            this.render();
+            this.render({ animate: true }); // Animate new level
             this.clearSolutionHelper();
             
             // Show tutorial for this level (if exists)
@@ -331,14 +331,14 @@ export class UIController {
     handleCorrectPass() {
         // No points awarded, just reset the round
         this.game.correctPass();
-        this.render();
+        this.render({ animate: true }); // Animate new round
         this.clearSolutionHelper();
         // Modal is already shown by handlePass(), no need to show result modal
     }
     
     handleConfirmedPass() {
         this.game.pass();
-        this.render();
+        this.render({ animate: true }); // Animate new round
         this.clearSolutionHelper();
     }
     
@@ -571,13 +571,18 @@ export class UIController {
         this.modals.showTimeout(() => {
             // Generate new round when user clicks OK
             this.game.resetRound();
-            this.render();
+            this.render({ animate: true }); // Animate new round
             this.clearSolutionHelper();
         });
     }
     
-    render() {
+    render(options = {}) {
         const state = this.game.getState();
+        
+        // Enable entrance animations if requested
+        if (options.animate) {
+            this.renderer.shouldAnimate = true;
+        }
         
         // Show/hide timer display based on level config (Level 7+)
         const config = getLevelConfig(this.game.level, this.settings.testMode);
@@ -605,6 +610,9 @@ export class UIController {
         
         // Render dice
         this.renderer.renderDice(this.diceContainer, state.dice, state.solutions);
+        
+        // Reset animation flag after rendering
+        this.renderer.shouldAnimate = false;
         
         // Render solutions
         this.renderer.renderSolutions(this.solutionArea, state.solutions, state.restrictionsEnabled);

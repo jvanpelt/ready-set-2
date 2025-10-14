@@ -5,6 +5,7 @@ import { getSVGForOperator, getOperatorClass } from '../svgSymbols.js';
 export class UIRenderer {
     constructor(game) {
         this.game = game;
+        this.shouldAnimate = false; // Don't animate on initial load
     }
     
     /**
@@ -53,8 +54,10 @@ export class UIRenderer {
             cardsContainer.appendChild(cardEl);
         });
         
-        // Animate cards in after rendering
-        this.animateCardsIn();
+        // Animate cards in after rendering (only if shouldAnimate is true)
+        if (this.shouldAnimate) {
+            this.animateCardsIn();
+        }
     }
     
     /**
@@ -161,8 +164,10 @@ export class UIRenderer {
             diceContainer.appendChild(dieEl);
         });
         
-        // Animate dice in after rendering
-        this.animateDiceIn();
+        // Animate dice in after rendering (only if shouldAnimate is true)
+        if (this.shouldAnimate) {
+            this.animateDiceIn();
+        }
     }
     
     /**
