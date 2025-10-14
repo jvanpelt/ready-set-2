@@ -56,7 +56,10 @@ export class UIRenderer {
         
         // Animate cards in after rendering (only if shouldAnimate is true)
         if (this.shouldAnimate) {
-            this.animateCardsIn();
+            // Use requestAnimationFrame to ensure DOM has fully updated before animating
+            requestAnimationFrame(() => {
+                this.animateCardsIn();
+            });
         }
     }
     
@@ -166,7 +169,10 @@ export class UIRenderer {
         
         // Animate dice in after rendering (only if shouldAnimate is true)
         if (this.shouldAnimate) {
-            this.animateDiceIn();
+            // Use requestAnimationFrame to ensure DOM has fully updated before animating
+            requestAnimationFrame(() => {
+                this.animateDiceIn();
+            });
         }
     }
     
