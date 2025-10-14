@@ -43,11 +43,9 @@ const IntroAnimations = {
      * Step 3: Goal pulse
      */
     animateGoal() {
-        console.log('🎬 animateGoal() called');
         const goalDisplay = document.querySelector('.goal-display');
-        console.log('Goal display:', goalDisplay);
         if (!goalDisplay) {
-            console.warn('⚠️ Goal display not found');
+            console.warn('⚠️ Goal display not found'); // KEEP: Error condition
             return;
         }
         
@@ -58,9 +56,7 @@ const IntroAnimations = {
             duration: 0.4,
             ease: 'power2.out',
             yoyo: true,
-            repeat: 1,
-            onStart: () => console.log('✅ Goal animation started'),
-            onComplete: () => console.log('✅ Goal animation complete')
+            repeat: 1
         });
     },
     
@@ -68,12 +64,10 @@ const IntroAnimations = {
      * Step 4: Rotate cubes with elastic ease
      */
     animateCubes() {
-        console.log('🎬 animateCubes() called');
         const dice = document.querySelectorAll('.die:not(.solution-die)');
-        console.log('Found dice:', dice.length);
         
         if (dice.length === 0) {
-            console.warn('⚠️ No dice found');
+            console.warn('⚠️ No dice found'); // KEEP: Error condition
             return;
         }
         
@@ -86,8 +80,7 @@ const IntroAnimations = {
               .to(die, { 
                   rotation: 0, 
                   duration: 1.5,
-                  ease: 'elastic.out(6, 0.2)',  // Higher amplitude (3), more visible oscillation
-                  onComplete: () => console.log(`✅ Die ${i} animation complete`)
+                  ease: 'elastic.out(6, 0.2)'
               }, 0.5);
         });
     },
@@ -96,7 +89,6 @@ const IntroAnimations = {
      * Step 6: Animate RED cube to solution row 1
      */
     animateRedToSolution() {
-        console.log('🎬 Testing RED cube clone positioning');
         
         const redCube = document.querySelector('.die[data-id="intro-red"]');
         const solutionRow = document.querySelector('.solution-row[data-row="1"]');

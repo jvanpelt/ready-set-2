@@ -18,19 +18,12 @@ export class AppScaler {
         this.lastScale = null;
         this.scaleCount = 0;
         
-        console.log('🔧 AppScaler: Constructor called');
-        console.log('  #app element:', this.app ? 'FOUND' : 'NOT FOUND');
-        console.log('  #tutorial-instruction element:', this.tutorialInstruction ? 'FOUND' : 'NOT FOUND');
-        
         this.init();
     }
     
     init() {
-        console.log('🔧 AppScaler: init() called');
-        
         // Measure natural height after initial render
         requestAnimationFrame(() => {
-            console.log('🔧 AppScaler: requestAnimationFrame callback executing');
             this.measureNaturalHeight();
             this.updateScale();
         });
@@ -41,19 +34,14 @@ export class AppScaler {
         // Recalculate on window resize
         let resizeTimeout;
         window.addEventListener('resize', () => {
-            console.log('🔧 AppScaler: resize event fired');
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
                 this.updateScale();
             }, 100); // Debounce resize events
         });
-        
-        console.log('🔧 AppScaler: init() complete');
     }
     
     measureNaturalHeight() {
-        console.log('📏 measureNaturalHeight() called');
-        
         // Ensure scale is 1 before measuring
         this.app.style.transform = 'scale(1)';
         this.app.style.transformOrigin = 'top center';
@@ -61,30 +49,18 @@ export class AppScaler {
         // Force reflow
         this.app.offsetHeight;
         
-        // Measure
-        const scrollHeight = this.app.scrollHeight;
-        const offsetHeight = this.app.offsetHeight;
-        const clientHeight = this.app.clientHeight;
-        
-        console.log('  scrollHeight:', scrollHeight);
-        console.log('  offsetHeight:', offsetHeight);
-        console.log('  clientHeight:', clientHeight);
-        
-        this.naturalHeight = scrollHeight;
-        
-        console.log('📏 App natural height SET TO:', this.naturalHeight + 'px');
+        // Measure and store natural height
+        this.naturalHeight = this.app.scrollHeight;
     }
     
     updateScale() {
-        this.scaleCount++;
-        console.log(`🔍 updateScale() called (call #${this.scaleCount})`);
-        
+        // Measure naturalHeight on-demand if not set (fixes race condition)
         if (!this.naturalHeight) {
-            console.warn('⚠️ AppScaler: naturalHeight not set, measuring now...');
+            console.warn('⚠️ AppScaler: naturalHeight not set, measuring now...'); // KEEP: Important warning
             this.measureNaturalHeight();
             
             if (!this.naturalHeight) {
-                console.error('❌ AppScaler: Failed to measure naturalHeight, aborting scale');
+                console.error('❌ AppScaler: Failed to measure naturalHeight, aborting scale'); // KEEP: Critical error
                 return;
             }
         }
@@ -95,23 +71,12 @@ export class AppScaler {
         const isMobile = viewportWidth <= LAYOUT.MOBILE_BREAKPOINT;
         const bodyPaddingTop = isMobile ? LAYOUT.BODY_PADDING_MOBILE : LAYOUT.BODY_PADDING_DESKTOP;
         
-        console.log(`📱 Device: ${isMobile ? 'MOBILE' : 'DESKTOP'} (${viewportWidth}x${viewportHeight})`);
-        console.log(`👁️ Tutorial Visible: ${isTutorialVisible}`);
-        console.log(`   Tutorial classList: ${this.tutorialInstruction.classList.toString()}`);
-        
         let tutorialHeight = 0;
-        let tutorialOffsetHeight = 0;
-        let tutorialScrollHeight = 0;
         let availableHeight;
         
         if (isTutorialVisible) {
             // Measure actual rendered height of tutorial (includes padding, border, etc.)
-            tutorialOffsetHeight = this.tutorialInstruction.offsetHeight;
-            tutorialScrollHeight = this.tutorialInstruction.scrollHeight;
-            tutorialHeight = tutorialOffsetHeight;
-            
-            console.log(`   Tutorial offsetHeight: ${tutorialOffsetHeight}px`);
-            console.log(`   Tutorial scrollHeight: ${tutorialScrollHeight}px`);
+            tutorialHeight = this.tutorialInstruction.offsetHeight;
             
             // Add small gap between app and tutorial for breathing room
             availableHeight = viewportHeight - tutorialHeight - LAYOUT.TUTORIAL_GAP - bodyPaddingTop;
@@ -127,43 +92,19 @@ export class AppScaler {
         // Calculate precise scale factor
         const scale = Math.min(1, availableHeight / this.naturalHeight);
         
-        // Check if scale changed significantly
-        const scaleChanged = this.lastScale === null || Math.abs(scale - this.lastScale) > 0.001;
-        
         // Apply scale
         this.app.style.transform = `scale(${scale.toFixed(4)})`;
         this.app.style.transformOrigin = 'top center';
-        
-        console.log(`📐 SCALE CALCULATION:
-  Viewport H: ${viewportHeight}px
-  Body Padding: ${bodyPaddingTop}px
-  Tutorial H: ${tutorialHeight}px
-  Tutorial Gap: ${isTutorialVisible ? LAYOUT.TUTORIAL_GAP : 0}px
-  ─────────────────────────
-  Available H: ${availableHeight}px
-  Natural H: ${this.naturalHeight}px
-  ═════════════════════════
-  Scale: ${scale.toFixed(4)}x ${scaleChanged ? '(CHANGED)' : '(SAME)'}
-  Previous: ${this.lastScale ? this.lastScale.toFixed(4) : 'null'}x`);
         
         this.lastScale = scale;
     }
     
     observeTutorialChanges() {
-        console.log('👀 Setting up MutationObserver for tutorial changes');
-        
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.attributeName === 'class') {
-                    const classList = this.tutorialInstruction.classList.toString();
-                    const isHidden = this.tutorialInstruction.classList.contains('hidden');
-                    console.log(`👀 MutationObserver: Tutorial class changed`);
-                    console.log(`   New classList: "${classList}"`);
-                    console.log(`   Is hidden: ${isHidden}`);
-                    
                     // Small delay to let tutorial render/animation start
                     setTimeout(() => {
-                        console.log('👀 MutationObserver: Triggering updateScale() after 50ms delay');
                         this.updateScale();
                     }, 50);
                 }
@@ -171,7 +112,6 @@ export class AppScaler {
         });
         
         observer.observe(this.tutorialInstruction, { attributes: true });
-        console.log('👀 MutationObserver active on #tutorial-instruction');
     }
     
     forceUpdate() {
