@@ -62,6 +62,8 @@ export class UIRenderer {
      */
     animateCardsIn() {
         const cards = document.querySelectorAll('.card');
+        console.log('🎬 animateCardsIn - Found cards:', cards.length);
+        console.log('🎬 GSAP available?', typeof gsap !== 'undefined');
         if (cards.length === 0) return;
         
         gsap.from(cards, {
@@ -75,7 +77,9 @@ export class UIRenderer {
             stagger: {
                 each: 0.15,
                 from: "end"  // Start with last card (like dealing)
-            }
+            },
+            onStart: () => console.log('🎬 Cards animation STARTED'),
+            onComplete: () => console.log('🎬 Cards animation COMPLETE')
         });
     }
     
@@ -166,11 +170,14 @@ export class UIRenderer {
      */
     animateDiceIn() {
         const dice = document.querySelectorAll('.die:not(.solution-die)');
+        console.log('🎲 animateDiceIn - Found dice:', dice.length);
+        console.log('🎲 GSAP available?', typeof gsap !== 'undefined');
         if (dice.length === 0) return;
         
         // First, set random final rotations for each die (-7° to +7°)
         dice.forEach(die => {
             const randomRot = Math.floor(Math.random() * 14) - 7;
+            console.log('🎲 Setting rotation:', randomRot, 'for', die);
             gsap.set(die, { rotation: randomRot });
         });
         
@@ -184,7 +191,9 @@ export class UIRenderer {
                 opacity: 0,
                 x: 100,
                 rotation: `+=${startRotation}`,  // Adds to final rotation
-                ease: "power3.out"
+                ease: "power3.out",
+                onStart: () => console.log('🎲 Dice animation STARTED for index:', index),
+                onComplete: () => console.log('🎲 Dice animation COMPLETE for index:', index)
             });
         });
     }
