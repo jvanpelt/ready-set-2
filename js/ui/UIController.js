@@ -639,7 +639,7 @@ export class UIController {
                     console.log('   Row:', rowIndex, 'Die:', dieIndex);
                     console.log('   Calling wildCubeManager.show()...');
                     this.wildCubeManager.show(dieEl, rowIndex, dieIndex);
-                }, 250); // Standard double-click threshold
+                }, 100); // Reduced delay for better responsiveness
             });
         });
     }
@@ -660,7 +660,7 @@ export class UIController {
                     setTimeout(() => {
                         console.log('   Showing popover now');
                         this.wildCubeManager.show(dieEl, rowIndex, dieIndex);
-                    }, 50);
+                    }, 10); // Minimal delay just for DOM paint
                 } else {
                     console.log('   ❌ Die element not found in DOM!');
                 }

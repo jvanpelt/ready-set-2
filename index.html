@@ -60,12 +60,12 @@
             <button id="pass-btn" class="btn btn-warning">Pass</button>
             <button id="go-btn" class="btn btn-success">GO!</button>
         </div>
+    </div>
 
-        <!-- Wild Cube Operator Selection Popover (stays inside #app as game element) -->
-        <div id="wild-popover-backdrop" class="wild-popover-backdrop"></div>
-        <div id="wild-popover" class="wild-popover">
-            <!-- Buttons will be populated dynamically -->
-        </div>
+    <!-- Wild Cube Operator Selection Popover (moved outside #app to avoid scaling/positioning issues) -->
+    <div id="wild-popover-backdrop" class="wild-popover-backdrop"></div>
+    <div id="wild-popover" class="wild-popover">
+        <!-- Buttons will be populated dynamically -->
     </div>
 
     <!-- Modals (moved outside #app to avoid scaling issues) -->
@@ -328,7 +328,7 @@
         <!-- GSAP Animation Library -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
         
-        <script type="module" src="js/main.js?v=3.12.4-wild-debug"></script>
+        <script type="module" src="js/main.js?v=3.13.0-wild-cube-fix"></script>
 </body>
 </html>
 

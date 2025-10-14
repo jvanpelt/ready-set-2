@@ -163,6 +163,7 @@ export class UIRenderer {
                 const dieEl = document.createElement('div');
                 dieEl.className = 'solution-die';
                 dieEl.dataset.id = die.id;  // Use unique ID instead of array index
+                dieEl.dataset.index = dieIndex; // Add index for wild cube popover lookup
                 
                 // Position absolutely within row
                 dieEl.style.position = 'absolute';
