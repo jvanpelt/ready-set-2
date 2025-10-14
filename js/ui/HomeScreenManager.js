@@ -16,17 +16,17 @@ export class HomeScreenManager {
     setupEventListeners() {
         // Continue button - resume current level
         this.continueBtn.addEventListener('click', () => {
-            console.log('🏠 Continue button clicked');
+            // DEBUG: console.log('🏠 Continue button clicked');
             this.hide();
         });
         
         // New Game button - start from Level 1
         this.newGameBtn.addEventListener('click', () => {
-            console.log('🏠 New Game button clicked');
+            // DEBUG: console.log('🏠 New Game button clicked');
             
             // Cleanup tutorial if active
             if (window.uiController && window.uiController.tutorialManager.isActive) {
-                console.log('🧹 Cleaning up tutorial before starting new game');
+                // DEBUG: console.log('🧹 Cleaning up tutorial before starting new game');
                 window.uiController.tutorialManager.cleanup();
             }
             
@@ -42,7 +42,7 @@ export class HomeScreenManager {
         
         // How to Play button - show intro tutorial
         this.howToPlayBtn.addEventListener('click', () => {
-            console.log('🏠 How to Play clicked - showing intro tutorial');
+            // DEBUG: console.log('🏠 How to Play clicked - showing intro tutorial');
             this.hide(800); // Slower fade for intro tutorial
             
             if (window.uiController) {
@@ -52,7 +52,7 @@ export class HomeScreenManager {
         
         // Menu button
         this.menuBtn.addEventListener('click', () => {
-            console.log('🏠 Menu button clicked from home screen');
+            // DEBUG: console.log('🏠 Menu button clicked from home screen');
             if (window.uiController && window.uiController.modals) {
                 window.uiController.modals.showMenu();
             }
@@ -60,7 +60,7 @@ export class HomeScreenManager {
     }
     
     show() {
-        console.log('🏠 Showing home screen');
+        // DEBUG: console.log('🏠 Showing home screen');
         
         // Update level display
         this.currentLevelSpan.textContent = this.game.level;
@@ -70,17 +70,17 @@ export class HomeScreenManager {
         const savedState = this.game.storage.loadGameState();
         const hasSavedGame = savedState && savedState.cards && savedState.cards.length > 0;
         
-        console.log('🏠 Continue button check:', {
-            hasSavedGame,
-            level: this.game.level,
-            cardsCount: savedState?.cards?.length || 0
-        });
+        // DEBUG: console.log('🏠 Continue button check:', {
+        //     hasSavedGame,
+        //     level: this.game.level,
+        //     cardsCount: savedState?.cards?.length || 0
+        // });
         
         if (hasSavedGame) {
-            console.log(`🏠 ✅ Showing Continue button for Level ${this.game.level}`);
+            // DEBUG: console.log(`🏠 ✅ Showing Continue button for Level ${this.game.level}`);
             this.continueBtn.classList.remove('hidden');
         } else {
-            console.log('🏠 ❌ Hiding Continue button (no saved game)');
+            // DEBUG: console.log('🏠 ❌ Hiding Continue button (no saved game)');
             this.continueBtn.classList.add('hidden');
         }
         
@@ -88,7 +88,7 @@ export class HomeScreenManager {
     }
     
     hide(duration = 400) {
-        console.log(`🏠 Hiding home screen with fade (${duration}ms)`);
+        // DEBUG: console.log(`🏠 Hiding home screen with fade (${duration}ms)`);
         
         // Set custom transition duration
         this.homeScreen.style.transition = `opacity ${duration}ms ease`;

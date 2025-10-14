@@ -58,8 +58,8 @@ export class UIController {
         
         // If timer is already running (restored from saved state), trigger immediate update
         if (this.game.timeRemaining !== null) {
-            console.log('⏱️ Timer already running on init, remaining:', this.game.timeRemaining);
-            console.log('   Timer interval active?', this.game.timerInterval !== null);
+            // DEBUG: console.log('⏱️ Timer already running on init, remaining:', this.game.timeRemaining);
+            // DEBUG: console.log('   Timer interval active?', this.game.timerInterval !== null);
             this.updateTimer(this.game.timeRemaining);
         }
     }
@@ -114,11 +114,11 @@ export class UIController {
         this.passBtn.addEventListener('click', () => this.handlePass());
         
         this.menuBtn.addEventListener('click', () => {
-            console.log('📋 MENU button clicked');
+            // DEBUG: console.log('📋 MENU button clicked');
             this.modals.showMenu();
         });
-        this.menuBtn.addEventListener('mouseup', () => console.log('🖱️ MENU mouseup'));
-        this.menuBtn.addEventListener('touchend', () => console.log('👆 MENU touchend'));
+        // DEBUG: this.menuBtn.addEventListener('mouseup', () => console.log('🖱️ MENU mouseup'));
+        // DEBUG: this.menuBtn.addEventListener('touchend', () => console.log('👆 MENU touchend'));
         
         // Result modal
         document.getElementById('result-continue').addEventListener('click', () => {
@@ -141,7 +141,7 @@ export class UIController {
         document.getElementById('menu-home-btn').addEventListener('click', () => {
             // Cleanup tutorial if active
             if (this.tutorialManager.isActive) {
-                console.log('🧹 Cleaning up tutorial before going home');
+                // DEBUG: console.log('🧹 Cleaning up tutorial before going home');
                 this.tutorialManager.cleanup();
             }
             
@@ -190,13 +190,13 @@ export class UIController {
         this.jumpToLevelBtn.addEventListener('click', async () => {
             // Cleanup tutorial if active
             if (this.tutorialManager.isActive) {
-                console.log('🧹 Cleaning up tutorial before jumping to level');
+                // DEBUG: console.log('🧹 Cleaning up tutorial before jumping to level');
                 this.tutorialManager.cleanup();
             }
             
             // Hide home screen if visible
             if (window.homeScreen && !document.getElementById('home-screen').classList.contains('hidden')) {
-                console.log('🏠 Hiding home screen before jumping to level');
+                // DEBUG: console.log('🏠 Hiding home screen before jumping to level');
                 window.homeScreen.hide();
             }
             
@@ -619,14 +619,14 @@ export class UIController {
     setupWildCubeListeners() {
         // Find all wild cubes in solution area
         const wildCubes = this.solutionArea.querySelectorAll('.solution-die.wild');
-        console.log('🔍 Setting up wild cube listeners, found:', wildCubes.length, 'wild cubes');
+        // DEBUG: console.log('🔍 Setting up wild cube listeners, found:', wildCubes.length, 'wild cubes');
         
         wildCubes.forEach(dieEl => {
             // Use a click timer to distinguish single-click from double-click
             let clickTimer = null;
             
             dieEl.addEventListener('click', (e) => {
-                console.log('🖱️ Wild cube clicked!', dieEl);
+                // DEBUG: console.log('🖱️ Wild cube clicked!', dieEl);
                 
                 // Clear any pending single-click
                 if (clickTimer) {
@@ -642,8 +642,8 @@ export class UIController {
                     // This is a confirmed single-click - show popover
                     const rowIndex = parseInt(dieEl.closest('.solution-row').dataset.row);
                     const dieIndex = parseInt(dieEl.dataset.index);
-                    console.log('   Row:', rowIndex, 'Die:', dieIndex);
-                    console.log('   Calling wildCubeManager.show()...');
+                    // DEBUG: console.log('   Row:', rowIndex, 'Die:', dieIndex);
+                    // DEBUG: console.log('   Calling wildCubeManager.show()...');
                     this.wildCubeManager.show(dieEl, rowIndex, dieIndex);
                 }, 100); // Reduced delay for better responsiveness
             });
@@ -654,31 +654,31 @@ export class UIController {
      * Show wild cube popover by rowIndex and dieIndex (for auto-show on drop)
      */
     showWildCubePopoverByIndex(rowIndex, dieIndex) {
-        console.log('🎯 showWildCubePopoverByIndex called:', rowIndex, dieIndex);
+        // DEBUG: console.log('🎯 showWildCubePopoverByIndex called:', rowIndex, dieIndex);
         // Use requestAnimationFrame to ensure render is complete, then find element
         requestAnimationFrame(() => {
             const row = this.solutionArea.querySelector(`.solution-row[data-row="${rowIndex}"]`);
             if (row) {
                 const dieEl = row.querySelector(`.solution-die[data-index="${dieIndex}"]`);
-                console.log('   Found die element?', !!dieEl);
+                // DEBUG: console.log('   Found die element?', !!dieEl);
                 if (dieEl) {
                     // Small delay to ensure DOM is fully painted
                     setTimeout(() => {
-                        console.log('   Showing popover now');
+                        // DEBUG: console.log('   Showing popover now');
                         this.wildCubeManager.show(dieEl, rowIndex, dieIndex);
                     }, 10); // Minimal delay just for DOM paint
                 } else {
-                    console.log('   ❌ Die element not found in DOM!');
+                    console.log('   ❌ Die element not found in DOM!'); // KEEP: Error condition
                 }
             } else {
-                console.log('   ❌ Row not found in DOM!');
+                console.log('   ❌ Row not found in DOM!'); // KEEP: Error condition
             }
         });
     }
     
     async showIntroTutorial() {
         // Load and start the intro tutorial
-        console.log('📚 Starting intro tutorial');
+        console.log('📚 Starting intro tutorial'); // KEEP: Important action
         
         // Reset game state for clean tutorial experience
         this.game.score = 0;

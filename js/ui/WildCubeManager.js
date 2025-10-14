@@ -66,11 +66,11 @@ export class WildCubeManager {
      * Show the popover next to a wild cube
      */
     show(dieElement, rowIndex, dieIndex) {
-        console.log('🎯 WildCubeManager.show() called');
-        console.log('   dieElement:', dieElement);
-        console.log('   rowIndex:', rowIndex, 'dieIndex:', dieIndex);
-        console.log('   backdrop:', this.backdrop);
-        console.log('   popover:', this.popover);
+        // DEBUG: console.log('🎯 WildCubeManager.show() called');
+        // DEBUG: console.log('   dieElement:', dieElement);
+        // DEBUG: console.log('   rowIndex:', rowIndex, 'dieIndex:', dieIndex);
+        // DEBUG: console.log('   backdrop:', this.backdrop);
+        // DEBUG: console.log('   popover:', this.popover);
         
         this.currentDieElement = dieElement;
         this.currentRowIndex = rowIndex;
@@ -79,12 +79,12 @@ export class WildCubeManager {
         // Show backdrop and popover
         this.backdrop.classList.add('active');
         this.popover.classList.add('active');
-        console.log('   Classes added, backdrop active:', this.backdrop.classList.contains('active'));
-        console.log('   Popover active:', this.popover.classList.contains('active'));
+        // DEBUG: console.log('   Classes added, backdrop active:', this.backdrop.classList.contains('active'));
+        // DEBUG: console.log('   Popover active:', this.popover.classList.contains('active'));
         
         // Position the popover
         this.positionPopover(dieElement);
-        console.log('   Positioned at:', this.popover.style.left, this.popover.style.top);
+        // DEBUG: console.log('   Positioned at:', this.popover.style.left, this.popover.style.top);
     }
     
     /**
@@ -136,14 +136,14 @@ export class WildCubeManager {
      * Select an operator for the wild cube
      */
     selectOperator(operator) {
-        console.log('🎲 Wild cube operator selected:', operator);
+        console.log('🎲 Wild cube operator selected:', operator); // KEEP: Important user action
         if (this.currentRowIndex !== null && this.currentDieIndex !== null) {
             // Update the die in the game state
             const die = this.game.solutions[this.currentRowIndex][this.currentDieIndex];
-            console.log('   Before:', die.selectedOperator);
+            // DEBUG: console.log('   Before:', die.selectedOperator);
             die.selectedOperator = operator;
-            console.log('   After:', die.selectedOperator);
-            console.log('   Full die:', die);
+            // DEBUG: console.log('   After:', die.selectedOperator);
+            // DEBUG: console.log('   Full die:', die);
             
             // Save state
             this.game.saveState();
@@ -153,7 +153,7 @@ export class WildCubeManager {
             
             // Trigger re-render
             if (this.onSelectionChange) {
-                console.log('   Triggering re-render...');
+                // DEBUG: console.log('   Triggering re-render...');
                 this.onSelectionChange();
             }
         }
