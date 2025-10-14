@@ -194,6 +194,12 @@ export class UIController {
                 this.tutorialManager.cleanup();
             }
             
+            // Hide home screen if visible
+            if (window.homeScreen && !document.getElementById('home-screen').classList.contains('hidden')) {
+                console.log('🏠 Hiding home screen before jumping to level');
+                window.homeScreen.hide();
+            }
+            
             const targetLevel = parseInt(document.getElementById('level-selector').value);
             this.game.jumpToLevel(targetLevel);
             this.modals.hideMenu();
