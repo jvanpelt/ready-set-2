@@ -78,7 +78,7 @@ export class UIRenderer {
         cards.forEach(card => card.style.transition = 'none');
         
         gsap.from(cards, {
-            duration: 1.5,
+            duration: 0.25,
             opacity: 0,
             rotationX: 45,
             rotationY: 90,
@@ -86,7 +86,7 @@ export class UIRenderer {
             y: -100,
             ease: "power3.out",
             stagger: {
-                each: 0.25,
+                each: 0.15,
                 //from: "end"  // Start with last card (like dealing)
             },
             onStart: () => console.log('🎬 Cards animation STARTED'),
