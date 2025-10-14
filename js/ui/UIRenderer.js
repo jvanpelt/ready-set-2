@@ -100,6 +100,41 @@ export class UIRenderer {
     }
     
     /**
+     * Animate cards "flying out" with rotation - returns Promise
+     */
+    animateCardsOut() {
+        return new Promise((resolve) => {
+            const cards = document.querySelectorAll('.card');
+            console.log('🎬 animateCardsOut - Found cards:', cards.length);
+            if (cards.length === 0) {
+                resolve();
+                return;
+            }
+            
+            // Temporarily disable CSS transitions
+            cards.forEach(card => card.style.transition = 'none');
+            
+            gsap.to(cards, {
+                duration: 0.25,
+                opacity: 0,
+                rotationX: 85,
+                rotationZ: 145,
+                y: -100,
+                ease: "quad.in",
+                stagger: {
+                    each: 0.05,
+                    from: "random"  // Random order for variety
+                },
+                onStart: () => console.log('🎬 Cards EXIT animation STARTED'),
+                onComplete: () => {
+                    console.log('🎬 Cards EXIT animation COMPLETE');
+                    resolve();
+                }
+            });
+        });
+    }
+    
+    /**
      * Render dice in the dice area
      */
     renderDice(diceContainer, dice, solutions) {
@@ -226,6 +261,49 @@ export class UIRenderer {
                     }
                 },
                 clearProps: isLastDie ? "transform,opacity" : ""  // Clear props on last die
+            });
+        });
+    }
+    
+    /**
+     * Animate dice "flying out" to the right with rotation - returns Promise
+     */
+    animateDiceOut() {
+        return new Promise((resolve) => {
+            const dice = document.querySelectorAll('.die:not(.solution-die)');
+            console.log('🎲 animateDiceOut - Found dice:', dice.length);
+            if (dice.length === 0) {
+                resolve();
+                return;
+            }
+            
+            // Temporarily disable CSS transitions
+            dice.forEach(die => die.style.transition = 'none');
+            
+            // Animate all dice out with random timing
+            let completed = 0;
+            dice.forEach((die, index) => {
+                const rotation = (Math.random() < 0.5) ? 60 : -60; // Random spin direction
+                const duration = Math.random() * 0.15 + 0.2; // 0.2-0.35s
+                const delay = Math.random() * 0.15 + 0.1; // 0.1-0.25s
+                
+                gsap.to(die, {
+                    duration: duration,
+                    delay: delay,
+                    opacity: 0,
+                    x: 150,
+                    rotation: `+=${rotation}`,
+                    ease: "quad.in",
+                    onStart: () => console.log('🎲 Dice EXIT animation STARTED for index:', index),
+                    onComplete: () => {
+                        console.log('🎲 Dice EXIT animation COMPLETE for index:', index);
+                        completed++;
+                        if (completed === dice.length) {
+                            console.log('🎲 All dice EXIT animations COMPLETE');
+                            resolve();
+                        }
+                    }
+                });
             });
         });
     }

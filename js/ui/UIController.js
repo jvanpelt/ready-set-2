@@ -226,7 +226,7 @@ export class UIController {
         document.getElementById('pass-cancel').addEventListener('click', () => this.modals.hidePassModal());
     }
     
-    handleGo() {
+    async handleGo() {
         // Check if tutorial is active - don't submit/score during tutorial
         if (this.tutorialManager.isActive) {
             this.tutorialManager.advanceOnSubmit();
@@ -237,13 +237,18 @@ export class UIController {
         
         if (result.valid) {
             this.playSuccessAnimation(result.matchingCards);
+            // Show result modal, then animate cards and dice out simultaneously
             this.modals.showResult('Success!', result.message, result.points);
+            await Promise.all([
+                this.renderer.animateCardsOut(),
+                this.renderer.animateDiceOut()
+            ]);
+            // Don't render here - wait for user to click Continue
         } else {
             this.playErrorAnimation();
             this.playBonkSound();
+            this.render(); // Re-render to clear invalid solution
         }
-        
-        this.render();
     }
     
     handleReset() {
@@ -336,9 +341,12 @@ export class UIController {
         // Modal is already shown by handlePass(), no need to show result modal
     }
     
-    handleConfirmedPass() {
+    async handleConfirmedPass() {
         this.game.pass();
-        this.render({ animate: true }); // Animate new round
+        // Animate dice out first
+        await this.renderer.animateDiceOut();
+        // Then render new round with entrance animations
+        this.render({ animate: true });
         this.clearSolutionHelper();
     }
     
