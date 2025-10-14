@@ -53,6 +53,8 @@ export class UIRenderer {
             
             cardsContainer.appendChild(cardEl);
         });
+
+        console.log('🎨 renderCards - Cards:', cards);
         
         // Animate cards in after rendering (only if shouldAnimate is true)
         if (this.shouldAnimate) {
@@ -72,8 +74,11 @@ export class UIRenderer {
         console.log('🎬 GSAP available?', typeof gsap !== 'undefined');
         if (cards.length === 0) return;
         
+        // Temporarily disable CSS transitions to prevent interference with GSAP
+        cards.forEach(card => card.style.transition = 'none');
+        
         gsap.from(cards, {
-            duration: 0.2,
+            duration: 1.5,
             opacity: 0,
             rotationX: 45,
             rotationY: 90,
@@ -81,11 +86,16 @@ export class UIRenderer {
             y: -100,
             ease: "power3.out",
             stagger: {
-                each: 0.15,
-                from: "end"  // Start with last card (like dealing)
+                each: 0.25,
+                //from: "end"  // Start with last card (like dealing)
             },
             onStart: () => console.log('🎬 Cards animation STARTED'),
-            onComplete: () => console.log('🎬 Cards animation COMPLETE')
+            onComplete: () => {
+                console.log('🎬 Cards animation COMPLETE');
+                // Re-enable CSS transitions after animation
+                cards.forEach(card => card.style.transition = '');
+            },
+            clearProps: "transform,opacity"  // Clear inline styles after animation
         });
     }
     
@@ -185,6 +195,9 @@ export class UIRenderer {
         console.log('🎲 GSAP available?', typeof gsap !== 'undefined');
         if (dice.length === 0) return;
         
+        // Temporarily disable CSS transitions to prevent interference with GSAP
+        dice.forEach(die => die.style.transition = 'none');
+        
         // First, set random final rotations for each die (-7° to +7°)
         dice.forEach(die => {
             const randomRot = Math.floor(Math.random() * 14) - 7;
@@ -195,6 +208,7 @@ export class UIRenderer {
         // Then animate FROM off-screen with heavy rotation
         dice.forEach((die, index) => {
             const startRotation = (Math.random() < 0.5) ? 40 : -40; // Random direction
+            const isLastDie = (index === dice.length - 1);
             
             gsap.from(die, {
                 duration: 0.2 + (index * 0.05),
@@ -204,7 +218,14 @@ export class UIRenderer {
                 rotation: `+=${startRotation}`,  // Adds to final rotation
                 ease: "power3.out",
                 onStart: () => console.log('🎲 Dice animation STARTED for index:', index),
-                onComplete: () => console.log('🎲 Dice animation COMPLETE for index:', index)
+                onComplete: () => {
+                    console.log('🎲 Dice animation COMPLETE for index:', index);
+                    // Re-enable CSS transitions after last die finishes
+                    if (isLastDie) {
+                        dice.forEach(d => d.style.transition = '');
+                    }
+                },
+                clearProps: isLastDie ? "transform,opacity" : ""  // Clear props on last die
             });
         });
     }
