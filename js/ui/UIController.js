@@ -613,12 +613,15 @@ export class UIController {
     setupWildCubeListeners() {
         // Find all wild cubes in solution area
         const wildCubes = this.solutionArea.querySelectorAll('.solution-die.wild');
+        console.log('🔍 Setting up wild cube listeners, found:', wildCubes.length, 'wild cubes');
         
         wildCubes.forEach(dieEl => {
             // Use a click timer to distinguish single-click from double-click
             let clickTimer = null;
             
             dieEl.addEventListener('click', (e) => {
+                console.log('🖱️ Wild cube clicked!', dieEl);
+                
                 // Clear any pending single-click
                 if (clickTimer) {
                     clearTimeout(clickTimer);
@@ -633,6 +636,8 @@ export class UIController {
                     // This is a confirmed single-click - show popover
                     const rowIndex = parseInt(dieEl.closest('.solution-row').dataset.row);
                     const dieIndex = parseInt(dieEl.dataset.index);
+                    console.log('   Row:', rowIndex, 'Die:', dieIndex);
+                    console.log('   Calling wildCubeManager.show()...');
                     this.wildCubeManager.show(dieEl, rowIndex, dieIndex);
                 }, 250); // Standard double-click threshold
             });

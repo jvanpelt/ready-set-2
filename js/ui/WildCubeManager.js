@@ -66,6 +66,12 @@ export class WildCubeManager {
      * Show the popover next to a wild cube
      */
     show(dieElement, rowIndex, dieIndex) {
+        console.log('🎯 WildCubeManager.show() called');
+        console.log('   dieElement:', dieElement);
+        console.log('   rowIndex:', rowIndex, 'dieIndex:', dieIndex);
+        console.log('   backdrop:', this.backdrop);
+        console.log('   popover:', this.popover);
+        
         this.currentDieElement = dieElement;
         this.currentRowIndex = rowIndex;
         this.currentDieIndex = dieIndex;
@@ -73,9 +79,12 @@ export class WildCubeManager {
         // Show backdrop and popover
         this.backdrop.classList.add('active');
         this.popover.classList.add('active');
+        console.log('   Classes added, backdrop active:', this.backdrop.classList.contains('active'));
+        console.log('   Popover active:', this.popover.classList.contains('active'));
         
         // Position the popover
         this.positionPopover(dieElement);
+        console.log('   Positioned at:', this.popover.style.left, this.popover.style.top);
     }
     
     /**
