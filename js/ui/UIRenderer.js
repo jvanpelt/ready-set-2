@@ -52,6 +52,31 @@ export class UIRenderer {
             
             cardsContainer.appendChild(cardEl);
         });
+        
+        // Animate cards in after rendering
+        this.animateCardsIn();
+    }
+    
+    /**
+     * Animate cards "dealing in" from top with 3D rotation
+     */
+    animateCardsIn() {
+        const cards = document.querySelectorAll('.card');
+        if (cards.length === 0) return;
+        
+        gsap.from(cards, {
+            duration: 0.2,
+            opacity: 0,
+            rotationX: 45,
+            rotationY: 90,
+            rotationZ: 90,
+            y: -100,
+            ease: "power3.out",
+            stagger: {
+                each: 0.15,
+                from: "end"  // Start with last card (like dealing)
+            }
+        });
     }
     
     /**
@@ -130,6 +155,37 @@ export class UIRenderer {
             }
             
             diceContainer.appendChild(dieEl);
+        });
+        
+        // Animate dice in after rendering
+        this.animateDiceIn();
+    }
+    
+    /**
+     * Animate dice "rolling in" from right with rotation
+     */
+    animateDiceIn() {
+        const dice = document.querySelectorAll('.die:not(.solution-die)');
+        if (dice.length === 0) return;
+        
+        // First, set random final rotations for each die (-7° to +7°)
+        dice.forEach(die => {
+            const randomRot = Math.floor(Math.random() * 14) - 7;
+            gsap.set(die, { rotation: randomRot });
+        });
+        
+        // Then animate FROM off-screen with heavy rotation
+        dice.forEach((die, index) => {
+            const startRotation = (Math.random() < 0.5) ? 40 : -40; // Random direction
+            
+            gsap.from(die, {
+                duration: 0.2 + (index * 0.05),
+                delay: 0.5 + (index * 0.15),
+                opacity: 0,
+                x: 100,
+                rotation: `+=${startRotation}`,  // Adds to final rotation
+                ease: "power3.out"
+            });
         });
     }
     

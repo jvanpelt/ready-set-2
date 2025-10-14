@@ -53,11 +53,24 @@ export class DragDropHandler {
                     e.preventDefault();
                 }
                 
+                // Extract current rotation from element (set by entrance animation)
+                const transform = window.getComputedStyle(die).transform;
+                let rotation = 0;
+                if (transform && transform !== 'none') {
+                    const matrix = transform.match(/matrix\(([^)]+)\)/);
+                    if (matrix) {
+                        const values = matrix[1].split(', ');
+                        // Calculate rotation from matrix: atan2(b, a)
+                        rotation = Math.round(Math.atan2(parseFloat(values[1]), parseFloat(values[0])) * (180 / Math.PI));
+                    }
+                }
+                
                 this.draggedDie = {
                     type: die.dataset.type,
                     value: die.dataset.value,
                     name: die.dataset.name,
                     id: die.dataset.id,
+                    rotation: rotation, // Preserve rotation from entrance animation
                     isRequired: die.dataset.isRequired === 'true', // Preserve required status
                     selectedOperator: die.dataset.selectedOperator || null // Preserve wild cube selection
                 };
