@@ -246,8 +246,8 @@ export class UIRenderer {
             const isLastDie = (index === dice.length - 1);
             
             gsap.from(die, {
-                duration: 0.2 + (index * 0.05),
-                delay: 0.5 + (index * 0.15),
+                duration: 0.25 + (index * 0.05),
+                delay: 0.3 + (index * 0.12),  // Reduced from 0.5s base to 0.3s, tighter stagger
                 opacity: 0,
                 x: 100,
                 rotation: `+=${startRotation}`,  // Adds to final rotation

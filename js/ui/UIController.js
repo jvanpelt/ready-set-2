@@ -333,18 +333,31 @@ export class UIController {
         }, 100); // Small delay to let modal render
     }
     
-    handleCorrectPass() {
+    async handleCorrectPass() {
         // No points awarded, just reset the round
         this.game.correctPass();
-        this.render({ animate: true }); // Animate new round
+        // Animate cards and dice out before rendering new round
+        await Promise.all([
+            this.renderer.animateCardsOut(),
+            this.renderer.animateDiceOut()
+        ]);
+        // Small delay to ensure clean transition
+        await new Promise(resolve => setTimeout(resolve, 50));
+        // Then render new round with entrance animations
+        this.render({ animate: true });
         this.clearSolutionHelper();
         // Modal is already shown by handlePass(), no need to show result modal
     }
     
     async handleConfirmedPass() {
         this.game.pass();
-        // Animate dice out first
-        await this.renderer.animateDiceOut();
+        // Animate cards and dice out before rendering new round
+        await Promise.all([
+            this.renderer.animateCardsOut(),
+            this.renderer.animateDiceOut()
+        ]);
+        // Small delay to ensure clean transition
+        await new Promise(resolve => setTimeout(resolve, 50));
         // Then render new round with entrance animations
         this.render({ animate: true });
         this.clearSolutionHelper();
