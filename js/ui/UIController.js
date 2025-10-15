@@ -260,9 +260,18 @@ export class UIController {
             return;
         }
         
+        // Clear solution area
         this.game.clearSolution();
-        this.render();
+        
+        // Clear all card dimming/exclusion states
+        this.game.cardStates.forEach((state) => {
+            state.dimmed = false;
+            state.excluded = false;
+        });
+        
+        // Clear solution helper and re-render
         this.clearSolutionHelper();
+        this.render();
     }
     
     handlePass() {
@@ -482,6 +491,11 @@ export class UIController {
         // If both rows are empty, clear helper
         if (restrictionRow.length === 0 && setNameRow.length === 0) {
             console.log('Both rows empty - clearing helper');
+            // Force clear all card states
+            this.game.cardStates.forEach((state) => {
+                state.dimmed = false;
+                state.excluded = false;
+            });
             this.clearSolutionHelper();
             return;
         }
@@ -495,6 +509,11 @@ export class UIController {
             if (!restrictionValid) console.log('  - Restriction row is invalid');
             if (!setNameValid) console.log('  - Set name row is invalid');
             console.log('Clearing solution helper - will not evaluate invalid syntax');
+            // Force clear all card states (not just helper-managed ones)
+            this.game.cardStates.forEach((state, index) => {
+                state.dimmed = false;
+                state.excluded = false;
+            });
             this.clearSolutionHelper();
             return;
         }
@@ -611,11 +630,12 @@ export class UIController {
     
     clearSolutionHelper() {
         const cards = this.cardsContainer.querySelectorAll('.card');
-        cards.forEach((cardEl) => {
+        cards.forEach((cardEl, index) => {
             if (cardEl.dataset.helperActive) {
                 const userDimmed = cardEl.dataset.userDimmed === 'true';
                 const userExcluded = cardEl.dataset.userExcluded === 'true';
                 
+                // Update DOM
                 if (userDimmed) {
                     cardEl.classList.add('dimmed');
                 } else {
@@ -627,6 +647,10 @@ export class UIController {
                 } else {
                     cardEl.classList.remove('excluded');
                 }
+                
+                // Update game state to match
+                this.game.cardStates[index].dimmed = userDimmed;
+                this.game.cardStates[index].excluded = userExcluded;
                 
                 delete cardEl.dataset.helperActive;
                 delete cardEl.dataset.userDimmed;
