@@ -494,12 +494,24 @@ export class UIRenderer {
         // Sort group left-to-right to evaluate in reading order
         const sortedGroup = [...group].sort((a, b) => a.x - b.x);
         
-        const operators = ['∪', '∩', '−', '∆', 'OR', 'AND', 'MINUS', 'XOR'];
+        // Binary operators (infix: operand → operator → operand)
+        const binaryOperators = ['∪', '∩', '−', '=', '⊆'];
+        // Postfix operators (operand → operator)
+        const postfixOperators = ['′'];
         
+        // Special case: Check for postfix COMPLEMENT at the end
+        const lastDie = sortedGroup[sortedGroup.length - 1];
+        if (postfixOperators.includes(lastDie.value) && sortedGroup.length === 2) {
+            // Valid pattern: operand → COMPLEMENT (e.g., RED′)
+            const firstDie = sortedGroup[0];
+            return !binaryOperators.includes(firstDie.value) && !postfixOperators.includes(firstDie.value);
+        }
+        
+        // Standard validation: alternating pattern for binary operators
         // Check for valid alternating pattern: operand → operator → operand → ...
         for (let i = 0; i < sortedGroup.length; i++) {
             const die = sortedGroup[i];
-            const isOperator = operators.includes(die.value);
+            const isOperator = binaryOperators.includes(die.value);
             
             // Even indices (0, 2, 4...) should be operands (colors/sets)
             // Odd indices (1, 3, 5...) should be operators
@@ -511,7 +523,7 @@ export class UIRenderer {
         }
         
         // Must have odd length (operand, operator, operand, ...)
-        // e.g., length 3 = valid, length 2 = invalid
+        // e.g., length 3 = valid, length 2 = invalid (unless it's the postfix case handled above)
         return sortedGroup.length % 2 === 1;
     }
     
