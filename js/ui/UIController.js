@@ -19,8 +19,8 @@ export class UIController {
         this.renderer = new UIRenderer(game);
         this.modals = new ModalManager(game);
         this.wildCubeManager = new WildCubeManager(game, () => {
+            this.evaluateSolutionHelper(); // Update game state before render
             this.render();
-            this.evaluateSolutionHelper(); // Update cards after wild cube selection
         });
         this.builderManager = new PuzzleBuilderManager(game, this);
         this.tutorialManager = new TutorialManager(game, this);
@@ -40,8 +40,9 @@ export class UIController {
             this.diceContainer,
             this.solutionArea,
             () => {
-                this.render();
+                // Evaluate solution helper BEFORE render to update game.cardStates
                 this.evaluateSolutionHelper();
+                this.render();
             },
             (rowIndex, dieIndex) => {
                 // Auto-show popover when wild cube is dropped
@@ -510,15 +511,21 @@ export class UIController {
                     console.log(`Card ${index}: FLIPPED (excluded)`);
                     cardEl.classList.add('excluded');
                     cardEl.classList.remove('dimmed');
+                    this.game.cardStates[index].excluded = true;
+                    this.game.cardStates[index].dimmed = false;
                 } else if (finalMatchingCards.has(index)) {
                     // Matches set name - bright
                     console.log(`Card ${index}: MATCHES set name (bright)`);
                     cardEl.classList.remove('dimmed', 'excluded');
+                    this.game.cardStates[index].dimmed = false;
+                    this.game.cardStates[index].excluded = false;
                 } else {
                     // Doesn't match set name - dimmed
                     console.log(`Card ${index}: Does NOT match set name (dimmed)`);
                     cardEl.classList.add('dimmed');
                     cardEl.classList.remove('excluded');
+                    this.game.cardStates[index].dimmed = true;
+                    this.game.cardStates[index].excluded = false;
                 }
             });
         } else if (cardsToFlip.length > 0) {
@@ -530,9 +537,13 @@ export class UIController {
                     console.log(`Card ${index}: FLIPPED (excluded)`);
                     cardEl.classList.add('excluded');
                     cardEl.classList.remove('dimmed');
+                    this.game.cardStates[index].excluded = true;
+                    this.game.cardStates[index].dimmed = false;
                 } else {
                     console.log(`Card ${index}: NOT flipped (bright)`);
                     cardEl.classList.remove('dimmed', 'excluded');
+                    this.game.cardStates[index].dimmed = false;
+                    this.game.cardStates[index].excluded = false;
                 }
             });
         } else {
