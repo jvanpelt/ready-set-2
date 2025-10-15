@@ -158,8 +158,12 @@ export class ScenarioManager {
         
         console.log('   Game goalCards after:', this.game.goalCards);
         
-        // Reset card states
-        this.game.cardStates = new Array(8).fill('normal');
+        // Reset card states (use objects, not strings, to match normal game behavior)
+        this.game.cardStates = new Array(8).fill(null).map(() => ({
+            dimmed: false,
+            excluded: false,
+            flipped: false
+        }));
         
         // Clear solutions
         this.game.solutions = [[], []];
