@@ -421,6 +421,49 @@ export class UIController {
         }
     }
     
+    /**
+     * Check if a solution row has valid syntax
+     * @param {Array} dice - Array of dice sorted left-to-right
+     * @returns {boolean} - True if syntax is valid
+     */
+    isSolutionSyntaxValid(dice) {
+        if (dice.length === 0) return true;
+        if (dice.length === 1) return true; // Single die is always valid
+        
+        // Binary operators (infix: operand → operator → operand)
+        const binaryOperators = ['∪', '∩', '−', '=', '⊆'];
+        // Postfix operators (operand → operator)
+        const postfixOperators = ['′'];
+        
+        // Special case: Check for postfix COMPLEMENT at the end
+        const lastDie = dice[dice.length - 1];
+        if (postfixOperators.includes(lastDie.value) && dice.length === 2) {
+            // Valid pattern: operand → COMPLEMENT (e.g., RED′)
+            const firstDie = dice[0];
+            const firstIsOperator = binaryOperators.includes(firstDie.value) || postfixOperators.includes(firstDie.value);
+            return !firstIsOperator;
+        }
+        
+        // Standard validation: alternating pattern for binary operators
+        // Check for valid alternating pattern: operand → operator → operand → ...
+        for (let i = 0; i < dice.length; i++) {
+            const die = dice[i];
+            const isOperator = binaryOperators.includes(die.value);
+            
+            // Even indices (0, 2, 4...) should be operands (colors/sets)
+            // Odd indices (1, 3, 5...) should be operators
+            const shouldBeOperator = i % 2 === 1;
+            
+            if (isOperator !== shouldBeOperator) {
+                return false; // Wrong type at this position
+            }
+        }
+        
+        // Must have odd length (operand, operator, operand, ...)
+        // e.g., length 3 = valid, length 2 = invalid (unless it's the postfix case handled above)
+        return dice.length % 2 === 1;
+    }
+    
     evaluateSolutionHelper() {
         if (!this.settings.solutionHelper) {
             console.log('Solution Helper: OFF');
@@ -439,6 +482,19 @@ export class UIController {
         // If both rows are empty, clear helper
         if (restrictionRow.length === 0 && setNameRow.length === 0) {
             console.log('Both rows empty - clearing helper');
+            this.clearSolutionHelper();
+            return;
+        }
+        
+        // Validate syntax before evaluation
+        const restrictionValid = restrictionRow.length === 0 || this.isSolutionSyntaxValid(restrictionRow);
+        const setNameValid = setNameRow.length === 0 || this.isSolutionSyntaxValid(setNameRow);
+        
+        if (!restrictionValid || !setNameValid) {
+            console.log('❌ Invalid syntax detected:');
+            if (!restrictionValid) console.log('  - Restriction row is invalid');
+            if (!setNameValid) console.log('  - Set name row is invalid');
+            console.log('Clearing solution helper - will not evaluate invalid syntax');
             this.clearSolutionHelper();
             return;
         }
