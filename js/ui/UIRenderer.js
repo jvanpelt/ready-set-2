@@ -138,6 +138,24 @@ export class UIRenderer {
      * Render dice in the dice area
      */
     renderDice(diceContainer, dice, solutions) {
+        // Preserve existing dice rotations before clearing
+        const existingRotations = {};
+        const existingDice = diceContainer.querySelectorAll('.die');
+        existingDice.forEach(dieEl => {
+            const transform = window.getComputedStyle(dieEl).transform;
+            if (transform && transform !== 'none') {
+                const matrix = transform.match(/matrix\(([^)]+)\)/);
+                if (matrix) {
+                    const values = matrix[1].split(', ');
+                    const rotation = Math.round(Math.atan2(parseFloat(values[1]), parseFloat(values[0])) * (180 / Math.PI));
+                    const dieId = dieEl.dataset.id;
+                    if (dieId && rotation !== 0) {
+                        existingRotations[dieId] = rotation;
+                    }
+                }
+            }
+        });
+        
         diceContainer.innerHTML = '';
         
         // Set data attribute for CSS grid layout (3x2 for 6 dice, 4x2 for 8 dice)
@@ -207,6 +225,11 @@ export class UIRenderer {
                 } else {
                     dieEl.textContent = die.value;
                 }
+            }
+            
+            // Restore preserved rotation if this die had one before re-render
+            if (existingRotations[die.id]) {
+                dieEl.style.transform = `rotate(${existingRotations[die.id]}deg)`;
             }
             
             diceContainer.appendChild(dieEl);
