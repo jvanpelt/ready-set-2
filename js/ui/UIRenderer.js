@@ -332,6 +332,32 @@ export class UIRenderer {
     }
     
     /**
+     * Animate solution dice fading out - returns Promise
+     */
+    animateSolutionDiceOut() {
+        return new Promise((resolve) => {
+            const solutionDice = document.querySelectorAll('.solution-die');
+            console.log('🎯 animateSolutionDiceOut - Found solution dice:', solutionDice.length);
+            if (solutionDice.length === 0) {
+                resolve();
+                return;
+            }
+            
+            // Simple fade out for solution dice
+            gsap.to(solutionDice, {
+                duration: 0.3,
+                opacity: 0,
+                ease: "power2.in",
+                onStart: () => console.log('🎯 Solution dice EXIT animation STARTED'),
+                onComplete: () => {
+                    console.log('🎯 Solution dice EXIT animation COMPLETE');
+                    resolve();
+                }
+            });
+        });
+    }
+    
+    /**
      * Render solution rows with dice
      * Row 0 (top): Restrictions (disabled until Level 6)
      * Row 1 (bottom): Set name (always enabled)

@@ -237,11 +237,12 @@ export class UIController {
         
         if (result.valid) {
             this.playSuccessAnimation(result.matchingCards);
-            // Show result modal, then animate cards and dice out simultaneously
+            // Show result modal, then animate cards, dice, and solution dice out simultaneously
             this.modals.showResult('Success!', result.message, result.points);
             await Promise.all([
                 this.renderer.animateCardsOut(),
-                this.renderer.animateDiceOut()
+                this.renderer.animateDiceOut(),
+                this.renderer.animateSolutionDiceOut()
             ]);
             // Don't render here - wait for user to click Continue
         } else {
@@ -336,10 +337,11 @@ export class UIController {
     async handleCorrectPass() {
         // No points awarded, just reset the round
         this.game.correctPass();
-        // Animate cards and dice out before rendering new round
+        // Animate cards, dice, and solution dice out before rendering new round
         await Promise.all([
             this.renderer.animateCardsOut(),
-            this.renderer.animateDiceOut()
+            this.renderer.animateDiceOut(),
+            this.renderer.animateSolutionDiceOut()
         ]);
         // Small delay to ensure clean transition
         await new Promise(resolve => setTimeout(resolve, 50));
@@ -351,10 +353,11 @@ export class UIController {
     
     async handleConfirmedPass() {
         this.game.pass();
-        // Animate cards and dice out before rendering new round
+        // Animate cards, dice, and solution dice out before rendering new round
         await Promise.all([
             this.renderer.animateCardsOut(),
-            this.renderer.animateDiceOut()
+            this.renderer.animateDiceOut(),
+            this.renderer.animateSolutionDiceOut()
         ]);
         // Small delay to ensure clean transition
         await new Promise(resolve => setTimeout(resolve, 50));
