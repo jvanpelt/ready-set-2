@@ -544,8 +544,8 @@ body {
 
 /* Invalid group indicator - dotted border */
 .solution-group-indicator.invalid {
-    background: rgba(255, 193, 7, 0.1);
-    border: 2px dotted rgba(255, 193, 7, 0.5);
+    background: rgba(164, 164, 164, 0.15);
+    border: 2px dotted rgba(183, 183, 183, 0.5);
 }
 
 /* Status Bar (redesigned to match old game) */
