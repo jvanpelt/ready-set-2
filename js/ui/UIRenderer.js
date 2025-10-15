@@ -464,6 +464,14 @@ export class UIRenderer {
                 const indicator = document.createElement('div');
                 indicator.className = 'solution-group-indicator';
                 
+                // Check if group is syntactically valid
+                const isValid = this.isGroupValid(group);
+                if (isValid) {
+                    indicator.classList.add('valid');
+                } else {
+                    indicator.classList.add('invalid');
+                }
+                
                 // Calculate bounding box
                 const bounds = this.getGroupBounds(group);
                 indicator.style.left = `${bounds.x - 5}px`;
@@ -474,6 +482,37 @@ export class UIRenderer {
                 row.appendChild(indicator);
             }
         });
+    }
+    
+    /**
+     * Check if a group of dice forms a valid sub-expression
+     */
+    isGroupValid(group) {
+        if (group.length === 0) return false;
+        if (group.length === 1) return true; // Single die is always valid
+        
+        // Sort group left-to-right to evaluate in reading order
+        const sortedGroup = [...group].sort((a, b) => a.x - b.x);
+        
+        const operators = ['∪', '∩', '−', '∆', 'OR', 'AND', 'MINUS', 'XOR'];
+        
+        // Check for valid alternating pattern: operand → operator → operand → ...
+        for (let i = 0; i < sortedGroup.length; i++) {
+            const die = sortedGroup[i];
+            const isOperator = operators.includes(die.value);
+            
+            // Even indices (0, 2, 4...) should be operands (colors/sets)
+            // Odd indices (1, 3, 5...) should be operators
+            const shouldBeOperator = i % 2 === 1;
+            
+            if (isOperator !== shouldBeOperator) {
+                return false; // Wrong type at this position
+            }
+        }
+        
+        // Must have odd length (operand, operator, operand, ...)
+        // e.g., length 3 = valid, length 2 = invalid
+        return sortedGroup.length % 2 === 1;
     }
     
     /**
