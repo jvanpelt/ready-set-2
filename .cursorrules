@@ -1,0 +1,84 @@
+# Cursor Rules for Ready, Set 2
+
+## Workflow & Git Rules
+
+### Branching Strategy
+- **ALWAYS create a new branch** for any feature, bugfix, or change
+- Branch naming: `feature/`, `bugfix/`, or `fix/` prefix
+- **NEVER work directly on `main`** except for emergencies
+
+### Bug Fixes
+- If bug is related to a recent merge/branch: Get back on that branch to fix it
+- If bug is unrelated to any existing branch: Create a new `fix/bug-name` branch
+
+### Merging to Main
+- **NEVER merge to main without explicit user approval**
+- Always ask "Ready to merge to main?" before merging
+- User must explicitly say "merge to main" or "yes, merge"
+- After making changes, commit and push to the feature branch first
+- Wait for user testing and approval before merging
+
+### Committing
+- Write clear, descriptive commit messages
+- Include context about PROBLEM, ROOT CAUSE, and SOLUTION for bug fixes
+- Commit related changes together
+- Don't commit unless user explicitly asks or it's part of a clear workflow
+
+## Code Style & Practices
+
+### Console Logging
+- Keep critical warnings and errors
+- Comment out or remove noisy debug logs after debugging is complete
+- Use prefixed emojis for log categories (🎬 animations, 🎲 dice, 🎯 solution, etc.)
+
+### Code Comments
+- Add in-depth comments for complex logic
+- Explain WHY, not just WHAT
+- Document dual systems (e.g., card encoding systems)
+- Comment bitwise operations thoroughly
+
+### Animations (GSAP)
+- Disable CSS transitions during GSAP animations to prevent interference
+- Use `requestAnimationFrame` for proper timing with DOM updates
+- Return Promises from animation methods for flow control
+- Clean up inline styles after animations complete
+
+### Solution Helper
+- Update `game.cardStates` when modifying card visual states
+- Evaluate solution helper BEFORE rendering to prevent flashing
+- Keep game state and DOM in sync
+
+## Project-Specific
+
+### Dual Card Encoding Systems
+- **System 1 (levels.js)**: Human-readable color arrays `{ colors: ['red', 'blue'] }`
+- **System 2 (scenarioManager.js)**: Bitwise integers (e.g., `5` for red + green)
+- Document both systems clearly when working with cards
+
+### Vocabulary (for player-facing text)
+- Union → OR
+- Intersection → AND  
+- Difference → MINUS
+- Complement → NOT (instructions), PRIME (referring to cubes)
+- Universe → UNIVERSE
+- Null → NULL
+- Use "Set Theory" not "Set Logic"
+
+### File Organization
+- UI components in `js/ui/`
+- Keep rendering logic separate from game logic
+- UIRenderer handles pure rendering
+- UIController orchestrates UI and handles events
+
+## Testing
+- Test on both desktop and mobile when possible
+- Cache bust with version numbers in script tags
+- Use Safari Web Inspector for iOS debugging
+- Check for linter errors after making changes
+
+## Communication
+- Don't refer to tool names when speaking to user
+- Use natural language to describe what you're doing
+- Be proactive but not presumptuous
+- If intent is unclear, infer the most likely action and proceed
+
