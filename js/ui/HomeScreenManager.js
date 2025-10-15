@@ -34,9 +34,9 @@ export class HomeScreenManager {
             this.game.newGame();
             
             if (window.uiController) {
-                window.uiController.render({ animate: true }); // Animate new game
+                window.uiController.render(); // Render WITHOUT animation first
                 window.uiController.clearSolutionHelper();
-                window.uiController.showFirstTimeInterstitial();
+                window.uiController.showFirstTimeInterstitial(); // Shows interstitial, will animate on dismiss
             }
         });
         
