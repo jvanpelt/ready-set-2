@@ -489,7 +489,6 @@ export class UIRenderer {
      */
     isGroupValid(group) {
         if (group.length === 0) return false;
-        if (group.length === 1) return true; // Single die is always valid
         
         // Sort group left-to-right to evaluate in reading order
         const sortedGroup = [...group].sort((a, b) => a.x - b.x);
@@ -498,6 +497,11 @@ export class UIRenderer {
         const binaryOperators = ['∪', '∩', '−', '=', '⊆'];
         // Postfix operators (operand → operator)
         const postfixOperators = ['′'];
+        
+        // Single die is valid only if it's an operand (not an operator)
+        if (group.length === 1) {
+            return !binaryOperators.includes(sortedGroup[0].value) && !postfixOperators.includes(sortedGroup[0].value);
+        }
         
         // Strategy: Treat "operand + optional postfix" as a single unit
         // Valid patterns:

@@ -437,12 +437,16 @@ export class UIController {
      */
     isSolutionSyntaxValid(dice) {
         if (dice.length === 0) return true;
-        if (dice.length === 1) return true; // Single die is always valid
         
         // Binary operators (infix: operand → operator → operand)
         const binaryOperators = ['∪', '∩', '−', '=', '⊆'];
         // Postfix operators (operand → operator)
         const postfixOperators = ['′'];
+        
+        // Single die is valid only if it's an operand (not an operator)
+        if (dice.length === 1) {
+            return !binaryOperators.includes(dice[0].value) && !postfixOperators.includes(dice[0].value);
+        }
         
         // Strategy: Treat "operand + optional postfix" as a single unit
         // Valid patterns:
