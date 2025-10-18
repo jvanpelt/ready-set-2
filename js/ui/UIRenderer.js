@@ -370,6 +370,18 @@ export class UIRenderer {
             row.className = 'solution-row';
             row.dataset.row = rowIndex;
             
+            // Check if this row contains a restriction operator
+            const hasRestriction = solution.some(die => {
+                // Check both regular dice and wild cubes with selected operators
+                const value = (die.type === 'wild' && die.selectedOperator) ? die.selectedOperator : die.value;
+                return value === '=' || value === '⊆';
+            });
+            
+            // Add visual indicator for restriction rows
+            if (hasRestriction) {
+                row.classList.add('has-restriction');
+            }
+            
             // Row 0 is for restrictions (disabled until Level 6)
             if (rowIndex === 0 && !restrictionsEnabled) {
                 row.classList.add('disabled');
