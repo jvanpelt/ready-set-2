@@ -791,6 +791,9 @@ export class UIController {
                         clickTimer = null;
                     }
                     
+                    // Hide wild cube popover if it's open
+                    this.wildCubeManager.hide();
+                    
                     // Remove the die directly
                     const row = dieEl.closest('.solution-row');
                     const rowIndex = parseInt(row.dataset.row);
