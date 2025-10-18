@@ -499,32 +499,41 @@ export class UIRenderer {
         // Postfix operators (operand → operator)
         const postfixOperators = ['′'];
         
-        // Special case: Check for postfix COMPLEMENT at the end
-        const lastDie = sortedGroup[sortedGroup.length - 1];
-        if (postfixOperators.includes(lastDie.value) && sortedGroup.length === 2) {
-            // Valid pattern: operand → COMPLEMENT (e.g., RED′)
-            const firstDie = sortedGroup[0];
-            return !binaryOperators.includes(firstDie.value) && !postfixOperators.includes(firstDie.value);
-        }
+        // Strategy: Treat "operand + optional postfix" as a single unit
+        // Valid patterns:
+        // - operand (with optional ′)
+        // - operand (with optional ′) operator operand (with optional ′) ...
         
-        // Standard validation: alternating pattern for binary operators
-        // Check for valid alternating pattern: operand → operator → operand → ...
+        let expectingOperand = true; // Start expecting an operand
+        
         for (let i = 0; i < sortedGroup.length; i++) {
             const die = sortedGroup[i];
-            const isOperator = binaryOperators.includes(die.value);
+            const isBinaryOp = binaryOperators.includes(die.value);
+            const isPostfixOp = postfixOperators.includes(die.value);
             
-            // Even indices (0, 2, 4...) should be operands (colors/sets)
-            // Odd indices (1, 3, 5...) should be operators
-            const shouldBeOperator = i % 2 === 1;
-            
-            if (isOperator !== shouldBeOperator) {
-                return false; // Wrong type at this position
+            if (expectingOperand) {
+                // Should be an operand (color/set)
+                if (isBinaryOp || isPostfixOp) {
+                    return false; // Can't start with operator
+                }
+                // Check if next die is a postfix operator
+                const nextDie = sortedGroup[i + 1];
+                if (nextDie && postfixOperators.includes(nextDie.value)) {
+                    // Skip the postfix operator, it's part of this operand
+                    i++;
+                }
+                expectingOperand = false; // Next should be binary operator (or end)
+            } else {
+                // Should be a binary operator
+                if (!isBinaryOp) {
+                    return false; // Expected binary operator, got something else
+                }
+                expectingOperand = true; // Next should be operand
             }
         }
         
-        // Must have odd length (operand, operator, operand, ...)
-        // e.g., length 3 = valid, length 2 = invalid (unless it's the postfix case handled above)
-        return sortedGroup.length % 2 === 1;
+        // Must end with an operand (not expecting an operator)
+        return !expectingOperand;
     }
     
     /**
