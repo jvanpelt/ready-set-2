@@ -279,8 +279,8 @@ body {
 }
 
 .solution-row.invalid {
-    border-color: #d9534f;
-    background: rgba(217, 83, 79, 0.1);
+    border-color: rgba(217, 83, 79, 0.5); /* Subtle red for invalid syntax */
+    background: rgba(217, 83, 79, 0.05);
 }
 
 .solution-row.disabled {
