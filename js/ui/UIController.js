@@ -770,14 +770,37 @@ export class UIController {
         wildCubes.forEach(dieEl => {
             // Use a click timer to distinguish single-click from double-click
             let clickTimer = null;
+            let isDoubleClick = false;
+            
+            // Handle double-click for removal (must be set up first to fire before click)
+            dieEl.addEventListener('dblclick', (e) => {
+                // DEBUG: console.log('🖱️🖱️ Wild cube double-clicked!', dieEl);
+                isDoubleClick = true;
+                
+                // Clear any pending single-click timer
+                if (clickTimer) {
+                    clearTimeout(clickTimer);
+                    clickTimer = null;
+                }
+                
+                // Double-click removal is handled by DragDropHandler's parent listener
+                // We just need to not interfere with it
+            });
             
             dieEl.addEventListener('click', (e) => {
                 // DEBUG: console.log('🖱️ Wild cube clicked!', dieEl);
+                
+                // If this is part of a double-click, don't show popover
+                if (isDoubleClick) {
+                    isDoubleClick = false;
+                    return;
+                }
                 
                 // Clear any pending single-click
                 if (clickTimer) {
                     clearTimeout(clickTimer);
                     clickTimer = null;
+                    isDoubleClick = true; // Second click detected
                     return; // This is part of a double-click, ignore it
                 }
                 
