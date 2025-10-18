@@ -382,6 +382,14 @@ export class UIRenderer {
                 row.classList.add('has-restriction');
             }
             
+            // Check if this row has valid syntax (only if not empty)
+            if (solution.length > 0) {
+                const isValid = this.isSolutionRowValid(solution);
+                if (!isValid) {
+                    row.classList.add('invalid');
+                }
+            }
+            
             // Row 1 (bottom) is disabled until Level 6 (when restrictions are enabled)
             if (rowIndex === 1 && !restrictionsEnabled) {
                 row.classList.add('disabled');
@@ -544,6 +552,75 @@ export class UIRenderer {
                 }
                 // Check if next die is a postfix operator
                 const nextDie = sortedGroup[i + 1];
+                if (nextDie && postfixOperators.includes(getEffectiveValue(nextDie))) {
+                    // Skip the postfix operator, it's part of this operand
+                    i++;
+                }
+                expectingOperand = false; // Next should be binary operator (or end)
+            } else {
+                // Should be a binary operator
+                if (!isBinaryOp) {
+                    return false; // Expected binary operator, got something else
+                }
+                expectingOperand = true; // Next should be operand
+            }
+        }
+        
+        // Must end with an operand (not expecting an operator)
+        return !expectingOperand;
+    }
+    
+    /**
+     * Check if a solution row has valid syntax
+     * (Same validation logic as isGroupValid, but for entire row)
+     */
+    isSolutionRowValid(dice) {
+        if (dice.length === 0) return true;
+        
+        // Sort dice left-to-right to evaluate in reading order
+        const sortedDice = [...dice].sort((a, b) => a.x - b.x);
+        
+        // Check for wild cubes without operator selection - these are invalid (incomplete)
+        const hasIncompleteWild = sortedDice.some(die => die.type === 'wild' && !die.selectedOperator);
+        if (hasIncompleteWild) {
+            return false;
+        }
+        
+        // Binary operators (infix: operand → operator → operand)
+        const binaryOperators = ['∪', '∩', '−', '=', '⊆'];
+        // Postfix operators (operand → operator)
+        const postfixOperators = ['′'];
+        
+        // Helper: Get effective value (for wild cubes, use selectedOperator)
+        const getEffectiveValue = (die) => {
+            if (die.type === 'wild' && die.selectedOperator) {
+                return die.selectedOperator;
+            }
+            return die.value;
+        };
+        
+        // Single die is valid only if it's an operand (not an operator)
+        if (sortedDice.length === 1) {
+            const value = getEffectiveValue(sortedDice[0]);
+            return !binaryOperators.includes(value) && !postfixOperators.includes(value);
+        }
+        
+        // Strategy: Treat "operand + optional postfix" as a single unit
+        let expectingOperand = true; // Start expecting an operand
+        
+        for (let i = 0; i < sortedDice.length; i++) {
+            const die = sortedDice[i];
+            const value = getEffectiveValue(die);
+            const isBinaryOp = binaryOperators.includes(value);
+            const isPostfixOp = postfixOperators.includes(value);
+            
+            if (expectingOperand) {
+                // Should be an operand (color/set)
+                if (isBinaryOp || isPostfixOp) {
+                    return false; // Can't start with operator
+                }
+                // Check if next die is a postfix operator
+                const nextDie = sortedDice[i + 1];
                 if (nextDie && postfixOperators.includes(getEffectiveValue(nextDie))) {
                     // Skip the postfix operator, it's part of this operand
                     i++;
