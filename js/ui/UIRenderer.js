@@ -382,16 +382,10 @@ export class UIRenderer {
                 row.classList.add('has-restriction');
             }
             
-            // Row 0 is for restrictions (disabled until Level 6)
-            if (rowIndex === 0 && !restrictionsEnabled) {
+            // Row 1 (bottom) is disabled until Level 6 (when restrictions are enabled)
+            if (rowIndex === 1 && !restrictionsEnabled) {
                 row.classList.add('disabled');
                 row.dataset.disabled = 'true';
-                
-                // Add placeholder label
-                const label = document.createElement('div');
-                label.className = 'solution-row-label';
-                label.textContent = 'Restrictions (Level 6+)';
-                row.appendChild(label);
             }
             
             // Render dice in this row
