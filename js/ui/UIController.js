@@ -768,54 +768,69 @@ export class UIController {
         // DEBUG: console.log('🔍 Setting up wild cube listeners, found:', wildCubes.length, 'wild cubes');
         
         wildCubes.forEach(dieEl => {
-            // Use a click timer to distinguish single-click from double-click
+            // Manual double-click detection that works on both desktop and mobile
             let clickTimer = null;
-            let isDoubleClick = false;
+            let lastClickTime = 0;
+            const DOUBLE_CLICK_THRESHOLD = 250; // ms
             
-            // Handle double-click for removal (must be set up first to fire before click)
-            dieEl.addEventListener('dblclick', (e) => {
-                // DEBUG: console.log('🖱️🖱️ Wild cube double-clicked!', dieEl);
-                isDoubleClick = true;
+            const handleWildCubeClick = (e) => {
+                e.preventDefault(); // Prevent any default behavior
                 
-                // Clear any pending single-click timer
-                if (clickTimer) {
-                    clearTimeout(clickTimer);
-                    clickTimer = null;
-                }
+                const currentTime = Date.now();
+                const timeSinceLastClick = currentTime - lastClickTime;
                 
-                // Double-click removal is handled by DragDropHandler's parent listener
-                // We just need to not interfere with it
-            });
-            
-            dieEl.addEventListener('click', (e) => {
-                // DEBUG: console.log('🖱️ Wild cube clicked!', dieEl);
+                // DEBUG: console.log('🖱️ Wild cube clicked!', timeSinceLastClick, 'ms since last click');
                 
-                // If this is part of a double-click, don't show popover
-                if (isDoubleClick) {
-                    isDoubleClick = false;
+                // If second click within threshold, remove the cube
+                if (timeSinceLastClick < DOUBLE_CLICK_THRESHOLD && timeSinceLastClick > 0) {
+                    // DEBUG: console.log('🖱️🖱️ Double-click detected - removing cube');
+                    
+                    // Clear any pending single-click timer
+                    if (clickTimer) {
+                        clearTimeout(clickTimer);
+                        clickTimer = null;
+                    }
+                    
+                    // Remove the die directly
+                    const row = dieEl.closest('.solution-row');
+                    const rowIndex = parseInt(row.dataset.row);
+                    const dieId = dieEl.dataset.id;
+                    const dieIndex = this.game.solutions[rowIndex].findIndex(d => d.id === dieId);
+                    
+                    if (dieIndex !== -1) {
+                        this.game.removeDieFromSolution(rowIndex, dieIndex);
+                        this.evaluateSolutionHelper();
+                        this.render();
+                    }
+                    
+                    // Reset click time
+                    lastClickTime = 0;
                     return;
                 }
                 
-                // Clear any pending single-click
+                // First click - start timer to show popover if no second click
+                lastClickTime = currentTime;
+                
+                // Clear any existing timer
                 if (clickTimer) {
                     clearTimeout(clickTimer);
-                    clickTimer = null;
-                    isDoubleClick = true; // Second click detected
-                    return; // This is part of a double-click, ignore it
                 }
                 
-                // Wait to see if this is a double-click
+                // Wait for potential second click
                 clickTimer = setTimeout(() => {
                     clickTimer = null;
                     
                     // This is a confirmed single-click - show popover
                     const rowIndex = parseInt(dieEl.closest('.solution-row').dataset.row);
                     const dieIndex = parseInt(dieEl.dataset.index);
-                    // DEBUG: console.log('   Row:', rowIndex, 'Die:', dieIndex);
-                    // DEBUG: console.log('   Calling wildCubeManager.show()...');
+                    // DEBUG: console.log('   Single-click confirmed - showing popover');
                     this.wildCubeManager.show(dieEl, rowIndex, dieIndex);
-                }, 100); // Reduced delay for better responsiveness
-            });
+                }, DOUBLE_CLICK_THRESHOLD);
+            };
+            
+            // Handle both click (desktop) and touchend (mobile)
+            dieEl.addEventListener('click', handleWildCubeClick);
+            dieEl.addEventListener('touchend', handleWildCubeClick);
         });
     }
     
