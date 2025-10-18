@@ -438,14 +438,29 @@ export class UIController {
     isSolutionSyntaxValid(dice) {
         if (dice.length === 0) return true;
         
+        // Check for wild cubes without operator selection - these are invalid (incomplete)
+        const hasIncompleteWild = dice.some(die => die.type === 'wild' && !die.selectedOperator);
+        if (hasIncompleteWild) {
+            return false;
+        }
+        
         // Binary operators (infix: operand → operator → operand)
         const binaryOperators = ['∪', '∩', '−', '=', '⊆'];
         // Postfix operators (operand → operator)
         const postfixOperators = ['′'];
         
+        // Helper: Get effective value (for wild cubes, use selectedOperator)
+        const getEffectiveValue = (die) => {
+            if (die.type === 'wild' && die.selectedOperator) {
+                return die.selectedOperator;
+            }
+            return die.value;
+        };
+        
         // Single die is valid only if it's an operand (not an operator)
         if (dice.length === 1) {
-            return !binaryOperators.includes(dice[0].value) && !postfixOperators.includes(dice[0].value);
+            const value = getEffectiveValue(dice[0]);
+            return !binaryOperators.includes(value) && !postfixOperators.includes(value);
         }
         
         // Strategy: Treat "operand + optional postfix" as a single unit
@@ -457,8 +472,9 @@ export class UIController {
         
         for (let i = 0; i < dice.length; i++) {
             const die = dice[i];
-            const isBinaryOp = binaryOperators.includes(die.value);
-            const isPostfixOp = postfixOperators.includes(die.value);
+            const value = getEffectiveValue(die);
+            const isBinaryOp = binaryOperators.includes(value);
+            const isPostfixOp = postfixOperators.includes(value);
             
             if (expectingOperand) {
                 // Should be an operand (color/set)
@@ -467,7 +483,7 @@ export class UIController {
                 }
                 // Check if next die is a postfix operator
                 const nextDie = dice[i + 1];
-                if (nextDie && postfixOperators.includes(nextDie.value)) {
+                if (nextDie && postfixOperators.includes(getEffectiveValue(nextDie))) {
                     // Skip the postfix operator, it's part of this operand
                     i++;
                 }

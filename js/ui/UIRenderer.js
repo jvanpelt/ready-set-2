@@ -493,14 +493,29 @@ export class UIRenderer {
         // Sort group left-to-right to evaluate in reading order
         const sortedGroup = [...group].sort((a, b) => a.x - b.x);
         
+        // Check for wild cubes without operator selection - these are invalid (incomplete)
+        const hasIncompleteWild = sortedGroup.some(die => die.type === 'wild' && !die.selectedOperator);
+        if (hasIncompleteWild) {
+            return false;
+        }
+        
         // Binary operators (infix: operand → operator → operand)
         const binaryOperators = ['∪', '∩', '−', '=', '⊆'];
         // Postfix operators (operand → operator)
         const postfixOperators = ['′'];
         
+        // Helper: Get effective value (for wild cubes, use selectedOperator)
+        const getEffectiveValue = (die) => {
+            if (die.type === 'wild' && die.selectedOperator) {
+                return die.selectedOperator;
+            }
+            return die.value;
+        };
+        
         // Single die is valid only if it's an operand (not an operator)
         if (group.length === 1) {
-            return !binaryOperators.includes(sortedGroup[0].value) && !postfixOperators.includes(sortedGroup[0].value);
+            const value = getEffectiveValue(sortedGroup[0]);
+            return !binaryOperators.includes(value) && !postfixOperators.includes(value);
         }
         
         // Strategy: Treat "operand + optional postfix" as a single unit
@@ -512,8 +527,9 @@ export class UIRenderer {
         
         for (let i = 0; i < sortedGroup.length; i++) {
             const die = sortedGroup[i];
-            const isBinaryOp = binaryOperators.includes(die.value);
-            const isPostfixOp = postfixOperators.includes(die.value);
+            const value = getEffectiveValue(die);
+            const isBinaryOp = binaryOperators.includes(value);
+            const isPostfixOp = postfixOperators.includes(value);
             
             if (expectingOperand) {
                 // Should be an operand (color/set)
@@ -522,7 +538,7 @@ export class UIRenderer {
                 }
                 // Check if next die is a postfix operator
                 const nextDie = sortedGroup[i + 1];
-                if (nextDie && postfixOperators.includes(nextDie.value)) {
+                if (nextDie && postfixOperators.includes(getEffectiveValue(nextDie))) {
                     // Skip the postfix operator, it's part of this operand
                     i++;
                 }
