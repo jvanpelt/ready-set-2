@@ -763,6 +763,12 @@ export class UIController {
      * Set up click listeners for wild cubes in the solution area
      */
     setupWildCubeListeners() {
+        // Clear all existing timers from previous renders
+        if (this.wildCubeTimers) {
+            this.wildCubeTimers.forEach(timer => clearTimeout(timer));
+        }
+        this.wildCubeTimers = [];
+        
         // Find all wild cubes in solution area
         const wildCubes = this.solutionArea.querySelectorAll('.solution-die.wild');
         // DEBUG: console.log('🔍 Setting up wild cube listeners, found:', wildCubes.length, 'wild cubes');
@@ -771,12 +777,23 @@ export class UIController {
             // Manual double-click detection that works on both desktop and mobile
             let clickTimer = null;
             let lastClickTime = 0;
+            let lastEventTime = 0; // Track when we last processed an event
             const DOUBLE_CLICK_THRESHOLD = 250; // ms
+            const DUPLICATE_EVENT_THRESHOLD = 50; // ms - ignore events within 50ms of each other
             
             const handleWildCubeClick = (e) => {
                 e.preventDefault(); // Prevent any default behavior
+                e.stopPropagation(); // Stop event from bubbling
                 
                 const currentTime = Date.now();
+                
+                // Prevent processing duplicate events (touch + click) for same interaction
+                if (currentTime - lastEventTime < DUPLICATE_EVENT_THRESHOLD) {
+                    // DEBUG: console.log('🚫 Ignoring duplicate event');
+                    return;
+                }
+                lastEventTime = currentTime;
+                
                 const timeSinceLastClick = currentTime - lastClickTime;
                 
                 // DEBUG: console.log('🖱️ Wild cube clicked!', timeSinceLastClick, 'ms since last click');
@@ -829,6 +846,9 @@ export class UIController {
                     // DEBUG: console.log('   Single-click confirmed - showing popover');
                     this.wildCubeManager.show(dieEl, rowIndex, dieIndex);
                 }, DOUBLE_CLICK_THRESHOLD);
+                
+                // Track this timer so we can clear it on next render
+                this.wildCubeTimers.push(clickTimer);
             };
             
             // Handle both click (desktop) and touchend (mobile)
