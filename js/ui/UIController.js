@@ -528,41 +528,29 @@ export class UIController {
             return;
         }
         
-        // Validate syntax before evaluation
-        const restrictionValid = restrictionRow.length === 0 || this.isSolutionSyntaxValid(restrictionRow);
-        const setNameValid = setNameRow.length === 0 || this.isSolutionSyntaxValid(setNameRow);
-        
-        if (!restrictionValid || !setNameValid) {
-            console.log('❌ Invalid syntax detected:');
-            if (!restrictionValid) console.log('  - Restriction row is invalid');
-            if (!setNameValid) console.log('  - Set name row is invalid');
-            console.log('Clearing solution helper - will not evaluate invalid syntax');
-            // Force clear all card states (not just helper-managed ones)
-            this.game.cardStates.forEach((state, index) => {
-                state.dimmed = false;
-                state.excluded = false;
-            });
-            this.clearSolutionHelper();
-            return;
-        }
-        
         // Determine which row has restriction and which has set name
-        let restriction = null;
-        let setName = null;
+        let restrictionRow_actual = null;
+        let setNameRow_actual = null;
         
         if (hasRestriction(restrictionRow)) {
-            restriction = restrictionRow;
-            setName = setNameRow;
+            restrictionRow_actual = restrictionRow;
+            setNameRow_actual = setNameRow;
             console.log('Restriction in row 0, set name in row 1');
         } else if (hasRestriction(setNameRow)) {
-            restriction = setNameRow;
-            setName = restrictionRow;
+            restrictionRow_actual = setNameRow;
+            setNameRow_actual = restrictionRow;
             console.log('Restriction in row 1, set name in row 0');
         } else {
             // No restriction, just a regular set name
-            setName = restrictionRow.length > 0 ? restrictionRow : setNameRow;
+            setNameRow_actual = restrictionRow.length > 0 ? restrictionRow : setNameRow;
             console.log('No restriction detected');
         }
+        
+        // Validate each row independently
+        const restrictionValid = !restrictionRow_actual || this.isSolutionSyntaxValid(restrictionRow_actual);
+        const setNameValid = !setNameRow_actual || this.isSolutionSyntaxValid(setNameRow_actual);
+        
+        console.log('Validation:', { restrictionValid, setNameValid });
         
         const cards = this.cardsContainer.querySelectorAll('.card');
         
@@ -575,48 +563,69 @@ export class UIController {
             }
         });
         
-        // Evaluate restriction and set name together
+        // STEP 1: Handle restriction (flips cards)
         let cardsToFlip = [];
         
-        if (restriction && restriction.length > 0) {
-            console.log('Evaluating restriction:', restriction.map(d => d.value).join(' '));
-            cardsToFlip = evaluateRestriction(restriction, this.game.cards);
-            console.log('Cards to flip from restriction:', cardsToFlip);
-        } else {
-            console.log('No restriction to evaluate');
+        if (restrictionRow_actual && restrictionRow_actual.length > 0) {
+            if (restrictionValid) {
+                console.log('Evaluating restriction:', restrictionRow_actual.map(d => d.value).join(' '));
+                cardsToFlip = evaluateRestriction(restrictionRow_actual, this.game.cards);
+                console.log('Cards to flip from restriction:', cardsToFlip);
+            } else {
+                console.log('❌ Restriction syntax invalid - clearing flips');
+                // Clear only flips, not dimming
+                this.game.cardStates.forEach((state) => {
+                    state.excluded = false;
+                });
+            }
         }
         
-        // If we have a set name, evaluate it against non-flipped cards
-        if (setName && setName.length > 0) {
-            console.log('Evaluating set name:', setName.map(d => d.value).join(' '));
-            // Filter out flipped cards for set name evaluation
-            const activeCardIndices = new Set(
-                this.game.cards.map((_, idx) => idx).filter(idx => 
-                    !cardsToFlip.includes(idx) && !this.game.cardStates[idx].flipped
-                )
-            );
-            const activeCards = this.game.cards.filter((_, idx) => activeCardIndices.has(idx));
-            
-            // Evaluate set name against active (non-flipped) cards
-            const matchingCards = evaluateExpression(setName, activeCards);
-            
-            // Map back to original card indices
-            const activeCardsArray = Array.from(activeCardIndices);
-            const finalMatchingCards = new Set(
-                Array.from(matchingCards).map(activeIdx => activeCardsArray[activeIdx])
-            );
-            
-            // Apply visual states
-            console.log('Applying visual states with set name present');
-            cards.forEach((cardEl, index) => {
-                if (cardsToFlip.includes(index)) {
-                    // Show as flipped (excluded) - highest priority
-                    console.log(`Card ${index}: FLIPPED (excluded)`);
-                    cardEl.classList.add('excluded');
-                    cardEl.classList.remove('dimmed');
-                    this.game.cardStates[index].excluded = true;
-                    this.game.cardStates[index].dimmed = false;
-                } else if (finalMatchingCards.has(index)) {
+        // STEP 2: Handle set name (dims cards)
+        let matchingCards = new Set();
+        
+        if (setNameRow_actual && setNameRow_actual.length > 0) {
+            if (setNameValid) {
+                console.log('Evaluating set name:', setNameRow_actual.map(d => d.value).join(' '));
+                // Filter out flipped cards for set name evaluation
+                const activeCardIndices = new Set(
+                    this.game.cards.map((_, idx) => idx).filter(idx => 
+                        !cardsToFlip.includes(idx) && !this.game.cardStates[idx].flipped
+                    )
+                );
+                const activeCards = this.game.cards.filter((_, idx) => activeCardIndices.has(idx));
+                
+                // Evaluate set name against active (non-flipped) cards
+                const matchingCardsRaw = evaluateExpression(setNameRow_actual, activeCards);
+                
+                // Map back to original card indices
+                const activeCardsArray = Array.from(activeCardIndices);
+                matchingCards = new Set(
+                    Array.from(matchingCardsRaw).map(activeIdx => activeCardsArray[activeIdx])
+                );
+                console.log('Matching cards from set name:', Array.from(matchingCards));
+            } else {
+                console.log('❌ Set name syntax invalid - clearing dimming');
+                // Clear only dimming, not flips
+                this.game.cardStates.forEach((state) => {
+                    state.dimmed = false;
+                });
+            }
+        }
+        
+        // STEP 3: Apply visual states
+        // Priority: Flipped (excluded) > Matches set name (bright) > Doesn't match set name (dimmed)
+        console.log('Applying visual states...');
+        cards.forEach((cardEl, index) => {
+            if (cardsToFlip.includes(index)) {
+                // Flipped by restriction - highest priority (always shown as excluded)
+                console.log(`Card ${index}: FLIPPED (excluded by restriction)`);
+                cardEl.classList.add('excluded');
+                cardEl.classList.remove('dimmed');
+                this.game.cardStates[index].excluded = true;
+                this.game.cardStates[index].dimmed = false;
+            } else if (setNameValid && setNameRow_actual && setNameRow_actual.length > 0) {
+                // Set name is valid, apply dimming logic
+                if (matchingCards.has(index)) {
                     // Matches set name - bright
                     console.log(`Card ${index}: MATCHES set name (bright)`);
                     cardEl.classList.remove('dimmed', 'excluded');
@@ -630,28 +639,14 @@ export class UIController {
                     this.game.cardStates[index].dimmed = true;
                     this.game.cardStates[index].excluded = false;
                 }
-            });
-        } else if (cardsToFlip.length > 0) {
-            // Only restriction, no set name - just show flipped cards
-            console.log('Applying visual states: ONLY restriction (no set name)');
-            console.log('Cards to flip:', cardsToFlip);
-            cards.forEach((cardEl, index) => {
-                if (cardsToFlip.includes(index)) {
-                    console.log(`Card ${index}: FLIPPED (excluded)`);
-                    cardEl.classList.add('excluded');
-                    cardEl.classList.remove('dimmed');
-                    this.game.cardStates[index].excluded = true;
-                    this.game.cardStates[index].dimmed = false;
-                } else {
-                    console.log(`Card ${index}: NOT flipped (bright)`);
-                    cardEl.classList.remove('dimmed', 'excluded');
-                    this.game.cardStates[index].dimmed = false;
-                    this.game.cardStates[index].excluded = false;
-                }
-            });
-        } else {
-            console.log('No cards to flip, no set name - nothing to apply');
-        }
+            } else {
+                // No valid set name - all cards bright (unless already handled by restriction)
+                console.log(`Card ${index}: No valid set name (bright)`);
+                cardEl.classList.remove('dimmed', 'excluded');
+                this.game.cardStates[index].dimmed = false;
+                this.game.cardStates[index].excluded = false;
+            }
+        });
         
         console.log('=== END SOLUTION HELPER ===\n');
     }
