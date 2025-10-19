@@ -251,7 +251,7 @@ export class ModalManager {
     showPassWarning(onConfirm, onCancel) {
         this.passTitle.textContent = 'Are you sure?';
         this.passMessage.textContent = 'A valid solution exists! Are you sure you want to pass?';
-        this.passContinueBtn.textContent = 'Continue';
+        this.passContinueBtn.textContent = 'Pass';
         this.passContinueBtn.style.display = 'inline-block';
         this.passCancelBtn.style.display = 'inline-block';
         
