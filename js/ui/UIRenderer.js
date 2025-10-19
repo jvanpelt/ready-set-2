@@ -716,10 +716,9 @@ export class UIRenderer {
     /**
      * Update status bar elements
      */
-    updateStatusBar(currentScoreEl, goalScoreEl, currentLevelEl, goalCardsEl, state) {
+    updateStatusBar(currentScoreEl, goalScoreEl, goalCardsEl, state) {
         currentScoreEl.textContent = state.score;
         goalScoreEl.textContent = state.goalScore;
-        currentLevelEl.textContent = state.level;
         goalCardsEl.textContent = state.goalCards;
     }
 }

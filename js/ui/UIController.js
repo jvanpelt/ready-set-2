@@ -74,7 +74,6 @@ export class UIController {
         // Status bar
         this.currentScoreEl = document.getElementById('current-score');
         this.goalScoreEl = document.getElementById('goal-score');
-        this.currentLevelEl = document.getElementById('current-level');
         this.goalCardsEl = document.getElementById('goal-cards');
         this.timerDisplay = document.getElementById('timer-display');
         this.timerValue = document.getElementById('timer-value');
@@ -750,7 +749,6 @@ export class UIController {
         this.renderer.updateStatusBar(
             this.currentScoreEl,
             this.goalScoreEl,
-            this.currentLevelEl,
             this.goalCardsEl,
             state
         );
