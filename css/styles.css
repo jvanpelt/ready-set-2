@@ -558,7 +558,6 @@ body {
     grid-template-columns: 1fr auto 1fr;
     gap: 15px;
     align-items: stretch;
-    margin-bottom: 15px;
 }
 
 .score-display,
@@ -623,19 +622,8 @@ body {
     gap: 6px;
 }
 
-.level-badge {
-    display: none; /* Hidden for now - may show in menu modal later */
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 6px;
-    padding: 4px 8px;
-    font-size: 12px;
-    font-weight: 600;
-    text-align: center;
-    color: rgba(255, 255, 255, 0.8);
-}
-
 .btn {
-    padding: 16px 24px;
+    padding: 24px;
     font-size: 18px;
     font-weight: bold;
     border: none;
@@ -665,7 +653,7 @@ body {
 }
 
 .btn-warning {
-    background: #f0ad4e;
+    background: var(--color-red);
     color: white;
 }
 
