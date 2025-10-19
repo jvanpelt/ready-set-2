@@ -235,7 +235,7 @@ export class ModalManager {
     showPassNoSolution(onContinue) {
         this.passTitle.textContent = "You're right!";
         this.passMessage.textContent = 'No solution exists.';
-        this.passContinueBtn.textContent = 'Continue';
+        this.passContinueBtn.textContent = 'Pass';
         this.passContinueBtn.style.display = 'inline-block';
         this.passCancelBtn.style.display = 'none';
         
