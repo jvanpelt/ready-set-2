@@ -541,9 +541,21 @@ export class UIController {
             setNameRow_actual = restrictionRow;
             console.log('Restriction in row 1, set name in row 0');
         } else {
-            // No restriction, just a regular set name
+            // No restriction detected
+            // If BOTH rows have content, this is invalid (can't have two set names)
+            if (restrictionRow.length > 0 && setNameRow.length > 0) {
+                console.log('⚠️ Both rows have content but no restriction - treating as invalid');
+                // Clear all card states and exit
+                this.game.cardStates.forEach((state) => {
+                    state.dimmed = false;
+                    state.excluded = false;
+                });
+                this.clearSolutionHelper();
+                return;
+            }
+            // Just one row with a regular set name
             setNameRow_actual = restrictionRow.length > 0 ? restrictionRow : setNameRow;
-            console.log('No restriction detected');
+            console.log('No restriction detected - single set name');
         }
         
         // Validate each row independently
