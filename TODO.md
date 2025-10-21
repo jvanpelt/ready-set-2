@@ -1,305 +1,152 @@
 # Ready, Set 2 - TODO List
 
-## 🔄 Current Status (Oct 14, 2025)
+## 🔄 Current Status (Oct 21, 2025)
 **Branch**: `main`  
-**Version**: `3.13.0-wild-cube-fix`
-**Task**: Home screen, intro tutorial, and UX polish completed! 🎉
-
-**Recent Completion (Oct 9-14, 2025)**:
-- ✅ **Home Screen Implementation**
-  - Logo integration
-  - Continue from Level X button (shows when game progress exists)
-  - New Game button
-  - How to Play button (shows intro tutorial)
-  - Menu button with consistent styling
-- ✅ **Intro Tutorial (Level 0)**
-  - Non-interactive animated steps for concepts
-  - Interactive cube dragging for hands-on learning
-  - GSAP animations for visual polish (cards, goal, cubes)
-  - Teaches: Universe, Goal, Cubes, Solution Area, OR vs AND operators
-- ✅ **Solution Helper Rebrand**
-  - Now "Guided Mode" (ON by default) / "Advanced Mode" (OFF)
-  - Dynamic description text based on toggle state
-  - Set to ON by default for new players
-- ✅ **Interstitial Screen Redesign**
-  - Green translucent aesthetic (matches game theme)
-  - Fade-out transitions
-  - Menu button on all interstitials
-  - "New Game" now goes to Level 1 interstitial (not directly to gameplay)
-- ✅ **Menu Modal Improvements**
-  - X close button in upper right corner
-  - Click backdrop to close/resume
-  - Removed Resume button from menu list
-  - Translucent background matching game aesthetic
-- ✅ **Modal Design Refresh**
-  - All modals use translucent blue-green background
-  - White borders for definition
-  - Consistent with home/interstitial aesthetic
-- ✅ **Wild Cube Popover Fix**
-  - Fixed positioning (moved outside #app to avoid scaling issues)
-  - Auto-shows when wild cube dropped in solution area
-  - Faster response time (100ms vs 250ms)
-  - Selection now works correctly
-- ✅ **Tutorial Cleanup System**
-  - Restores game state when navigating away from tutorials
-  - Cleans up highlights, timer, Solution Helper state
-  - Called from Home button, New Game, Jump to Level
-- ✅ **Workflow Documentation**
-  - Created `WORKFLOW.md` to enforce merge approval process
-  - Prevents accidental merges to main without user testing
-
-**Known limitations**:
-- Desktop drag cursor is native browser (no custom clone due to scaling complexity)
-- Mobile drag works perfectly with custom touch implementation
-- Debug logging present in wild cube code (cleanup pending)
-
-**Next steps**:
-1. Mobile device testing of recent changes
-2. Clean up debug logging (optional)
-3. Consider: Level score requirements, tutorial tracking, or theming
+**Version**: `3.19.0-fix-universe-single`
+**Status**: Core game complete, testing and polish phase 🎉
 
 ---
 
-## 🎯 Previous Focus (Completed)
-- [ ] **Testing and fixing tutorial scenarios (Levels 1-10)** - IN PROGRESS
-  - [x] Level 1: Union
-  - [x] Level 2: Difference
-  - [x] Level 3: Complement (fixed card count)
-  - [ ] Level 4: Duplicate operators (testing now)
-  - [ ] Level 5: Universe & Null
-  - [ ] Level 6: Restrictions
-  - [ ] Level 7: Timer
-  - [ ] Level 8: Required cubes
-  - [ ] Level 9: Wild cubes
-  - [ ] Level 10: Bonus cubes
+## 🎯 Active Priorities
+
+### High Priority
+- [ ] **Full playthrough testing (Level 1-10)** - In progress
+  - Verify all special cube mechanics work correctly
+  - Test timer behavior (Level 7+)
+  - Test required cubes (Level 8+)
+  - Test wild cubes (Level 9+)
+  - Test bonus cubes (Level 10)
+  - Verify scoring calculations are accurate
+
+### Medium Priority  
+- [ ] **Create new Level 10 tutorial** 
+  - Walk player through a complex solution
+  - Demonstrate advanced techniques
+  - Showcase bonus cube usage
+  - Should feel like a finale/graduation moment
+
+### Low Priority
+- [ ] **Pre-launch: Disable unearned levels in Jump to Level**
+  - Keep Jump to Level feature in Settings
+  - Only show levels that have been unlocked through gameplay
+  - Helps preserve progression for new players
 
 ---
 
-## 🚀 Post-Tutorial Roadmap
+## 📝 Known Issues
 
-### Phase 1: Code Cleanup
-- [ ] **Refactor: Unify card and cube indexing systems**
-  - Currently `levels.js` uses sequential array, `scenarioManager.js` uses bitwise
-  - Standardize on bitwise encoding throughout
-  - Update all card references in tutorials
-  - Test thoroughly across all levels
-
-- [ ] **Enable tutorial tracking (show once behavior)**
-  - Uncomment all `markTutorialAsViewed()` calls in:
-    - `ModalManager.js` (hideResult)
-    - `UIController.js` (showFirstTimeInterstitial, showTutorialForLevel)
-  - Test that tutorials only show once per level
-
-- [ ] **Restore original level score requirements**
-  - Currently set to 50 for testing
-  - Restore to original values:
-    - Level 1: 500
-    - Level 2: 750
-    - Level 3: 1000
-    - Level 4: 1500
-    - Level 5: 2500
-    - Level 6: 5000
-    - Level 7: 5000
-    - Level 8: 5000
-    - Level 9: 7500
-    - Level 10: 10000
+### Recently Fixed (Oct 21, 2025)
+- ✅ **Universe/Null single cube validation** (v3.19.0): Single Universe or Null cubes are now accepted as valid set names, especially important after restrictions
+- ✅ **UI polish** (v3.18.5): Button padding, status bar spacing, modal labels, level badge removal, consistent button sizing
+- ✅ **Solution Helper validation** (v3.18.x): Robust syntax checking, handles wild cubes, postfix operators, two-row validation
+- ✅ **Restriction row indicators** (v3.17.x): Blue border for restrictions, red border for invalid syntax
+- ✅ **Wild cube double-click removal** (v3.16.x): Manual double-click detection working on desktop and mobile
+- ✅ **Entrance/Exit animations** (v3.15.x): Cards dealing, dice rolling in/out with GSAP
+- ✅ **Group indicator validation** (v3.15.x): Visual distinction for valid vs invalid groups
 
 ---
 
-### Phase 2: Core Features
+## 🚀 Post-Launch Ideas
 
-- [x] **Create placeholder start screen** ✅ COMPLETED
-  - Design home/landing page UI
-  - Add buttons:
-    - New Game
-    - Continue Game
-    - Tutorial (Level 0)
-    - Settings
-  - Logo and branding
-  - Smooth transitions to game
+### Future Features (Not Scheduled)
+- **Tutorial replay from menu** - Allow players to review mechanics anytime
+- **Tutorial completion badges** - Rewards for completing each tutorial
+- **"Always show tutorials" toggle** - For users who want to see them every time
+- **Multi-language support** - Internationalization for tutorials and UI
+- **Theme system** - Dark mode, colorblind-friendly themes, accessibility options
+- **Smart grouping indicators** - Only show visual grouping around valid logical patterns
+- **Background solution checking** - Web Worker to check for solutions after inactivity
 
-- [x] **Implement Level Zero (onboarding tutorial)** ✅ COMPLETED (renamed to "intro")
-  - Interactive tutorial teaching fundamentals BEFORE Level 1
-  - Concepts to cover:
-    - What cards are (colored dots)
-    - What the goal number means
-    - What color cubes do
-    - How to drag and submit
-    - First simple solve (single color cube, no operators)
-  - Keep it SHORT (2-3 minutes max)
-  - Make it feel like success/accomplishment
-  - Use existing tutorial system architecture
-
-- [ ] **Complete Level 10 functionality**
-  - Bonus cubes are partially implemented
-  - Verify bonus cube mechanics work correctly
-  - Test bonus cube interaction with other special cubes
-  - Ensure proper scoring for bonus cubes
-  - Verify UI display (bonus cube styling)
+### Theming & Accessibility (Phase 5)
+- **Design system audit** - Review colors, typography, spacing
+- **Theme architecture** - CSS variables, theme switching
+- **Theme options** - Dark mode, light mode, colorblind modes, high contrast
+- **Accessibility testing** - Screen readers, keyboard navigation, WCAG compliance
+- **Documentation** - Style guide, accessibility features documentation
 
 ---
 
-### Phase 3: UX Improvements
+## 📊 Recent Accomplishments
 
-- [x] **Solution Helper overhaul (rebrand as Guided/Advanced mode)** ✅ COMPLETED
-  - **Make Solution Helper ON by default** ✅ 
-  - **Rebrand as Guided/Advanced Mode toggle** ✅
-    - "Guided Mode" = Solution Helper ON (auto-highlights matching cards)
-    - "Advanced Mode" = Solution Helper OFF (manual tracking)
-    - More intuitive than "Solution Helper"
-  - **Update Settings UI** ✅
-    - Toggle switch with clear labels
-    - Dynamic description text based on toggle state
-    - Default to Guided Mode for new players
-  - **Note**: Card tapping still enabled in both modes (not restricted)
+### October 2025 - Major Features Completed
+- ✅ Home screen with Continue/New Game/How to Play
+- ✅ Intro tutorial (Level 0) with animations and interactive steps
+- ✅ Solution Helper rebranded as Guided/Advanced Mode
+- ✅ Interstitial screen redesign with green translucent aesthetic
+- ✅ Menu modal improvements (X button, backdrop click)
+- ✅ Modal design refresh (translucent backgrounds)
+- ✅ Wild cube popover fixes (positioning, auto-show, selection)
+- ✅ Tutorial cleanup system (restores game state)
+- ✅ Entrance/exit animations (cards dealing, dice rolling)
+- ✅ Group indicator validation (solid vs dotted borders)
+- ✅ Restriction row visual feedback (blue borders)
+- ✅ Invalid syntax feedback (red borders)
+- ✅ Two-row validation (can't have two set names)
+- ✅ Comprehensive syntax validation (wild cubes, postfix operators)
+- ✅ Independent restriction/set name evaluation
+- ✅ UI polish (buttons, spacing, colors, labels)
 
-- [ ] **Add "Always show tutorials" setting toggle**
-  - New option in Settings modal
-  - When enabled: show tutorial every time level is reached
-  - When disabled: use tracked "viewed" status (show once)
-  - Useful for:
-    - Reviewing mechanics
-    - Demo purposes
-    - Testing
-
-- [ ] **Remove or hide Test Mode level selector**
-  - Current "Jump to Level" feature in Settings
-  - Options:
-    1. Remove entirely for production
-    2. Hide behind dev mode flag
-    3. Keep but require password/code
-  - Decision TBD
+### Settings & Features
+- ✅ Solution Helper ON by default (Guided Mode)
+- ✅ Test Mode available (low score requirements for testing)
+- ✅ Jump to Level feature in Settings
+- ✅ Tutorial tracking system (can skip, won't be forced to repeat)
+- ✅ Level score requirements restored (500-10000)
 
 ---
 
-### Phase 4: Polish & Launch
+## 🎮 Tutorial System
 
-- [ ] **Final UI/UX polish**
-  - Animation timing tweaks
-  - Sound effect balance
-  - Visual feedback improvements
-  - Mobile responsiveness final check
-  - Accessibility review
+### Tutorials Complete
+- ✅ Intro (Level 0): Universe, Goal, Cubes, Solution Area, OR vs AND
+- ✅ Level 1: Union (OR)
+- ✅ Level 2: Difference (MINUS)
+- ✅ Level 3: Complement (PRIME/NOT)
+- ✅ Level 4: Duplicate operators
+- ✅ Level 5: Universe & Null
+- ✅ Level 6: Restrictions (EQUALS, SUBSET)
+- ✅ Level 7: Timer
+- ✅ Level 8: Required cubes
+- ✅ Level 9: Wild cubes
+- ✅ Level 10: Bonus cubes (needs new tutorial)
 
-- [ ] **Code cleanup**
-  - Remove commented-out code
-  - Remove console.log statements (or use debug flag)
-  - Add JSDoc comments where missing
-  - Review CLAUDE.md for accuracy
-
-- [ ] **Testing**
-  - Full playthrough (Level 1-10)
-  - Test on multiple devices
-  - Test all special cube combinations
-  - Test edge cases (timer expiry, pass system, etc.)
-
-- [ ] **Deployment**
-  - Merge `feature/tutorial-scenarios` to `main`
-  - Update version number
-  - Deploy to GitHub Pages
-  - Update README with new features
-  - Announce launch! 🎉
-
----
-
-### Phase 5: Redesign & Theming
-
-- [ ] **Design system audit**
-  - Review current color palette
-  - Assess typography choices
-  - Evaluate spacing/layout system
-  - Identify inconsistencies
-
-- [ ] **Theme architecture**
-  - Create CSS variables for all colors
-  - Organize theme tokens (primary, secondary, accent, etc.)
-  - Build theme switching mechanism
-  - Support light/dark mode
-
-- [ ] **Theme options**
-  - **Default theme** (current look)
-  - **Dark mode** (high contrast, OLED-friendly)
-  - **Light mode** (bright, clean)
-  - **Colorblind accessible themes**
-    - Deuteranopia (red-green)
-    - Protanopia (red-green)
-    - Tritanopia (blue-yellow)
-  - **High contrast** (accessibility)
-  - Custom theme builder? (future)
-
-- [ ] **Component updates**
-  - Refactor CSS to use theme variables
-  - Update cards to respect theme
-  - Update cubes/dice to respect theme
-  - Update UI chrome (buttons, modals, etc.)
-  - Ensure all states work (hover, active, disabled)
-
-- [ ] **Settings integration**
-  - Add "Theme" section to Settings
-  - Visual theme picker (show previews)
-  - Save theme preference to localStorage
-  - Apply theme on load
-  - Smooth transitions between themes
-
-- [ ] **Accessibility testing**
-  - Test with screen readers
-  - Verify keyboard navigation
-  - Check color contrast ratios (WCAG AA/AAA)
-  - Test with colorblind simulators
-  - Get feedback from accessibility community
-
-- [ ] **Documentation**
-  - Document theme system for future development
-  - Create style guide
-  - Document accessibility features
-
----
-
-## 📝 Notes
-
-### Tutorial System Implementation
-- ✅ All 10 level tutorials created
+### Tutorial Features
 - ✅ Interactive walkthrough system
 - ✅ Strict validation (must use correct dice)
 - ✅ Drag restrictions (only highlighted dice)
-- ✅ Per-level tracking infrastructure
-- ✅ Skip button hidden on final step
+- ✅ Per-level tracking
+- ✅ Skip button (hidden on final step)
 - ✅ Reset/Pass buttons blocked during tutorials
 - ✅ No points awarded for tutorial rounds
-
-### Known Issues
-- Debug console.log statements present in wild cube code (pending cleanup)
-- Desktop drag uses native browser cursor (intentional due to scaling complexity)
-
-### Recently Fixed (Oct 2025)
-- ✅ **Wild cube popover positioning** (v3.13.0): Fixed by moving popover outside #app to avoid scaling issues. Also fixed missing data-index attribute and improved response time.
-- ✅ **Modal backdrop scaling** (v3.12.x): Moved all modals outside #app so backdrops span full viewport correctly.
-- ✅ **Tutorial state persistence** (v3.12.x): Added cleanup system to restore game state when navigating away from tutorials.
-- ✅ **Continue button logic** (v3.12.x): Fixed to show when any saved game data exists, not just level > 1.
-- ✅ **Solution area cube dragging bug** (v3.2.0): Fixed ID-based tracking for dice in solution area, replacing index-based approach. Cubes now maintain consistent identity during drag/reorder/removal operations.
-
-### Future Considerations
-- Replay tutorial option from menu
-- Tutorial hints if stuck for too long
-- Skip individual steps (vs skip entire tutorial)
-- Tutorial completion rewards/badges
-- Multi-language support for tutorials
-- **Smart grouping indicators**: Only show visual grouping boxes around cubes that form valid logical patterns (e.g., `Red ∪ Blue`), not just physical proximity. Need to consider UX during construction vs completed expressions.
-- **Background solution checking**: Run solution finder in Web Worker after 10-15s of inactivity, cache result for instant Pass feedback. Would improve UX but requires careful performance tuning.
+- ✅ Cleanup system restores game state
 
 ---
 
-## 🎯 Immediate Tasks
+## 🛠️ Technical Notes
 
-### High Priority
-- [ ] **Mobile device testing** - Test all recent changes (home screen, modals, wild cube, interstitials) on physical devices
-- [ ] **Debug logging cleanup** - Remove console.log statements from wild cube code (optional, doesn't affect functionality)
+### Code Architecture
+- **Dual card encoding systems** preserved and documented
+  - `levels.js`: Human-readable color arrays
+  - `scenarioManager.js`: Bitwise integers for performance
+- **GSAP animations** for entrance/exit effects
+- **Solution Helper** with independent restriction/set name validation
+- **Tutorial system** with interactive and animated steps
+- **Responsive design** with `AppScaler` for mobile
 
-### Medium Priority  
-- [ ] **Restore original level score requirements** - Currently set to 50 for testing, should be 500-10000
-- [ ] **Enable tutorial tracking** - Uncomment markTutorialAsViewed() calls so tutorials show only once
-- [ ] **Level 10 testing** - Verify bonus cubes work correctly
+### Debug & Testing
+- Debug logging cleaned up (commented out noisy logs)
+- Test Mode available for development (low score requirements)
+- Cache busting with version numbers in script tags
+- Safari Web Inspector for iOS debugging
 
-### Low Priority
-- [ ] **Remove/hide Test Mode level selector** - Decide whether to keep Jump to Level feature in production
-- [ ] **Add "Always show tutorials" toggle** - For users who want to replay tutorials
+---
+
+## 📚 Documentation Files
+- `WORKFLOW.md` - Git workflow and merge approval process
+- `.cursorrules` - Cursor AI rules and preferences
+- `CLAUDE.md` - Project context for AI assistants
+- `TODO.md` - This file (task tracking)
+
+---
+
+_Last Updated: October 21, 2025_
