@@ -495,6 +495,7 @@ const SETNAME_PATTERNS = [
     "color,operator,color",
     "setName,operator,color",
     "color,operator,setName",
+    "setName,operator,setName",
     "color,prime,prime",
     "setName,prime,prime",
     // four cubes
@@ -513,7 +514,8 @@ const SETNAME_PATTERNS = [
     "color,operator,setName,operator,setName",
     "setName,operator,color,operator,color",
     "setName,operator,setName,operator,color",
-    "setName,operator,color,operator,setName"
+    "setName,operator,color,operator,setName",
+    "setName,operator,setName,operator,setName"
 ];
 
 /**
