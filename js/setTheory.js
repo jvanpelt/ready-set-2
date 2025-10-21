@@ -657,17 +657,17 @@ export function getPatternString(expression) {
 export function isValidSyntax(expression) {
     if (!expression || expression.length === 0) return false;
     
-    // Single die: Only color cubes are valid as single-die expressions
+    // Single die: Color cubes, Universe, and Null are valid as single-die expressions
     // (Solution-level validation handles the 2-cube minimum for complete solutions)
     if (expression.length === 1) {
         const die = expression[0];
-        if (die.type === 'color') {
-            console.log('Single color cube: ✓ VALID pattern');
+        // Allow colors, set-constants (U, ∅), and specific operator values for backwards compatibility
+        if (die.type === 'color' || die.type === 'set-constant' || die.value === 'U' || die.value === '∅') {
+            console.log('Single operand (color/Universe/Null): ✓ VALID pattern');
             return true;
-        } else {
-            console.log('Single U/∅: ✗ INVALID (must use with other cubes)');
-            return false;
         }
+        console.log('Single operator: ✗ INVALID');
+        return false;
     }
     
     // Sort dice by X position (left to right) before validation
