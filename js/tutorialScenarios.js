@@ -414,7 +414,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Try it! Drag the <strong>RED</strong> cube to the solution area.',
                     highlight: { dice: [0] },
                     validation: (game) => {
-                        return game.solutions[1].some(die => die.value === 'red');
+                        return game.solutions[0].some(die => die.value === 'red');
                     },
                     nextTrigger: 'validation'
                 },
@@ -429,7 +429,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Now add the <strong>OR</strong> operator (∪) - it has two overlapping circles.',
                     highlight: { dice: [2] },
                     validation: (game) => {
-                        return game.solutions[1].some(die => die.value === '∪');
+                        return game.solutions[0].some(die => die.value === '∪');
                     },
                     nextTrigger: 'validation'
                 },
@@ -438,7 +438,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Great! Now add the <strong>BLUE</strong> cube to complete the formula.',
                     highlight: { dice: [1] },
                     validation: (game) => {
-                        return game.solutions[1].some(die => die.value === 'blue');
+                        return game.solutions[0].some(die => die.value === 'blue');
                     },
                     nextTrigger: 'validation'
                 },
@@ -510,7 +510,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'First, drag the <strong>RED</strong> cube to the solution area.',
                     highlight: { dice: [0] },
                     validation: (game) => {
-                        return game.solutions[1].some(die => die.value === 'red');
+                        return game.solutions[0].some(die => die.value === 'red');
                     },
                     nextTrigger: 'validation'
                 },
@@ -519,7 +519,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Great! Now drag the <strong>UNION</strong> cube next to it. (It has two overlapping circles.)',
                     highlight: { dice: [2] },
                     validation: (game) => {
-                        return game.solutions[1].some(die => die.value === '∪');
+                        return game.solutions[0].some(die => die.value === '∪');
                     },
                     nextTrigger: 'validation'
                 },
@@ -528,7 +528,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Perfect! Finally, drag the <strong>BLUE</strong> cube to complete your solution.',
                     highlight: { dice: [1] },
                     validation: (game) => {
-                        return game.solutions[1].some(die => die.value === 'blue');
+                        return game.solutions[0].some(die => die.value === 'blue');
                     },
                     nextTrigger: 'validation'
                 },
@@ -600,7 +600,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'First, drag the <strong>GREEN</strong> cube to the solution area.',
                     highlight: { dice: [0] },
                     validation: (game) => {
-                        return game.solutions[1].some(die => die.value === 'green');
+                        return game.solutions[0].some(die => die.value === 'green');
                     },
                     nextTrigger: 'validation'
                 },
@@ -609,7 +609,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Great! Now drag the <strong>DIFFERENCE</strong> cube. (It has a minus sign.)',
                     highlight: { dice: [1] },
                     validation: (game) => {
-                        return game.solutions[1].some(die => die.value === '−');
+                        return game.solutions[0].some(die => die.value === '−');
                     },
                     nextTrigger: 'validation'
                 },
@@ -618,7 +618,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Perfect! Finally, drag the <strong>BLUE</strong> cube to complete your solution.',
                     highlight: { dice: [2] },
                     validation: (game) => {
-                        return game.solutions[1].some(die => die.value === 'blue');
+                        return game.solutions[0].some(die => die.value === 'blue');
                     },
                     nextTrigger: 'validation'
                 },
@@ -683,7 +683,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'First, drag the <strong>YELLOW</strong> cube to the solution area.',
                     highlight: { dice: [0] },
                     validation: (game) => {
-                        return game.solutions[1].some(die => die.value === 'gold');
+                        return game.solutions[0].some(die => die.value === 'gold');
                     },
                     nextTrigger: 'validation'
                 },
@@ -692,7 +692,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Great! Now drag the <strong>COMPLEMENT</strong> cube. (It has the prime symbol ′)',
                     highlight: { dice: [1] },
                     validation: (game) => {
-                        return game.solutions[1].some(die => die.value === '′');
+                        return game.solutions[0].some(die => die.value === '′');
                     },
                     nextTrigger: 'validation'
                 },
@@ -769,7 +769,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Start with <strong>RED</strong>.',
                     highlight: { dice: [0] },
                     validation: (game) => {
-                        return game.solutions[1].some(die => die.value === 'red');
+                        return game.solutions[0].some(die => die.value === 'red');
                     },
                     nextTrigger: 'validation'
                 },
@@ -778,7 +778,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Now drag the first <strong>INTERSECTION</strong> cube.',
                     highlight: { dice: [1] },
                     validation: (game) => {
-                        return game.solutions[1].filter(die => die.value === '∩').length >= 1;
+                        return game.solutions[0].filter(die => die.value === '∩').length >= 1;
                     },
                     nextTrigger: 'validation'
                 },
@@ -787,7 +787,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Add <strong>BLUE</strong>. Now we have "cards with red AND blue".',
                     highlight: { dice: [2] },
                     validation: (game) => {
-                        return game.solutions[1].some(die => die.value === 'blue');
+                        return game.solutions[0].some(die => die.value === 'blue');
                     },
                     nextTrigger: 'validation'
                 },
@@ -796,7 +796,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Add the second <strong>INTERSECTION</strong> cube. We\'re not done yet!',
                     highlight: { dice: [3] },
                     validation: (game) => {
-                        return game.solutions[1].filter(die => die.value === '∩').length >= 2;
+                        return game.solutions[0].filter(die => die.value === '∩').length >= 2;
                     },
                     nextTrigger: 'validation'
                 },
@@ -805,7 +805,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Finally, add <strong>GREEN</strong>. Now we have all cards with red AND blue AND green!',
                     highlight: { dice: [4] },
                     validation: (game) => {
-                        return game.solutions[1].some(die => die.value === 'green');
+                        return game.solutions[0].some(die => die.value === 'green');
                     },
                     nextTrigger: 'validation'
                 },
@@ -888,7 +888,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Start with <strong>UNIVERSE</strong> cube (U) - all 8 cards.',
                     highlight: { dice: [0] },
                     validation: (game) => {
-                        return game.solutions[1].some(die => die.value === 'U');
+                        return game.solutions[0].some(die => die.value === 'U');
                     },
                     nextTrigger: 'validation'
                 },
@@ -897,7 +897,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Add <strong>DIFFERENCE</strong> cube (−) - we\'re subtracting something.',
                     highlight: { dice: [1] },
                     validation: (game) => {
-                        return game.solutions[1].some(die => die.value === '−');
+                        return game.solutions[0].some(die => die.value === '−');
                     },
                     nextTrigger: 'validation'
                 },
@@ -906,7 +906,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Add <strong>RED</strong> cube to the right of the Difference cube.',
                     highlight: { dice: [2] },
                     validation: (game) => {
-                        return game.solutions[1].some(die => die.value === 'red');
+                        return game.solutions[0].some(die => die.value === 'red');
                     },
                     nextTrigger: 'validation'
                 },
@@ -916,7 +916,7 @@ export const TUTORIAL_SCENARIOS = {
                     highlight: { dice: [3] },
                     validation: (game) => {
                         // Check that union is in solution AND is close to red
-                        const solution = game.solutions[1];
+                        const solution = game.solutions[0];
                         const hasUnion = solution.some(die => die.value === '∪');
                         if (!hasUnion) return false;
                         
@@ -944,7 +944,7 @@ export const TUTORIAL_SCENARIOS = {
                     highlight: { dice: [4] },
                     validation: (game) => {
                         // Check that blue is in solution AND all three are close together
-                        const solution = game.solutions[1];
+                        const solution = game.solutions[0];
                         const hasBlue = solution.some(die => die.value === 'blue');
                         if (!hasBlue) return false;
                         
@@ -1082,21 +1082,21 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'drag-green',
                     message: 'Now for the set name. Drag <strong>GREEN</strong> to the <strong>BOTTOM ROW</strong>.',
                     highlight: { dice: [3] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'green'),
+                    validation: (game) => game.solutions[0].some(die => die.value === 'green'),
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-union',
                     message: 'Drag <strong>UNION (∪)</strong> to the BOTTOM ROW.',
                     highlight: { dice: [4] },
-                    validation: (game) => game.solutions[1].some(die => die.value === '∪'),
+                    validation: (game) => game.solutions[0].some(die => die.value === '∪'),
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-yellow',
                     message: 'Drag <strong>YELLOW</strong> to the BOTTOM ROW.',
                     highlight: { dice: [5] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'gold'),
+                    validation: (game) => game.solutions[0].some(die => die.value === 'gold'),
                     nextTrigger: 'validation'
                 },
                 {
@@ -1171,35 +1171,35 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'drag-green',
                     message: 'Drag <strong>GREEN</strong> to the <strong>BOTTOM ROW</strong>. Keep it spaced out - don\'t group the cubes!',
                     highlight: { dice: [0] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'green'),
+                    validation: (game) => game.solutions[0].some(die => die.value === 'green'),
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-union',
                     message: 'Drag <strong>UNION</strong> next to it. Keep them spaced apart.',
                     highlight: { dice: [1] },
-                    validation: (game) => game.solutions[1].some(die => die.value === '∪'),
+                    validation: (game) => game.solutions[0].some(die => die.value === '∪'),
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-red-1',
                     message: 'Drag the first <strong>RED</strong>. Keep spacing them out.',
                     highlight: { dice: [2] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'red'),
+                    validation: (game) => game.solutions[0].some(die => die.value === 'red'),
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-intersect',
                     message: 'Drag <strong>INTERSECTION</strong>. Still keeping them apart.',
                     highlight: { dice: [3] },
-                    validation: (game) => game.solutions[1].some(die => die.value === '∩'),
+                    validation: (game) => game.solutions[0].some(die => die.value === '∩'),
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-red-2',
                     message: 'Drag the second <strong>RED</strong>. All 5 cubes, nicely spaced!',
                     highlight: { dice: [4] },
-                    validation: (game) => game.solutions[1].filter(die => die.value === 'red').length >= 2,
+                    validation: (game) => game.solutions[0].filter(die => die.value === 'red').length >= 2,
                     nextTrigger: 'validation'
                 },
                 {
@@ -1232,7 +1232,7 @@ export const TUTORIAL_SCENARIOS = {
                     highlight: { dice: [2, 3, 4] },
                     validation: (game) => {
                         // Check that Red, Intersect, Red are all grouped together
-                        const solution = game.solutions[1];
+                        const solution = game.solutions[0];
                         const redDice = solution.filter(die => die.value === 'red');
                         const intersectDie = solution.find(die => die.value === '∩');
                         
@@ -1324,21 +1324,21 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'drag-yellow',
                     message: 'Drag <strong>YELLOW</strong> to the <strong>BOTTOM ROW</strong>. Keep cubes spaced apart.',
                     highlight: { dice: [0] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'gold'),
+                    validation: (game) => game.solutions[0].some(die => die.value === 'gold'),
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-union-1',
                     message: 'Drag <strong>UNION</strong>.',
                     highlight: { dice: [1] },
-                    validation: (game) => game.solutions[1].some(die => die.value === '∪'),
+                    validation: (game) => game.solutions[0].some(die => die.value === '∪'),
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-blue-1',
                     message: 'Drag <strong>BLUE</strong>. This should match our goal, 5 cards!',
                     highlight: { dice: [2] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'blue'),
+                    validation: (game) => game.solutions[0].some(die => die.value === 'blue'),
                     nextTrigger: 'validation'
                 },
                 {
@@ -1351,7 +1351,7 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'add-prime-1',
                     message: 'Add the <strong>COMPLEMENT</strong> cube at the end (keep it spaced out).',
                     highlight: { dice: [3] },
-                    validation: (game) => game.solutions[1].some(die => die.value === '′'),
+                    validation: (game) => game.solutions[0].some(die => die.value === '′'),
                     nextTrigger: 'validation'
                 },
                 {
@@ -1365,7 +1365,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Try grouping Complement with BLUE. Move them close together so they touch!',
                     highlight: { dice: [2, 3] },
                     validation: (game) => {
-                        const solution = game.solutions[1];
+                        const solution = game.solutions[0];
                         const blueDie = solution.find(die => die.value === 'blue');
                         const primeDie = solution.find(die => die.value === '′');
                         
@@ -1392,7 +1392,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Try grouping Complement with YELLOW instead. Move them close together!',
                     highlight: { dice: [0, 3] },
                     validation: (game) => {
-                        const solution = game.solutions[1];
+                        const solution = game.solutions[0];
                         const yellowDie = solution.find(die => die.value === 'gold');
                         const primeDie = solution.find(die => die.value === '′');
                         
@@ -1486,14 +1486,14 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'drag-red',
                     message: 'Drag <strong>RED</strong> to the <strong>BOTTOM ROW</strong>.',
                     highlight: { dice: [0] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'red'),
+                    validation: (game) => game.solutions[0].some(die => die.value === 'red'),
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-wild',
                     message: 'Drag the <strong>WILD CUBE</strong> (the one with the ?). A menu will pop up!',
                     highlight: { dice: [1] },
-                    validation: (game) => game.solutions[1].some(die => die.type === 'wild'),
+                    validation: (game) => game.solutions[0].some(die => die.type === 'wild'),
                     nextTrigger: 'validation'
                 },
                 {
@@ -1501,7 +1501,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'In the menu, select <strong>DIFFERENCE (−)</strong> - the minus sign.',
                     highlight: null,
                     validation: (game) => {
-                        const wildDie = game.solutions[1].find(die => die.type === 'wild');
+                        const wildDie = game.solutions[0].find(die => die.type === 'wild');
                         return wildDie && wildDie.selectedOperator === '−';
                     },
                     nextTrigger: 'validation'
@@ -1510,7 +1510,7 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'drag-green',
                     message: 'Drag <strong>GREEN</strong> to complete the solution.',
                     highlight: { dice: [2] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'green'),
+                    validation: (game) => game.solutions[0].some(die => die.value === 'green'),
                     nextTrigger: 'validation'
                 },
                 {
@@ -1530,7 +1530,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Select <strong>INTERSECTION (∩)</strong> from the menu.',
                     highlight: null,
                     validation: (game) => {
-                        const wildDie = game.solutions[1].find(die => die.type === 'wild');
+                        const wildDie = game.solutions[0].find(die => die.type === 'wild');
                         return wildDie && wildDie.selectedOperator === '∩';
                     },
                     nextTrigger: 'validation'
@@ -1614,21 +1614,21 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'drag-red',
                     message: 'Drag <strong>RED</strong>.',
                     highlight: { dice: [0] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'red'),
+                    validation: (game) => game.solutions[0].some(die => die.value === 'red'),
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-union',
                     message: 'Drag <strong>UNION</strong>.',
                     highlight: { dice: [1] },
-                    validation: (game) => game.solutions[1].some(die => die.value === '∪'),
+                    validation: (game) => game.solutions[0].some(die => die.value === '∪'),
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'drag-blue',
                     message: 'Drag <strong>BLUE</strong>.',
                     highlight: { dice: [2] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'blue'),
+                    validation: (game) => game.solutions[0].some(die => die.value === 'blue'),
                     nextTrigger: 'validation'
                 },
                 {
