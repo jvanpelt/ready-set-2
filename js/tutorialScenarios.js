@@ -426,7 +426,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'add-or',
-                    message: 'Now add the <strong>OR</strong> operator (∪) - it has two overlapping circles.',
+                    message: 'Now add the <strong>OR</strong> operator - it has two overlapping circles.',
                     highlight: { dice: [2] },
                     validation: (game) => {
                         return game.solutions[0].some(die => die.value === '∪');
@@ -489,7 +489,7 @@ export const TUTORIAL_SCENARIOS = {
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome! Let\'s learn the <strong>Union</strong> operator. It means "either/or".',
+                    message: 'Welcome! Let\'s learn the <strong>OR</strong> operator. It means "either/or".',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -501,7 +501,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-union',
-                    message: '<strong>Red Union Blue</strong> means "all cards with red OR blue (or both)".',
+                    message: '<strong>Red OR Blue</strong> means "all cards with red OR blue (or both)".',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -516,7 +516,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-union',
-                    message: 'Great! Now drag the <strong>UNION</strong> cube next to it. (It has two overlapping circles.)',
+                    message: 'Great! Now drag the <strong>OR</strong> cube next to it. (It has two overlapping circles.)',
                     highlight: { dice: [2] },
                     validation: (game) => {
                         return game.solutions[0].some(die => die.value === '∪');
@@ -573,25 +573,25 @@ export const TUTORIAL_SCENARIOS = {
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome to Level 2! Let\'s learn the <strong>Difference</strong> operator.',
+                    message: 'Welcome to Level 2! Let\'s learn the <strong>minus</strong> operator.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-difference',
-                    message: '<strong>Difference</strong> means "cards in A, but NOT in B". It subtracts B from A.',
+                    message: '<strong>Minus</strong> means "cards in A, but NOT in B". It subtracts B from A.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'identify-goal',
-                    message: 'Our goal is <strong>3 cards</strong>. Let\'s build "Green Difference Blue".',
+                    message: 'Our goal is <strong>3 cards</strong>. Let\'s build "Green minus Blue".',
                     highlight: { goal: true },
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-example',
-                    message: '<strong>Green Difference Blue</strong> = "All cards with green, but NOT blue". Think: green EXCEPT blue.',
+                    message: '<strong>Green minus Blue</strong> = "All cards with green, but NOT blue". Think: green EXCEPT blue.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -606,7 +606,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-diff',
-                    message: 'Great! Now drag the <strong>DIFFERENCE</strong> cube. (It has a minus sign.)',
+                    message: 'Great! Now drag the <strong>minus</strong> cube. (It has a minus sign.)',
                     highlight: { dice: [1] },
                     validation: (game) => {
                         return game.solutions[0].some(die => die.value === '−');
@@ -662,13 +662,13 @@ export const TUTORIAL_SCENARIOS = {
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome to Level 3! Meet the <strong>Complement</strong> operator. Think "Opposite Day."',
+                    message: 'Welcome to Level 3! Meet the <strong>prime</strong> operator. Think "Opposite Day."',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-complement',
-                    message: '<strong>Complement</strong> (the prime symbol) means "NOT this". It\'s the opposite or inverse.',
+                    message: '<strong>prime</strong> (the prime symbol) means "NOT this". It\'s the opposite or inverse.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -689,7 +689,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-prime',
-                    message: 'Great! Now drag the <strong>COMPLEMENT</strong> cube. (It has the prime symbol ′)',
+                    message: 'Great! Now drag the <strong>prime</strong> cube. (It looks like an apostrophe.)',
                     highlight: { dice: [1] },
                     validation: (game) => {
                         return game.solutions[0].some(die => die.value === '′');
@@ -754,7 +754,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-double-intersect',
-                    message: 'We can chain operators: <strong>Red ∩ Blue ∩ Green</strong> means "cards with red AND blue AND green".',
+                    message: 'We can chain operators: <strong>Red AND Blue AND Green</strong> means "cards with red AND blue AND green".',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -775,7 +775,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-intersect-1',
-                    message: 'Now drag the first <strong>INTERSECTION</strong> cube.',
+                    message: 'Now drag the first <strong>AND</strong> cube.',
                     highlight: { dice: [1] },
                     validation: (game) => {
                         return game.solutions[0].filter(die => die.value === '∩').length >= 1;
@@ -793,7 +793,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-intersect-2',
-                    message: 'Add the second <strong>INTERSECTION</strong> cube. We\'re not done yet!',
+                    message: 'Add the second <strong>AND</strong> cube. We\'re not done yet!',
                     highlight: { dice: [3] },
                     validation: (game) => {
                         return game.solutions[0].filter(die => die.value === '∩').length >= 2;
@@ -849,13 +849,13 @@ export const TUTORIAL_SCENARIOS = {
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome to Level 5! Two new cubes: <strong>Universe</strong> and <strong>Null</strong>.',
+                    message: 'Welcome to Level 5! Two new cubes: <strong>universe</strong> and <strong>null</strong>.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-universe',
-                    message: '<strong>Universe (U)</strong> refers to ALL cards on the board. It\'s a reference to the entire set of cards.',
+                    message: '<strong>universe</strong> refers to ALL cards on the board. It\'s a reference to the entire set of cards.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -879,7 +879,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'identify-goal',
-                    message: 'Our goal is <strong>3 cards</strong>. Let\'s build "Universe minus (Red or Blue)" = all cards with neither red nor blue.',
+                    message: 'Our goal is <strong>3 cards</strong>. Let\'s build "universe minus (Red OR Blue)" = all cards with neither red nor blue.',
                     highlight: { goal: true },
                     nextTrigger: 'auto'
                 },
@@ -894,7 +894,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-diff',
-                    message: 'Add <strong>DIFFERENCE</strong> cube (−) - we\'re subtracting something.',
+                    message: 'Add <strong>minus</strong> cube - we\'re subtracting something.',
                     highlight: { dice: [1] },
                     validation: (game) => {
                         return game.solutions[0].some(die => die.value === '−');
@@ -912,7 +912,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-union',
-                    message: 'Add <strong>UNION</strong> cube (∪) - place it <strong>close to RED</strong> so they touch! This groups them.',
+                    message: 'Add <strong>OR</strong> cube - place it <strong>close to RED</strong> so they touch! This groups them.',
                     highlight: { dice: [3] },
                     validation: (game) => {
                         // Check that union is in solution AND is close to red
@@ -976,13 +976,13 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-result',
-                    message: 'Perfect! The grouped cubes (Red ∪ Blue) act like a single unit. "U minus (Red or Blue)" = cards with neither! 5 cubes = MORE POINTS! ✓',
+                    message: 'Perfect! The grouped cubes (Red OR Blue) act like a single unit. "universe minus (Red OR Blue)" = cards with neither! 5 cubes = MORE POINTS! ✓',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'submit',
-                    message: 'Universe and Null let you use more cubes for higher scores! Click <strong>GO!</strong>',
+                    message: 'universe and null let you use more cubes for higher scores! Click <strong>GO!</strong>',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'submit'
@@ -1029,7 +1029,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-subset',
-                    message: '<strong>Subset (⊆)</strong>: "A ⊆ B" means cards in A must also be in B. Cards that violate this are <strong>removed from the universe</strong>.',
+                    message: '<strong>subset</strong>: "A subset B" means cards in A must also be in B. Cards that violate this are <strong>removed from the universe</strong>.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -1041,7 +1041,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'goal',
-                    message: 'Goal: <strong>5 cards</strong>. Let\'s build "Red ⊆ Blue" to remove red-only cards, then name the remaining set.',
+                    message: 'Goal: <strong>5 cards</strong>. Let\'s build "Red subset Blue" to remove red-only cards, then name the remaining set.',
                     highlight: { goal: true },
                     nextTrigger: 'auto'
                 },
@@ -1054,7 +1054,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-subset',
-                    message: 'Drag <strong>SUBSET (⊆)</strong> to the TOP ROW.',
+                    message: 'Drag <strong>subset</strong> to the TOP ROW.',
                     highlight: { dice: [1] },
                     validation: (game) => game.solutions[0].some(die => die.value === '⊆'),
                     nextTrigger: 'validation'
@@ -1068,7 +1068,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-effect',
-                    message: '"Red ⊆ Blue" means: red cards must contain blue. Cards with ONLY red will be <strong>flipped and removed from play</strong>.',
+                    message: '"Red subset Blue" means: red cards must contain blue. Cards with ONLY red will be <strong>flipped and removed from play</strong>.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -1087,7 +1087,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-union',
-                    message: 'Drag <strong>UNION (∪)</strong> to the BOTTOM ROW.',
+                    message: 'Drag <strong>OR</strong> to the BOTTOM ROW.',
                     highlight: { dice: [4] },
                     validation: (game) => game.solutions[0].some(die => die.value === '∪'),
                     nextTrigger: 'validation'
@@ -1101,7 +1101,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-result',
-                    message: 'Perfect! After removing red-only cards, we name the set "Green ∪ Yellow" = 5 cards. 6 cubes total = big points!',
+                    message: 'Perfect! After removing red-only cards, we name the set "Green OR Yellow" = 5 cards. 6 cubes total = big points!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -1157,13 +1157,13 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-padding',
-                    message: 'But while we\'re here, a trick! <strong>Red ∩ Red = Red</strong> uses 2 extra cubes for the same result as a single <strong>Red</strong> cube.',
+                    message: 'But while we\'re here, a trick! <strong>Red AND Red = Red</strong> uses 2 extra cubes for the same result as a single <strong>Red</strong> cube.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'goal',
-                    message: 'Goal: <strong>5 cards</strong>. Let\'s build "Green ∪ Red ∩ Red" and see what happens.',
+                    message: 'Goal: <strong>5 cards</strong>. Let\'s build "Green OR Red AND Red" and see what happens.',
                     highlight: { goal: true },
                     nextTrigger: 'auto'
                 },
@@ -1176,7 +1176,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-union',
-                    message: 'Drag <strong>UNION</strong> next to it. Keep them spaced apart.',
+                    message: 'Drag <strong>OR</strong> next to it. Keep them spaced apart.',
                     highlight: { dice: [1] },
                     validation: (game) => game.solutions[0].some(die => die.value === '∪'),
                     nextTrigger: 'validation'
@@ -1190,7 +1190,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-intersect',
-                    message: 'Drag <strong>INTERSECTION</strong>. Still keeping them apart.',
+                    message: 'Drag <strong>AND</strong>. Still keeping them apart.',
                     highlight: { dice: [3] },
                     validation: (game) => game.solutions[0].some(die => die.value === '∩'),
                     nextTrigger: 'validation'
@@ -1210,7 +1210,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-problem-1',
-                    message: 'Without grouping, this evaluates as "Green ∪ Red" first, then "... ∩ Red".',
+                    message: 'Without grouping, this evaluates as "Green OR Red" first, then "... AND Red".',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -1222,7 +1222,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-fix',
-                    message: 'We need to group "Red ∩ Red" together so it\'s treated as ONE unit: "Green ∪ (Red ∩ Red)".',
+                    message: 'We need to group "Red AND Red" together so it\'s treated as ONE unit: "Green OR (Red AND Red)".',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -1258,7 +1258,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'success',
-                    message: 'Perfect! Now Solution Helper shows 5 cards! "Green ∪ (Red ∩ Red)" = Green ∪ Red = 5 cards!',
+                    message: 'Perfect! Now Solution Helper shows 5 cards! "Green OR (Red AND Red)" = Green OR Red = 5 cards!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -1316,7 +1316,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'goal',
-                    message: 'Goal: <strong>5 cards</strong>. Let\'s try building a solution. Start with "Yellow ∪ Blue".',
+                    message: 'Goal: <strong>5 cards</strong>. Let\'s try building a solution. Start with "Yellow OR Blue".',
                     highlight: { goal: true },
                     nextTrigger: 'auto'
                 },
@@ -1329,7 +1329,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-union-1',
-                    message: 'Drag <strong>UNION</strong>.',
+                    message: 'Drag <strong>OR</strong>.',
                     highlight: { dice: [1] },
                     validation: (game) => game.solutions[0].some(die => die.value === '∪'),
                     nextTrigger: 'validation'
@@ -1349,14 +1349,14 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'add-prime-1',
-                    message: 'Add the <strong>COMPLEMENT</strong> cube at the end (keep it spaced out).',
+                    message: 'Add the <strong>prime</strong> cube at the end (keep it spaced out).',
                     highlight: { dice: [3] },
                     validation: (game) => game.solutions[0].some(die => die.value === '′'),
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'check-helper-2',
-                    message: 'Hmm... now it only matches 3 cards! "Yellow ∪ Blue ′" evaluated left-to-right doesn\'t work.',
+                    message: 'Hmm... now it only matches 3 cards! "Yellow OR Blue prime" evaluated left-to-right doesn\'t work.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -1383,7 +1383,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'check-helper-3',
-                    message: 'Now "Yellow ∪ (Blue′)" matches 7 cards! Too many. The grouping changes everything!',
+                    message: 'Now "Yellow OR (Blue prime)" matches 7 cards! Too many. The grouping changes everything!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -1410,7 +1410,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'success',
-                    message: 'Perfect! "(Yellow′) ∪ Blue" = 5 cards! Grouping with Yellow was the key!',
+                    message: 'Perfect! "(Yellow prime) OR Blue" = 5 cards! Grouping with Yellow was the key!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -1498,7 +1498,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'select-difference',
-                    message: 'In the menu, select <strong>DIFFERENCE (−)</strong> - the minus sign.',
+                    message: 'In the menu, select <strong>minus</strong>.',
                     highlight: null,
                     validation: (game) => {
                         const wildDie = game.solutions[0].find(die => die.type === 'wild');
@@ -1515,7 +1515,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'check-wrong',
-                    message: 'Hmm... "Red − Green" doesn\'t match our goal. Let\'s try a different operator!',
+                    message: 'Hmm... "Red minus Green" doesn\'t match our goal. Let\'s try a different operator!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -1527,7 +1527,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'select-intersect',
-                    message: 'Select <strong>INTERSECTION (∩)</strong> from the menu.',
+                    message: 'Select <strong>AND</strong> from the menu.',
                     highlight: null,
                     validation: (game) => {
                         const wildDie = game.solutions[0].find(die => die.type === 'wild');
@@ -1537,7 +1537,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'check-correct',
-                    message: 'Perfect! "Red ∩ Green" matches our goal! Different operator, different result!',
+                    message: 'Perfect! "Red AND Green" matches our goal! Different operator, different result!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -1619,7 +1619,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-union',
-                    message: 'Drag <strong>UNION</strong>.',
+                    message: 'Drag <strong>OR</strong>.',
                     highlight: { dice: [1] },
                     validation: (game) => game.solutions[0].some(die => die.value === '∪'),
                     nextTrigger: 'validation'

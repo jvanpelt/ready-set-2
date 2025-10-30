@@ -11,9 +11,9 @@ export function getUnionSVG() {
             <!-- Right circle -->
             <circle cx="40" cy="30" r="18" fill="currentColor" opacity="0.7" />
             <!-- Outline for left circle -->
-            <circle cx="20" cy="30" r="18" fill="none" stroke="currentColor" stroke-width="2" />
+            <circle cx="20" cy="30" r="18" fill="none" stroke="currentColor" stroke-width="3" />
             <!-- Outline for right circle -->
-            <circle cx="40" cy="30" r="18" fill="none" stroke="currentColor" stroke-width="2" />
+            <circle cx="40" cy="30" r="18" fill="none" stroke="currentColor" stroke-width="3" />
         </svg>
     `.trim();
 }
@@ -32,9 +32,9 @@ export function getIntersectionSVG() {
                 </clipPath>
             </defs>
             <!-- Left circle outline -->
-            <circle cx="20" cy="30" r="18" fill="none" stroke="currentColor" stroke-width="2" />
+            <circle cx="20" cy="30" r="18" fill="none" stroke="currentColor" stroke-width="3" />
             <!-- Right circle outline -->
-            <circle cx="40" cy="30" r="18" fill="none" stroke="currentColor" stroke-width="2" />
+            <circle cx="40" cy="30" r="18" fill="none" stroke="currentColor" stroke-width="3" />
             <!-- Filled intersection (right circle clipped by left) -->
             <circle cx="40" cy="30" r="18" fill="currentColor" opacity="0.7" clip-path="url(#${uniqueId})" />
         </svg>
@@ -48,9 +48,9 @@ export function getEqualsSVG() {
     return `
         <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
             <!-- Top line -->
-            <rect x="15" y="22" width="30" height="4" fill="currentColor" rx="1" />
+            <rect x="10" y="22" width="40" height="6" fill="currentColor" rx="1" />
             <!-- Bottom line -->
-            <rect x="15" y="34" width="30" height="4" fill="currentColor" rx="1" />
+            <rect x="10" y="34" width="40" height="6" fill="currentColor" rx="1" />
         </svg>
     `.trim();
 }
@@ -61,16 +61,41 @@ export function getEqualsSVG() {
 export function getSubsetSVG() {
     return `
         <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-            <!-- C-shaped curve -->
-            <path d="M 35 15 Q 20 15, 20 30 Q 20 45, 35 45" 
-                  fill="none" 
+            <!-- Wrap in group to position together -->
+            <g transform="translate(5, 8)">
+                <!-- C-shaped curve -->
+                <path d="M47.4801,6.5788h-27.2407c-9.1486,0-13.377,2.9421-13.377,7.3808,0,4.7609,4.2284,7.5956,13.377,7.5956h27.2407v6.5797h-26.6861C6.3773,28.1349,0,22.411,0,13.7474,0,5.4018,6.0309,0,20.7253,0h26.7548v6.5788Z"
+                      fill="currentColor"
+                      stroke-linecap="round" />
+                <!-- Bottom horizontal line -->
+                <rect y="34" width="48" height="6" fill="currentColor" />
+            </g>
+        </svg>
+    `.trim();
+}
+
+/**
+ * Generate SVG for Minus (−) - Single horizontal red bar
+ */
+export function getMinusSVG() {
+    return `
+        <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+            <!-- Horizontal bar -->
+            <rect x="10" y="27" width="40" height="6" fill="currentColor" rx="1" />
+        </svg>
+    `.trim();
+}
+
+/**
+ * Generate SVG for Complement/Prime (′) - Apostrophe-style mark
+ */
+export function getComplementSVG() {
+    return `
+        <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+            <!-- Short apostrophe mark in upper area -->
+            <line x1="35" y1="15" x2="28" y2="28" 
                   stroke="currentColor" 
-                  stroke-width="3.5" 
-                  stroke-linecap="round" />
-            <!-- Bottom horizontal line -->
-            <line x1="20" y1="48" x2="35" y2="48" 
-                  stroke="currentColor" 
-                  stroke-width="3.5" 
+                  stroke-width="6" 
                   stroke-linecap="round" />
         </svg>
     `.trim();
@@ -83,16 +108,16 @@ export function getUniverseSVG() {
     return `
         <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
             <!-- V shape pointing down -->
-            <path d="M 18 18 L 30 35 L 42 18" 
+            <path d="M 10 10 L 30 35 L 50 10" 
                   fill="none" 
                   stroke="currentColor" 
-                  stroke-width="3.5" 
+                  stroke-width="6" 
                   stroke-linecap="round" 
                   stroke-linejoin="round" />
             <!-- Horizontal line below -->
-            <line x1="18" y1="42" x2="42" y2="42" 
+            <line x1="10" y1="48" x2="50" y2="48" 
                   stroke="currentColor" 
-                  stroke-width="3.5" 
+                  stroke-width="6" 
                   stroke-linecap="round" />
         </svg>
     `.trim();
@@ -105,18 +130,19 @@ export function getNullSVG() {
     return `
         <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
             <!-- Caret/chevron pointing up -->
-            <path d="M 18 32 L 30 18 L 42 32" 
+            <path d="M 10 32 L 30 10 L 50 32" 
                   fill="none" 
                   stroke="currentColor" 
-                  stroke-width="3.5" 
+                  stroke-width="6" 
                   stroke-linecap="round" 
                   stroke-linejoin="round" />
             <!-- Horizontal line below -->
-            <line x1="18" y1="42" x2="42" y2="42" 
+            <line x1="10" y1="48" x2="50" y2="48" 
                   stroke="currentColor" 
-                  stroke-width="3.5" 
+                  stroke-width="6" 
                   stroke-linecap="round" />
         </svg>
+        
     `.trim();
 }
 
@@ -135,6 +161,10 @@ export function getSVGForOperator(value) {
             return getEqualsSVG();
         case '⊆':
             return getSubsetSVG();
+        case '−':
+            return getMinusSVG();
+        case '′':
+            return getComplementSVG();
         case 'U':
             return getUniverseSVG();
         case '∅':
