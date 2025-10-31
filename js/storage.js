@@ -192,7 +192,8 @@ export class GameStorage {
         // Return default settings
         return {
             solutionHelper: true,  // On by default - it's a great feature!
-            testMode: false  // When enabled, use easy scores (50) for quick testing
+            testMode: false,  // When enabled, use easy scores (50) for quick testing
+            theme: 'default'  // Default theme
         };
     }
     

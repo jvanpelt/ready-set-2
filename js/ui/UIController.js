@@ -93,6 +93,11 @@ export class UIController {
         this.testModeToggle = document.getElementById('test-mode-toggle');
         this.testModeToggle.checked = this.settings.testMode || false;
         
+        this.themeSelector = document.getElementById('theme-selector');
+        this.themeSelector.value = this.settings.theme || 'default';
+        // Apply saved theme on load
+        this.switchTheme(this.settings.theme || 'default');
+        
         // Test mode
         this.jumpToLevelBtn = document.getElementById('jump-to-level-btn');
     }
@@ -169,6 +174,12 @@ export class UIController {
             } else {
                 this.clearSolutionHelper();
             }
+        });
+        
+        this.themeSelector.addEventListener('change', (e) => {
+            this.settings.theme = e.target.value;
+            this.game.storage.saveSettings(this.settings);
+            this.switchTheme(e.target.value);
         });
         
         this.testModeToggle.addEventListener('change', (e) => {
@@ -426,6 +437,15 @@ export class UIController {
             this.solutionHelperDescription.textContent = 'Guided mode: automatically highlights cards that match your current solution.';
         } else {
             this.solutionHelperDescription.textContent = 'Advanced mode: manually tap cards to highlight and flip them to help visualize your solution.';
+        }
+    }
+    
+    switchTheme(themeName) {
+        // Find the existing theme link
+        const themeLink = document.querySelector('link[href*="/themes/"]');
+        if (themeLink) {
+            // Update the href to the new theme
+            themeLink.href = `css/themes/${themeName}.css?v=4.0.0`;
         }
     }
     
