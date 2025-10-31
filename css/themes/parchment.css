@@ -184,3 +184,16 @@
     color: #5a4a3a;
 }
 
+/* Interstitial screen text */
+.interstitial-container,
+.interstitial-title,
+.interstitial-content,
+.description-text,
+.interstitial-feature,
+.feature-title,
+.feature-description,
+.interstitial-footer,
+.interstitial-footer small {
+    color: #5a4a3a !important;
+}
+
