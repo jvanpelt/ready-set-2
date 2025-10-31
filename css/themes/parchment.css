@@ -171,3 +171,11 @@
     color: #ffffff !important;
 }
 
+/* Home screen gradient background */
+.home-screen {
+    background: linear-gradient(180deg, 
+        rgba(194, 184, 170, 0.95) 0%, 
+        rgba(245, 237, 224, 0.95) 50%, 
+        rgba(194, 184, 170, 0.95) 100%);
+}
+
