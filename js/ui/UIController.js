@@ -445,7 +445,7 @@ export class UIController {
         const themeLink = document.querySelector('link[href*="/themes/"]');
         if (themeLink) {
             // Update the href to the new theme
-            themeLink.href = `css/themes/${themeName}.css?v=4.0.1`;
+            themeLink.href = `css/themes/${themeName}.css?v=4.0.2`;
         }
     }
     
