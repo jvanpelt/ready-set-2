@@ -190,7 +190,7 @@
 .die.operator svg rect,
 .die.operator svg line {
     stroke: #ffffff;
-    fill: #ffffff;
+    /* fill: #ffffff; */
 }
 
 .die.operator {
