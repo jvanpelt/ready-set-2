@@ -5,11 +5,11 @@
 
 :root {
     /* === GAME COLORS === */
-    /* Card dot colors - same as default for consistency */
-    --color-red: #e74c3c;
-    --color-blue: #3498db;
-    --color-green: #2ecc71;
-    --color-gold: #f39c12;
+    /* Card dot colors - updated flat theme palette */
+    --color-red: #d03121;
+    --color-blue: #237eba;
+    --color-green: #56a148;
+    --color-gold: #cfab02;
     
     /* === BACKGROUND & STRUCTURE === */
     --bg-gradient-start: rgb(30, 30, 30);
@@ -34,64 +34,64 @@
     --color-die-text: #ecf0f1;
     
     /* === OPERATORS & SET CONSTANTS === */
-    --color-operator-regular: #e74c3c;
-    --color-operator-restriction: #3498db;
+    --color-operator-regular: #d03121;
+    --color-operator-restriction: #237eba;
     --color-set-constant: #95a5a6;
     
     /* === SPECIAL CUBES (glows & effects) === */
-    --color-required-border: #2ecc71;
-    --color-required-glow: rgba(46, 204, 113, 0.6);
-    --color-required-glow-bright: rgba(46, 204, 113, 0.8);
+    --color-required-border: #56a148;
+    --color-required-glow: rgba(86, 161, 72, 0.6);
+    --color-required-glow-bright: rgba(86, 161, 72, 0.8);
     
-    --color-bonus-border: #f39c12;
-    --color-bonus-glow: rgba(243, 156, 18, 0.6);
-    --color-bonus-glow-bright: rgba(243, 156, 18, 0.8);
+    --color-bonus-border: #cfab02;
+    --color-bonus-glow: rgba(207, 171, 2, 0.6);
+    --color-bonus-glow-bright: rgba(207, 171, 2, 0.8);
     
-    --color-wild-border: #e74c3c;
-    --color-wild-glow: rgba(231, 76, 60, 0.6);
-    --color-wild-glow-bright: rgba(231, 76, 60, 0.8);
+    --color-wild-border: #d03121;
+    --color-wild-glow: rgba(208, 49, 33, 0.6);
+    --color-wild-glow-bright: rgba(208, 49, 33, 0.8);
     
     /* === SOLUTION AREA === */
     --color-solution-bg: rgba(255, 255, 255, 0.03);
     --color-solution-border: rgba(255, 255, 255, 0.15);
     --color-solution-drag-over-bg: rgba(255, 255, 255, 0.06);
     --color-solution-drag-over-border: rgba(255, 255, 255, 0.3);
-    --color-solution-valid-border: #2ecc71;
-    --color-solution-valid-bg: rgba(46, 204, 113, 0.08);
-    --color-solution-restriction-border: rgba(52, 152, 219, 0.5);
-    --color-solution-invalid-border: rgba(231, 76, 60, 0.5);
-    --color-solution-invalid-bg: rgba(231, 76, 60, 0.05);
+    --color-solution-valid-border: #56a148;
+    --color-solution-valid-bg: rgba(86, 161, 72, 0.08);
+    --color-solution-restriction-border: rgba(35, 126, 186, 0.5);
+    --color-solution-invalid-border: rgba(208, 49, 33, 0.5);
+    --color-solution-invalid-bg: rgba(208, 49, 33, 0.05);
     --color-solution-disabled-bg: rgba(0, 0, 0, 0.3);
     --color-solution-disabled-border: rgba(255, 255, 255, 0.15);
     
     /* === GROUP INDICATORS === */
-    --color-group-valid-bg: rgba(46, 204, 113, 0.12);
-    --color-group-valid-border: rgba(46, 204, 113, 0.4);
+    --color-group-valid-bg: rgba(86, 161, 72, 0.12);
+    --color-group-valid-border: rgba(86, 161, 72, 0.4);
     --color-group-invalid-bg: rgba(149, 165, 166, 0.12);
     --color-group-invalid-border: rgba(149, 165, 166, 0.4);
     
     /* === UI ELEMENTS === */
     --color-border: #444;
-    --color-highlight: #e74c3c;
+    --color-highlight: #d03121;
     --color-text-primary: #ecf0f1;
     --color-text-secondary: rgba(236, 240, 241, 0.7);
     --color-text-dark: #ecf0f1;
     
     /* === BUTTONS === */
-    --color-btn-primary: #3498db;
-    --color-btn-secondary: #2ecc71;
-    --color-btn-warning: #e74c3c;
-    --color-btn-success: #2ecc71;
-    --color-btn-success-gradient-start: #2ecc71;
-    --color-btn-success-gradient-end: #27ae60;
-    --color-btn-danger-gradient-start: #e74c3c;
-    --color-btn-danger-gradient-end: #c0392b;
-    --color-btn-danger-gradient-hover-start: #c0392b;
-    --color-btn-danger-gradient-hover-end: #a93226;
+    --color-btn-primary: #237eba;
+    --color-btn-secondary: #56a148;
+    --color-btn-warning: #d03121;
+    --color-btn-success: #56a148;
+    --color-btn-success-gradient-start: #56a148;
+    --color-btn-success-gradient-end: #4a8a3d;
+    --color-btn-danger-gradient-start: #d03121;
+    --color-btn-danger-gradient-end: #b8291c;
+    --color-btn-danger-gradient-hover-start: #b8291c;
+    --color-btn-danger-gradient-hover-end: #a02317;
     
     /* === STATUS BAR === */
     --color-timer-bg: #34495e;
-    --color-timer-border: #3498db;
+    --color-timer-border: #237eba;
     --color-goal-bg: #2c2c2c;
     --color-goal-text: #ecf0f1;
     --color-goal-label: #95a5a6;
@@ -99,9 +99,9 @@
     /* === MODALS & OVERLAYS === */
     --color-modal-backdrop: rgba(0, 0, 0, 0.85);
     --color-modal-bg: rgba(44, 62, 80, 0.98);
-    --color-modal-border: #3498db;
-    --color-modal-close-btn: #e74c3c;
-    --color-modal-close-btn-hover: #c0392b;
+    --color-modal-border: #237eba;
+    --color-modal-close-btn: #d03121;
+    --color-modal-close-btn-hover: #b8291c;
     
     /* === INTERSTITIAL & HOME SCREENS === */
     --color-interstitial-bg: rgba(44, 62, 80, 0.95);
@@ -109,21 +109,21 @@
     
     /* === TUTORIAL === */
     --color-tutorial-bg: rgba(52, 73, 94, 0.9);
-    --color-tutorial-border: rgba(46, 204, 113, 0.5);
-    --color-tutorial-badge: #2ecc71;
-    --color-tutorial-highlight: #f39c12;
-    --color-tutorial-btn-primary: #2ecc71;
-    --color-tutorial-btn-hover: #27ae60;
-    --color-tutorial-btn-hover-end: #229954;
+    --color-tutorial-border: rgba(86, 161, 72, 0.5);
+    --color-tutorial-badge: #56a148;
+    --color-tutorial-highlight: #cfab02;
+    --color-tutorial-btn-primary: #56a148;
+    --color-tutorial-btn-hover: #4a8a3d;
+    --color-tutorial-btn-hover-end: #3e7434;
     
     /* === PUZZLE BUILDER === */
     --color-builder-border: rgba(255, 255, 255, 0.15);
-    --color-builder-border-open: #2ecc71;
-    --color-builder-heading: #2ecc71;
-    --color-builder-success-border: #2ecc71;
-    --color-builder-success-bg: rgba(46, 204, 113, 0.15);
-    --color-builder-error-border: #e74c3c;
-    --color-builder-error-bg: rgba(231, 76, 60, 0.15);
+    --color-builder-border-open: #56a148;
+    --color-builder-heading: #56a148;
+    --color-builder-success-border: #56a148;
+    --color-builder-success-bg: rgba(86, 161, 72, 0.15);
+    --color-builder-error-border: #d03121;
+    --color-builder-error-bg: rgba(208, 49, 33, 0.15);
     
     /* === SEMI-TRANSPARENT OVERLAYS === */
     --overlay-dark-10: rgba(0, 0, 0, 0.15);
@@ -144,23 +144,23 @@
 
 /* Reversed dice colors - solid colored background with white circles */
 .die.color-circle:has(.circle.red) {
-    background: #e74c3c;
-    border-color: #c0392b;
+    background: #d03121;
+    border-color: #b8291c;
 }
 
 .die.color-circle:has(.circle.blue) {
-    background: #3498db;
-    border-color: #2980b9;
+    background: #237eba;
+    border-color: #1e6a9f;
 }
 
 .die.color-circle:has(.circle.green) {
-    background: #2ecc71;
-    border-color: #27ae60;
+    background: #56a148;
+    border-color: #4a8a3d;
 }
 
 .die.color-circle:has(.circle.gold) {
-    background: #f39c12;
-    border-color: #e67e22;
+    background: #cfab02;
+    border-color: #b69402;
 }
 
 /* White circles on colored dice */
@@ -170,13 +170,13 @@
 
 /* Solid backgrounds for operator cubes */
 .die.operator-regular {
-    background: #e74c3c;
-    border-color: #c0392b;
+    background: #d03121;
+    border-color: #b8291c;
 }
 
 .die.operator-restriction {
-    background: #3498db;
-    border-color: #2980b9;
+    background: #237eba;
+    border-color: #1e6a9f;
 }
 
 .die.set-constant {
