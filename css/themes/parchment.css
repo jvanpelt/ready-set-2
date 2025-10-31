@@ -200,7 +200,8 @@
 /* Tutorial and puzzle builder strong text */
 .tutorial-instruction strong,
 .puzzle-builder strong,
-#puzzle-builder strong {
+#puzzle-builder strong,
+#tutorial-instruction-text {
     color: #5a4a3a !important;
 }
 
