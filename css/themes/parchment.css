@@ -179,3 +179,8 @@
         rgba(194, 184, 170, 0.95) 100%);
 }
 
+/* Home screen subtitle text */
+.home-subtitle {
+    color: #5a4a3a;
+}
+
