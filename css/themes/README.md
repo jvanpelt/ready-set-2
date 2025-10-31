@@ -18,21 +18,21 @@ A darker, flatter design with reduced shadows and gradients for a modern, minima
 
 ## How to Use
 
-In your HTML file (`index.html`), load **ONE** theme CSS file before the main `styles.css`:
+In your HTML file (`index.html`), load the main `styles.css` first, then load **ONE** theme CSS file to override:
 
 ```html
-<!-- Load your chosen theme first -->
-<link rel="stylesheet" href="css/themes/default.css">
-<!-- Then load main styles -->
+<!-- Load main styles first -->
 <link rel="stylesheet" href="css/styles.css">
+<!-- Then load your chosen theme to override -->
+<link rel="stylesheet" href="css/themes/default.css">
 ```
 
 To switch themes, simply change which theme file you're loading:
 
 ```html
 <!-- Use the Neon theme instead -->
-<link rel="stylesheet" href="css/themes/neon.css">
 <link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/themes/neon.css">
 ```
 
 ## Creating Custom Themes
