@@ -92,6 +92,7 @@
     /* === STATUS BAR === */
     --color-timer-bg: #d4c4b0;
     --color-timer-border: #8b7355;
+    --color-timer-text: #5a4a3a;
     --color-goal-bg: #f8f4ed;
     --color-goal-text: #5a4a3a;
     --color-goal-label: #7a6a55;
@@ -136,5 +137,17 @@
     --overlay-white-15: rgba(139, 115, 85, 0.15);
     --overlay-white-20: rgba(139, 115, 85, 0.2);
     --overlay-white-30: rgba(139, 115, 85, 0.3);
+}
+
+/* ============================================================================
+   PARCHMENT THEME SPECIFIC OVERRIDES
+   ============================================================================ */
+
+/* Timer and score displays use dark text like goal display */
+.timer-display .stat-value,
+.timer-display .stat-label,
+.score-display .stat-value,
+.score-display .stat-label {
+    color: #5a4a3a;
 }
 
