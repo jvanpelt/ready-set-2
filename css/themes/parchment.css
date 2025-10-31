@@ -151,12 +151,14 @@
     color: #5a4a3a;
 }
 
-/* Menu modal text uses dark text, but buttons stay white */
-.modal-content {
-    color: #5a4a3a;
-}
-
-.modal-content h2 {
+/* All modal text uses dark text, but buttons stay white */
+.modal-content,
+.modal-content p,
+.modal-content h2,
+.modal-content h3,
+.modal-content label,
+.modal-content small,
+.modal-content .setting-label {
     color: #5a4a3a;
 }
 
