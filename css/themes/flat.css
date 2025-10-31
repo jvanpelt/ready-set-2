@@ -145,69 +145,69 @@
 /* Reversed dice colors - solid colored background with white circles */
 /* Apply to dice in dice area and solution area */
 .dice-area .die.color-circle:has(.circle.red),
-.solution-row .die.color-circle:has(.circle.red) {
+.solution-die.color-circle:has(.circle.red) {
     background: #d03121;
     border-color: #b8291c;
 }
 
 .dice-area .die.color-circle:has(.circle.blue),
-.solution-row .die.color-circle:has(.circle.blue) {
+.solution-die.color-circle:has(.circle.blue) {
     background: #237eba;
     border-color: #1e6a9f;
 }
 
 .dice-area .die.color-circle:has(.circle.green),
-.solution-row .die.color-circle:has(.circle.green) {
+.solution-die.color-circle:has(.circle.green) {
     background: #56a148;
     border-color: #4a8a3d;
 }
 
 .dice-area .die.color-circle:has(.circle.gold),
-.solution-row .die.color-circle:has(.circle.gold) {
+.solution-die.color-circle:has(.circle.gold) {
     background: #cfab02;
     border-color: #b69402;
 }
 
 /* White circles on colored dice */
 .dice-area .die.color-circle .circle,
-.solution-row .die.color-circle .circle {
+.solution-die.color-circle .circle {
     background: #ffffff;
 }
 
 /* Solid backgrounds for operator cubes */
 .dice-area .die.operator-regular,
-.solution-row .die.operator-regular {
+.solution-die.operator-regular {
     background: #d03121;
     border-color: #b8291c;
 }
 
 .dice-area .die.operator-restriction,
-.solution-row .die.operator-restriction {
+.solution-die.operator-restriction {
     background: #237eba;
     border-color: #1e6a9f;
 }
 
 .dice-area .die.set-constant,
-.solution-row .die.set-constant {
+.solution-die.set-constant {
     background: #95a5a6;
     border-color: #7f8c8d;
 }
 
 /* White SVG icons and text for operators */
 .dice-area .die.operator svg path,
-.solution-row .die.operator svg path,
+.solution-die.operator svg path,
 .dice-area .die.operator svg circle,
-.solution-row .die.operator svg circle,
+.solution-die.operator svg circle,
 .dice-area .die.operator svg rect,
-.solution-row .die.operator svg rect,
+.solution-die.operator svg rect,
 .dice-area .die.operator svg line,
-.solution-row .die.operator svg line {
+.solution-die.operator svg line {
     stroke: #ffffff;
     /* fill: #ffffff; */
 }
 
 .dice-area .die.operator,
-.solution-row .die.operator {
+.solution-die.operator {
     color: #ffffff;
 }
 
