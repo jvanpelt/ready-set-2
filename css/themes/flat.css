@@ -138,3 +138,42 @@
     --overlay-white-30: rgba(255, 255, 255, 0.18);
 }
 
+/* ============================================================================
+   FLAT THEME SPECIFIC OVERRIDES
+   ============================================================================ */
+
+/* Reversed dice colors - solid colored background with white circles */
+.die.color-circle:has(.circle.red) {
+    background: #e74c3c;
+    border-color: #c0392b;
+}
+
+.die.color-circle:has(.circle.blue) {
+    background: #3498db;
+    border-color: #2980b9;
+}
+
+.die.color-circle:has(.circle.green) {
+    background: #2ecc71;
+    border-color: #27ae60;
+}
+
+.die.color-circle:has(.circle.gold) {
+    background: #f39c12;
+    border-color: #e67e22;
+}
+
+/* White circles on colored dice */
+.die.color-circle .circle {
+    background: #ffffff;
+}
+
+/* White SVG icons for operators */
+.die.operator svg path,
+.die.operator svg circle,
+.die.operator svg rect,
+.die.operator svg line {
+    stroke: #ffffff;
+    fill: #ffffff;
+}
+
