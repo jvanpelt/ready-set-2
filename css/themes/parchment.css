@@ -197,12 +197,26 @@
     color: #5a4a3a !important;
 }
 
-/* Tutorial and puzzle builder strong text */
+/* Tutorial and puzzle builder text - all instances */
 .tutorial-instruction strong,
 .puzzle-builder strong,
 #puzzle-builder strong,
 #tutorial-instruction-text,
-.tutorial-instruction-text {
+.tutorial-instruction-text,
+.builder-section,
+.builder-section summary,
+.builder-section h3,
+.builder-subsection,
+.builder-subsection strong,
+.builder-info,
+.builder-results,
+.builder-results h4,
+.builder-results pre,
+.selector-die.operator,
+#puzzle-builder,
+#puzzle-builder p,
+#puzzle-builder label,
+#puzzle-builder .builder-section-content {
     color: #5a4a3a !important;
 }
 
