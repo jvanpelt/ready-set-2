@@ -197,3 +197,10 @@
     color: #5a4a3a !important;
 }
 
+/* Tutorial and puzzle builder strong text */
+.tutorial-instruction strong,
+.puzzle-builder strong,
+#puzzle-builder strong {
+    color: #5a4a3a !important;
+}
+
