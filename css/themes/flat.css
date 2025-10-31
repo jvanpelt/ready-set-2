@@ -143,57 +143,71 @@
    ============================================================================ */
 
 /* Reversed dice colors - solid colored background with white circles */
-.die.color-circle:has(.circle.red) {
-    background: #d03121 !important;
-    border-color: #b8291c !important;
+/* Apply to dice in dice area and solution area */
+.dice-area .die.color-circle:has(.circle.red),
+.solution-row .die.color-circle:has(.circle.red) {
+    background: #d03121;
+    border-color: #b8291c;
 }
 
-.die.color-circle:has(.circle.blue) {
-    background: #237eba !important;
-    border-color: #1e6a9f !important;
+.dice-area .die.color-circle:has(.circle.blue),
+.solution-row .die.color-circle:has(.circle.blue) {
+    background: #237eba;
+    border-color: #1e6a9f;
 }
 
-.die.color-circle:has(.circle.green) {
-    background: #56a148 !important;
-    border-color: #4a8a3d !important;
+.dice-area .die.color-circle:has(.circle.green),
+.solution-row .die.color-circle:has(.circle.green) {
+    background: #56a148;
+    border-color: #4a8a3d;
 }
 
-.die.color-circle:has(.circle.gold) {
-    background: #cfab02 !important;
-    border-color: #b69402 !important;
+.dice-area .die.color-circle:has(.circle.gold),
+.solution-row .die.color-circle:has(.circle.gold) {
+    background: #cfab02;
+    border-color: #b69402;
 }
 
 /* White circles on colored dice */
-.die.color-circle .circle {
-    background: #ffffff !important;
+.dice-area .die.color-circle .circle,
+.solution-row .die.color-circle .circle {
+    background: #ffffff;
 }
 
 /* Solid backgrounds for operator cubes */
-.die.operator-regular {
-    background: #d03121 !important;
-    border-color: #b8291c !important;
+.dice-area .die.operator-regular,
+.solution-row .die.operator-regular {
+    background: #d03121;
+    border-color: #b8291c;
 }
 
-.die.operator-restriction {
-    background: #237eba !important;
-    border-color: #1e6a9f !important;
+.dice-area .die.operator-restriction,
+.solution-row .die.operator-restriction {
+    background: #237eba;
+    border-color: #1e6a9f;
 }
 
-.die.set-constant {
-    background: #95a5a6 !important;
-    border-color: #7f8c8d !important;
+.dice-area .die.set-constant,
+.solution-row .die.set-constant {
+    background: #95a5a6;
+    border-color: #7f8c8d;
 }
 
 /* White SVG icons and text for operators */
-.die.operator svg path,
-.die.operator svg circle,
-.die.operator svg rect,
-.die.operator svg line {
-    stroke: #ffffff !important;
+.dice-area .die.operator svg path,
+.solution-row .die.operator svg path,
+.dice-area .die.operator svg circle,
+.solution-row .die.operator svg circle,
+.dice-area .die.operator svg rect,
+.solution-row .die.operator svg rect,
+.dice-area .die.operator svg line,
+.solution-row .die.operator svg line {
+    stroke: #ffffff;
     /* fill: #ffffff; */
 }
 
-.die.operator {
-    color: #ffffff !important;
+.dice-area .die.operator,
+.solution-row .die.operator {
+    color: #ffffff;
 }
 
