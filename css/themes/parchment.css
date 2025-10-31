@@ -158,11 +158,14 @@
 .modal-content h3,
 .modal-content label,
 .modal-content small,
-.modal-content .setting-label {
-    color: #5a4a3a;
+.modal-content .setting-label,
+.modal-content .setting-label strong,
+.modal-content select,
+.modal-content option {
+    color: #5a4a3a !important;
 }
 
 .modal-content .btn {
-    color: #ffffff;
+    color: #ffffff !important;
 }
 
