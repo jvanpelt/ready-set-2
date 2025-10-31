@@ -168,12 +168,32 @@
     background: #ffffff;
 }
 
-/* White SVG icons for operators */
+/* Solid backgrounds for operator cubes */
+.die.operator-regular {
+    background: #e74c3c;
+    border-color: #c0392b;
+}
+
+.die.operator-restriction {
+    background: #3498db;
+    border-color: #2980b9;
+}
+
+.die.set-constant {
+    background: #95a5a6;
+    border-color: #7f8c8d;
+}
+
+/* White SVG icons and text for operators */
 .die.operator svg path,
 .die.operator svg circle,
 .die.operator svg rect,
 .die.operator svg line {
     stroke: #ffffff;
     fill: #ffffff;
+}
+
+.die.operator {
+    color: #ffffff;
 }
 
