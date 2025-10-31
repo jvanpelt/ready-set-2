@@ -1,0 +1,140 @@
+/* ============================================================================
+   PARCHMENT THEME (Vintage / Paper)
+   Warm beige paper with brown borders, vintage aesthetic
+   ============================================================================ */
+
+:root {
+    /* === GAME COLORS === */
+    /* Card dot colors - slightly muted for vintage feel */
+    --color-red: #c85a54;
+    --color-blue: #5b8fa3;
+    --color-green: #6b9969;
+    --color-gold: #d4a747;
+    
+    /* === BACKGROUND & STRUCTURE === */
+    --bg-gradient-start: rgb(235, 220, 200);
+    --bg-gradient-mid-1: rgb(245, 235, 220);
+    --bg-gradient-mid-2: rgb(240, 230, 215);
+    --bg-gradient-end: rgb(235, 220, 200);
+    --color-bg-dark: #d4c4b0;
+    --color-bg-medium: #e0d5c5;
+    --color-bg-light: #f0e8dc;
+    
+    /* === CARDS === */
+    --color-card-white: #f8f4ed;
+    --color-card-gray: #e8dfd0;
+    --color-card-excluded-bg: #c0b5a5;
+    --color-card-excluded-border: #8b7f6f;
+    --color-card-border: #8b7355;
+    
+    /* === DICE/CUBES === */
+    --color-die-bg: #f5ede0;
+    --color-die-border: #8b7355;
+    --color-die-border-light: #a89078;
+    --color-die-text: #5a4a3a;
+    
+    /* === OPERATORS & SET CONSTANTS === */
+    --color-operator-regular: #c85a54;
+    --color-operator-restriction: #5b8fa3;
+    --color-set-constant: #7a6a55;
+    
+    /* === SPECIAL CUBES (glows & effects) === */
+    --color-required-border: #6b9969;
+    --color-required-glow: rgba(107, 153, 105, 0.6);
+    --color-required-glow-bright: rgba(107, 153, 105, 0.8);
+    
+    --color-bonus-border: #d4a747;
+    --color-bonus-glow: rgba(212, 167, 71, 0.6);
+    --color-bonus-glow-bright: rgba(212, 167, 71, 0.8);
+    
+    --color-wild-border: #c85a54;
+    --color-wild-glow: rgba(200, 90, 84, 0.6);
+    --color-wild-glow-bright: rgba(200, 90, 84, 0.8);
+    
+    /* === SOLUTION AREA === */
+    --color-solution-bg: rgba(139, 115, 85, 0.08);
+    --color-solution-border: rgba(139, 115, 85, 0.4);
+    --color-solution-drag-over-bg: rgba(139, 115, 85, 0.15);
+    --color-solution-drag-over-border: rgba(139, 115, 85, 0.6);
+    --color-solution-valid-border: #6b9969;
+    --color-solution-valid-bg: rgba(107, 153, 105, 0.15);
+    --color-solution-restriction-border: rgba(91, 143, 163, 0.6);
+    --color-solution-invalid-border: rgba(200, 90, 84, 0.6);
+    --color-solution-invalid-bg: rgba(200, 90, 84, 0.1);
+    --color-solution-disabled-bg: rgba(139, 115, 85, 0.15);
+    --color-solution-disabled-border: rgba(139, 115, 85, 0.3);
+    
+    /* === GROUP INDICATORS === */
+    --color-group-valid-bg: rgba(107, 153, 105, 0.2);
+    --color-group-valid-border: rgba(107, 153, 105, 0.5);
+    --color-group-invalid-bg: rgba(139, 115, 85, 0.15);
+    --color-group-invalid-border: rgba(139, 115, 85, 0.4);
+    
+    /* === UI ELEMENTS === */
+    --color-border: #8b7355;
+    --color-highlight: #c85a54;
+    --color-text-primary: #5a4a3a;
+    --color-text-secondary: rgba(90, 74, 58, 0.7);
+    --color-text-dark: #3a2a1a;
+    
+    /* === BUTTONS === */
+    --color-btn-primary: #5b8fa3;
+    --color-btn-secondary: #6b9969;
+    --color-btn-warning: #c85a54;
+    --color-btn-success: #6b9969;
+    --color-btn-success-gradient-start: #6b9969;
+    --color-btn-success-gradient-end: #5a8558;
+    --color-btn-danger-gradient-start: #c85a54;
+    --color-btn-danger-gradient-end: #a84843;
+    --color-btn-danger-gradient-hover-start: #a84843;
+    --color-btn-danger-gradient-hover-end: #883632;
+    
+    /* === STATUS BAR === */
+    --color-timer-bg: #d4c4b0;
+    --color-timer-border: #8b7355;
+    --color-goal-bg: #f8f4ed;
+    --color-goal-text: #5a4a3a;
+    --color-goal-label: #7a6a55;
+    
+    /* === MODALS & OVERLAYS === */
+    --color-modal-backdrop: rgba(90, 74, 58, 0.6);
+    --color-modal-bg: rgba(245, 237, 224, 0.98);
+    --color-modal-border: #8b7355;
+    --color-modal-close-btn: #c85a54;
+    --color-modal-close-btn-hover: #a84843;
+    
+    /* === INTERSTITIAL & HOME SCREENS === */
+    --color-interstitial-bg: rgba(245, 237, 224, 0.95);
+    --color-home-bg: rgba(245, 237, 224, 0.95);
+    
+    /* === TUTORIAL === */
+    --color-tutorial-bg: rgba(212, 196, 176, 0.85);
+    --color-tutorial-border: rgba(107, 153, 105, 0.5);
+    --color-tutorial-badge: #6b9969;
+    --color-tutorial-highlight: #d4a747;
+    --color-tutorial-btn-primary: #6b9969;
+    --color-tutorial-btn-hover: #5a8558;
+    --color-tutorial-btn-hover-end: #4a7048;
+    
+    /* === PUZZLE BUILDER === */
+    --color-builder-border: rgba(139, 115, 85, 0.3);
+    --color-builder-border-open: #6b9969;
+    --color-builder-heading: #6b9969;
+    --color-builder-success-border: #6b9969;
+    --color-builder-success-bg: rgba(107, 153, 105, 0.2);
+    --color-builder-error-border: #c85a54;
+    --color-builder-error-bg: rgba(200, 90, 84, 0.2);
+    
+    /* === SEMI-TRANSPARENT OVERLAYS === */
+    --overlay-dark-10: rgba(90, 74, 58, 0.1);
+    --overlay-dark-20: rgba(90, 74, 58, 0.15);
+    --overlay-dark-30: rgba(90, 74, 58, 0.2);
+    --overlay-dark-40: rgba(90, 74, 58, 0.25);
+    --overlay-dark-50: rgba(90, 74, 58, 0.3);
+    --overlay-white-05: rgba(139, 115, 85, 0.05);
+    --overlay-white-10: rgba(139, 115, 85, 0.1);
+    --overlay-white-15: rgba(139, 115, 85, 0.15);
+    --overlay-white-20: rgba(139, 115, 85, 0.2);
+    --overlay-white-30: rgba(139, 115, 85, 0.3);
+}
+
