@@ -6,10 +6,10 @@
 :root {
     /* === GAME COLORS === */
     /* Card dot colors - semi-transparent with neon glow */
-    --color-red: rgba(255, 51, 102, 0.5);
-    --color-blue: rgba(0, 212, 255, 0.5);
-    --color-green: rgba(0, 255, 136, 0.5);
-    --color-gold: rgba(255, 215, 0, 0.5);
+    --color-red: rgba(255, 51, 102, 0.35);
+    --color-blue: rgba(0, 212, 255, 0.35);
+    --color-green: rgba(0, 255, 136, 0.35);
+    --color-gold: rgba(255, 215, 0, 0.35);
     
     /* === BACKGROUND & STRUCTURE === */
     --bg-gradient-start: rgb(0, 20, 40);
