@@ -259,7 +259,7 @@ export class UIRenderer {
         // First, set random final rotations for each die (-7° to +7°)
         dice.forEach(die => {
             const randomRot = Math.floor(Math.random() * 14) - 7;
-            console.log('🎲 Setting rotation:', randomRot, 'for', die);
+            // console.log('🎲 Setting rotation:', randomRot, 'for', die);
             gsap.set(die, { rotation: randomRot });
         });
         
