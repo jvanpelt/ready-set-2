@@ -82,11 +82,10 @@ class DailyPuzzleManager {
             flipped: false
         }));
         
-        // Set goal (count of cards - this will be the target)
-        this.game.goal = puzzle.cards.length;
+        // Set goal from the puzzle (number of cards that should match)
+        this.game.goal = puzzle.goal;
         
         // Generate dice pool (all 8 cubes for daily puzzle)
-        // TODO: This needs to be derived from the solution
         this.game.dice = this.generateDiceFromSolution(puzzle.solution);
         
         // Clear solutions
@@ -100,6 +99,7 @@ class DailyPuzzleManager {
         this.game.dailyPuzzle = {
             difficulty: puzzle.difficulty,
             solution: puzzle.solution,
+            matchingCards: puzzle.matchingCards,
             startTime: Date.now()
         };
     }
@@ -107,45 +107,59 @@ class DailyPuzzleManager {
     /**
      * Generate dice from a solution template
      * This creates the 8 dice that the player can use
+     * Parses the full expression token by token to extract exactly what's needed
      */
     generateDiceFromSolution(solution) {
         const dice = [];
-        
-        // Parse the full expression to extract needed cubes
-        // For now, create a basic set of cubes based on colors mentioned
         const expr = solution.fullExpression;
         
-        // Extract colors
-        const colors = ['red', 'blue', 'green', 'gold'];
-        colors.forEach(color => {
-            if (expr.includes(color)) {
-                dice.push({ value: color, type: 'color' });
+        // Parse the expression into tokens (split by spaces, remove parentheses)
+        const tokens = expr.split(/\s+/).map(t => t.replace(/[()]/g, ''));
+        
+        // Count how many of each token we need
+        const tokenCounts = {};
+        tokens.forEach(token => {
+            if (token) {
+                tokenCounts[token] = (tokenCounts[token] || 0) + 1;
             }
         });
         
-        // Add operators mentioned in the solution
-        if (expr.includes('∪')) dice.push({ value: '∪', type: 'operator' });
-        if (expr.includes('∩')) dice.push({ value: '∩', type: 'operator' });
-        if (expr.includes('−')) dice.push({ value: '−', type: 'operator' });
-        if (expr.includes('′')) dice.push({ value: '′', type: 'operator' });
-        
-        // Add restriction operators
-        if (expr.includes('=')) dice.push({ value: '=', type: 'restriction' });
-        if (expr.includes('⊆')) dice.push({ value: '⊆', type: 'restriction' });
-        
-        // Add Universe/Null if mentioned
-        if (expr.includes('U')) dice.push({ value: 'U', type: 'set-constant' });
-        if (expr.includes('∅')) dice.push({ value: '∅', type: 'set-constant' });
-        
-        // Fill to 8 dice if needed (should already be 8 from template)
-        // Add extras if we're short
-        while (dice.length < 8) {
-            dice.push({ value: '∪', type: 'operator' });
+        // Convert tokens to dice objects
+        for (const [token, count] of Object.entries(tokenCounts)) {
+            for (let i = 0; i < count; i++) {
+                let dieType = 'operator';
+                
+                // Determine die type
+                if (['red', 'blue', 'green', 'gold'].includes(token)) {
+                    dieType = 'color';
+                } else if (['=', '⊆'].includes(token)) {
+                    dieType = 'restriction';
+                } else if (['U', '∅'].includes(token)) {
+                    dieType = 'set-constant';
+                } else if (['∪', '∩', '−', '′'].includes(token)) {
+                    dieType = 'operator';
+                }
+                
+                dice.push({ 
+                    value: token, 
+                    type: dieType 
+                });
+            }
         }
         
-        // Trim if we have too many
-        if (dice.length > 8) {
-            dice.length = 8;
+        // Validate we have exactly 8 dice (our templates should ensure this)
+        if (dice.length !== 8) {
+            console.warn(`⚠️ Generated ${dice.length} dice, expected 8!`);
+            console.warn('Tokens:', tokens);
+            console.warn('Token counts:', tokenCounts);
+            
+            // Fill or trim to 8
+            while (dice.length < 8) {
+                dice.push({ value: '∪', type: 'operator' });
+            }
+            if (dice.length > 8) {
+                dice.length = 8;
+            }
         }
         
         return dice;

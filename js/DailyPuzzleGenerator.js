@@ -101,31 +101,53 @@ class DailyPuzzleGenerator {
      * Generate a single random puzzle
      */
     generatePuzzle() {
-        // Pick a random template
-        const template = this.pickRandomTemplate();
+        let attempts = 0;
+        const maxAttempts = 50;
         
-        // Assign colors to A, B, C, D, U, ∅ placeholders
-        const colorMap = this.createColorMapping(template);
+        // Keep trying until we get a valid puzzle
+        while (attempts < maxAttempts) {
+            attempts++;
+            
+            // Pick a random template
+            const template = this.pickRandomTemplate();
+            
+            // Assign colors to A, B, C, D, U, ∅ placeholders
+            const colorMap = this.createColorMapping(template);
+            
+            // Instantiate the template with real colors/operators
+            const solution = this.instantiateTemplate(template, colorMap);
+            
+            // Generate 4 random cards with variety
+            const cards = this.generateRandomCards();
+            
+            // Evaluate the solution against these cards
+            const matchingIndices = this.evaluateSolution(solution, cards);
+            
+            // The goal is the number of matching cards
+            const goal = matchingIndices.size;
+            
+            // Validate: we want 1-4 matching cards (not 0, that's impossible!)
+            if (goal === 0 || goal > 4) {
+                continue; // Try again
+            }
+            
+            // Calculate difficulty (placeholder for now)
+            const difficulty = this.estimateDifficulty(solution);
+            
+            return {
+                cards: cards,
+                solution: solution,
+                goal: goal,
+                matchingCards: Array.from(matchingIndices),
+                difficulty: difficulty,
+                template: template.pattern,
+                timestamp: Date.now()
+            };
+        }
         
-        // Instantiate the template with real colors/operators
-        const solution = this.instantiateTemplate(template, colorMap);
-        
-        // Evaluate what the solution produces (which cards match)
-        const evaluatedResult = this.evaluateSolution(solution);
-        
-        // Generate 4 cards based on the result
-        const cards = this.generateCards(evaluatedResult);
-        
-        // Calculate difficulty (would need to find shortest solution - placeholder for now)
-        const difficulty = this.estimateDifficulty(solution);
-        
-        return {
-            cards: cards,
-            solution: solution,
-            difficulty: difficulty,
-            template: template.pattern,
-            timestamp: Date.now()
-        };
+        // Fallback: if we couldn't generate a valid puzzle, return a simple one
+        console.warn('⚠️ Failed to generate valid puzzle after', maxAttempts, 'attempts. Using fallback.');
+        return this.generateFallbackPuzzle();
     }
     
     /**
@@ -188,50 +210,253 @@ class DailyPuzzleGenerator {
     }
     
     /**
-     * Evaluate a solution to determine which cards it produces
-     * This is a placeholder - we'll integrate with existing setTheory.js logic
+     * Evaluate a solution against a set of cards to determine which cards match
+     * Uses the same evaluation logic as the game
      */
-    evaluateSolution(solution) {
-        // For now, return a random result
-        // TODO: Integrate with actual evaluation logic from setTheory.js
-        const numCards = Math.floor(Math.random() * 4) + 1; // 1-4 cards
-        const result = [];
+    evaluateSolution(solution, cards) {
+        // Parse the set name expression into tokens
+        const tokens = this.parseExpression(solution.setName);
         
-        for (let i = 0; i < numCards; i++) {
-            const numColors = Math.floor(Math.random() * 3) + 1; // 1-3 colors per card
-            const colors = [];
-            for (let j = 0; j < numColors; j++) {
-                colors.push(this.COLORS[Math.floor(Math.random() * this.COLORS.length)]);
-            }
-            result.push([...new Set(colors)]); // Remove duplicates
+        // Evaluate using basic set theory logic
+        const matchingIndices = this.evaluateTokens(tokens, cards);
+        
+        return matchingIndices;
+    }
+    
+    /**
+     * Parse an expression string into tokens
+     * e.g., "red ∪ blue" -> ['red', '∪', 'blue']
+     */
+    parseExpression(expr) {
+        const tokens = [];
+        const parts = expr.split(/\s+/);
+        
+        for (const part of parts) {
+            // Remove parentheses for now (we'll handle grouping later if needed)
+            const cleaned = part.replace(/[()]/g, '');
+            if (cleaned) tokens.push(cleaned);
         }
         
+        return tokens;
+    }
+    
+    /**
+     * Evaluate tokens against cards (basic set theory evaluation)
+     * Returns a Set of matching card indices
+     */
+    evaluateTokens(tokens, cards) {
+        if (!tokens || tokens.length === 0) {
+            return new Set();
+        }
+        
+        // Handle single token
+        if (tokens.length === 1) {
+            const token = tokens[0];
+            if (this.COLORS.includes(token)) {
+                return this.getCardsWithColor(token, cards);
+            }
+            if (token === 'U') {
+                return this.getAllCards(cards);
+            }
+            if (token === '∅') {
+                return new Set();
+            }
+            return new Set();
+        }
+        
+        // Process operators left to right
+        let result = null;
+        let i = 0;
+        
+        while (i < tokens.length) {
+            const token = tokens[i];
+            
+            if (this.COLORS.includes(token)) {
+                const cardSet = this.getCardsWithColor(token, cards);
+                if (result === null) {
+                    result = cardSet;
+                }
+                i++;
+            } else if (token === 'U') {
+                const cardSet = this.getAllCards(cards);
+                if (result === null) {
+                    result = cardSet;
+                }
+                i++;
+            } else if (token === '∅') {
+                const cardSet = new Set();
+                if (result === null) {
+                    result = cardSet;
+                }
+                i++;
+            } else if (token === '∪') {
+                // Union: combine with next operand
+                i++;
+                if (i < tokens.length) {
+                    const nextSet = this.getOperand(tokens[i], cards);
+                    result = this.union(result, nextSet);
+                    i++;
+                }
+            } else if (token === '∩') {
+                // Intersection: overlap with next operand
+                i++;
+                if (i < tokens.length) {
+                    const nextSet = this.getOperand(tokens[i], cards);
+                    result = this.intersection(result, nextSet);
+                    i++;
+                }
+            } else if (token === '−') {
+                // Difference: remove next operand
+                i++;
+                if (i < tokens.length) {
+                    const nextSet = this.getOperand(tokens[i], cards);
+                    result = this.difference(result, nextSet);
+                    i++;
+                }
+            } else if (token === '′') {
+                // Complement: invert current result
+                result = this.complement(result, cards);
+                i++;
+            } else {
+                i++;
+            }
+        }
+        
+        return result || new Set();
+    }
+    
+    /**
+     * Get operand as a set of card indices
+     */
+    getOperand(token, cards) {
+        if (this.COLORS.includes(token)) {
+            return this.getCardsWithColor(token, cards);
+        } else if (token === 'U') {
+            return this.getAllCards(cards);
+        } else if (token === '∅') {
+            return new Set();
+        }
+        return new Set();
+    }
+    
+    /**
+     * Get all cards with a specific color
+     */
+    getCardsWithColor(color, cards) {
+        const result = new Set();
+        cards.forEach((card, index) => {
+            if (card.colors.includes(color)) {
+                result.add(index);
+            }
+        });
         return result;
     }
     
     /**
-     * Generate 4 cards based on the evaluated solution result
+     * Get all cards (universe)
      */
-    generateCards(evaluatedResult) {
+    getAllCards(cards) {
+        const result = new Set();
+        cards.forEach((_, index) => result.add(index));
+        return result;
+    }
+    
+    /**
+     * Set operations
+     */
+    union(setA, setB) {
+        return new Set([...setA, ...setB]);
+    }
+    
+    intersection(setA, setB) {
+        return new Set([...setA].filter(x => setB.has(x)));
+    }
+    
+    difference(setA, setB) {
+        return new Set([...setA].filter(x => !setB.has(x)));
+    }
+    
+    complement(setA, cards) {
+        const all = this.getAllCards(cards);
+        return this.difference(all, setA);
+    }
+    
+    /**
+     * Generate 4 random cards with variety
+     * Uses all 4 colors, distributed across the cards
+     */
+    generateRandomCards() {
         const cards = [];
         
-        // Start with the cards from the evaluated result
-        for (let i = 0; i < evaluatedResult.length; i++) {
-            cards.push({ colors: evaluatedResult[i] });
-        }
+        // Strategy: Create diverse cards with different color combinations
+        // Ensure all 4 colors appear somewhere in the cards
         
-        // Fill remaining slots with random cards
-        while (cards.length < 4) {
-            const numColors = Math.floor(Math.random() * 3) + 1;
+        const usedColors = new Set();
+        
+        // Generate 4 cards
+        for (let i = 0; i < 4; i++) {
+            const numColors = Math.floor(Math.random() * 3) + 1; // 1-3 colors per card
             const colors = [];
+            
             for (let j = 0; j < numColors; j++) {
+                // Pick a random color
+                const color = this.COLORS[Math.floor(Math.random() * this.COLORS.length)];
+                if (!colors.includes(color)) {
+                    colors.push(color);
+                    usedColors.add(color);
+                }
+            }
+            
+            // Ensure at least one color
+            if (colors.length === 0) {
                 colors.push(this.COLORS[Math.floor(Math.random() * this.COLORS.length)]);
             }
-            cards.push({ colors: [...new Set(colors)] });
+            
+            cards.push({ colors: colors });
         }
         
-        // Shuffle cards
-        return cards.sort(() => Math.random() - 0.5);
+        // Ensure all 4 colors are represented (for more interesting puzzles)
+        this.COLORS.forEach(color => {
+            if (!usedColors.has(color)) {
+                // Add this color to a random card
+                const randomCard = cards[Math.floor(Math.random() * cards.length)];
+                if (!randomCard.colors.includes(color)) {
+                    randomCard.colors.push(color);
+                }
+            }
+        });
+        
+        return cards;
+    }
+    
+    /**
+     * Generate a simple fallback puzzle when generation fails
+     */
+    generateFallbackPuzzle() {
+        const cards = [
+            { colors: ['red'] },
+            { colors: ['blue'] },
+            { colors: ['green'] },
+            { colors: ['gold'] }
+        ];
+        
+        const solution = {
+            restriction: "red ∪ blue",
+            operator: "=",
+            setName: "green ∪ gold",
+            fullExpression: "red ∪ blue = green ∪ gold",
+            pattern: "fallback"
+        };
+        
+        return {
+            cards: cards,
+            solution: solution,
+            goal: 2, // green and gold match
+            matchingCards: [2, 3],
+            difficulty: 'beginner',
+            template: 'fallback',
+            timestamp: Date.now()
+        };
     }
     
     /**
@@ -262,11 +487,22 @@ class DailyPuzzleGenerator {
      * Log a puzzle to console for debugging
      */
     logPuzzle(puzzle) {
-        console.log('🎲 Generated Daily Puzzle:');
-        console.log(`  Pattern: ${puzzle.template}`);
-        console.log(`  Solution: ${puzzle.solution.fullExpression}`);
-        console.log(`  Difficulty: ${puzzle.difficulty}`);
-        console.log(`  Cards:`, puzzle.cards.map(c => c.colors.join('+')).join(', '));
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.log('🎲 DAILY PUZZLE GENERATED');
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.log(`📋 Pattern:    ${puzzle.template}`);
+        console.log(`🎯 Goal:       ${puzzle.goal} cards`);
+        console.log(`📊 Difficulty: ${puzzle.difficulty}`);
+        console.log(`\n🧮 Solution:   ${puzzle.solution.fullExpression}`);
+        console.log(`   Restriction: ${puzzle.solution.restriction} ${puzzle.solution.operator}`);
+        console.log(`   Set Name:    ${puzzle.solution.setName}`);
+        console.log(`\n🃏 Cards:`);
+        puzzle.cards.forEach((card, i) => {
+            const isMatch = puzzle.matchingCards && puzzle.matchingCards.includes(i);
+            const marker = isMatch ? '✓' : ' ';
+            console.log(`   [${marker}] Card ${i}: ${card.colors.join(', ')}`);
+        });
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
     }
 }
 
