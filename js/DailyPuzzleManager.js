@@ -117,8 +117,14 @@ class DailyPuzzleManager {
         this.game.goal = puzzle.goal;
         this.game.goalCards = puzzle.goal; // UI displays goalCards, not goal
         
-        // Load pre-generated dice from puzzle (no need to regenerate)
-        this.game.dice = puzzle.dice;
+        // Load pre-generated dice and add runtime properties (id, x, y)
+        const timestamp = Date.now();
+        this.game.dice = puzzle.dice.map((die, i) => ({
+            ...die,
+            id: `die-${i}-${timestamp}`,
+            x: 0,
+            y: 0
+        }));
         
         // Clear solutions
         this.game.solutions = [[], []];

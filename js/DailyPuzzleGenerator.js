@@ -11,6 +11,7 @@
 
 import { findShortestSolution } from './solutionFinder.js';
 import { evaluateExpression, evaluateRestriction } from './setTheory.js';
+import { generateCardConfig } from './levels.js';
 
 class DailyPuzzleGenerator {
     constructor() {
@@ -336,8 +337,8 @@ class DailyPuzzleGenerator {
             // Abstract types (color, setName) are replaced with random concrete values
             const solution = this.instantiateTemplate(template);
             
-            // Generate 4 random cards with variety
-            const cards = this.generateRandomCards();
+            // Generate 8 random cards using existing game function
+            const cards = generateCardConfig(8);
             
             // Evaluate the solution against these cards
             const matchingIndices = this.evaluateSolution(solution, cards);
@@ -553,53 +554,6 @@ class DailyPuzzleGenerator {
         });
     }
     
-    /**
-     * Generate 8 random cards with variety
-     * Uses all 4 colors, distributed across the cards
-     */
-    generateRandomCards() {
-        const cards = [];
-        
-        // Strategy: Create diverse cards with different color combinations
-        // Ensure all 4 colors appear somewhere in the cards
-        
-        const usedColors = new Set();
-        
-        // Generate 8 cards
-        for (let i = 0; i < 8; i++) {
-            const numColors = Math.floor(Math.random() * 3) + 1; // 1-3 colors per card
-            const colors = [];
-            
-            for (let j = 0; j < numColors; j++) {
-                // Pick a random color
-                const color = this.COLORS[Math.floor(Math.random() * this.COLORS.length)];
-                if (!colors.includes(color)) {
-                    colors.push(color);
-                    usedColors.add(color);
-                }
-            }
-            
-            // Ensure at least one color
-            if (colors.length === 0) {
-                colors.push(this.COLORS[Math.floor(Math.random() * this.COLORS.length)]);
-            }
-            
-            cards.push({ colors: colors });
-        }
-        
-        // Ensure all 4 colors are represented (for more interesting puzzles)
-        this.COLORS.forEach(color => {
-            if (!usedColors.has(color)) {
-                // Add this color to a random card
-                const randomCard = cards[Math.floor(Math.random() * cards.length)];
-                if (!randomCard.colors.includes(color)) {
-                    randomCard.colors.push(color);
-                }
-            }
-        });
-        
-        return cards;
-    }
     
     /**
      * Generate a simple fallback puzzle when generation fails
@@ -711,9 +665,8 @@ class DailyPuzzleGenerator {
                 }
                 
                 dice.push({ 
-                    value: token, 
                     type: dieType,
-                    id: `die-${Date.now()}-${Math.random()}`
+                    value: token
                 });
             }
         }
@@ -759,30 +712,6 @@ class DailyPuzzleGenerator {
         } else {
             return 'advanced';
         }
-    }
-    
-    /**
-     * DEPRECATED: Estimate puzzle difficulty based on solution complexity
-     * Beginner: 3-5 cubes, Intermediate: 6-7 cubes, Advanced: 8+ cubes
-     */
-    estimateDifficulty(solution) {
-        // Count cubes in the full expression (very rough estimate)
-        const cubeCount = solution.fullExpression.split(/\s+/).length;
-        
-        if (cubeCount <= 5) return 'beginner';
-        if (cubeCount <= 7) return 'intermediate';
-        return 'advanced';
-    }
-    
-    /**
-     * Generate a batch of puzzles for testing
-     */
-    generateBatch(count = 10) {
-        const puzzles = [];
-        for (let i = 0; i < count; i++) {
-            puzzles.push(this.generatePuzzle());
-        }
-        return puzzles;
     }
     
     /**
