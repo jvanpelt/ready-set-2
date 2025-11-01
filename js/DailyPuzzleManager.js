@@ -16,28 +16,58 @@ class DailyPuzzleManager {
         this.uiController = uiController;
         this.generator = new DailyPuzzleGenerator();
         
-        // Test mode: allows random puzzle generation
+        // Test mode: picks random puzzle from bank (true) vs date-based (false)
         this.testMode = true; // TODO: Set to false for production
         
         // Current puzzle
         this.currentPuzzle = null;
+        
+        // Puzzle bank (loaded from JSON)
+        this.puzzleBank = null;
+        
+        // Load puzzle bank
+        this.loadPuzzleBank();
+    }
+    
+    /**
+     * Load puzzle bank from JSON file
+     */
+    async loadPuzzleBank() {
+        try {
+            const response = await fetch('data/daily-puzzles.json');
+            const data = await response.json();
+            this.puzzleBank = data.puzzles;
+            console.log(`✅ Loaded ${this.puzzleBank.length} daily puzzles from bank`);
+        } catch (error) {
+            console.error('❌ Failed to load puzzle bank:', error);
+            // Fallback to runtime generation if file doesn't load
+            this.puzzleBank = null;
+        }
     }
     
     /**
      * Get today's puzzle (or random in test mode)
      */
     getTodaysPuzzle() {
-        if (this.testMode) {
-            // Test mode: generate a fresh random puzzle each time
+        // If puzzle bank isn't loaded yet, generate one (fallback)
+        if (!this.puzzleBank || this.puzzleBank.length === 0) {
+            console.warn('⚠️ Puzzle bank not loaded, generating puzzle at runtime');
             return this.generator.generatePuzzle();
+        }
+        
+        if (this.testMode) {
+            // Test mode: pick a random puzzle from bank
+            const randomIndex = Math.floor(Math.random() * this.puzzleBank.length);
+            console.log(`🎲 Test mode: Loading random puzzle #${randomIndex + 1}/${this.puzzleBank.length}`);
+            return this.puzzleBank[randomIndex];
         }
         
         // Production mode: get puzzle for today's date
         const today = this.getTodayString();
         const puzzleIndex = this.getPuzzleIndexForDate(today);
         
-        // TODO: Load from pre-generated puzzle bank
-        return this.generator.generatePuzzle();
+        console.log(`📅 Loading puzzle #${puzzleIndex + 1} for ${today}`);
+        return this.puzzleBank[puzzleIndex % this.puzzleBank.length];
     }
     
     /**
