@@ -2,24 +2,26 @@
 
 ## Phase 1: Bulk Puzzle Generation ✅ (Current)
 
-### How to Generate a Test Batch
+### How to Generate Puzzles Offline
 
-1. **Open the game in your browser**: `http://localhost:8000`
-
-2. **Open browser console** (F12 or Cmd+Option+J)
-
-3. **Run generation command**:
-   ```javascript
-   await window.generateDailyPuzzleBatch(20);
+1. **Run the generation script**:
+   ```bash
+   node scripts/generate-puzzles.js 50
    ```
-   - Generates 20 puzzles
-   - Shows statistics (difficulty distribution, goal spread, etc.)
-   - Auto-downloads JSON file: `daily-puzzles-20-[timestamp].json`
+   - Generates 50 puzzles (or specify any number)
+   - Shows statistics (difficulty distribution)
+   - Saves to `data/daily-puzzles.json`
 
-4. **Review the output**:
+2. **Review the output**:
    - Check console for statistics
-   - Open downloaded JSON to inspect puzzles
+   - Open `data/daily-puzzles.json` to inspect puzzles
    - Look for good variety in difficulty and goals
+
+3. **Commit the generated file**:
+   ```bash
+   git add data/daily-puzzles.json
+   git commit -m "feat: Add daily puzzle data (50 puzzles)"
+   ```
 
 ### What Gets Generated
 
