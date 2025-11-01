@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Daily Puzzles</title>
+</head>
+<body>
+    <h1>Generate Daily Puzzles</h1>
+    <button onclick="generateAndDownload()">Generate 20 Puzzles</button>
+    <pre id="output"></pre>
+    
+    <script type="module">
+        import DailyPuzzleGenerator from './js/DailyPuzzleGenerator.js';
+        
+        window.generateAndDownload = async function() {
+            const output = document.getElementById('output');
+            output.textContent = 'Generating puzzles...\n\n';
+            
+            const generator = new DailyPuzzleGenerator();
+            const puzzles = generator.generateBatch(20);
+            
+            // Log each puzzle
+            puzzles.forEach((puzzle, i) => {
+                output.textContent += `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+                output.textContent += `Puzzle ${i + 1}:\n`;
+                output.textContent += `  Goal: ${puzzle.goal}\n`;
+                output.textContent += `  Difficulty: ${puzzle.difficulty.rating}\n`;
+                output.textContent += `  Solution: ${puzzle.generatedSolution.topRow || '(empty)'} / ${puzzle.generatedSolution.bottomRow || '(empty)'}\n`;
+            });
+            
+            // Export to JSON
+            const exported = generator.exportBatch(puzzles);
+            
+            // Download
+            const blob = new Blob([exported], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'daily-puzzles.json';
+            a.click();
+            
+            output.textContent += '\n\n✅ Downloaded daily-puzzles.json';
+        };
+    </script>
+</body>
+</html>
+

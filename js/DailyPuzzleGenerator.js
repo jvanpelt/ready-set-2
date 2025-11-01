@@ -346,8 +346,9 @@ class DailyPuzzleGenerator {
             // The goal is the number of matching cards
             const goal = matchingIndices.size;
             
-            // Validate: we want 1-8 matching cards (not 0, that's impossible!)
-            if (goal === 0 || goal > 8) {
+            // Validate: we want 1-7 matching cards (matching regular game goal range)
+            // Exclude 0 (impossible) and 8 (too easy - everything matches)
+            if (goal === 0 || goal === 8 || goal > 8) {
                 continue; // Try again
             }
             
