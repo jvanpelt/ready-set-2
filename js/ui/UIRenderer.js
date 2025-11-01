@@ -70,8 +70,8 @@ export class UIRenderer {
      */
     animateCardsIn() {
         const cards = document.querySelectorAll('.card');
-        console.log('🎬 animateCardsIn - Found cards:', cards.length);
-        console.log('🎬 GSAP available?', typeof gsap !== 'undefined');
+        // console.log('🎬 animateCardsIn - Found cards:', cards.length);
+        // console.log('🎬 GSAP available?', typeof gsap !== 'undefined');
         if (cards.length === 0) return;
         
         // Temporarily disable CSS transitions to prevent interference with GSAP
@@ -89,9 +89,9 @@ export class UIRenderer {
                 each: 0.15,
                 //from: "end"  // Start with last card (like dealing)
             },
-            onStart: () => console.log('🎬 Cards animation STARTED'),
+            // onStart: () => console.log('🎬 Cards animation STARTED'),
             onComplete: () => {
-                console.log('🎬 Cards animation COMPLETE');
+                // console.log('🎬 Cards animation COMPLETE');
                 // Re-enable CSS transitions after animation
                 cards.forEach(card => card.style.transition = '');
             },
@@ -105,7 +105,7 @@ export class UIRenderer {
     animateCardsOut() {
         return new Promise((resolve) => {
             const cards = document.querySelectorAll('.card');
-            console.log('🎬 animateCardsOut - Found cards:', cards.length);
+            // console.log('🎬 animateCardsOut - Found cards:', cards.length);
             if (cards.length === 0) {
                 resolve();
                 return;
@@ -125,9 +125,9 @@ export class UIRenderer {
                     each: 0.05,
                     from: "random"  // Random order for variety
                 },
-                onStart: () => console.log('🎬 Cards EXIT animation STARTED'),
+                // onStart: () => console.log('🎬 Cards EXIT animation STARTED'),
                 onComplete: () => {
-                    console.log('🎬 Cards EXIT animation COMPLETE');
+                    // console.log('🎬 Cards EXIT animation COMPLETE');
                     resolve();
                 }
             });
@@ -249,8 +249,8 @@ export class UIRenderer {
      */
     animateDiceIn() {
         const dice = document.querySelectorAll('.die:not(.solution-die)');
-        console.log('🎲 animateDiceIn - Found dice:', dice.length);
-        console.log('🎲 GSAP available?', typeof gsap !== 'undefined');
+        // console.log('🎲 animateDiceIn - Found dice:', dice.length);
+        // console.log('🎲 GSAP available?', typeof gsap !== 'undefined');
         if (dice.length === 0) return;
         
         // Temporarily disable CSS transitions to prevent interference with GSAP
@@ -275,9 +275,9 @@ export class UIRenderer {
                 x: 100,
                 rotation: `+=${startRotation}`,  // Adds to final rotation
                 ease: "power3.out",
-                onStart: () => console.log('🎲 Dice animation STARTED for index:', index),
+                // onStart: () => console.log('🎲 Dice animation STARTED for index:', index),
                 onComplete: () => {
-                    console.log('🎲 Dice animation COMPLETE for index:', index);
+                    // console.log('🎲 Dice animation COMPLETE for index:', index);
                     // Re-enable CSS transitions after last die finishes
                     if (isLastDie) {
                         dice.forEach(d => d.style.transition = '');
@@ -294,7 +294,7 @@ export class UIRenderer {
     animateDiceOut() {
         return new Promise((resolve) => {
             const dice = document.querySelectorAll('.die:not(.solution-die)');
-            console.log('🎲 animateDiceOut - Found dice:', dice.length);
+            // console.log('🎲 animateDiceOut - Found dice:', dice.length);
             if (dice.length === 0) {
                 resolve();
                 return;
@@ -317,12 +317,12 @@ export class UIRenderer {
                     x: 150,
                     rotation: `+=${rotation}`,
                     ease: "quad.in",
-                    onStart: () => console.log('🎲 Dice EXIT animation STARTED for index:', index),
+                    // onStart: () => console.log('🎲 Dice EXIT animation STARTED for index:', index),
                     onComplete: () => {
-                        console.log('🎲 Dice EXIT animation COMPLETE for index:', index);
+                        // console.log('🎲 Dice EXIT animation COMPLETE for index:', index);
                         completed++;
                         if (completed === dice.length) {
-                            console.log('🎲 All dice EXIT animations COMPLETE');
+                            // console.log('🎲 All dice EXIT animations COMPLETE');
                             resolve();
                         }
                     }
@@ -337,7 +337,7 @@ export class UIRenderer {
     animateSolutionDiceOut() {
         return new Promise((resolve) => {
             const solutionDice = document.querySelectorAll('.solution-die');
-            console.log('🎯 animateSolutionDiceOut - Found solution dice:', solutionDice.length);
+            // console.log('🎯 animateSolutionDiceOut - Found solution dice:', solutionDice.length);
             if (solutionDice.length === 0) {
                 resolve();
                 return;
@@ -348,9 +348,9 @@ export class UIRenderer {
                 duration: 0.3,
                 opacity: 0,
                 ease: "power2.in",
-                onStart: () => console.log('🎯 Solution dice EXIT animation STARTED'),
+                // onStart: () => console.log('🎯 Solution dice EXIT animation STARTED'),
                 onComplete: () => {
-                    console.log('🎯 Solution dice EXIT animation COMPLETE');
+                    // console.log('🎯 Solution dice EXIT animation COMPLETE');
                     resolve();
                 }
             });
