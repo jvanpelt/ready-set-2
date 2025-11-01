@@ -26,7 +26,11 @@ class DailyPuzzleGenerator {
     /**
      * Create comprehensive template library for 8-cube solutions
      * Format: { topRow, bottomRow, pattern }
-     * where topRow and bottomRow can each be a restriction or set name
+     * 
+     * Valid formats:
+     * 1. No restriction: topRow = null, bottomRow = 8-cube set name
+     * 2. One restriction (1 cube): topRow = restriction with = or ⊆, bottomRow = set name
+     * 3. One restriction (2 cubes): topRow = restriction with = AND ⊆, bottomRow = set name
      */
     createTemplates() {
         const templates = [];
@@ -34,48 +38,77 @@ class DailyPuzzleGenerator {
         // ===== CATEGORY 1: No Restrictions (8 cubes in set name only) =====
         templates.push(
             { topRow: null, bottomRow: "A ∪ B ∪ C ∪ D′", pattern: "0+8-setname" },
-            { topRow: null, bottomRow: "A ∪ B ∪ C ∪ D ∪ A", pattern: "0+9-setname-reuse" }, // 9 cubes, will trim
-            { topRow: null, bottomRow: "A ∪ A ∪ B ∪ C ∪ D", pattern: "0+9-setname-reuse" } // 9 cubes
+            { topRow: null, bottomRow: "A ∪ B ∪ C ∪ A ∪ D", pattern: "0+9-setname-reuse" }, // 9 cubes
+            { topRow: null, bottomRow: "A ∪ A ∪ B ∪ C ∪ D", pattern: "0+9-setname-reuse" }, // 9 cubes
+            { topRow: null, bottomRow: "(A ∪ B ∪ C)′ ∪ D", pattern: "0+9-setname-prime" } // 9 cubes
         );
         
-        // ===== CATEGORY 2: One Restriction (3-5 cubes) + Set Name (3-5 cubes) =====
+        // ===== CATEGORY 2: One Restriction with 1 restriction cube =====
         
-        // 3-cube restriction + 5-cube set name
+        // 3-cube restriction (=) + 5-cube set name
         templates.push(
-            { topRow: "A ∪ B = C", bottomRow: "D ∪ A ∪ B", pattern: "3+5" },
-            { topRow: "A ∩ B = C", bottomRow: "D ∪ A ∪ B", pattern: "3+5" },
-            { topRow: "A − B = C", bottomRow: "D ∪ A ∪ B", pattern: "3+5" },
-            { topRow: "A = B ∪ C", bottomRow: "D ∪ A ∪ B", pattern: "3+5" }
+            { topRow: "A ∪ B = C", bottomRow: "D ∪ A ∪ B", pattern: "3+5-eq" },
+            { topRow: "A ∩ B = C", bottomRow: "D ∪ A ∪ B", pattern: "3+5-eq" },
+            { topRow: "A − B = C", bottomRow: "D ∪ A ∪ B", pattern: "3+5-eq" },
+            { topRow: "A = B ∪ C", bottomRow: "D ∪ A ∪ B", pattern: "3+5-eq" }
         );
         
-        // 4-cube restriction + 4-cube set name  
+        // 3-cube restriction (⊆) + 5-cube set name
         templates.push(
-            { topRow: "A ∪ B = C ∪ D", bottomRow: "A ∪ B ∪ C", pattern: "4+4" },
-            { topRow: "A ∩ B = C ∩ D", bottomRow: "A ∪ B ∪ C", pattern: "4+4" },
-            { topRow: "A ∪ B = C − D", bottomRow: "A ∪ B ∪ C", pattern: "4+4" },
+            { topRow: "A ∪ B ⊆ C", bottomRow: "D ∪ A ∪ B", pattern: "3+5-subset" },
+            { topRow: "A ∩ B ⊆ C", bottomRow: "D ∪ A ∪ B", pattern: "3+5-subset" }
+        );
+        
+        // 4-cube restriction (=) + 4-cube set name  
+        templates.push(
+            { topRow: "A ∪ B = C ∪ D", bottomRow: "A ∪ B ∪ C", pattern: "4+4-eq" },
+            { topRow: "A ∩ B = C ∩ D", bottomRow: "A ∪ B ∪ C", pattern: "4+4-eq" },
+            { topRow: "A ∪ B = C − D", bottomRow: "A ∪ B ∪ C", pattern: "4+4-eq" },
+            { topRow: "A − B = C ∪ D", bottomRow: "A ∪ B ∪ C", pattern: "4+4-eq" }
+        );
+        
+        // 4-cube restriction (⊆) + 4-cube set name
+        templates.push(
             { topRow: "A ∪ B ⊆ C ∪ D", bottomRow: "A ∪ B ∪ C", pattern: "4+4-subset" },
-            { topRow: "A ∪ B = C′", bottomRow: "D ∪ A ∪ B", pattern: "4+5-prime" }
+            { topRow: "A ∩ B ⊆ C ∪ D", bottomRow: "A ∪ B ∪ C", pattern: "4+4-subset" }
         );
         
-        // 5-cube restriction + 3-cube set name
+        // 4-cube restriction (=) with prime + 4-cube set name
         templates.push(
-            { topRow: "A ∪ B ∪ C = D ∪ A", bottomRow: "B ∪ C", pattern: "5+3" },
-            { topRow: "A ∪ B = C ∪ D", bottomRow: "A ∪ B′", pattern: "4+4-prime" },
-            { topRow: "A ∩ B ∪ C = D", bottomRow: "A ∪ B", pattern: "5+3" }
+            { topRow: "A ∪ B = C′", bottomRow: "D ∪ A ∪ B", pattern: "4+4-eq-prime" },
+            { topRow: "A ∩ B = C′", bottomRow: "D ∪ A ∪ B", pattern: "4+4-eq-prime" }
         );
         
-        // ===== CATEGORY 3: Two Restrictions (4 cubes each) =====
+        // 5-cube restriction (=) + 3-cube set name
         templates.push(
-            { topRow: "A ∪ B = C ∪ D", bottomRow: "A ∩ B = C ∩ D", pattern: "4+4-double-restriction" },
-            { topRow: "A ∪ B = C − D", bottomRow: "A ∩ C = B ∪ D", pattern: "4+4-double-restriction" },
-            { topRow: "A ∪ B ⊆ C ∪ D", bottomRow: "A ∩ B = C ∩ D", pattern: "4+4-double-restriction-subset" }
+            { topRow: "A ∪ B ∪ C = D", bottomRow: "A ∪ B", pattern: "5+3-eq" },
+            { topRow: "A ∪ B ∪ C = D ∪ A", bottomRow: "B ∪ C", pattern: "6+2-eq" }, // 6+2
+            { topRow: "A ∩ B ∪ C = D", bottomRow: "A ∪ B", pattern: "5+3-eq" }
+        );
+        
+        // ===== CATEGORY 3: One Restriction with 2 restriction cubes =====
+        // These use BOTH = and ⊆ in the same restriction formula
+        
+        // 5-cube restriction (= and ⊆) + 3-cube set name
+        templates.push(
+            { topRow: "A = (B ⊆ C)", bottomRow: "D ∪ A", pattern: "5+3-both" },
+            { topRow: "A ∪ B = (C ⊆ D)", bottomRow: "A ∪ B", pattern: "6+2-both" },
+            { topRow: "(A ⊆ B) = C", bottomRow: "D ∪ A", pattern: "5+3-both" }
+        );
+        
+        // 6-cube restriction (= and ⊆) + 2-cube set name
+        templates.push(
+            { topRow: "A ∪ B = (C ⊆ D ∪ A)", bottomRow: "B", pattern: "7+1-both" },
+            { topRow: "(A ⊆ B) = C ∪ D", bottomRow: "A ∪ B", pattern: "6+2-both" }
         );
         
         // ===== CATEGORY 4: Using Universe/Null =====
         templates.push(
-            { topRow: "U − A = B ∪ C", bottomRow: "D ∪ A", pattern: "4+3-universe" },
-            { topRow: "∅ ∪ A = B", bottomRow: "C ∪ D ∪ A", pattern: "3+5-null" },
-            { topRow: null, bottomRow: "U − A − B − C", pattern: "0+7-universe" }
+            { topRow: "U − A = B ∪ C", bottomRow: "D ∪ A", pattern: "5+3-universe-eq" },
+            { topRow: "∅ ∪ A = B", bottomRow: "C ∪ D ∪ A", pattern: "3+5-null-eq" },
+            { topRow: null, bottomRow: "U − A − B − C", pattern: "0+7-universe" },
+            { topRow: "U = A ∪ B ∪ C", bottomRow: "D ∪ A", pattern: "5+3-universe-eq" },
+            { topRow: "U ⊆ A ∪ B", bottomRow: "C ∪ D ∪ A", pattern: "3+5-universe-subset" }
         );
         
         return templates;
@@ -188,15 +221,19 @@ class DailyPuzzleGenerator {
         const topRow = replaceColors(template.topRow);
         const bottomRow = replaceColors(template.bottomRow);
         
+        // Count restriction cubes in the solution
+        const fullSolution = (topRow || '') + ' ' + (bottomRow || '');
+        const restrictionCubeCount = (fullSolution.match(/=/g) || []).length + 
+                                      (fullSolution.match(/⊆/g) || []).length;
+        
         return {
             topRow: topRow,
             bottomRow: bottomRow,
             pattern: template.pattern,
-            // For backwards compatibility and logging
+            // Identification flags
             hasRestriction: topRow && (topRow.includes('=') || topRow.includes('⊆')),
-            hasTwoRestrictions: topRow && bottomRow && 
-                (topRow.includes('=') || topRow.includes('⊆')) &&
-                (bottomRow.includes('=') || bottomRow.includes('⊆'))
+            restrictionCubeCount: restrictionCubeCount, // 0, 1, or 2
+            isSetNameOnly: !topRow || (!topRow.includes('=') && !topRow.includes('⊆'))
         };
     }
     
@@ -509,20 +546,21 @@ class DailyPuzzleGenerator {
         if (sol.topRow && sol.bottomRow) {
             console.log(`   Top Row:    ${sol.topRow}`);
             console.log(`   Bottom Row: ${sol.bottomRow}`);
-            if (sol.hasTwoRestrictions) {
-                console.log(`   Type: Two Restrictions`);
-            } else if (sol.hasRestriction) {
-                console.log(`   Type: Restriction + Set Name`);
-            } else {
-                console.log(`   Type: Set Name Only (both rows)`);
-            }
         } else if (sol.topRow) {
             console.log(`   Top Row:    ${sol.topRow}`);
             console.log(`   Bottom Row: (empty)`);
         } else if (sol.bottomRow) {
             console.log(`   Top Row:    (empty)`);
             console.log(`   Bottom Row: ${sol.bottomRow}`);
-            console.log(`   Type: Set Name Only`);
+        }
+        
+        // Display solution type
+        if (sol.restrictionCubeCount === 0) {
+            console.log(`   Type: Set Name Only (no restriction)`);
+        } else if (sol.restrictionCubeCount === 1) {
+            console.log(`   Type: One Restriction (1 cube) + Set Name`);
+        } else if (sol.restrictionCubeCount === 2) {
+            console.log(`   Type: One Restriction (2 cubes: = and ⊆) + Set Name`);
         }
         
         console.log(`\n🃏 Cards (${puzzle.cards.length} total):`);
