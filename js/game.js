@@ -355,6 +355,13 @@ export class Game {
             return { valid: false, message: 'Solution must use at least 2 cubes!' };
         }
         
+        // 1-cube set name is only valid with a restriction
+        // Without restriction, minimum set name is 2 cubes (e.g., "blue′")
+        const setNameLength = setName ? setName.length : 0;
+        if (setNameLength === 1 && !restriction) {
+            return { valid: false, message: 'A 1-cube set name requires a restriction. Try adding more cubes!' };
+        }
+        
         // Combine both rows for validation checks
         const allDice = [...restrictionRow, ...setNameRow];
         

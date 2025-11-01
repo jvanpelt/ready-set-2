@@ -3,6 +3,81 @@
 import { isValidSyntax, evaluateExpression, isValidRestriction, evaluateRestriction } from './setTheory.js';
 
 /**
+ * Find the shortest valid solution for the current puzzle
+ * @param {Array} cards - Array of card configurations
+ * @param {Array} dice - Array of available dice
+ * @param {number} goal - Target number of cards
+ * @returns {Object|null} - Shortest solution object or null if no solution exists
+ *   { cubeCount, hasRestriction, restrictionDice, setNameDice, totalCubes }
+ */
+export function findShortestSolution(cards, dice, goal) {
+    console.log('🔍 Finding shortest solution...');
+    console.log('   Dice:', dice.length, 'Goal:', goal);
+    
+    let checksPerformed = 0;
+    const startTime = Date.now();
+    
+    // Try all possible dice combinations from size 2 to dice.length
+    // Start from smallest to find shortest solution first
+    for (let size = 2; size <= dice.length; size++) {
+        const combinations = getCombinations(dice, size);
+        
+        for (let combo of combinations) {
+            // Try as a simple set name (no restriction)
+            const simpleResult = trySimpleSetNameWithDetails(combo, cards, goal);
+            if (simpleResult) {
+                const elapsed = Date.now() - startTime;
+                console.log(`✅ Shortest solution found: ${size} cubes (${checksPerformed} checks in ${elapsed}ms)`);
+                return {
+                    cubeCount: size,
+                    hasRestriction: false,
+                    restrictionDice: null,
+                    setNameDice: simpleResult.dice,
+                    totalCubes: size
+                };
+            }
+            checksPerformed++;
+            
+            // Try splitting into restriction + set name
+            // Only try if we have at least 3 dice (min: 2 for restriction, 1+ for set name)
+            if (size >= 3) {
+                // Try different split points
+                for (let restrictionSize = 2; restrictionSize <= size - 1; restrictionSize++) {
+                    const setNameSize = size - restrictionSize;
+                    
+                    // Get all ways to split combo into restriction and set name
+                    const restrictionCombos = getCombinations(combo, restrictionSize);
+                    
+                    for (let restrictionDice of restrictionCombos) {
+                        // Remaining dice go to set name
+                        const setNameDice = combo.filter(die => !restrictionDice.includes(die));
+                        
+                        // Try this split
+                        const restrictionResult = tryWithRestrictionWithDetails(restrictionDice, setNameDice, cards, goal);
+                        if (restrictionResult) {
+                            const elapsed = Date.now() - startTime;
+                            console.log(`✅ Shortest solution found: ${size} cubes with restriction (${checksPerformed} checks in ${elapsed}ms)`);
+                            return {
+                                cubeCount: size,
+                                hasRestriction: true,
+                                restrictionDice: restrictionResult.restrictionDice,
+                                setNameDice: restrictionResult.setNameDice,
+                                totalCubes: size
+                            };
+                        }
+                        checksPerformed++;
+                    }
+                }
+            }
+        }
+    }
+    
+    const elapsed = Date.now() - startTime;
+    console.log(`❌ No solution found (${checksPerformed} checks in ${elapsed}ms)`);
+    return null; // No solution found
+}
+
+/**
  * Check if any valid solution exists for the current puzzle
  * @param {Array} cards - Array of card configurations
  * @param {Array} dice - Array of available dice
@@ -78,9 +153,9 @@ export function hasPossibleSolution(cards, dice, goal) {
 }
 
 /**
- * Try a simple set name (no restriction)
+ * Try a simple set name (no restriction) - returns details
  */
-function trySimpleSetName(dice, cards, goal) {
+function trySimpleSetNameWithDetails(dice, cards, goal) {
     const perms = getPermutations(dice);
     
     for (let perm of perms) {
@@ -93,18 +168,25 @@ function trySimpleSetName(dice, cards, goal) {
         if (isValidSyntax(diceWithPositions)) {
             const result = evaluateExpression(diceWithPositions, cards);
             if (result.size === goal) {
-                return true;
+                return { dice: diceWithPositions };
             }
         }
     }
     
-    return false;
+    return null;
 }
 
 /**
- * Try a solution with restriction + set name
+ * Try a simple set name (no restriction) - returns boolean
  */
-function tryWithRestriction(restrictionDice, setNameDice, cards, goal) {
+function trySimpleSetName(dice, cards, goal) {
+    return trySimpleSetNameWithDetails(dice, cards, goal) !== null;
+}
+
+/**
+ * Try a solution with restriction + set name - returns details
+ */
+function tryWithRestrictionWithDetails(restrictionDice, setNameDice, cards, goal) {
     // Try all permutations of restriction
     const restrictionPerms = getPermutations(restrictionDice);
     
@@ -155,12 +237,22 @@ function tryWithRestriction(restrictionDice, setNameDice, cards, goal) {
             
             // Check if matches goal
             if (finalMatchingCards.size === goal) {
-                return true;
+                return {
+                    restrictionDice: restrictionWithPos,
+                    setNameDice: setNameWithPos
+                };
             }
         }
     }
     
-    return false;
+    return null;
+}
+
+/**
+ * Try a solution with restriction + set name - returns boolean
+ */
+function tryWithRestriction(restrictionDice, setNameDice, cards, goal) {
+    return tryWithRestrictionWithDetails(restrictionDice, setNameDice, cards, goal) !== null;
 }
 
 /**
@@ -206,4 +298,6 @@ function getPermutations(array) {
     
     return results;
 }
+
+
 

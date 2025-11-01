@@ -9,6 +9,8 @@
  * - Multiple solutions are encouraged (different scoring opportunities)
  */
 
+import { findShortestSolution } from './solutionFinder.js';
+
 class DailyPuzzleGenerator {
     constructor() {
         // Color options
@@ -148,15 +150,22 @@ class DailyPuzzleGenerator {
                 continue; // Try again
             }
             
-            // Calculate difficulty (placeholder for now)
-            const difficulty = this.estimateDifficulty(solution);
+            // Generate dice from the 8-cube solution
+            const dice = this.generateDiceFromSolution(solution);
+            
+            // Find the shortest possible solution with these cards and dice
+            const shortestSolution = findShortestSolution(cards, dice, goal);
+            
+            // Calculate difficulty based on shortest solution
+            const difficulty = this.calculateDifficulty(shortestSolution);
             
             return {
                 cards: cards,
-                solution: solution,
+                solution: solution, // The 8-cube solution we generated
                 goal: goal,
                 matchingCards: Array.from(matchingIndices),
                 difficulty: difficulty,
+                shortestSolution: shortestSolution, // The easiest way to solve it
                 template: template.pattern,
                 timestamp: Date.now()
             };
@@ -495,19 +504,141 @@ class DailyPuzzleGenerator {
             hasTwoRestrictions: false
         };
         
+        // Hardcoded shortest solution for the fallback (3 cubes: "red ∪ green")
+        const shortestSolution = {
+            cubeCount: 3,
+            hasRestriction: false,
+            restrictionDice: null,
+            setNameDice: [
+                { value: 'red', type: 'color', id: 'fallback-1', x: 0, y: 10 },
+                { value: '∪', type: 'operator', id: 'fallback-2', x: 100, y: 10 },
+                { value: 'green', type: 'color', id: 'fallback-3', x: 200, y: 10 }
+            ],
+            totalCubes: 3
+        };
+        
         return {
             cards: cards,
             solution: solution,
             goal: 4, // cards with red or green match (after restriction)
             matchingCards: [0, 2, 4, 6],
             difficulty: 'beginner',
+            shortestSolution: shortestSolution,
             template: 'fallback',
             timestamp: Date.now()
         };
     }
     
     /**
-     * Estimate puzzle difficulty based on solution complexity
+     * Generate dice from a solution template
+     * This creates the 8 dice that the player can use
+     * Parses the full expression token by token to extract exactly what's needed
+     */
+    generateDiceFromSolution(solution) {
+        const dice = [];
+        
+        // Combine both rows into one expression
+        let expr = '';
+        if (solution.topRow) expr += solution.topRow + ' ';
+        if (solution.bottomRow) expr += solution.bottomRow;
+        expr = expr.trim();
+        
+        // Parse the expression into tokens
+        // Split by spaces, remove parentheses, and separate prime (′) from adjacent tokens
+        let tokens = expr.split(/\s+/).map(t => t.replace(/[()]/g, ''));
+        
+        // Further split tokens that have prime attached (e.g., "gold′" → ["gold", "′"])
+        const finalTokens = [];
+        tokens.forEach(token => {
+            if (token.includes('′')) {
+                // Split the prime off
+                const parts = token.split('′');
+                parts.forEach((part, i) => {
+                    if (part) finalTokens.push(part);
+                    if (i < parts.length - 1) finalTokens.push('′'); // Add prime between parts
+                });
+            } else if (token) {
+                finalTokens.push(token);
+            }
+        });
+        
+        // Count how many of each token we need
+        const tokenCounts = {};
+        finalTokens.forEach(token => {
+            if (token) {
+                tokenCounts[token] = (tokenCounts[token] || 0) + 1;
+            }
+        });
+        
+        // Convert tokens to dice objects
+        for (const [token, count] of Object.entries(tokenCounts)) {
+            for (let i = 0; i < count; i++) {
+                let dieType = 'operator';
+                
+                // Determine die type
+                if (['red', 'blue', 'green', 'gold'].includes(token)) {
+                    dieType = 'color';
+                } else if (['=', '⊆'].includes(token)) {
+                    dieType = 'restriction';
+                } else if (['U', '∅'].includes(token)) {
+                    dieType = 'set-constant';
+                } else if (['∪', '∩', '−', '′'].includes(token)) {
+                    dieType = 'operator';
+                }
+                
+                dice.push({ 
+                    value: token, 
+                    type: dieType,
+                    id: `die-${Date.now()}-${Math.random()}`
+                });
+            }
+        }
+        
+        // Validate we have exactly 8 dice (our templates should ensure this)
+        if (dice.length !== 8) {
+            console.warn(`⚠️ Generated ${dice.length} dice, expected 8!`);
+            console.warn('Expression:', expr);
+            console.warn('Final tokens:', finalTokens);
+            console.warn('Token counts:', tokenCounts);
+            
+            // Fill or trim to 8
+            while (dice.length < 8) {
+                dice.push({ 
+                    value: '∪', 
+                    type: 'operator',
+                    id: `die-filler-${Date.now()}-${Math.random()}`
+                });
+            }
+            if (dice.length > 8) {
+                dice.length = 8;
+            }
+        }
+        
+        return dice;
+    }
+    
+    /**
+     * Calculate puzzle difficulty based on shortest solution cube count
+     * Beginner: 2-4 cubes, Intermediate: 5-6 cubes, Advanced: 7-8 cubes
+     */
+    calculateDifficulty(shortestSolution) {
+        if (!shortestSolution) {
+            return 'intermediate'; // Fallback if no solution found
+        }
+        
+        const cubeCount = shortestSolution.cubeCount;
+        
+        if (cubeCount <= 4) {
+            return 'beginner';
+        } else if (cubeCount <= 6) {
+            return 'intermediate';
+        } else {
+            return 'advanced';
+        }
+    }
+    
+    /**
+     * DEPRECATED: Estimate puzzle difficulty based on solution complexity
      * Beginner: 3-5 cubes, Intermediate: 6-7 cubes, Advanced: 8+ cubes
      */
     estimateDifficulty(solution) {
@@ -539,8 +670,8 @@ class DailyPuzzleGenerator {
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         console.log(`📋 Pattern:    ${puzzle.template}`);
         console.log(`🎯 Goal:       ${puzzle.goal} cards`);
-        console.log(`📊 Difficulty: ${puzzle.difficulty}`);
-        console.log(`\n✅ SOLUTION (One Possible Answer):`);
+        console.log(`📊 Difficulty: ${puzzle.difficulty} (based on shortest solution)`);
+        console.log(`\n✅ GENERATED SOLUTION (8 cubes):`);
         
         const sol = puzzle.solution;
         if (sol.topRow && sol.bottomRow) {
@@ -561,6 +692,20 @@ class DailyPuzzleGenerator {
             console.log(`   Type: One Restriction (1 cube) + Set Name`);
         } else if (sol.restrictionCubeCount === 2) {
             console.log(`   Type: One Restriction (2 cubes: = and ⊆) + Set Name`);
+        }
+        
+        // Display shortest solution
+        console.log(`\n⭐ SHORTEST SOLUTION (${puzzle.shortestSolution ? puzzle.shortestSolution.cubeCount : '?'} cubes):`);
+        if (puzzle.shortestSolution) {
+            const shortest = puzzle.shortestSolution;
+            if (shortest.hasRestriction) {
+                console.log(`   Restriction: ${shortest.restrictionDice.map(d => d.value).join(' ')}`);
+                console.log(`   Set Name:    ${shortest.setNameDice.map(d => d.value).join(' ')}`);
+            } else {
+                console.log(`   Set Name:    ${shortest.setNameDice.map(d => d.value).join(' ')}`);
+            }
+        } else {
+            console.log(`   (None found)`);
         }
         
         console.log(`\n🃏 Cards (${puzzle.cards.length} total):`);
