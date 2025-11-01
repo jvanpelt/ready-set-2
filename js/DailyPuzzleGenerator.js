@@ -716,17 +716,24 @@ class DailyPuzzleGenerator {
     
     /**
      * Log a puzzle to console for debugging
+     * Handles both generated puzzles and loaded puzzles from JSON
      */
     logPuzzle(puzzle) {
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        console.log('🎲 DAILY PUZZLE GENERATED');
+        console.log('🎲 DAILY PUZZLE');
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        console.log(`📋 Pattern:    ${puzzle.template}`);
+        console.log(`📋 ID:         ${puzzle.id || 'N/A'}`);
         console.log(`🎯 Goal:       ${puzzle.goal} cards`);
-        console.log(`📊 Difficulty: ${puzzle.difficulty} (based on shortest solution)`);
+        
+        // Handle difficulty (could be string or object)
+        const difficultyStr = typeof puzzle.difficulty === 'object' 
+            ? puzzle.difficulty.rating 
+            : puzzle.difficulty;
+        console.log(`📊 Difficulty: ${difficultyStr} (based on shortest solution)`);
         console.log(`\n✅ GENERATED SOLUTION (8 cubes):`);
         
-        const sol = puzzle.solution;
+        // Handle both 'solution' (generated) and 'generatedSolution' (loaded from JSON)
+        const sol = puzzle.solution || puzzle.generatedSolution;
         if (sol.topRow && sol.bottomRow) {
             console.log(`   Top Row:    ${sol.topRow}`);
             console.log(`   Bottom Row: ${sol.bottomRow}`);
@@ -738,23 +745,29 @@ class DailyPuzzleGenerator {
             console.log(`   Bottom Row: ${sol.bottomRow}`);
         }
         
-        // Display solution type
-        if (sol.restrictionCubeCount === 0) {
-            console.log(`   Type: Set Name Only (no restriction)`);
-        } else if (sol.restrictionCubeCount === 1) {
-            console.log(`   Type: One Restriction (1 cube) + Set Name`);
-        } else if (sol.restrictionCubeCount === 2) {
-            console.log(`   Type: One Restriction (2 cubes: = and ⊆) + Set Name`);
+        // Display solution type (if available from generated puzzles)
+        if (typeof sol.restrictionCubeCount !== 'undefined') {
+            if (sol.restrictionCubeCount === 0) {
+                console.log(`   Type: Set Name Only (no restriction)`);
+            } else if (sol.restrictionCubeCount === 1) {
+                console.log(`   Type: One Restriction (1 cube) + Set Name`);
+            } else if (sol.restrictionCubeCount === 2) {
+                console.log(`   Type: One Restriction (2 cubes: = and ⊆) + Set Name`);
+            }
         }
         
         // Display shortest solution
         console.log(`\n⭐ SHORTEST SOLUTION (${puzzle.shortestSolution ? puzzle.shortestSolution.cubeCount : '?'} cubes):`);
         if (puzzle.shortestSolution) {
             const shortest = puzzle.shortestSolution;
-            if (shortest.hasRestriction) {
-                console.log(`   Restriction: ${shortest.restrictionDice.map(d => d.value).join(' ')}`);
-                console.log(`   Set Name:    ${shortest.setNameDice.map(d => d.value).join(' ')}`);
-            } else {
+            if (shortest.hasRestriction !== undefined) {
+                console.log(`   Has Restriction: ${shortest.hasRestriction ? 'Yes' : 'No'}`);
+            }
+            // Only show detailed dice if available (generated puzzles have this)
+            if (shortest.restrictionDice && shortest.setNameDice) {
+                if (shortest.hasRestriction) {
+                    console.log(`   Restriction: ${shortest.restrictionDice.map(d => d.value).join(' ')}`);
+                }
                 console.log(`   Set Name:    ${shortest.setNameDice.map(d => d.value).join(' ')}`);
             }
         } else {
