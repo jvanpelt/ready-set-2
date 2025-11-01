@@ -50,9 +50,8 @@ class DailyPuzzleManager {
         // Log for debugging
         this.generator.logPuzzle(this.currentPuzzle);
         
-        // Set game mode
+        // Set game mode (don't change level - daily puzzles are level-independent)
         this.game.mode = 'daily';
-        this.game.level = 0; // Daily puzzles don't have levels
         
         // Load puzzle into game
         this.loadPuzzleIntoGame(this.currentPuzzle);
