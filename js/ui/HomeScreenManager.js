@@ -5,6 +5,7 @@ export class HomeScreenManager {
         this.game = game;
         this.homeScreen = document.getElementById('home-screen');
         this.continueBtn = document.getElementById('home-continue-btn');
+        this.dailyPuzzleBtn = document.getElementById('home-daily-puzzle-btn');
         this.newGameBtn = document.getElementById('home-new-game-btn');
         this.howToPlayBtn = document.getElementById('home-how-to-play-btn');
         this.menuBtn = document.getElementById('home-menu-btn');
@@ -18,6 +19,24 @@ export class HomeScreenManager {
         this.continueBtn.addEventListener('click', () => {
             // DEBUG: console.log('🏠 Continue button clicked');
             this.hide();
+        });
+        
+        // Daily Puzzle button - start daily puzzle mode
+        this.dailyPuzzleBtn.addEventListener('click', () => {
+            console.log('🎲 Daily Puzzle button clicked');
+            
+            // Cleanup tutorial if active
+            if (window.uiController && window.uiController.tutorialManager.isActive) {
+                console.log('🧹 Cleaning up tutorial before starting daily puzzle');
+                window.uiController.tutorialManager.cleanup();
+            }
+            
+            // Start daily puzzle mode
+            if (window.dailyPuzzleManager) {
+                window.dailyPuzzleManager.startDailyPuzzle();
+            } else {
+                console.error('❌ DailyPuzzleManager not initialized!');
+            }
         });
         
         // New Game button - start from Level 1

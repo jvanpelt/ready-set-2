@@ -329,6 +329,9 @@
                 <button id="home-continue-btn" class="btn btn-primary btn-large hidden">
                     Continue Level <span id="home-current-level">1</span>
                 </button>
+                <button id="home-daily-puzzle-btn" class="btn btn-success btn-large">
+                    <span class="btn-icon">🎲</span> Daily Puzzle
+                </button>
                 <button id="home-new-game-btn" class="btn btn-primary btn-large">
                     New Game
                 </button>
@@ -342,7 +345,11 @@
         <!-- GSAP Animation Library -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
         
-        <script type="module" src="js/main.js?v=4.0.2-neon-buttons"></script>
+        <!-- Daily Puzzle System -->
+        <script src="js/DailyPuzzleGenerator.js?v=4.1.0-daily-puzzle"></script>
+        <script src="js/DailyPuzzleManager.js?v=4.1.0-daily-puzzle"></script>
+        
+        <script type="module" src="js/main.js?v=4.1.0-daily-puzzle"></script>
 </body>
 </html>
 

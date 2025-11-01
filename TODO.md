@@ -1,9 +1,9 @@
 # Ready, Set 2 - TODO List
 
-## 🔄 Current Status (Oct 21, 2025)
+## 🔄 Current Status (Oct 31, 2025)
 **Branch**: `main`  
-**Version**: `3.19.0-fix-universe-single`
-**Status**: Core game complete, testing and polish phase 🎉
+**Version**: `4.0.2` (theming system complete)
+**Status**: Core game complete, planning major initiatives 🚀
 
 ---
 
@@ -46,14 +46,78 @@
 
 ---
 
-## 🚀 Post-Launch Ideas
+## 🚀 Major Initiatives
 
-### Future Features (Not Scheduled)
+### iOS App Development (Est: 1-2 weeks)
+- [ ] Research and choose wrapper approach (Capacitor vs WKWebView)
+- [ ] Set up development environment (Xcode, CocoaPods if needed)
+- [ ] Install and configure Capacitor (if chosen)
+- [ ] Create iOS project and configure bundle ID, app name, icons
+- [ ] Test game in iOS simulator - verify all features work
+- [ ] Configure viewport, status bar, safe areas for iOS
+- [ ] Implement offline asset bundling (all files local)
+- [ ] Test touch interactions, gestures, drag-and-drop on device
+- [ ] Configure localStorage persistence for game saves
+- [ ] Create app icons (all required sizes for iOS)
+- [ ] Create launch screen/splash screen
+- [ ] Test on multiple iOS devices (iPhone, iPad, different sizes)
+- [ ] Optimize performance (check frame rates, animation smoothness)
+- [ ] Set up TestFlight for beta testing
+- [ ] Prepare App Store listing (description, screenshots, keywords)
+- [ ] Submit to App Store for review
+
+### Daily Puzzle Mode (Est: 2-3 weeks)
+- [ ] Design puzzle data structure (cards, solution, difficulty rating, date)
+- [ ] Create puzzle difficulty rating system (beginner/intermediate/advanced based on shortest solution)
+- [ ] Extend PuzzleBuilder to rate puzzle difficulty automatically
+- [ ] Create solution template library (2-cube, 3-cube, 4-cube... 8-cube patterns)
+- [ ] Build automated puzzle generator with template instantiation
+- [ ] Create validation suite (verify solvability, score range, no duplicates)
+- [ ] Generate initial puzzle collection (target: 365-1000 puzzles)
+- [ ] Manually playtest 50-100 puzzles for quality assurance
+- [ ] Export puzzles to compressed/obfuscated format
+- [ ] Implement date-based puzzle indexing (deterministic daily selection)
+- [ ] Create DailyPuzzleManager class to handle puzzle loading and state
+- [ ] Design Daily Puzzle UI (home screen button, special mode indicator)
+- [ ] Implement daily puzzle game mode (no level progression, single puzzle)
+- [ ] Track daily puzzle completion status in localStorage
+- [ ] Create results screen showing score, difficulty rating, best possible score
+- [ ] Add share functionality (share score without spoiling puzzle)
+- [ ] Implement streak tracking (days played consecutively)
+- [ ] Add countdown timer to next puzzle (midnight reset)
+- [ ] Test date boundary transitions (midnight rollover, timezone handling)
+- [ ] Design system for puzzle content updates (monthly batch updates?)
+
+### Free Play Mode (Est: 1 week) - Details TBD
+- [ ] Define free play mode requirements and constraints (unlimited puzzles? time limits? scoring?)
+- [ ] Decide if free play uses existing random generation or curated puzzles
+- [ ] Design free play UI (home screen entry point, mode selection)
+- [ ] Determine difficulty selection system (player chooses beginner/intermediate/advanced?)
+- [ ] Implement game mode logic (endless rounds? practice mode? no progression?)
+- [ ] Create FreePlayManager class to handle state and puzzle generation
+- [ ] Design scoring system (cumulative? per-puzzle? high score tracking?)
+- [ ] Implement statistics tracking (puzzles played, average score, etc.)
+- [ ] Test and balance difficulty progression if applicable
+
+### Post-Level 10 Content (Est: 3-5 days) - Details TBD
+- [ ] Define what happens after completing level 10 (endless mode? prestige? new content?)
+- [ ] Design completion/victory screen UI
+- [ ] Determine if levels should be replayable or locked after completion
+- [ ] Implement level selection screen (if levels are replayable)
+- [ ] Design progression/achievement system (stars? badges? statistics?)
+- [ ] Determine unlock criteria for free play/daily puzzle (finish level 10? earlier?)
+- [ ] Create congratulations/end game content and messaging
+- [ ] Implement way to replay tutorials/training
+
+---
+
+## 🚀 Future Features (Not Scheduled)
+
+### Additional Ideas
 - **Tutorial replay from menu** - Allow players to review mechanics anytime
 - **Tutorial completion badges** - Rewards for completing each tutorial
 - **"Always show tutorials" toggle** - For users who want to see them every time
 - **Multi-language support** - Internationalization for tutorials and UI
-- **Theme system** - Dark mode, colorblind-friendly themes, accessibility options
 - **Smart grouping indicators** - Only show visual grouping around valid logical patterns
 - **Background solution checking** - Web Worker to check for solutions after inactivity
 
@@ -149,4 +213,4 @@
 
 ---
 
-_Last Updated: October 21, 2025_
+_Last Updated: October 31, 2025_

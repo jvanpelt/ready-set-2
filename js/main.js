@@ -49,6 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
         window.homeScreen = homeScreen; // Make accessible globally
         console.log('✅ HomeScreenManager initialized');
         
+        // Initialize daily puzzle manager
+        console.log('🎲 Initializing DailyPuzzleManager...');
+        const dailyPuzzleManager = new DailyPuzzleManager(game, ui);
+        window.dailyPuzzleManager = dailyPuzzleManager; // Make accessible globally
+        console.log('✅ DailyPuzzleManager initialized');
+        
         // Show home screen on load
         console.log('🏠 Showing home screen');
         homeScreen.show();
