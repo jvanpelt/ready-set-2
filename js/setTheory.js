@@ -50,7 +50,8 @@ function detectGroups(dice) {
     if (!dice || dice.length === 0) return [];
     
     // Use responsive die size (same logic as UI)
-    const dieSize = window.innerWidth <= 768 ? 50 : 80;
+    // Default to 80 for Node.js environments (no window)
+    const dieSize = typeof window !== 'undefined' && window.innerWidth <= 768 ? 50 : 80;
     const touchThreshold = 15; // Same as UI threshold
     const visited = new Set();
     const groups = [];
