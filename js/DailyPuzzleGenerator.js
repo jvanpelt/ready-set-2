@@ -210,6 +210,77 @@ class DailyPuzzleGenerator {
             }
         });
         
+        // ===== CATEGORY 4: Templates with GROUPING =====
+        // These templates use parentheses to specify evaluation order
+        // Players must discover the correct grouping to match the goal
+        
+        // 3-operand groupings: (A op B) op C
+        ops.forEach(op1 => {
+            ops.forEach(op2 => {
+                ['=', '⊆'].forEach(restr => {
+                    // (color op color) restriction color + color op color (8 tokens)
+                    templates.push({
+                        topRow: `(color ${op1} color) ${restr} color`,
+                        bottomRow: `color ${op2} color`,
+                        pattern: `grouped-5+3-${restr}`
+                    });
+                });
+            });
+        });
+        
+        // 3-operand groupings in set name: (A op B) op C
+        ops.forEach(op1 => {
+            ops.forEach(op2 => {
+                ['=', '⊆'].forEach(restr => {
+                    // color restriction color + (color op color) op color (8 tokens)
+                    templates.push({
+                        topRow: `color ${restr} color`,
+                        bottomRow: `(color ${op1} color) ${op2} color`,
+                        pattern: `3+grouped-5-${restr}`
+                    });
+                });
+            });
+        });
+        
+        // 4-operand groupings: ((A op B) op C) op D′
+        ops.forEach(op1 => {
+            ops.forEach(op2 => {
+                ops.forEach(op3 => {
+                    templates.push({
+                        topRow: null,
+                        bottomRow: `((color ${op1} color) ${op2} color) ${op3} color′`,
+                        pattern: "8-grouped-left-assoc"
+                    });
+                });
+            });
+        });
+        
+        // 4-operand groupings: (A op (B op C)) op D′
+        ops.forEach(op1 => {
+            ops.forEach(op2 => {
+                ops.forEach(op3 => {
+                    templates.push({
+                        topRow: null,
+                        bottomRow: `(color ${op1} (color ${op2} color)) ${op3} color′`,
+                        pattern: "8-grouped-nested"
+                    });
+                });
+            });
+        });
+        
+        // 4-operand groupings: (A op B) op (C op D)′
+        ops.forEach(op1 => {
+            ops.forEach(op2 => {
+                ops.forEach(op3 => {
+                    templates.push({
+                        topRow: null,
+                        bottomRow: `(color ${op1} color) ${op2} (color ${op3} color)′`,
+                        pattern: "8-grouped-balanced"
+                    });
+                });
+            });
+        });
+        
         console.log(`✅ Created ${templates.length} validated 8-token templates`);
         
         return templates;
@@ -514,25 +585,59 @@ class DailyPuzzleGenerator {
     stringToDice(expr) {
         if (!expr) return [];
         
-        // Parse into tokens, handling parentheses and prime
-        let tokens = expr.split(/\s+/).map(t => t.replace(/[()]/g, ''));
+        // Parse expression with parentheses to identify groups
+        // Parentheses indicate dice should be positioned close together (touching)
+        
+        // Track grouping levels and positions
+        const diceWithGroups = [];
+        let groupLevel = 0;
+        let currentToken = '';
+        
+        // Parse character by character to track grouping
+        for (let i = 0; i < expr.length; i++) {
+            const char = expr[i];
+            
+            if (char === '(') {
+                groupLevel++;
+            } else if (char === ')') {
+                groupLevel--;
+            } else if (char === ' ') {
+                if (currentToken) {
+                    diceWithGroups.push({ token: currentToken, groupLevel });
+                    currentToken = '';
+                }
+            } else {
+                currentToken += char;
+            }
+        }
+        if (currentToken) {
+            diceWithGroups.push({ token: currentToken, groupLevel });
+        }
         
         // Split tokens with attached prime (e.g., "gold′" → ["gold", "′"])
-        const finalTokens = [];
-        tokens.forEach(token => {
+        const expandedDice = [];
+        diceWithGroups.forEach(({ token, groupLevel }) => {
             if (token.includes('′')) {
                 const parts = token.split('′');
                 parts.forEach((part, i) => {
-                    if (part) finalTokens.push(part);
-                    if (i < parts.length - 1) finalTokens.push('′');
+                    if (part) expandedDice.push({ token: part, groupLevel });
+                    if (i < parts.length - 1) expandedDice.push({ token: '′', groupLevel });
                 });
             } else if (token) {
-                finalTokens.push(token);
+                expandedDice.push({ token, groupLevel });
             }
         });
         
-        // Convert tokens to dice objects with positions
-        return finalTokens.map((token, i) => {
+        // Convert tokens to dice objects with positions based on grouping
+        // Dice within same group (groupLevel > 0) are positioned close together (touching)
+        // Dice in different groups or no group are spaced apart
+        let xPos = 0;
+        const dieSize = 80; // Standard die size
+        const touchThreshold = 15; // Same as detectGroups uses
+        const groupSpacing = dieSize + touchThreshold - 10; // Close enough to touch
+        const ungroupedSpacing = dieSize + touchThreshold + 30; // Spaced apart
+        
+        return expandedDice.map(({ token, groupLevel }, i) => {
             let dieType = 'operator';
             
             if (['red', 'blue', 'green', 'gold'].includes(token)) {
@@ -545,13 +650,25 @@ class DailyPuzzleGenerator {
                 dieType = 'operator';
             }
             
-            return {
+            const die = {
                 value: token,
                 type: dieType,
-                x: i * 100, // Space dice evenly for left-to-right evaluation
+                x: xPos,
                 y: 10,
                 id: `eval-${i}`
             };
+            
+            // Calculate next position based on whether next die is in same group
+            const nextGroupLevel = i < expandedDice.length - 1 ? expandedDice[i + 1].groupLevel : 0;
+            if (groupLevel > 0 && nextGroupLevel === groupLevel) {
+                // Both in same group - keep close (touching)
+                xPos += groupSpacing;
+            } else {
+                // Different groups or transitioning out of group - space apart
+                xPos += ungroupedSpacing;
+            }
+            
+            return die;
         });
     }
     
