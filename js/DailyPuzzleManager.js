@@ -113,12 +113,28 @@ class DailyPuzzleManager {
         const dice = [];
         const expr = solution.fullExpression;
         
-        // Parse the expression into tokens (split by spaces, remove parentheses)
-        const tokens = expr.split(/\s+/).map(t => t.replace(/[()]/g, ''));
+        // Parse the expression into tokens
+        // Split by spaces, remove parentheses, and separate prime (′) from adjacent tokens
+        let tokens = expr.split(/\s+/).map(t => t.replace(/[()]/g, ''));
+        
+        // Further split tokens that have prime attached (e.g., "gold′" → ["gold", "′"])
+        const finalTokens = [];
+        tokens.forEach(token => {
+            if (token.includes('′')) {
+                // Split the prime off
+                const parts = token.split('′');
+                parts.forEach((part, i) => {
+                    if (part) finalTokens.push(part);
+                    if (i < parts.length - 1) finalTokens.push('′'); // Add prime between parts
+                });
+            } else if (token) {
+                finalTokens.push(token);
+            }
+        });
         
         // Count how many of each token we need
         const tokenCounts = {};
-        tokens.forEach(token => {
+        finalTokens.forEach(token => {
             if (token) {
                 tokenCounts[token] = (tokenCounts[token] || 0) + 1;
             }
@@ -150,7 +166,8 @@ class DailyPuzzleManager {
         // Validate we have exactly 8 dice (our templates should ensure this)
         if (dice.length !== 8) {
             console.warn(`⚠️ Generated ${dice.length} dice, expected 8!`);
-            console.warn('Tokens:', tokens);
+            console.warn('Expression:', expr);
+            console.warn('Final tokens:', finalTokens);
             console.warn('Token counts:', tokenCounts);
             
             // Fill or trim to 8
