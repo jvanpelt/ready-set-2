@@ -51,7 +51,7 @@
         {"type": "operator", "value": "∪"},
         {"type": "color", "value": "blue"},
         {"type": "restriction", "value": "="},
-        {"type": "setConstant", "value": "U"},
+        {"type": "set-constant", "value": "U"},
         {"type": "color", "value": "green"},
         {"type": "operator", "value": "∩"},
         {"type": "color", "value": "gold"}
@@ -111,7 +111,7 @@
         {"type": "operator", "value": "∩"},
         {"type": "color", "value": "blue"},
         {"type": "restriction", "value": "="},
-        {"type": "setConstant", "value": "∅"},
+        {"type": "set-constant", "value": "∅"},
         {"type": "color", "value": "green"},
         {"type": "operator", "value": "∪"},
         {"type": "color", "value": "gold"}
@@ -137,11 +137,11 @@
         {"colors": ["gold"]}
       ],
       "dice": [
-        {"type": "setConstant", "value": "U"},
+        {"type": "set-constant", "value": "U"},
         {"type": "operator", "value": "−"},
         {"type": "color", "value": "gold"},
         {"type": "restriction", "value": "⊆"},
-        {"type": "setConstant", "value": "U"},
+        {"type": "set-constant", "value": "U"},
         {"type": "color", "value": "red"},
         {"type": "operator", "value": "∪"},
         {"type": "color", "value": "blue"}
@@ -169,7 +169,7 @@
       "dice": [
         {"type": "color", "value": "gold"},
         {"type": "restriction", "value": "⊆"},
-        {"type": "setConstant", "value": "U"},
+        {"type": "set-constant", "value": "U"},
         {"type": "color", "value": "red"},
         {"type": "operator", "value": "∩"},
         {"type": "color", "value": "blue"},
@@ -201,7 +201,7 @@
         {"type": "operator", "value": "∪"},
         {"type": "color", "value": "blue"},
         {"type": "restriction", "value": "="},
-        {"type": "setConstant", "value": "∅"},
+        {"type": "set-constant", "value": "∅"},
         {"type": "color", "value": "green"},
         {"type": "operator", "value": "∪"},
         {"type": "color", "value": "gold"}
@@ -233,7 +233,7 @@
         {"type": "operator", "value": "∪"},
         {"type": "color", "value": "green"},
         {"type": "restriction", "value": "="},
-        {"type": "setConstant", "value": "U"},
+        {"type": "set-constant", "value": "U"},
         {"type": "color", "value": "gold"}
       ],
       "goal": 1,
@@ -260,7 +260,7 @@
         {"type": "color", "value": "green"},
         {"type": "operator", "value": "′"},
         {"type": "restriction", "value": "="},
-        {"type": "setConstant", "value": "U"},
+        {"type": "set-constant", "value": "U"},
         {"type": "color", "value": "red"},
         {"type": "operator", "value": "−"},
         {"type": "color", "value": "blue"},
@@ -291,7 +291,7 @@
         {"type": "operator", "value": "∩"},
         {"type": "color", "value": "green"},
         {"type": "restriction", "value": "⊆"},
-        {"type": "setConstant", "value": "U"},
+        {"type": "set-constant", "value": "U"},
         {"type": "color", "value": "red"},
         {"type": "operator", "value": "∪"},
         {"type": "color", "value": "gold"}
@@ -319,7 +319,7 @@
       "dice": [
         {"type": "color", "value": "gold"},
         {"type": "restriction", "value": "="},
-        {"type": "setConstant", "value": "∅"},
+        {"type": "set-constant", "value": "∅"},
         {"type": "color", "value": "red"},
         {"type": "operator", "value": "∩"},
         {"type": "color", "value": "blue"},
@@ -377,10 +377,10 @@
         {"colors": []}
       ],
       "dice": [
-        {"type": "setConstant", "value": "U"},
+        {"type": "set-constant", "value": "U"},
         {"type": "operator", "value": "′"},
         {"type": "restriction", "value": "="},
-        {"type": "setConstant", "value": "∅"},
+        {"type": "set-constant", "value": "∅"},
         {"type": "color", "value": "red"},
         {"type": "operator", "value": "∩"},
         {"type": "color", "value": "blue"},
@@ -470,7 +470,7 @@
         {"type": "color", "value": "green"},
         {"type": "operator", "value": "′"},
         {"type": "restriction", "value": "⊆"},
-        {"type": "setConstant", "value": "U"},
+        {"type": "set-constant", "value": "U"},
         {"type": "color", "value": "red"},
         {"type": "operator", "value": "−"},
         {"type": "color", "value": "blue"},
@@ -497,10 +497,10 @@
         {"colors": ["blue", "gold"]}
       ],
       "dice": [
-        {"type": "setConstant", "value": "∅"},
+        {"type": "set-constant", "value": "∅"},
         {"type": "operator", "value": "′"},
         {"type": "restriction", "value": "="},
-        {"type": "setConstant", "value": "U"},
+        {"type": "set-constant", "value": "U"},
         {"type": "color", "value": "blue"},
         {"type": "operator", "value": "∪"},
         {"type": "color", "value": "green"},
@@ -559,9 +559,9 @@
       "dice": [
         {"type": "color", "value": "blue"},
         {"type": "restriction", "value": "="},
-        {"type": "setConstant", "value": "∅"},
+        {"type": "set-constant", "value": "∅"},
         {"type": "restriction", "value": "="},
-        {"type": "setConstant", "value": "U"},
+        {"type": "set-constant", "value": "U"},
         {"type": "color", "value": "red"},
         {"type": "operator", "value": "∪"},
         {"type": "color", "value": "green"}
