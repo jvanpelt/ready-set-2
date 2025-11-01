@@ -116,7 +116,7 @@
         {"type": "operator", "value": "∪"},
         {"type": "color", "value": "gold"}
       ],
-      "goal": 4,
+      "goal": 5,
       "difficulty": {"rating": "intermediate", "cubeCount": 5},
       "generatedSolution": {
         "topRow": "red ∩ blue = ∅",
