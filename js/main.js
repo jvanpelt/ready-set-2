@@ -4,6 +4,7 @@ import { Game } from './game.js';
 import { UIController } from './ui/UIController.js';
 import { AppScaler } from './ui/AppScaler.js';
 import { HomeScreenManager } from './ui/HomeScreenManager.js';
+import DailyPuzzleManager from './DailyPuzzleManager.js';
 
 // Extract and log version from script tag
 const scriptTag = document.querySelector('script[src*="main.js"]');

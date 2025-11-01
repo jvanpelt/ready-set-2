@@ -8,6 +8,8 @@
  * - Manages UI state transitions
  */
 
+import DailyPuzzleGenerator from './DailyPuzzleGenerator.js';
+
 class DailyPuzzleManager {
     constructor(game, uiController) {
         this.game = game;
@@ -243,3 +245,10 @@ class DailyPuzzleManager {
     }
 }
 
+// Export for ES6 module
+export default DailyPuzzleManager;
+
+// Also expose globally for backwards compatibility
+if (typeof window !== 'undefined') {
+    window.DailyPuzzleManager = DailyPuzzleManager;
+}

@@ -650,3 +650,10 @@ class DailyPuzzleGenerator {
     }
 }
 
+// Export for ES6 module
+export default DailyPuzzleGenerator;
+
+// Also expose globally for backwards compatibility
+if (typeof window !== 'undefined') {
+    window.DailyPuzzleGenerator = DailyPuzzleGenerator;
+}
