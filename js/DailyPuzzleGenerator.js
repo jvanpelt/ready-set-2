@@ -304,7 +304,7 @@ class DailyPuzzleGenerator {
         const puzzles = [];
         const startTime = Date.now();
         let attempts = 0;
-        const maxAttemptsPerTemplate = 100;
+        const maxAttemptsPerTemplate = 500; // Increased from 100 for better success rate
         
         templates.forEach((template, index) => {
             console.log(`\n🎯 Template ${index + 1}/${templates.length}: ${template.pattern}`);
@@ -322,16 +322,22 @@ class DailyPuzzleGenerator {
                 // Generate 8 random cards
                 const cards = generateCardConfig(8);
                 
-                // Evaluate the solution to get goal
-                const goal = this.evaluateSolution(solution, cards);
+                // Evaluate the solution to get matching cards (returns a Set)
+                const matchingCards = this.evaluateSolution(solution, cards);
+                const goal = matchingCards.size; // Get the count
                 
                 // Keep if goal is valid (1-7)
                 if (goal >= 1 && goal <= 7) {
-                    // Find shortest solution for difficulty rating
-                    const shortest = findShortestSolution(cards, [], goal);
-                    
                     // Generate dice from solution
                     const dice = this.generateDiceFromSolution(solution);
+                    
+                    // For test puzzles, use a simple difficulty based on cube count
+                    // (We're testing templates, not optimizing for difficulty)
+                    const cubeCount = dice.length;
+                    let difficultyRating = 'intermediate';
+                    if (cubeCount <= 3) difficultyRating = 'beginner';
+                    else if (cubeCount >= 7) difficultyRating = 'expert';
+                    else if (cubeCount >= 5) difficultyRating = 'advanced';
                     
                     puzzle = {
                         id: index + 1,
@@ -341,11 +347,11 @@ class DailyPuzzleGenerator {
                         dice,
                         goal,
                         generatedSolution: solution,
-                        difficulty: shortest.difficulty
+                        difficulty: { rating: difficultyRating, cubes: cubeCount }
                     };
                     
                     console.log(`   ✅ Valid puzzle found (${templateAttempts} attempts)`);
-                    console.log(`      Goal: ${goal}, Difficulty: ${shortest.difficulty.rating}`);
+                    console.log(`      Goal: ${goal}, Cubes: ${cubeCount}, Difficulty: ${difficultyRating}`);
                 }
             }
             
@@ -369,16 +375,20 @@ class DailyPuzzleGenerator {
         });
         
         const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
-        const failedCount = puzzles.filter(p => p.failed).length;
-        console.log(`\n✅ Test set complete! Generated ${puzzles.length} puzzles in ${elapsed}s (${attempts} total attempts)`);
+        
+        // Filter out failed puzzles - we only want working ones for testing
+        const successfulPuzzles = puzzles.filter(p => !p.failed);
+        const failedCount = puzzles.length - successfulPuzzles.length;
+        
+        console.log(`\n✅ Test set complete! Generated ${successfulPuzzles.length} valid puzzles in ${elapsed}s (${attempts} total attempts)`);
         if (failedCount > 0) {
-            console.warn(`⚠️ ${failedCount} templates failed to generate valid puzzles`);
+            console.warn(`⚠️ ${failedCount} templates failed to generate valid puzzles (skipped)`);
         }
         
         // Generate statistics
-        this.logBatchStatistics(puzzles.filter(p => !p.failed));
+        this.logBatchStatistics(successfulPuzzles);
         
-        return puzzles;
+        return successfulPuzzles;
     }
     
     /**
@@ -407,17 +417,20 @@ class DailyPuzzleGenerator {
             console.log(`  ${goal} cards: ${count} (${pct}%)`);
         });
         
-        // Cube usage in shortest solutions
-        const cubeCounts = {};
-        puzzles.forEach(p => {
-            const cubes = p.shortestSolution.cubeCount;
-            cubeCounts[cubes] = (cubeCounts[cubes] || 0) + 1;
-        });
-        console.log('\nShortest Solution Length:');
-        Object.entries(cubeCounts).sort((a, b) => a[0] - b[0]).forEach(([cubes, count]) => {
-            const pct = ((count / puzzles.length) * 100).toFixed(1);
-            console.log(`  ${cubes} cubes: ${count} (${pct}%)`);
-        });
+        // Cube usage in shortest solutions (if available)
+        const puzzlesWithShortestSolution = puzzles.filter(p => p.shortestSolution);
+        if (puzzlesWithShortestSolution.length > 0) {
+            const cubeCounts = {};
+            puzzlesWithShortestSolution.forEach(p => {
+                const cubes = p.shortestSolution.cubeCount;
+                cubeCounts[cubes] = (cubeCounts[cubes] || 0) + 1;
+            });
+            console.log('\nShortest Solution Length:');
+            Object.entries(cubeCounts).sort((a, b) => a[0] - b[0]).forEach(([cubes, count]) => {
+                const pct = ((count / puzzlesWithShortestSolution.length) * 100).toFixed(1);
+                console.log(`  ${cubes} cubes: ${count} (${pct}%)`);
+            });
+        }
         
         console.log('\n');
     }
