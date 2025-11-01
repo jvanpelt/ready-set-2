@@ -493,15 +493,17 @@ class DailyPuzzleGenerator {
         console.log(`📋 Pattern:    ${puzzle.template}`);
         console.log(`🎯 Goal:       ${puzzle.goal} cards`);
         console.log(`📊 Difficulty: ${puzzle.difficulty}`);
-        console.log(`\n🧮 Solution:   ${puzzle.solution.fullExpression}`);
-        console.log(`   Restriction: ${puzzle.solution.restriction} ${puzzle.solution.operator}`);
-        console.log(`   Set Name:    ${puzzle.solution.setName}`);
-        console.log(`\n🃏 Cards:`);
+        console.log(`\n✅ SOLUTION (One Possible Answer):`);
+        console.log(`   ${puzzle.solution.fullExpression}`);
+        console.log(`\n   Top Row (Restriction):  ${puzzle.solution.restriction} ${puzzle.solution.operator}`);
+        console.log(`   Bottom Row (Set Name):  ${puzzle.solution.setName}`);
+        console.log(`\n🃏 Cards (${puzzle.cards.length} total):`);
         puzzle.cards.forEach((card, i) => {
             const isMatch = puzzle.matchingCards && puzzle.matchingCards.includes(i);
             const marker = isMatch ? '✓' : ' ';
             console.log(`   [${marker}] Card ${i}: ${card.colors.join(', ')}`);
         });
+        console.log(`\n   ✓ = Should match the solution (Goal: ${puzzle.goal})`);
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
     }
 }
