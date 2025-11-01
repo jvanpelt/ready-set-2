@@ -162,6 +162,7 @@ class DailyPuzzleGenerator {
             
             return {
                 cards: cards,
+                dice: dice, // Pre-generated dice - no need to regenerate at runtime
                 solution: solution, // The 8-cube solution we generated
                 goal: goal,
                 matchingCards: Array.from(matchingIndices),
@@ -435,6 +436,9 @@ class DailyPuzzleGenerator {
             hasTwoRestrictions: false
         };
         
+        // Generate dice for the fallback puzzle
+        const dice = this.generateDiceFromSolution(solution);
+        
         // Hardcoded shortest solution for the fallback (3 cubes: "red ∪ green")
         const shortestSolution = {
             cubeCount: 3,
@@ -450,6 +454,7 @@ class DailyPuzzleGenerator {
         
         return {
             cards: cards,
+            dice: dice, // Pre-generated dice
             solution: solution,
             goal: 4, // cards with red or green match (after restriction)
             matchingCards: [0, 2, 4, 6],

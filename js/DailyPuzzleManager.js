@@ -87,8 +87,8 @@ class DailyPuzzleManager {
         this.game.goal = puzzle.goal;
         this.game.goalCards = puzzle.goal; // UI displays goalCards, not goal
         
-        // Generate dice pool (all 8 cubes for daily puzzle)
-        this.game.dice = this.generateDiceFromSolution(puzzle.solution);
+        // Load pre-generated dice from puzzle (no need to regenerate)
+        this.game.dice = puzzle.dice;
         
         // Clear solutions
         this.game.solutions = [[], []];
@@ -104,91 +104,6 @@ class DailyPuzzleManager {
             matchingCards: puzzle.matchingCards,
             startTime: Date.now()
         };
-    }
-    
-    /**
-     * Generate dice from a solution template
-     * This creates the 8 dice that the player can use
-     * Parses the full expression token by token to extract exactly what's needed
-     */
-    generateDiceFromSolution(solution) {
-        const dice = [];
-        
-        // Combine both rows into one expression
-        let expr = '';
-        if (solution.topRow) expr += solution.topRow + ' ';
-        if (solution.bottomRow) expr += solution.bottomRow;
-        expr = expr.trim();
-        
-        // Parse the expression into tokens
-        // Split by spaces, remove parentheses, and separate prime (′) from adjacent tokens
-        let tokens = expr.split(/\s+/).map(t => t.replace(/[()]/g, ''));
-        
-        // Further split tokens that have prime attached (e.g., "gold′" → ["gold", "′"])
-        const finalTokens = [];
-        tokens.forEach(token => {
-            if (token.includes('′')) {
-                // Split the prime off
-                const parts = token.split('′');
-                parts.forEach((part, i) => {
-                    if (part) finalTokens.push(part);
-                    if (i < parts.length - 1) finalTokens.push('′'); // Add prime between parts
-                });
-            } else if (token) {
-                finalTokens.push(token);
-            }
-        });
-        
-        // Count how many of each token we need
-        const tokenCounts = {};
-        finalTokens.forEach(token => {
-            if (token) {
-                tokenCounts[token] = (tokenCounts[token] || 0) + 1;
-            }
-        });
-        
-        // Convert tokens to dice objects
-        const timestamp = Date.now();
-        let dieIndex = 0;
-        for (const [token, count] of Object.entries(tokenCounts)) {
-            for (let i = 0; i < count; i++) {
-                let dieType = 'operator';
-                
-                // Determine die type (match levels.js structure)
-                if (['red', 'blue', 'green', 'gold'].includes(token)) {
-                    dieType = 'color';
-                } else if (['=', '⊆'].includes(token)) {
-                    dieType = 'restriction';
-                } else if (['∪', '∩', '−', '′', 'U', '∅'].includes(token)) {
-                    // U and ∅ are 'operator' type, same as regular game (levels.js line 360)
-                    dieType = 'operator';
-                }
-                
-                dice.push({ 
-                    value: token, 
-                    type: dieType,
-                    id: `die-${dieIndex++}-${timestamp}` // Add unique ID like regular game
-                });
-            }
-        }
-        
-        // Validate we have exactly 8 dice (our templates should ensure this)
-        if (dice.length !== 8) {
-            console.warn(`⚠️ Generated ${dice.length} dice, expected 8!`);
-            console.warn('Expression:', expr);
-            console.warn('Final tokens:', finalTokens);
-            console.warn('Token counts:', tokenCounts);
-            
-            // Fill or trim to 8
-            while (dice.length < 8) {
-                dice.push({ value: '∪', type: 'operator' });
-            }
-            if (dice.length > 8) {
-                dice.length = 8;
-            }
-        }
-        
-        return dice;
     }
     
     /**
