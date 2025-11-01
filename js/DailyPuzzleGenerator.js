@@ -295,6 +295,93 @@ class DailyPuzzleGenerator {
     }
     
     /**
+     * Generate one puzzle per template for comprehensive testing
+     * @returns {Array} - Array of test puzzle objects
+     */
+    generateTestSet() {
+        console.log(`\n🧪 Generating FULL TEST SET (one puzzle per template)...`);
+        const templates = this.createTemplates();
+        const puzzles = [];
+        const startTime = Date.now();
+        let attempts = 0;
+        const maxAttemptsPerTemplate = 100;
+        
+        templates.forEach((template, index) => {
+            console.log(`\n🎯 Template ${index + 1}/${templates.length}: ${template.pattern}`);
+            
+            let puzzle = null;
+            let templateAttempts = 0;
+            
+            while (!puzzle && templateAttempts < maxAttemptsPerTemplate) {
+                templateAttempts++;
+                attempts++;
+                
+                // Instantiate template with random colors/setNames
+                const solution = this.instantiateTemplate(template);
+                
+                // Generate 8 random cards
+                const cards = generateCardConfig(8);
+                
+                // Evaluate the solution to get goal
+                const goal = this.evaluateSolution(solution, cards);
+                
+                // Keep if goal is valid (1-7)
+                if (goal >= 1 && goal <= 7) {
+                    // Find shortest solution for difficulty rating
+                    const shortest = findShortestSolution(cards, [], goal);
+                    
+                    // Generate dice from solution
+                    const dice = this.generateDiceFromSolution(solution);
+                    
+                    puzzle = {
+                        id: index + 1,
+                        templateIndex: index,
+                        templatePattern: template.pattern,
+                        cards,
+                        dice,
+                        goal,
+                        generatedSolution: solution,
+                        difficulty: shortest.difficulty
+                    };
+                    
+                    console.log(`   ✅ Valid puzzle found (${templateAttempts} attempts)`);
+                    console.log(`      Goal: ${goal}, Difficulty: ${shortest.difficulty.rating}`);
+                }
+            }
+            
+            if (!puzzle) {
+                console.warn(`   ⚠️ Failed to generate valid puzzle for template after ${maxAttemptsPerTemplate} attempts`);
+                // Create a fallback minimal puzzle for this template
+                puzzle = {
+                    id: index + 1,
+                    templateIndex: index,
+                    templatePattern: template.pattern,
+                    cards: generateCardConfig(8),
+                    dice: [],
+                    goal: 0,
+                    generatedSolution: { topRow: null, bottomRow: "FAILED" },
+                    difficulty: { rating: "unknown", cubes: 0 },
+                    failed: true
+                };
+            }
+            
+            puzzles.push(puzzle);
+        });
+        
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+        const failedCount = puzzles.filter(p => p.failed).length;
+        console.log(`\n✅ Test set complete! Generated ${puzzles.length} puzzles in ${elapsed}s (${attempts} total attempts)`);
+        if (failedCount > 0) {
+            console.warn(`⚠️ ${failedCount} templates failed to generate valid puzzles`);
+        }
+        
+        // Generate statistics
+        this.logBatchStatistics(puzzles.filter(p => !p.failed));
+        
+        return puzzles;
+    }
+    
+    /**
      * Log statistics about a batch of puzzles
      */
     logBatchStatistics(puzzles) {

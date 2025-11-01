@@ -561,7 +561,8 @@ body {
 
 .score-display,
 .timer-display,
-.goal-display {
+.goal-display,
+.puzzle-id-display {
     background: var(--overlay-dark-30);
     border-radius: 12px;
     padding: 15px 20px;
@@ -580,6 +581,14 @@ body {
 .goal-display {
     background: var(--color-goal-bg);
     color: var(--color-goal-text);
+}
+
+.puzzle-id-display {
+    background: var(--color-goal-bg);
+    color: var(--color-goal-text);
+    border: 3px solid var(--color-primary);
+    opacity: 0.9;
+    min-width: 120px;
 }
 
 .stat-label {
@@ -1614,13 +1623,15 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
     }
     
     .timer-display,
-    .goal-display {
+    .goal-display,
+    .puzzle-id-display {
         grid-column: span 1;
     }
     
     .score-display,
     .timer-display,
-    .goal-display {
+    .goal-display,
+    .puzzle-id-display {
         padding: 8px 10px;
     }
     
@@ -1638,7 +1649,8 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
         font-size: 18px;
     }
     
-    .timer-display {
+    .timer-display,
+    .puzzle-id-display {
         min-width: unset;
     }
     

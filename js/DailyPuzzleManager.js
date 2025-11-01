@@ -16,14 +16,17 @@ class DailyPuzzleManager {
         this.uiController = uiController;
         this.generator = new DailyPuzzleGenerator();
         
-        // Test mode: picks random puzzle from bank (true) vs date-based (false)
-        this.testMode = true; // TODO: Set to false for production
+        // Test mode options
+        this.testMode = 'systematic'; // 'systematic' | 'random' | false (date-based)
         
         // Current puzzle
         this.currentPuzzle = null;
         
         // Puzzle bank (loaded from JSON)
         this.puzzleBank = null;
+        
+        // Testing progress (for systematic testing)
+        this.testingProgress = this.loadTestingProgress();
         
         // Load puzzle bank
         this.loadPuzzleBank();
@@ -34,10 +37,22 @@ class DailyPuzzleManager {
      */
     async loadPuzzleBank() {
         try {
-            const response = await fetch('data/daily-puzzles.json');
+            // Load from test set if in systematic test mode
+            const filename = this.testMode === 'systematic' 
+                ? 'data/daily-puzzles-test.json' 
+                : 'data/daily-puzzles.json';
+            
+            const response = await fetch(filename);
             const data = await response.json();
-            this.puzzleBank = data.puzzles;
-            console.log(`✅ Loaded ${this.puzzleBank.length} daily puzzles from bank`);
+            
+            // Handle both array format and {puzzles: []} format
+            this.puzzleBank = Array.isArray(data) ? data : data.puzzles;
+            
+            console.log(`✅ Loaded ${this.puzzleBank.length} puzzles from ${filename}`);
+            
+            if (this.testMode === 'systematic') {
+                console.log(`📊 Testing Progress: ${this.testingProgress.tested.length}/${this.puzzleBank.length} puzzles tested`);
+            }
         } catch (error) {
             console.error('❌ Failed to load puzzle bank:', error);
             // Fallback to runtime generation if file doesn't load
@@ -55,8 +70,11 @@ class DailyPuzzleManager {
             return this.generator.generatePuzzle();
         }
         
-        if (this.testMode) {
-            // Test mode: pick a random puzzle from bank
+        if (this.testMode === 'systematic') {
+            // Systematic test mode: get next untested puzzle
+            return this.getNextUntestedPuzzle();
+        } else if (this.testMode === 'random' || this.testMode === true) {
+            // Random test mode: pick a random puzzle from bank
             const randomIndex = Math.floor(Math.random() * this.puzzleBank.length);
             console.log(`🎲 Test mode: Loading random puzzle #${randomIndex + 1}/${this.puzzleBank.length}`);
             return this.puzzleBank[randomIndex];
@@ -68,6 +86,87 @@ class DailyPuzzleManager {
         
         console.log(`📅 Loading puzzle #${puzzleIndex + 1} for ${today}`);
         return this.puzzleBank[puzzleIndex % this.puzzleBank.length];
+    }
+    
+    /**
+     * Get next untested puzzle for systematic testing
+     */
+    getNextUntestedPuzzle() {
+        if (!this.puzzleBank) return null;
+        
+        // Find first puzzle that hasn't been tested
+        for (let i = 0; i < this.puzzleBank.length; i++) {
+            const puzzleId = this.puzzleBank[i].id;
+            if (!this.testingProgress.tested.includes(puzzleId)) {
+                const progress = this.testingProgress.tested.length;
+                const total = this.puzzleBank.length;
+                console.log(`🧪 Test Mode: Loading puzzle #${puzzleId} (Progress: ${progress}/${total} tested)`);
+                return this.puzzleBank[i];
+            }
+        }
+        
+        // All puzzles tested!
+        console.log('🎉 All puzzles tested!');
+        return this.puzzleBank[0]; // Loop back to first
+    }
+    
+    /**
+     * Mark current puzzle as tested
+     */
+    markPuzzleAsTested(puzzleId) {
+        if (!this.testingProgress.tested.includes(puzzleId)) {
+            this.testingProgress.tested.push(puzzleId);
+            this.saveTestingProgress();
+            console.log(`✅ Puzzle #${puzzleId} marked as tested (${this.testingProgress.tested.length}/${this.puzzleBank.length})`);
+        }
+    }
+    
+    /**
+     * Load next puzzle in test mode
+     */
+    loadNextTestPuzzle() {
+        // Mark current puzzle as tested
+        if (this.currentPuzzle && this.currentPuzzle.id) {
+            this.markPuzzleAsTested(this.currentPuzzle.id);
+        }
+        
+        // Load next puzzle
+        this.startDailyPuzzle();
+    }
+    
+    /**
+     * Load testing progress from localStorage
+     */
+    loadTestingProgress() {
+        try {
+            const saved = localStorage.getItem('rs2_testing_progress');
+            if (saved) {
+                return JSON.parse(saved);
+            }
+        } catch (error) {
+            console.error('Error loading testing progress:', error);
+        }
+        return { tested: [] };
+    }
+    
+    /**
+     * Save testing progress to localStorage
+     */
+    saveTestingProgress() {
+        try {
+            localStorage.setItem('rs2_testing_progress', JSON.stringify(this.testingProgress));
+        } catch (error) {
+            console.error('Error saving testing progress:', error);
+        }
+    }
+    
+    /**
+     * Reset testing progress
+     */
+    resetTestingProgress() {
+        this.testingProgress = { tested: [] };
+        this.saveTestingProgress();
+        console.log('🔄 Testing progress reset');
     }
     
     /**
@@ -135,8 +234,10 @@ class DailyPuzzleManager {
         
         // Daily puzzle specific settings
         this.game.dailyPuzzle = {
+            puzzleId: puzzle.id,
+            templatePattern: puzzle.templatePattern, // For debugging
             difficulty: puzzle.difficulty,
-            solution: puzzle.solution,
+            solution: puzzle.solution || puzzle.generatedSolution,
             matchingCards: puzzle.matchingCards,
             startTime: Date.now()
         };

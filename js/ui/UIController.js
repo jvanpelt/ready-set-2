@@ -77,6 +77,8 @@ export class UIController {
         this.goalCardsEl = document.getElementById('goal-cards');
         this.timerDisplay = document.getElementById('timer-display');
         this.timerValue = document.getElementById('timer-value');
+        this.puzzleIdDisplay = document.getElementById('puzzle-id-display');
+        this.puzzleIdValue = document.getElementById('puzzle-id-value');
         
         // Control buttons
         this.goBtn = document.getElementById('go-btn');
@@ -768,6 +770,14 @@ export class UIController {
             } else {
                 this.timerDisplay.style.display = 'none';
             }
+        }
+        
+        // Show puzzle ID for daily puzzles (helps with testing/screenshots)
+        if (this.game.mode === 'daily' && this.game.dailyPuzzle && this.game.dailyPuzzle.puzzleId) {
+            this.puzzleIdDisplay.style.display = 'flex';
+            this.puzzleIdValue.textContent = `#${this.game.dailyPuzzle.puzzleId}`;
+        } else {
+            this.puzzleIdDisplay.style.display = 'none';
         }
         
         // Update status bar
