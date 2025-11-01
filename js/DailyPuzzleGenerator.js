@@ -215,6 +215,110 @@ class DailyPuzzleGenerator {
     }
     
     /**
+     * Generate a batch of puzzles for offline storage
+     * @param {number} count - Number of puzzles to generate
+     * @returns {Array} - Array of puzzle objects
+     */
+    generateBatch(count) {
+        console.log(`\n🎲 Generating batch of ${count} daily puzzles...`);
+        const puzzles = [];
+        const startTime = Date.now();
+        
+        for (let i = 0; i < count; i++) {
+            const puzzle = this.generatePuzzle();
+            if (puzzle) {
+                puzzles.push({
+                    id: i + 1,
+                    ...puzzle
+                });
+                console.log(`✅ Puzzle ${i + 1}/${count} generated (Difficulty: ${puzzle.difficulty.rating}, Goal: ${puzzle.goal})`);
+            } else {
+                console.warn(`⚠️ Puzzle ${i + 1}/${count} failed to generate after max attempts`);
+            }
+        }
+        
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+        console.log(`\n✅ Batch complete! Generated ${puzzles.length}/${count} puzzles in ${elapsed}s`);
+        
+        // Generate statistics
+        this.logBatchStatistics(puzzles);
+        
+        return puzzles;
+    }
+    
+    /**
+     * Log statistics about a batch of puzzles
+     */
+    logBatchStatistics(puzzles) {
+        console.log('\n📊 BATCH STATISTICS:');
+        
+        // Difficulty distribution
+        const diffCounts = { beginner: 0, intermediate: 0, advanced: 0, expert: 0 };
+        puzzles.forEach(p => diffCounts[p.difficulty.rating]++);
+        console.log('Difficulty Distribution:');
+        Object.entries(diffCounts).forEach(([rating, count]) => {
+            const pct = ((count / puzzles.length) * 100).toFixed(1);
+            console.log(`  ${rating}: ${count} (${pct}%)`);
+        });
+        
+        // Goal distribution
+        const goalCounts = {};
+        puzzles.forEach(p => {
+            goalCounts[p.goal] = (goalCounts[p.goal] || 0) + 1;
+        });
+        console.log('\nGoal Distribution (matching cards):');
+        Object.entries(goalCounts).sort((a, b) => a[0] - b[0]).forEach(([goal, count]) => {
+            const pct = ((count / puzzles.length) * 100).toFixed(1);
+            console.log(`  ${goal} cards: ${count} (${pct}%)`);
+        });
+        
+        // Cube usage in shortest solutions
+        const cubeCounts = {};
+        puzzles.forEach(p => {
+            const cubes = p.shortestSolution.cubeCount;
+            cubeCounts[cubes] = (cubeCounts[cubes] || 0) + 1;
+        });
+        console.log('\nShortest Solution Length:');
+        Object.entries(cubeCounts).sort((a, b) => a[0] - b[0]).forEach(([cubes, count]) => {
+            const pct = ((count / puzzles.length) * 100).toFixed(1);
+            console.log(`  ${cubes} cubes: ${count} (${pct}%)`);
+        });
+        
+        console.log('\n');
+    }
+    
+    /**
+     * Export batch to JSON format (for offline storage)
+     * Solutions are stored in plain text for now - will obfuscate in Phase 2
+     */
+    exportBatch(puzzles) {
+        const exportData = {
+            version: '1.0.0',
+            generatedAt: new Date().toISOString(),
+            count: puzzles.length,
+            puzzles: puzzles.map(p => ({
+                id: p.id,
+                cards: p.cards,
+                dice: p.dice,
+                goal: p.goal,
+                difficulty: p.difficulty,
+                // 8-cube solution (for reference/validation, not shown to player)
+                generatedSolution: {
+                    topRow: p.solution.topRow,
+                    bottomRow: p.solution.bottomRow
+                },
+                // Shortest solution (for scoring/difficulty calculation)
+                shortestSolution: {
+                    cubeCount: p.shortestSolution.cubeCount,
+                    hasRestriction: p.shortestSolution.hasRestriction
+                }
+            }))
+        };
+        
+        return JSON.stringify(exportData, null, 2);
+    }
+    
+    /**
      * Generate a single random puzzle
      */
     generatePuzzle() {
@@ -740,6 +844,32 @@ class DailyPuzzleGenerator {
 }
 
 // Export for ES6 module
+/**
+ * Console helper: Generate and download a batch of puzzles
+ * Usage in browser console: 
+ *   await window.generateDailyPuzzleBatch(20);
+ */
+window.generateDailyPuzzleBatch = async function(count = 20) {
+    console.log('🎲 Starting batch generation...');
+    const generator = new DailyPuzzleGenerator();
+    const puzzles = generator.generateBatch(count);
+    const json = generator.exportBatch(puzzles);
+    
+    // Download as JSON file
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `daily-puzzles-${count}-${Date.now()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    console.log(`✅ Downloaded ${puzzles.length} puzzles to ${a.download}`);
+    return puzzles;
+};
+
 export default DailyPuzzleGenerator;
 
 // Also expose globally for backwards compatibility
