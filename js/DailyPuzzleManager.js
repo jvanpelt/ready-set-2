@@ -85,6 +85,7 @@ class DailyPuzzleManager {
         
         // Set goal from the puzzle (number of cards that should match)
         this.game.goal = puzzle.goal;
+        this.game.goalCards = puzzle.goal; // UI displays goalCards, not goal
         
         // Generate dice pool (all 8 cubes for daily puzzle)
         this.game.dice = this.generateDiceFromSolution(puzzle.solution);
@@ -147,24 +148,26 @@ class DailyPuzzleManager {
         });
         
         // Convert tokens to dice objects
+        const timestamp = Date.now();
+        let dieIndex = 0;
         for (const [token, count] of Object.entries(tokenCounts)) {
             for (let i = 0; i < count; i++) {
                 let dieType = 'operator';
                 
-                // Determine die type
+                // Determine die type (match levels.js structure)
                 if (['red', 'blue', 'green', 'gold'].includes(token)) {
                     dieType = 'color';
                 } else if (['=', '⊆'].includes(token)) {
                     dieType = 'restriction';
-                } else if (['U', '∅'].includes(token)) {
-                    dieType = 'set-constant';
-                } else if (['∪', '∩', '−', '′'].includes(token)) {
+                } else if (['∪', '∩', '−', '′', 'U', '∅'].includes(token)) {
+                    // U and ∅ are 'operator' type, same as regular game (levels.js line 360)
                     dieType = 'operator';
                 }
                 
                 dice.push({ 
                     value: token, 
-                    type: dieType 
+                    type: dieType,
+                    id: `die-${dieIndex++}-${timestamp}` // Add unique ID like regular game
                 });
             }
         }
