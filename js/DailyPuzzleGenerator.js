@@ -126,8 +126,8 @@ class DailyPuzzleGenerator {
             // The goal is the number of matching cards
             const goal = matchingIndices.size;
             
-            // Validate: we want 1-4 matching cards (not 0, that's impossible!)
-            if (goal === 0 || goal > 4) {
+            // Validate: we want 1-8 matching cards (not 0, that's impossible!)
+            if (goal === 0 || goal > 8) {
                 continue; // Try again
             }
             
@@ -382,7 +382,7 @@ class DailyPuzzleGenerator {
     }
     
     /**
-     * Generate 4 random cards with variety
+     * Generate 8 random cards with variety
      * Uses all 4 colors, distributed across the cards
      */
     generateRandomCards() {
@@ -393,8 +393,8 @@ class DailyPuzzleGenerator {
         
         const usedColors = new Set();
         
-        // Generate 4 cards
-        for (let i = 0; i < 4; i++) {
+        // Generate 8 cards
+        for (let i = 0; i < 8; i++) {
             const numColors = Math.floor(Math.random() * 3) + 1; // 1-3 colors per card
             const colors = [];
             
@@ -437,7 +437,11 @@ class DailyPuzzleGenerator {
             { colors: ['red'] },
             { colors: ['blue'] },
             { colors: ['green'] },
-            { colors: ['gold'] }
+            { colors: ['gold'] },
+            { colors: ['red', 'blue'] },
+            { colors: ['green', 'gold'] },
+            { colors: ['red', 'green'] },
+            { colors: ['blue', 'gold'] }
         ];
         
         const solution = {
@@ -451,8 +455,8 @@ class DailyPuzzleGenerator {
         return {
             cards: cards,
             solution: solution,
-            goal: 2, // green and gold match
-            matchingCards: [2, 3],
+            goal: 4, // cards with green or gold match
+            matchingCards: [2, 3, 5, 7],
             difficulty: 'beginner',
             template: 'fallback',
             timestamp: Date.now()
