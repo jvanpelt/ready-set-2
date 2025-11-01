@@ -843,36 +843,4 @@ class DailyPuzzleGenerator {
     }
 }
 
-// Export for ES6 module
-/**
- * Console helper: Generate and download a batch of puzzles
- * Usage in browser console: 
- *   await window.generateDailyPuzzleBatch(20);
- */
-window.generateDailyPuzzleBatch = async function(count = 20) {
-    console.log('🎲 Starting batch generation...');
-    const generator = new DailyPuzzleGenerator();
-    const puzzles = generator.generateBatch(count);
-    const json = generator.exportBatch(puzzles);
-    
-    // Download as JSON file
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `daily-puzzles-${count}-${Date.now()}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    
-    console.log(`✅ Downloaded ${puzzles.length} puzzles to ${a.download}`);
-    return puzzles;
-};
-
 export default DailyPuzzleGenerator;
-
-// Also expose globally for backwards compatibility
-if (typeof window !== 'undefined') {
-    window.DailyPuzzleGenerator = DailyPuzzleGenerator;
-}
