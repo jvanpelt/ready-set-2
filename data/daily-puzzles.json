@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2025-11-01T20:00:00.000Z",
-  "count": 20,
+  "generatedAt": "2025-11-01T20:30:00.000Z",
+  "count": 2,
   "puzzles": [
     {
       "id": 1,
@@ -16,22 +16,22 @@
         {"colors": ["blue", "gold"]}
       ],
       "dice": [
-        {"type": "color", "value": "red"},
-        {"type": "operator", "value": "∪"},
-        {"type": "color", "value": "blue"},
+        {"type": "setConstant", "value": "U"},
         {"type": "restriction", "value": "="},
+        {"type": "color", "value": "red"},
+        {"type": "color", "value": "blue"},
+        {"type": "operator", "value": "∪"},
         {"type": "color", "value": "green"},
         {"type": "operator", "value": "∪"},
-        {"type": "color", "value": "gold"},
-        {"type": "operator", "value": "′"}
+        {"type": "color", "value": "gold"}
       ],
-      "goal": 4,
-      "difficulty": {"rating": "intermediate", "cubeCount": 3},
+      "goal": 8,
+      "difficulty": {"rating": "beginner", "cubeCount": 2},
       "generatedSolution": {
-        "topRow": "red ∪ blue = green",
-        "bottomRow": "gold ∪ red′"
+        "topRow": "U = red",
+        "bottomRow": "blue ∪ green ∪ gold"
       },
-      "shortestSolution": {"cubeCount": 3, "hasRestriction": true}
+      "shortestSolution": {"cubeCount": 2, "hasRestriction": false}
     },
     {
       "id": 2,
@@ -46,23 +46,22 @@
         {"colors": ["red", "gold"]}
       ],
       "dice": [
-        {"type": "color", "value": "blue"},
-        {"type": "operator", "value": "∩"},
-        {"type": "color", "value": "green"},
-        {"type": "restriction", "value": "⊆"},
         {"type": "color", "value": "red"},
+        {"type": "operator", "value": "∩"},
+        {"type": "color", "value": "blue"},
+        {"type": "restriction", "value": "⊆"},
+        {"type": "setConstant", "value": "U"},
+        {"type": "color", "value": "green"},
         {"type": "operator", "value": "∪"},
-        {"type": "color", "value": "gold"},
-        {"type": "operator", "value": "∪"},
-        {"type": "color", "value": "blue"}
+        {"type": "color", "value": "gold"}
       ],
-      "goal": 3,
+      "goal": 2,
       "difficulty": {"rating": "intermediate", "cubeCount": 4},
       "generatedSolution": {
-        "topRow": "blue ∩ green ⊆ red",
-        "bottomRow": "gold ∪ blue"
+        "topRow": "red ∩ blue ⊆ U",
+        "bottomRow": "green ∪ gold"
       },
-      "shortestSolution": {"cubeCount": 4, "hasRestriction": true}
+      "shortestSolution": {"cubeCount": 3, "hasRestriction": false}
     }
   ]
 }
