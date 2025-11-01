@@ -110,7 +110,12 @@ class DailyPuzzleManager {
      */
     generateDiceFromSolution(solution) {
         const dice = [];
-        const expr = solution.fullExpression;
+        
+        // Combine both rows into one expression
+        let expr = '';
+        if (solution.topRow) expr += solution.topRow + ' ';
+        if (solution.bottomRow) expr += solution.bottomRow;
+        expr = expr.trim();
         
         // Parse the expression into tokens
         // Split by spaces, remove parentheses, and separate prime (′) from adjacent tokens

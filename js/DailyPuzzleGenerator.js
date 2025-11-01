@@ -25,73 +25,57 @@ class DailyPuzzleGenerator {
     
     /**
      * Create comprehensive template library for 8-cube solutions
+     * Format: { topRow, bottomRow, pattern }
+     * where topRow and bottomRow can each be a restriction or set name
      */
     createTemplates() {
         const templates = [];
         
-        // Pattern A: 5-cube restriction + 2-cube setname (total 8)
-        // Examples: "A ∪ B ∪ C = D′", "A ∩ B ∪ C = D′"
+        // ===== CATEGORY 1: No Restrictions (8 cubes in set name only) =====
         templates.push(
-            { restriction: "A ∪ B ∪ C", operator: "=", setName: "D′", pattern: "5+2" },
-            { restriction: "A ∪ B ∪ A", operator: "=", setName: "D′", pattern: "5+2-reuse" },
-            { restriction: "A ∩ B ∪ C", operator: "=", setName: "D′", pattern: "5+2" },
-            { restriction: "A ∪ B − C", operator: "=", setName: "D′", pattern: "5+2" },
-            { restriction: "A − B − C", operator: "=", setName: "D′", pattern: "5+2" },
-            { restriction: "A − B ∪ C", operator: "=", setName: "D′", pattern: "5+2" },
-            { restriction: "U ∪ A ∪ B", operator: "=", setName: "C′", pattern: "5+2-universe" },
-            { restriction: "∅ ∪ A ∪ B", operator: "=", setName: "C′", pattern: "5+2-null" },
-            { restriction: "A ∪ B ∪ C", operator: "⊆", setName: "D′", pattern: "5+2-subset" },
-            { restriction: "A ∩ B ∪ C", operator: "⊆", setName: "D′", pattern: "5+2-subset" }
+            { topRow: null, bottomRow: "A ∪ B ∪ C ∪ D′", pattern: "0+8-setname" },
+            { topRow: null, bottomRow: "A ∪ B ∪ C ∪ D ∪ A", pattern: "0+9-setname-reuse" }, // 9 cubes, will trim
+            { topRow: null, bottomRow: "A ∪ A ∪ B ∪ C ∪ D", pattern: "0+9-setname-reuse" } // 9 cubes
         );
         
-        // Pattern B: 3-cube restriction + 4-cube setname (total 8)
-        // Examples: "A ∪ B = (C ∪ D)′", "A ∩ B = (C − D)′"
+        // ===== CATEGORY 2: One Restriction (3-5 cubes) + Set Name (3-5 cubes) =====
+        
+        // 3-cube restriction + 5-cube set name
         templates.push(
-            { restriction: "A ∪ B", operator: "=", setName: "(C ∪ D)′", pattern: "3+4" },
-            { restriction: "A ∩ B", operator: "=", setName: "(C ∪ D)′", pattern: "3+4" },
-            { restriction: "A − B", operator: "=", setName: "(C ∪ D)′", pattern: "3+4" },
-            { restriction: "A ∪ A", operator: "=", setName: "(C ∪ D)′", pattern: "3+4-reuse" },
-            { restriction: "A ∩ A", operator: "=", setName: "(C ∪ D)′", pattern: "3+4-reuse" },
-            { restriction: "A ∪ B", operator: "=", setName: "(C ∩ D)′", pattern: "3+4" },
-            { restriction: "A ∪ B", operator: "=", setName: "(C − D)′", pattern: "3+4" },
-            { restriction: "U − A", operator: "=", setName: "(B ∪ C)′", pattern: "3+4-universe" },
-            { restriction: "∅ ∪ A", operator: "=", setName: "(B ∪ C)′", pattern: "3+4-null" },
-            { restriction: "A ∪ B", operator: "⊆", setName: "(C ∪ D)′", pattern: "3+4-subset" },
-            { restriction: "A ∩ B", operator: "⊆", setName: "(C − D)′", pattern: "3+4-subset" }
+            { topRow: "A ∪ B = C", bottomRow: "D ∪ A ∪ B", pattern: "3+5" },
+            { topRow: "A ∩ B = C", bottomRow: "D ∪ A ∪ B", pattern: "3+5" },
+            { topRow: "A − B = C", bottomRow: "D ∪ A ∪ B", pattern: "3+5" },
+            { topRow: "A = B ∪ C", bottomRow: "D ∪ A ∪ B", pattern: "3+5" }
         );
         
-        // Pattern C: 4-cube restriction + 3-cube setname (total 8)
-        // Examples: "(A ∪ B)′ = C ∪ D", "A ∪ B′ = C ∪ D"
+        // 4-cube restriction + 4-cube set name  
         templates.push(
-            { restriction: "(A ∪ B)′", operator: "=", setName: "C ∪ D", pattern: "4+3" },
-            { restriction: "(A ∩ B)′", operator: "=", setName: "C ∪ D", pattern: "4+3" },
-            { restriction: "A ∪ B′", operator: "=", setName: "C ∪ D", pattern: "4+3" },
-            { restriction: "A ∩ B′", operator: "=", setName: "C ∪ D", pattern: "4+3" },
-            { restriction: "A ∪ B′", operator: "=", setName: "C ∩ D", pattern: "4+3" },
-            { restriction: "A ∪ B′", operator: "=", setName: "C − D", pattern: "4+3" },
-            { restriction: "(A ∪ B)′", operator: "⊆", setName: "C ∪ D", pattern: "4+3-subset" },
-            { restriction: "A ∪ B′", operator: "⊆", setName: "C ∪ D", pattern: "4+3-subset" }
+            { topRow: "A ∪ B = C ∪ D", bottomRow: "A ∪ B ∪ C", pattern: "4+4" },
+            { topRow: "A ∩ B = C ∩ D", bottomRow: "A ∪ B ∪ C", pattern: "4+4" },
+            { topRow: "A ∪ B = C − D", bottomRow: "A ∪ B ∪ C", pattern: "4+4" },
+            { topRow: "A ∪ B ⊆ C ∪ D", bottomRow: "A ∪ B ∪ C", pattern: "4+4-subset" },
+            { topRow: "A ∪ B = C′", bottomRow: "D ∪ A ∪ B", pattern: "4+5-prime" }
         );
         
-        // Pattern D: Complex with repeated colors
-        // Examples: "(A ∪ B) ∩ A = C′", "A − B − A ⊆ D′"
+        // 5-cube restriction + 3-cube set name
         templates.push(
-            { restriction: "(A ∪ B) ∩ A", operator: "=", setName: "C′", pattern: "5+2-complex" },
-            { restriction: "(A ∩ B) ∪ A", operator: "=", setName: "C′", pattern: "5+2-complex" },
-            { restriction: "A − B − A", operator: "=", setName: "C′", pattern: "5+2-complex" },
-            { restriction: "A ∪ B ∪ A", operator: "=", setName: "C′", pattern: "5+2-complex" },
-            { restriction: "(A ∪ B) ∩ A", operator: "⊆", setName: "C′", pattern: "5+2-complex-subset" },
-            { restriction: "(A ∩ B) ∪ A", operator: "⊆", setName: "C′", pattern: "5+2-complex-subset" }
+            { topRow: "A ∪ B ∪ C = D ∪ A", bottomRow: "B ∪ C", pattern: "5+3" },
+            { topRow: "A ∪ B = C ∪ D", bottomRow: "A ∪ B′", pattern: "4+4-prime" },
+            { topRow: "A ∩ B ∪ C = D", bottomRow: "A ∪ B", pattern: "5+3" }
         );
         
-        // Pattern E: All 4 colors used
-        // Examples: "RED ∪ BLUE = GREEN ∪ GOLD′"
+        // ===== CATEGORY 3: Two Restrictions (4 cubes each) =====
         templates.push(
-            { restriction: "A ∪ B", operator: "=", setName: "C ∪ D′", pattern: "3+4-all-colors" },
-            { restriction: "A ∩ B", operator: "=", setName: "C ∪ D′", pattern: "3+4-all-colors" },
-            { restriction: "A − B", operator: "=", setName: "C ∪ D′", pattern: "3+4-all-colors" },
-            { restriction: "A ∪ B′", operator: "=", setName: "C ∪ D", pattern: "4+3-all-colors" },
-            { restriction: "A ∩ B′", operator: "=", setName: "C ∩ D", pattern: "4+3-all-colors" }
+            { topRow: "A ∪ B = C ∪ D", bottomRow: "A ∩ B = C ∩ D", pattern: "4+4-double-restriction" },
+            { topRow: "A ∪ B = C − D", bottomRow: "A ∩ C = B ∪ D", pattern: "4+4-double-restriction" },
+            { topRow: "A ∪ B ⊆ C ∪ D", bottomRow: "A ∩ B = C ∩ D", pattern: "4+4-double-restriction-subset" }
+        );
+        
+        // ===== CATEGORY 4: Using Universe/Null =====
+        templates.push(
+            { topRow: "U − A = B ∪ C", bottomRow: "D ∪ A", pattern: "4+3-universe" },
+            { topRow: "∅ ∪ A = B", bottomRow: "C ∪ D ∪ A", pattern: "3+5-null" },
+            { topRow: null, bottomRow: "U − A − B − C", pattern: "0+7-universe" }
         );
         
         return templates;
@@ -191,6 +175,7 @@ class DailyPuzzleGenerator {
      */
     instantiateTemplate(template, colorMap) {
         const replaceColors = (expr) => {
+            if (!expr) return null;
             let result = expr;
             // Replace placeholders with actual colors
             for (const [placeholder, color] of Object.entries(colorMap)) {
@@ -200,12 +185,18 @@ class DailyPuzzleGenerator {
             return result;
         };
         
+        const topRow = replaceColors(template.topRow);
+        const bottomRow = replaceColors(template.bottomRow);
+        
         return {
-            restriction: replaceColors(template.restriction),
-            operator: template.operator,
-            setName: replaceColors(template.setName),
-            fullExpression: `${replaceColors(template.restriction)} ${template.operator} ${replaceColors(template.setName)}`,
-            pattern: template.pattern
+            topRow: topRow,
+            bottomRow: bottomRow,
+            pattern: template.pattern,
+            // For backwards compatibility and logging
+            hasRestriction: topRow && (topRow.includes('=') || topRow.includes('⊆')),
+            hasTwoRestrictions: topRow && bottomRow && 
+                (topRow.includes('=') || topRow.includes('⊆')) &&
+                (bottomRow.includes('=') || bottomRow.includes('⊆'))
         };
     }
     
@@ -214,10 +205,25 @@ class DailyPuzzleGenerator {
      * Uses the same evaluation logic as the game
      */
     evaluateSolution(solution, cards) {
-        // Parse the set name expression into tokens
-        const tokens = this.parseExpression(solution.setName);
+        // For now, only evaluate the bottom row (set name or second restriction)
+        // TODO: In the future, apply top row restriction first (flip cards), then evaluate bottom row
+        const bottomRow = solution.bottomRow;
         
-        // Evaluate using basic set theory logic
+        if (!bottomRow) {
+            return new Set(); // No solution
+        }
+        
+        // Check if bottom row is a restriction (contains = or ⊆)
+        if (bottomRow.includes('=') || bottomRow.includes('⊆')) {
+            // Bottom row is a restriction - can't evaluate like a set name yet
+            // For now, just parse the left side of the restriction
+            const leftSide = bottomRow.split(/[=⊆]/)[0].trim();
+            const tokens = this.parseExpression(leftSide);
+            return this.evaluateTokens(tokens, cards);
+        }
+        
+        // Bottom row is a set name - evaluate normally
+        const tokens = this.parseExpression(bottomRow);
         const matchingIndices = this.evaluateTokens(tokens, cards);
         
         return matchingIndices;
@@ -445,18 +451,18 @@ class DailyPuzzleGenerator {
         ];
         
         const solution = {
-            restriction: "red ∪ blue",
-            operator: "=",
-            setName: "green ∪ gold",
-            fullExpression: "red ∪ blue = green ∪ gold",
-            pattern: "fallback"
+            topRow: "red ∪ blue = green ∪ gold",
+            bottomRow: "red ∪ green",
+            pattern: "fallback",
+            hasRestriction: true,
+            hasTwoRestrictions: false
         };
         
         return {
             cards: cards,
             solution: solution,
-            goal: 4, // cards with green or gold match
-            matchingCards: [2, 3, 5, 7],
+            goal: 4, // cards with red or green match (after restriction)
+            matchingCards: [0, 2, 4, 6],
             difficulty: 'beginner',
             template: 'fallback',
             timestamp: Date.now()
@@ -498,9 +504,27 @@ class DailyPuzzleGenerator {
         console.log(`🎯 Goal:       ${puzzle.goal} cards`);
         console.log(`📊 Difficulty: ${puzzle.difficulty}`);
         console.log(`\n✅ SOLUTION (One Possible Answer):`);
-        console.log(`   ${puzzle.solution.fullExpression}`);
-        console.log(`\n   Top Row (Restriction):  ${puzzle.solution.restriction} ${puzzle.solution.operator}`);
-        console.log(`   Bottom Row (Set Name):  ${puzzle.solution.setName}`);
+        
+        const sol = puzzle.solution;
+        if (sol.topRow && sol.bottomRow) {
+            console.log(`   Top Row:    ${sol.topRow}`);
+            console.log(`   Bottom Row: ${sol.bottomRow}`);
+            if (sol.hasTwoRestrictions) {
+                console.log(`   Type: Two Restrictions`);
+            } else if (sol.hasRestriction) {
+                console.log(`   Type: Restriction + Set Name`);
+            } else {
+                console.log(`   Type: Set Name Only (both rows)`);
+            }
+        } else if (sol.topRow) {
+            console.log(`   Top Row:    ${sol.topRow}`);
+            console.log(`   Bottom Row: (empty)`);
+        } else if (sol.bottomRow) {
+            console.log(`   Top Row:    (empty)`);
+            console.log(`   Bottom Row: ${sol.bottomRow}`);
+            console.log(`   Type: Set Name Only`);
+        }
+        
         console.log(`\n🃏 Cards (${puzzle.cards.length} total):`);
         puzzle.cards.forEach((card, i) => {
             const isMatch = puzzle.matchingCards && puzzle.matchingCards.includes(i);
