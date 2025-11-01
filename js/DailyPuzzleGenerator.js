@@ -10,6 +10,7 @@
  */
 
 import { findShortestSolution } from './solutionFinder.js';
+import { evaluateExpression, evaluateRestriction } from './setTheory.js';
 
 class DailyPuzzleGenerator {
     constructor() {
@@ -248,189 +249,119 @@ class DailyPuzzleGenerator {
     
     /**
      * Evaluate a solution against a set of cards to determine which cards match
-     * Uses the same evaluation logic as the game
+     * Uses the same evaluation logic as the game (from setTheory.js)
      */
     evaluateSolution(solution, cards) {
-        // For now, only evaluate the bottom row (set name or second restriction)
-        // TODO: In the future, apply top row restriction first (flip cards), then evaluate bottom row
-        const bottomRow = solution.bottomRow;
+        const { topRow, bottomRow } = solution;
         
-        if (!bottomRow) {
-            return new Set(); // No solution
+        // Convert string expressions to dice objects
+        const topDice = topRow ? this.stringToDice(topRow) : [];
+        const bottomDice = bottomRow ? this.stringToDice(bottomRow) : [];
+        
+        // Determine which row has restriction and which has set name
+        const hasTopRestriction = topRow && (topRow.includes('=') || topRow.includes('⊆'));
+        const hasBottomRestriction = bottomRow && (bottomRow.includes('=') || bottomRow.includes('⊆'));
+        
+        let activeCards = cards; // Cards available for set name evaluation
+        let cardsToFlip = [];
+        
+        // Step 1: Apply restriction if present
+        if (hasTopRestriction) {
+            // Top row is restriction
+            cardsToFlip = evaluateRestriction(topDice, cards);
+            // Filter to only non-flipped cards
+            const flippedSet = new Set(cardsToFlip);
+            activeCards = cards.filter((_, idx) => !flippedSet.has(idx));
+        } else if (hasBottomRestriction) {
+            // Bottom row is restriction
+            cardsToFlip = evaluateRestriction(bottomDice, cards);
+            const flippedSet = new Set(cardsToFlip);
+            activeCards = cards.filter((_, idx) => !flippedSet.has(idx));
         }
         
-        // Check if bottom row is a restriction (contains = or ⊆)
-        if (bottomRow.includes('=') || bottomRow.includes('⊆')) {
-            // Bottom row is a restriction - can't evaluate like a set name yet
-            // For now, just parse the left side of the restriction
-            const leftSide = bottomRow.split(/[=⊆]/)[0].trim();
-            const tokens = this.parseExpression(leftSide);
-            return this.evaluateTokens(tokens, cards);
+        // Step 2: Evaluate set name against active cards
+        let setNameDice = null;
+        if (hasTopRestriction) {
+            // Top is restriction, bottom is set name
+            setNameDice = bottomDice;
+        } else if (hasBottomRestriction) {
+            // Bottom is restriction, top is set name
+            setNameDice = topDice;
+        } else {
+            // No restriction, bottom row is set name
+            setNameDice = bottomDice;
         }
         
-        // Bottom row is a set name - evaluate normally
-        const tokens = this.parseExpression(bottomRow);
-        const matchingIndices = this.evaluateTokens(tokens, cards);
+        if (!setNameDice || setNameDice.length === 0) {
+            return new Set();
+        }
+        
+        // Evaluate set name
+        const matchingIndices = evaluateExpression(setNameDice, activeCards);
+        
+        // Map back to original card indices if we filtered
+        if (cardsToFlip.length > 0) {
+            const flippedSet = new Set(cardsToFlip);
+            const originalIndices = cards
+                .map((_, idx) => idx)
+                .filter(idx => !flippedSet.has(idx));
+            
+            // Convert active card indices back to original indices
+            const finalIndices = new Set();
+            matchingIndices.forEach(activeIdx => {
+                finalIndices.add(originalIndices[activeIdx]);
+            });
+            return finalIndices;
+        }
         
         return matchingIndices;
     }
     
     /**
-     * Parse an expression string into tokens
-     * e.g., "red ∪ blue" -> ['red', '∪', 'blue']
+     * Convert a solution string (e.g., "red ∪ blue") to dice objects
      */
-    parseExpression(expr) {
-        const tokens = [];
-        const parts = expr.split(/\s+/);
+    stringToDice(expr) {
+        if (!expr) return [];
         
-        for (const part of parts) {
-            // Remove parentheses for now (we'll handle grouping later if needed)
-            const cleaned = part.replace(/[()]/g, '');
-            if (cleaned) tokens.push(cleaned);
-        }
+        // Parse into tokens, handling parentheses and prime
+        let tokens = expr.split(/\s+/).map(t => t.replace(/[()]/g, ''));
         
-        return tokens;
-    }
-    
-    /**
-     * Evaluate tokens against cards (basic set theory evaluation)
-     * Returns a Set of matching card indices
-     */
-    evaluateTokens(tokens, cards) {
-        if (!tokens || tokens.length === 0) {
-            return new Set();
-        }
-        
-        // Handle single token
-        if (tokens.length === 1) {
-            const token = tokens[0];
-            if (this.COLORS.includes(token)) {
-                return this.getCardsWithColor(token, cards);
-            }
-            if (token === 'U') {
-                return this.getAllCards(cards);
-            }
-            if (token === '∅') {
-                return new Set();
-            }
-            return new Set();
-        }
-        
-        // Process operators left to right
-        let result = null;
-        let i = 0;
-        
-        while (i < tokens.length) {
-            const token = tokens[i];
-            
-            if (this.COLORS.includes(token)) {
-                const cardSet = this.getCardsWithColor(token, cards);
-                if (result === null) {
-                    result = cardSet;
-                }
-                i++;
-            } else if (token === 'U') {
-                const cardSet = this.getAllCards(cards);
-                if (result === null) {
-                    result = cardSet;
-                }
-                i++;
-            } else if (token === '∅') {
-                const cardSet = new Set();
-                if (result === null) {
-                    result = cardSet;
-                }
-                i++;
-            } else if (token === '∪') {
-                // Union: combine with next operand
-                i++;
-                if (i < tokens.length) {
-                    const nextSet = this.getOperand(tokens[i], cards);
-                    result = this.union(result, nextSet);
-                    i++;
-                }
-            } else if (token === '∩') {
-                // Intersection: overlap with next operand
-                i++;
-                if (i < tokens.length) {
-                    const nextSet = this.getOperand(tokens[i], cards);
-                    result = this.intersection(result, nextSet);
-                    i++;
-                }
-            } else if (token === '−') {
-                // Difference: remove next operand
-                i++;
-                if (i < tokens.length) {
-                    const nextSet = this.getOperand(tokens[i], cards);
-                    result = this.difference(result, nextSet);
-                    i++;
-                }
-            } else if (token === '′') {
-                // Complement: invert current result
-                result = this.complement(result, cards);
-                i++;
-            } else {
-                i++;
-            }
-        }
-        
-        return result || new Set();
-    }
-    
-    /**
-     * Get operand as a set of card indices
-     */
-    getOperand(token, cards) {
-        if (this.COLORS.includes(token)) {
-            return this.getCardsWithColor(token, cards);
-        } else if (token === 'U') {
-            return this.getAllCards(cards);
-        } else if (token === '∅') {
-            return new Set();
-        }
-        return new Set();
-    }
-    
-    /**
-     * Get all cards with a specific color
-     */
-    getCardsWithColor(color, cards) {
-        const result = new Set();
-        cards.forEach((card, index) => {
-            if (card.colors.includes(color)) {
-                result.add(index);
+        // Split tokens with attached prime (e.g., "gold′" → ["gold", "′"])
+        const finalTokens = [];
+        tokens.forEach(token => {
+            if (token.includes('′')) {
+                const parts = token.split('′');
+                parts.forEach((part, i) => {
+                    if (part) finalTokens.push(part);
+                    if (i < parts.length - 1) finalTokens.push('′');
+                });
+            } else if (token) {
+                finalTokens.push(token);
             }
         });
-        return result;
-    }
-    
-    /**
-     * Get all cards (universe)
-     */
-    getAllCards(cards) {
-        const result = new Set();
-        cards.forEach((_, index) => result.add(index));
-        return result;
-    }
-    
-    /**
-     * Set operations
-     */
-    union(setA, setB) {
-        return new Set([...setA, ...setB]);
-    }
-    
-    intersection(setA, setB) {
-        return new Set([...setA].filter(x => setB.has(x)));
-    }
-    
-    difference(setA, setB) {
-        return new Set([...setA].filter(x => !setB.has(x)));
-    }
-    
-    complement(setA, cards) {
-        const all = this.getAllCards(cards);
-        return this.difference(all, setA);
+        
+        // Convert tokens to dice objects with positions
+        return finalTokens.map((token, i) => {
+            let dieType = 'operator';
+            
+            if (['red', 'blue', 'green', 'gold'].includes(token)) {
+                dieType = 'color';
+            } else if (['=', '⊆'].includes(token)) {
+                dieType = 'restriction';
+            } else if (['U', '∅'].includes(token)) {
+                dieType = 'set-constant';
+            } else if (['∪', '∩', '−', '′'].includes(token)) {
+                dieType = 'operator';
+            }
+            
+            return {
+                value: token,
+                type: dieType,
+                x: i * 100, // Space dice evenly for left-to-right evaluation
+                y: 10,
+                id: `eval-${i}`
+            };
+        });
     }
     
     /**
