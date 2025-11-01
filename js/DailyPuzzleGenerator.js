@@ -242,33 +242,9 @@ class DailyPuzzleGenerator {
             });
         });
         
-        // 4-operand groupings: ((A op B) op C) op D′
-        ops.forEach(op1 => {
-            ops.forEach(op2 => {
-                ops.forEach(op3 => {
-                    templates.push({
-                        topRow: null,
-                        bottomRow: `((color ${op1} color) ${op2} color) ${op3} color′`,
-                        pattern: "8-grouped-left-assoc"
-                    });
-                });
-            });
-        });
-        
-        // 4-operand groupings: (A op (B op C)) op D′
-        ops.forEach(op1 => {
-            ops.forEach(op2 => {
-                ops.forEach(op3 => {
-                    templates.push({
-                        topRow: null,
-                        bottomRow: `(color ${op1} (color ${op2} color)) ${op3} color′`,
-                        pattern: "8-grouped-nested"
-                    });
-                });
-            });
-        });
-        
         // 4-operand groupings: (A op B) op (C op D)′
+        // Note: Nested groups like ((A op B) op C) are NOT supported
+        // because grouping is based on physical proximity, not nested parentheses
         ops.forEach(op1 => {
             ops.forEach(op2 => {
                 ops.forEach(op3 => {

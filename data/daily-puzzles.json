@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2025-11-01T20:23:01.863Z",
+  "generatedAt": "2025-11-01T21:03:53.674Z",
   "count": 20,
   "puzzles": [
     {
@@ -8,21 +8,8 @@
       "cards": [
         {
           "colors": [
-            "red"
-          ]
-        },
-        {
-          "colors": [
-            "green",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
             "red",
-            "blue",
-            "green",
-            "gold"
+            "green"
           ]
         },
         {
@@ -30,6 +17,17 @@
         },
         {
           "colors": [
+            "blue",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red"
+          ]
+        },
+        {
+          "colors": [
             "red",
             "blue",
             "green"
@@ -37,74 +35,12 @@
         },
         {
           "colors": [
+            "blue"
+          ]
+        },
+        {
+          "colors": [
             "green"
-          ]
-        },
-        {
-          "colors": [
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "green"
-          ]
-        }
-      ],
-      "dice": [
-        {
-          "type": "color",
-          "value": "gold"
-        },
-        {
-          "type": "color",
-          "value": "gold"
-        },
-        {
-          "type": "color",
-          "value": "gold"
-        },
-        {
-          "type": "operator",
-          "value": "−"
-        },
-        {
-          "type": "operator",
-          "value": "−"
-        },
-        {
-          "type": "operator",
-          "value": "∪"
-        },
-        {
-          "type": "color",
-          "value": "red"
-        },
-        {
-          "type": "operator",
-          "value": "′"
-        }
-      ],
-      "goal": 4,
-      "difficulty": "beginner",
-      "generatedSolution": {
-        "topRow": null,
-        "bottomRow": "(gold − (gold − gold)) ∪ red′"
-      },
-      "shortestSolution": {
-        "cubeCount": 2,
-        "hasRestriction": false
-      }
-    },
-    {
-      "id": 2,
-      "cards": [
-        {
-          "colors": [
-            "blue",
-            "green",
-            "gold"
           ]
         },
         {
@@ -113,42 +49,6 @@
             "blue",
             "green",
             "gold"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "green",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "blue",
-            "green"
-          ]
-        },
-        {
-          "colors": [
-            "blue",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "green"
           ]
         }
       ],
@@ -158,8 +58,103 @@
           "value": "∅"
         },
         {
+          "type": "restriction",
+          "value": "⊆"
+        },
+        {
+          "type": "color",
+          "value": "red"
+        },
+        {
           "type": "operator",
           "value": "−"
+        },
+        {
+          "type": "color",
+          "value": "green"
+        },
+        {
+          "type": "color",
+          "value": "blue"
+        },
+        {
+          "type": "operator",
+          "value": "∪"
+        },
+        {
+          "type": "color",
+          "value": "gold"
+        }
+      ],
+      "goal": 4,
+      "difficulty": "beginner",
+      "generatedSolution": {
+        "topRow": "∅ ⊆ red − green",
+        "bottomRow": "blue ∪ gold"
+      },
+      "shortestSolution": {
+        "cubeCount": 3,
+        "hasRestriction": false
+      }
+    },
+    {
+      "id": 2,
+      "cards": [
+        {
+          "colors": []
+        },
+        {
+          "colors": [
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "blue"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "blue",
+            "green"
+          ]
+        },
+        {
+          "colors": [
+            "blue",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "blue",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "green",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red"
+          ]
+        }
+      ],
+      "dice": [
+        {
+          "type": "set-constant",
+          "value": "U"
+        },
+        {
+          "type": "operator",
+          "value": "∪"
         },
         {
           "type": "color",
@@ -170,27 +165,27 @@
           "value": "∩"
         },
         {
-          "type": "color",
-          "value": "blue"
-        },
-        {
-          "type": "color",
-          "value": "blue"
-        },
-        {
           "type": "operator",
-          "value": "∪"
+          "value": "∩"
+        },
+        {
+          "type": "color",
+          "value": "green"
+        },
+        {
+          "type": "color",
+          "value": "green"
         },
         {
           "type": "operator",
           "value": "′"
         }
       ],
-      "goal": 4,
+      "goal": 6,
       "difficulty": "beginner",
       "generatedSolution": {
         "topRow": null,
-        "bottomRow": "∅ − gold ∩ blue ∪ blue′"
+        "bottomRow": "U ∪ gold ∩ green ∩ green′"
       },
       "shortestSolution": {
         "cubeCount": 2,
@@ -201,15 +196,17 @@
       "id": 3,
       "cards": [
         {
+          "colors": []
+        },
+        {
           "colors": [
-            "red",
-            "blue",
-            "green",
             "gold"
           ]
         },
         {
           "colors": [
+            "red",
+            "blue",
             "green"
           ]
         },
@@ -222,18 +219,6 @@
           "colors": [
             "red",
             "blue",
-            "green"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "blue",
             "green",
             "gold"
           ]
@@ -246,34 +231,41 @@
         },
         {
           "colors": [
-            "blue"
+            "green",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "gold"
           ]
         }
       ],
       "dice": [
         {
-          "type": "set-constant",
-          "value": "U"
+          "type": "color",
+          "value": "red"
+        },
+        {
+          "type": "color",
+          "value": "red"
+        },
+        {
+          "type": "operator",
+          "value": "∩"
+        },
+        {
+          "type": "operator",
+          "value": "∩"
         },
         {
           "type": "restriction",
           "value": "="
         },
         {
-          "type": "color",
-          "value": "green"
-        },
-        {
-          "type": "operator",
-          "value": "∩"
-        },
-        {
-          "type": "operator",
-          "value": "∩"
-        },
-        {
-          "type": "color",
-          "value": "red"
+          "type": "set-constant",
+          "value": "U"
         },
         {
           "type": "color",
@@ -281,24 +273,38 @@
         },
         {
           "type": "color",
-          "value": "blue"
+          "value": "gold"
         }
       ],
-      "goal": 1,
+      "goal": 2,
       "difficulty": "beginner",
       "generatedSolution": {
-        "topRow": "U = green ∩ red",
-        "bottomRow": "gold ∩ blue"
+        "topRow": "red ∩ red = U",
+        "bottomRow": "gold ∩ gold"
       },
       "shortestSolution": {
-        "cubeCount": 4,
-        "hasRestriction": true
+        "cubeCount": 3,
+        "hasRestriction": false
       }
     },
     {
       "id": 4,
       "cards": [
         {
+          "colors": []
+        },
+        {
+          "colors": [
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "green"
+          ]
+        },
+        {
           "colors": [
             "red",
             "green",
@@ -306,46 +312,28 @@
           ]
         },
         {
-          "colors": []
-        },
-        {
           "colors": [
-            "red",
             "blue",
             "green"
           ]
         },
         {
           "colors": [
-            "blue",
-            "green",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "red"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "blue",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "blue",
-            "green",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
             "red",
             "blue"
+          ]
+        },
+        {
+          "colors": [
+            "blue",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "blue",
+            "green",
+            "gold"
           ]
         }
       ],
@@ -359,35 +347,35 @@
           "value": "green"
         },
         {
-          "type": "restriction",
-          "value": "="
+          "type": "color",
+          "value": "green"
+        },
+        {
+          "type": "operator",
+          "value": "∩"
         },
         {
           "type": "restriction",
           "value": "⊆"
         },
         {
-          "type": "color",
-          "value": "blue"
+          "type": "set-constant",
+          "value": "U"
+        },
+        {
+          "type": "operator",
+          "value": "∪"
         },
         {
           "type": "color",
           "value": "gold"
-        },
-        {
-          "type": "operator",
-          "value": "−"
-        },
-        {
-          "type": "color",
-          "value": "red"
         }
       ],
-      "goal": 1,
+      "goal": 6,
       "difficulty": "beginner",
       "generatedSolution": {
-        "topRow": "green = green ⊆ blue",
-        "bottomRow": "gold − red"
+        "topRow": "green ∩ green ⊆ U",
+        "bottomRow": "green ∪ gold"
       },
       "shortestSolution": {
         "cubeCount": 3,
@@ -399,28 +387,8 @@
       "cards": [
         {
           "colors": [
-            "red",
-            "blue",
-            "green",
-            "gold"
+            "blue"
           ]
-        },
-        {
-          "colors": [
-            "blue",
-            "green",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "blue",
-            "green"
-          ]
-        },
-        {
-          "colors": []
         },
         {
           "colors": [
@@ -429,51 +397,71 @@
         },
         {
           "colors": [
-            "red",
-            "blue"
-          ]
-        },
-        {
-          "colors": [
-            "red",
             "green",
             "gold"
           ]
         },
         {
           "colors": [
+            "red",
             "blue"
+          ]
+        },
+        {
+          "colors": [
+            "blue",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "blue",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "blue",
+            "green",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "green"
           ]
         }
       ],
       "dice": [
         {
           "type": "color",
-          "value": "red"
-        },
-        {
-          "type": "color",
-          "value": "red"
-        },
-        {
-          "type": "color",
-          "value": "red"
+          "value": "gold"
         },
         {
           "type": "operator",
-          "value": "∪"
+          "value": "−"
         },
         {
           "type": "operator",
-          "value": "∪"
-        },
-        {
-          "type": "operator",
-          "value": "∩"
+          "value": "−"
         },
         {
           "type": "color",
           "value": "green"
+        },
+        {
+          "type": "color",
+          "value": "green"
+        },
+        {
+          "type": "operator",
+          "value": "∪"
+        },
+        {
+          "type": "color",
+          "value": "blue"
         },
         {
           "type": "operator",
@@ -484,7 +472,7 @@
       "difficulty": "beginner",
       "generatedSolution": {
         "topRow": null,
-        "bottomRow": "red ∪ red ∩ green ∪ red′"
+        "bottomRow": "(gold − green) − (green ∪ blue)′"
       },
       "shortestSolution": {
         "cubeCount": 2,
@@ -496,19 +484,18 @@
       "cards": [
         {
           "colors": [
+            "red",
             "blue"
           ]
         },
         {
           "colors": [
-            "blue",
             "gold"
           ]
         },
         {
           "colors": [
-            "red",
-            "blue",
+            "green",
             "gold"
           ]
         },
@@ -519,40 +506,28 @@
         },
         {
           "colors": [
+            "red",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "blue",
             "green"
           ]
         },
         {
-          "colors": [
-            "blue",
-            "green",
-            "gold"
-          ]
+          "colors": []
         },
         {
           "colors": [
             "red",
             "blue",
-            "green",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "blue"
+            "green"
           ]
         }
       ],
       "dice": [
-        {
-          "type": "color",
-          "value": "green"
-        },
-        {
-          "type": "restriction",
-          "value": "="
-        },
         {
           "type": "color",
           "value": "blue"
@@ -563,7 +538,15 @@
         },
         {
           "type": "operator",
-          "value": "−"
+          "value": "∪"
+        },
+        {
+          "type": "color",
+          "value": "gold"
+        },
+        {
+          "type": "restriction",
+          "value": "⊆"
         },
         {
           "type": "color",
@@ -571,18 +554,18 @@
         },
         {
           "type": "color",
-          "value": "gold"
+          "value": "green"
         },
         {
           "type": "operator",
-          "value": "∪"
+          "value": "∩"
         }
       ],
-      "goal": 3,
+      "goal": 1,
       "difficulty": "beginner",
       "generatedSolution": {
-        "topRow": "green = blue − red",
-        "bottomRow": "gold ∪ blue"
+        "topRow": "blue ∪ gold ⊆ red",
+        "bottomRow": "green ∩ blue"
       },
       "shortestSolution": {
         "cubeCount": 3,
@@ -594,36 +577,15 @@
       "cards": [
         {
           "colors": [
-            "green"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "green"
-          ]
-        },
-        {
-          "colors": [
             "red",
             "blue",
-            "green"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "blue",
+            "green",
             "gold"
           ]
         },
         {
           "colors": [
-            "blue"
-          ]
-        },
-        {
-          "colors": [
+            "red",
             "blue",
             "gold"
           ]
@@ -636,8 +598,214 @@
         },
         {
           "colors": [
+            "blue",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
             "red",
             "gold"
+          ]
+        },
+        {
+          "colors": [
+            "gold"
+          ]
+        },
+        {
+          "colors": []
+        },
+        {
+          "colors": [
+            "red"
+          ]
+        }
+      ],
+      "dice": [
+        {
+          "type": "set-constant",
+          "value": "U"
+        },
+        {
+          "type": "restriction",
+          "value": "⊆"
+        },
+        {
+          "type": "color",
+          "value": "green"
+        },
+        {
+          "type": "operator",
+          "value": "∪"
+        },
+        {
+          "type": "operator",
+          "value": "∪"
+        },
+        {
+          "type": "color",
+          "value": "red"
+        },
+        {
+          "type": "color",
+          "value": "red"
+        },
+        {
+          "type": "color",
+          "value": "blue"
+        }
+      ],
+      "goal": 5,
+      "difficulty": "beginner",
+      "generatedSolution": {
+        "topRow": "U ⊆ green ∪ red",
+        "bottomRow": "red ∪ blue"
+      },
+      "shortestSolution": {
+        "cubeCount": 3,
+        "hasRestriction": false
+      }
+    },
+    {
+      "id": 8,
+      "cards": [
+        {
+          "colors": [
+            "red",
+            "green"
+          ]
+        },
+        {
+          "colors": [
+            "green"
+          ]
+        },
+        {
+          "colors": [
+            "blue",
+            "green"
+          ]
+        },
+        {
+          "colors": []
+        },
+        {
+          "colors": [
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "blue"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "blue"
+          ]
+        },
+        {
+          "colors": [
+            "blue",
+            "green",
+            "gold"
+          ]
+        }
+      ],
+      "dice": [
+        {
+          "type": "color",
+          "value": "blue"
+        },
+        {
+          "type": "color",
+          "value": "blue"
+        },
+        {
+          "type": "color",
+          "value": "blue"
+        },
+        {
+          "type": "operator",
+          "value": "∩"
+        },
+        {
+          "type": "color",
+          "value": "red"
+        },
+        {
+          "type": "color",
+          "value": "red"
+        },
+        {
+          "type": "restriction",
+          "value": "⊆"
+        },
+        {
+          "type": "operator",
+          "value": "−"
+        }
+      ],
+      "goal": 3,
+      "difficulty": "beginner",
+      "generatedSolution": {
+        "topRow": "blue ∩ red ⊆ red − blue",
+        "bottomRow": "blue"
+      },
+      "shortestSolution": {
+        "cubeCount": 3,
+        "hasRestriction": false
+      }
+    },
+    {
+      "id": 9,
+      "cards": [
+        {
+          "colors": [
+            "red",
+            "blue",
+            "green"
+          ]
+        },
+        {
+          "colors": []
+        },
+        {
+          "colors": [
+            "red",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "green",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "blue",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "blue",
+            "green"
+          ]
+        },
+        {
+          "colors": [
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "blue"
           ]
         }
       ],
@@ -647,24 +815,16 @@
           "value": "gold"
         },
         {
-          "type": "operator",
-          "value": "∩"
+          "type": "color",
+          "value": "gold"
         },
         {
-          "type": "operator",
-          "value": "∩"
+          "type": "restriction",
+          "value": "⊆"
         },
         {
           "type": "color",
-          "value": "blue"
-        },
-        {
-          "type": "color",
-          "value": "blue"
-        },
-        {
-          "type": "operator",
-          "value": "∪"
+          "value": "red"
         },
         {
           "type": "color",
@@ -672,37 +832,33 @@
         },
         {
           "type": "operator",
-          "value": "′"
+          "value": "∩"
+        },
+        {
+          "type": "operator",
+          "value": "∩"
+        },
+        {
+          "type": "color",
+          "value": "green"
         }
       ],
-      "goal": 5,
+      "goal": 1,
       "difficulty": "beginner",
       "generatedSolution": {
-        "topRow": null,
-        "bottomRow": "((gold ∩ blue) ∪ blue) ∩ red′"
+        "topRow": "gold ⊆ gold",
+        "bottomRow": "(red ∩ green) ∩ red"
       },
       "shortestSolution": {
-        "cubeCount": 2,
+        "cubeCount": 3,
         "hasRestriction": false
       }
     },
     {
-      "id": 8,
+      "id": 10,
       "cards": [
         {
           "colors": [
-            "green"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "blue",
-            "green"
-          ]
-        },
-        {
-          "colors": [
             "blue"
           ]
         },
@@ -714,8 +870,29 @@
         },
         {
           "colors": [
-            "blue",
+            "red",
             "green"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "blue",
+            "green",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "blue",
+            "green",
+            "gold"
           ]
         },
         {
@@ -727,13 +904,6 @@
         {
           "colors": [
             "red",
-            "green",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "blue",
             "green",
             "gold"
           ]
@@ -741,12 +911,16 @@
       ],
       "dice": [
         {
-          "type": "color",
-          "value": "green"
+          "type": "set-constant",
+          "value": "∅"
+        },
+        {
+          "type": "operator",
+          "value": "−"
         },
         {
           "type": "color",
-          "value": "green"
+          "value": "blue"
         },
         {
           "type": "operator",
@@ -758,15 +932,11 @@
         },
         {
           "type": "operator",
-          "value": "−"
-        },
-        {
-          "type": "operator",
           "value": "∪"
         },
         {
           "type": "color",
-          "value": "blue"
+          "value": "green"
         },
         {
           "type": "operator",
@@ -777,202 +947,10 @@
       "difficulty": "beginner",
       "generatedSolution": {
         "topRow": null,
-        "bottomRow": "(green ∩ (red − green)) ∪ blue′"
+        "bottomRow": "∅ − blue ∩ red ∪ green′"
       },
       "shortestSolution": {
         "cubeCount": 2,
-        "hasRestriction": false
-      }
-    },
-    {
-      "id": 9,
-      "cards": [
-        {
-          "colors": [
-            "red",
-            "blue"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "blue",
-            "green",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "blue",
-            "green"
-          ]
-        },
-        {
-          "colors": [
-            "green"
-          ]
-        },
-        {
-          "colors": [
-            "green",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "green",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "blue",
-            "green"
-          ]
-        },
-        {
-          "colors": []
-        }
-      ],
-      "dice": [
-        {
-          "type": "color",
-          "value": "gold"
-        },
-        {
-          "type": "color",
-          "value": "gold"
-        },
-        {
-          "type": "restriction",
-          "value": "="
-        },
-        {
-          "type": "set-constant",
-          "value": "∅"
-        },
-        {
-          "type": "operator",
-          "value": "∪"
-        },
-        {
-          "type": "color",
-          "value": "green"
-        },
-        {
-          "type": "operator",
-          "value": "∩"
-        },
-        {
-          "type": "color",
-          "value": "blue"
-        }
-      ],
-      "goal": 2,
-      "difficulty": "beginner",
-      "generatedSolution": {
-        "topRow": "gold = ∅",
-        "bottomRow": "gold ∪ green ∩ blue"
-      },
-      "shortestSolution": {
-        "cubeCount": 4,
-        "hasRestriction": true
-      }
-    },
-    {
-      "id": 10,
-      "cards": [
-        {
-          "colors": [
-            "green"
-          ]
-        },
-        {
-          "colors": []
-        },
-        {
-          "colors": [
-            "green",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "green"
-          ]
-        },
-        {
-          "colors": [
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "blue",
-            "green",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "blue",
-            "green",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "blue",
-            "green"
-          ]
-        }
-      ],
-      "dice": [
-        {
-          "type": "color",
-          "value": "gold"
-        },
-        {
-          "type": "operator",
-          "value": "∩"
-        },
-        {
-          "type": "operator",
-          "value": "∩"
-        },
-        {
-          "type": "color",
-          "value": "green"
-        },
-        {
-          "type": "color",
-          "value": "green"
-        },
-        {
-          "type": "restriction",
-          "value": "⊆"
-        },
-        {
-          "type": "color",
-          "value": "blue"
-        },
-        {
-          "type": "color",
-          "value": "red"
-        }
-      ],
-      "goal": 1,
-      "difficulty": "beginner",
-      "generatedSolution": {
-        "topRow": "(gold ∩ green) ⊆ green",
-        "bottomRow": "blue ∩ red"
-      },
-      "shortestSolution": {
-        "cubeCount": 3,
         "hasRestriction": false
       }
     },
@@ -981,9 +959,25 @@
       "cards": [
         {
           "colors": [
-            "red",
+            "green"
+          ]
+        },
+        {
+          "colors": [
+            "red"
+          ]
+        },
+        {
+          "colors": [
             "blue",
             "green",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "blue",
             "gold"
           ]
         },
@@ -996,58 +990,33 @@
         {
           "colors": [
             "red",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "blue",
-            "green"
-          ]
-        },
-        {
-          "colors": [
             "blue",
             "green",
             "gold"
           ]
         },
         {
-          "colors": []
-        },
-        {
           "colors": [
             "blue",
-            "gold"
+            "green"
           ]
         },
         {
-          "colors": [
-            "red"
-          ]
+          "colors": []
         }
       ],
       "dice": [
         {
-          "type": "set-constant",
-          "value": "∅"
-        },
-        {
-          "type": "operator",
-          "value": "∩"
-        },
-        {
-          "type": "operator",
-          "value": "∩"
+          "type": "color",
+          "value": "blue"
         },
         {
           "type": "color",
-          "value": "green"
+          "value": "blue"
         },
         {
-          "type": "color",
-          "value": "green"
+          "type": "restriction",
+          "value": "⊆"
         },
         {
           "type": "color",
@@ -1058,18 +1027,26 @@
           "value": "∪"
         },
         {
+          "type": "color",
+          "value": "gold"
+        },
+        {
+          "type": "color",
+          "value": "gold"
+        },
+        {
           "type": "operator",
-          "value": "′"
+          "value": "∩"
         }
       ],
-      "goal": 5,
+      "goal": 3,
       "difficulty": "beginner",
       "generatedSolution": {
-        "topRow": null,
-        "bottomRow": "∅ ∩ green ∩ red ∪ green′"
+        "topRow": "blue ⊆ red ∪ gold",
+        "bottomRow": "blue ∩ gold"
       },
       "shortestSolution": {
-        "cubeCount": 2,
+        "cubeCount": 3,
         "hasRestriction": false
       }
     },
@@ -1077,10 +1054,40 @@
       "id": 12,
       "cards": [
         {
+          "colors": []
+        },
+        {
+          "colors": [
+            "blue",
+            "green"
+          ]
+        },
+        {
           "colors": [
             "red",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "green"
+          ]
+        },
+        {
+          "colors": [
+            "blue",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
             "blue",
             "green",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
             "gold"
           ]
         },
@@ -1089,73 +1096,36 @@
             "red",
             "blue"
           ]
-        },
-        {
-          "colors": [
-            "red",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "blue",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "green",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "blue",
-            "green",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "blue",
-            "green"
-          ]
         }
       ],
       "dice": [
         {
-          "type": "color",
-          "value": "blue"
-        },
-        {
-          "type": "operator",
-          "value": "∪"
-        },
-        {
-          "type": "operator",
-          "value": "∪"
-        },
-        {
-          "type": "color",
-          "value": "gold"
-        },
-        {
-          "type": "color",
-          "value": "gold"
-        },
-        {
-          "type": "color",
-          "value": "gold"
+          "type": "set-constant",
+          "value": "U"
         },
         {
           "type": "operator",
           "value": "−"
+        },
+        {
+          "type": "operator",
+          "value": "−"
+        },
+        {
+          "type": "color",
+          "value": "green"
+        },
+        {
+          "type": "operator",
+          "value": "∩"
+        },
+        {
+          "type": "color",
+          "value": "gold"
+        },
+        {
+          "type": "color",
+          "value": "red"
         },
         {
           "type": "operator",
@@ -1166,10 +1136,10 @@
       "difficulty": "beginner",
       "generatedSolution": {
         "topRow": null,
-        "bottomRow": "blue ∪ gold ∪ gold − gold′"
+        "bottomRow": "U − green ∩ gold − red′"
       },
       "shortestSolution": {
-        "cubeCount": 3,
+        "cubeCount": 2,
         "hasRestriction": false
       }
     },
@@ -1178,22 +1148,7 @@
       "cards": [
         {
           "colors": [
-            "blue",
-            "green",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "blue",
-            "green"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "blue",
-            "green"
+            "blue"
           ]
         },
         {
@@ -1204,6 +1159,14 @@
         },
         {
           "colors": [
+            "red",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "blue",
+            "green",
             "gold"
           ]
         },
@@ -1215,136 +1178,45 @@
         },
         {
           "colors": [
-            "blue"
+            "green",
+            "gold"
           ]
         },
         {
           "colors": [
             "red",
-            "green",
+            "blue",
             "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "blue",
+            "green"
           ]
         }
       ],
       "dice": [
-        {
-          "type": "color",
-          "value": "red"
-        },
-        {
-          "type": "color",
-          "value": "red"
-        },
-        {
-          "type": "operator",
-          "value": "−"
-        },
-        {
-          "type": "operator",
-          "value": "−"
-        },
-        {
-          "type": "color",
-          "value": "gold"
-        },
-        {
-          "type": "color",
-          "value": "gold"
-        },
-        {
-          "type": "operator",
-          "value": "∪"
-        },
-        {
-          "type": "operator",
-          "value": "′"
-        }
-      ],
-      "goal": 5,
-      "difficulty": "beginner",
-      "generatedSolution": {
-        "topRow": null,
-        "bottomRow": "red − gold ∪ red − gold′"
-      },
-      "shortestSolution": {
-        "cubeCount": 2,
-        "hasRestriction": false
-      }
-    },
-    {
-      "id": 14,
-      "cards": [
-        {
-          "colors": []
-        },
-        {
-          "colors": [
-            "red",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "blue",
-            "green",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "red"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "blue"
-          ]
-        },
-        {
-          "colors": [
-            "blue",
-            "green"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "blue",
-            "green"
-          ]
-        },
-        {
-          "colors": [
-            "green",
-            "gold"
-          ]
-        }
-      ],
-      "dice": [
-        {
-          "type": "color",
-          "value": "red"
-        },
-        {
-          "type": "operator",
-          "value": "−"
-        },
-        {
-          "type": "color",
-          "value": "gold"
-        },
-        {
-          "type": "operator",
-          "value": "∪"
-        },
         {
           "type": "color",
           "value": "blue"
         },
         {
+          "type": "restriction",
+          "value": "="
+        },
+        {
+          "type": "color",
+          "value": "red"
+        },
+        {
           "type": "operator",
-          "value": "∩"
+          "value": "′"
+        },
+        {
+          "type": "operator",
+          "value": "′"
         },
         {
           "type": "color",
@@ -1352,17 +1224,122 @@
         },
         {
           "type": "operator",
-          "value": "′"
+          "value": "∪"
+        },
+        {
+          "type": "color",
+          "value": "gold"
         }
       ],
-      "goal": 5,
+      "goal": 1,
       "difficulty": "beginner",
       "generatedSolution": {
-        "topRow": null,
-        "bottomRow": "(red − gold) ∪ (blue ∩ green)′"
+        "topRow": "blue = red′",
+        "bottomRow": "green ∪ gold′"
       },
       "shortestSolution": {
-        "cubeCount": 2,
+        "cubeCount": 4,
+        "hasRestriction": false
+      }
+    },
+    {
+      "id": 14,
+      "cards": [
+        {
+          "colors": [
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "blue"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "blue",
+            "green"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "blue",
+            "green",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "blue",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "green",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "green",
+            "gold"
+          ]
+        }
+      ],
+      "dice": [
+        {
+          "type": "color",
+          "value": "gold"
+        },
+        {
+          "type": "color",
+          "value": "gold"
+        },
+        {
+          "type": "color",
+          "value": "gold"
+        },
+        {
+          "type": "operator",
+          "value": "∩"
+        },
+        {
+          "type": "restriction",
+          "value": "⊆"
+        },
+        {
+          "type": "color",
+          "value": "green"
+        },
+        {
+          "type": "operator",
+          "value": "−"
+        },
+        {
+          "type": "color",
+          "value": "red"
+        }
+      ],
+      "goal": 1,
+      "difficulty": "beginner",
+      "generatedSolution": {
+        "topRow": "(gold ∩ gold) ⊆ green",
+        "bottomRow": "gold − red"
+      },
+      "shortestSolution": {
+        "cubeCount": 3,
         "hasRestriction": false
       }
     },
@@ -1377,32 +1354,17 @@
         },
         {
           "colors": [
-            "gold"
-          ]
-        },
-        {
-          "colors": [
             "red",
-            "blue",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "blue",
             "green"
           ]
         },
         {
           "colors": [
-            "green",
-            "gold"
+            "green"
           ]
         },
         {
           "colors": [
-            "red",
             "blue",
             "green",
             "gold"
@@ -1410,7 +1372,19 @@
         },
         {
           "colors": [
-            "green"
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "green",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "blue"
           ]
         },
         {
@@ -1426,42 +1400,42 @@
           "value": "green"
         },
         {
-          "type": "operator",
-          "value": "∪"
+          "type": "color",
+          "value": "green"
         },
         {
           "type": "operator",
-          "value": "∪"
+          "value": "−"
         },
         {
-          "type": "operator",
-          "value": "∪"
+          "type": "restriction",
+          "value": "⊆"
+        },
+        {
+          "type": "set-constant",
+          "value": "U"
         },
         {
           "type": "color",
-          "value": "blue"
+          "value": "gold"
+        },
+        {
+          "type": "operator",
+          "value": "∪"
         },
         {
           "type": "color",
           "value": "red"
-        },
-        {
-          "type": "color",
-          "value": "red"
-        },
-        {
-          "type": "operator",
-          "value": "′"
         }
       ],
-      "goal": 1,
+      "goal": 6,
       "difficulty": "beginner",
       "generatedSolution": {
-        "topRow": null,
-        "bottomRow": "(green ∪ (blue ∪ red)) ∪ red′"
+        "topRow": "green − green ⊆ U",
+        "bottomRow": "gold ∪ red"
       },
       "shortestSolution": {
-        "cubeCount": 4,
+        "cubeCount": 3,
         "hasRestriction": false
       }
     },
@@ -1470,30 +1444,6 @@
       "cards": [
         {
           "colors": [
-            "red",
-            "blue",
-            "green",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "blue",
-            "green"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "gold"
-          ]
-        },
-        {
-          "colors": []
-        },
-        {
-          "colors": [
             "blue",
             "green"
           ]
@@ -1506,93 +1456,6 @@
         },
         {
           "colors": [
-            "red",
-            "blue",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "blue",
-            "green",
-            "gold"
-          ]
-        }
-      ],
-      "dice": [
-        {
-          "type": "color",
-          "value": "blue"
-        },
-        {
-          "type": "color",
-          "value": "blue"
-        },
-        {
-          "type": "color",
-          "value": "blue"
-        },
-        {
-          "type": "operator",
-          "value": "−"
-        },
-        {
-          "type": "color",
-          "value": "red"
-        },
-        {
-          "type": "restriction",
-          "value": "="
-        },
-        {
-          "type": "set-constant",
-          "value": "∅"
-        },
-        {
-          "type": "operator",
-          "value": "∩"
-        }
-      ],
-      "goal": 3,
-      "difficulty": "beginner",
-      "generatedSolution": {
-        "topRow": "blue − red = ∅",
-        "bottomRow": "blue ∩ blue"
-      },
-      "shortestSolution": {
-        "cubeCount": 3,
-        "hasRestriction": false
-      }
-    },
-    {
-      "id": 17,
-      "cards": [
-        {
-          "colors": [
-            "red",
-            "blue",
-            "green"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "green"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "gold"
-          ]
-        },
-        {
-          "colors": []
-        },
-        {
-          "colors": [
-            "red",
-            "blue",
             "green",
             "gold"
           ]
@@ -1606,20 +1469,34 @@
         },
         {
           "colors": [
+            "red",
             "blue",
+            "green",
             "gold"
+          ]
+        },
+        {
+          "colors": [
+            "blue"
           ]
         },
         {
           "colors": [
             "red"
           ]
+        },
+        {
+          "colors": []
         }
       ],
       "dice": [
         {
-          "type": "set-constant",
-          "value": "U"
+          "type": "color",
+          "value": "gold"
+        },
+        {
+          "type": "color",
+          "value": "gold"
         },
         {
           "type": "operator",
@@ -1635,11 +1512,89 @@
         },
         {
           "type": "color",
-          "value": "blue"
+          "value": "red"
         },
         {
           "type": "operator",
           "value": "∩"
+        },
+        {
+          "type": "operator",
+          "value": "′"
+        }
+      ],
+      "goal": 6,
+      "difficulty": "beginner",
+      "generatedSolution": {
+        "topRow": null,
+        "bottomRow": "gold − green ∪ red ∩ gold′"
+      },
+      "shortestSolution": {
+        "cubeCount": 2,
+        "hasRestriction": false
+      }
+    },
+    {
+      "id": 17,
+      "cards": [
+        {
+          "colors": [
+            "red",
+            "blue"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "blue",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "blue",
+            "green"
+          ]
+        },
+        {
+          "colors": [
+            "blue",
+            "green",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "green",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "blue",
+            "gold"
+          ]
+        },
+        {
+          "colors": []
+        }
+      ],
+      "dice": [
+        {
+          "type": "color",
+          "value": "red"
+        },
+        {
+          "type": "color",
+          "value": "red"
         },
         {
           "type": "color",
@@ -1647,14 +1602,30 @@
         },
         {
           "type": "operator",
+          "value": "∩"
+        },
+        {
+          "type": "operator",
+          "value": "−"
+        },
+        {
+          "type": "color",
+          "value": "gold"
+        },
+        {
+          "type": "operator",
+          "value": "∪"
+        },
+        {
+          "type": "operator",
           "value": "′"
         }
       ],
-      "goal": 4,
+      "goal": 3,
       "difficulty": "beginner",
       "generatedSolution": {
         "topRow": null,
-        "bottomRow": "U − green ∪ blue ∩ red′"
+        "bottomRow": "red ∩ red − gold ∪ red′"
       },
       "shortestSolution": {
         "cubeCount": 2,
@@ -1667,28 +1638,8 @@
         {
           "colors": [
             "red",
-            "green"
-          ]
-        },
-        {
-          "colors": [
-            "blue",
             "green",
             "gold"
-          ]
-        },
-        {
-          "colors": []
-        },
-        {
-          "colors": [
-            "green",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "red"
           ]
         },
         {
@@ -1699,7 +1650,6 @@
         },
         {
           "colors": [
-            "red",
             "green",
             "gold"
           ]
@@ -1707,7 +1657,32 @@
         {
           "colors": [
             "red",
+            "blue",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
             "blue"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "green"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "blue",
+            "green",
+            "gold"
           ]
         }
       ],
@@ -1718,38 +1693,38 @@
         },
         {
           "type": "restriction",
-          "value": "="
-        },
-        {
-          "type": "color",
-          "value": "gold"
-        },
-        {
-          "type": "color",
-          "value": "gold"
-        },
-        {
-          "type": "operator",
-          "value": "∩"
-        },
-        {
-          "type": "color",
-          "value": "green"
-        },
-        {
-          "type": "operator",
-          "value": "−"
+          "value": "⊆"
         },
         {
           "type": "color",
           "value": "blue"
+        },
+        {
+          "type": "operator",
+          "value": "∪"
+        },
+        {
+          "type": "operator",
+          "value": "∪"
+        },
+        {
+          "type": "color",
+          "value": "gold"
+        },
+        {
+          "type": "color",
+          "value": "gold"
+        },
+        {
+          "type": "color",
+          "value": "red"
         }
       ],
-      "goal": 2,
+      "goal": 5,
       "difficulty": "beginner",
       "generatedSolution": {
-        "topRow": "U = gold ∩ green",
-        "bottomRow": "gold − blue"
+        "topRow": "U ⊆ blue ∪ gold",
+        "bottomRow": "gold ∪ red"
       },
       "shortestSolution": {
         "cubeCount": 3,
@@ -1761,8 +1736,11 @@
       "cards": [
         {
           "colors": [
-            "red",
-            "blue",
+            "blue"
+          ]
+        },
+        {
+          "colors": [
             "green"
           ]
         },
@@ -1775,96 +1753,8 @@
         },
         {
           "colors": [
-            "red",
-            "blue"
-          ]
-        },
-        {
-          "colors": [
-            "green"
-          ]
-        },
-        {
-          "colors": [
-            "red",
-            "green"
-          ]
-        },
-        {
-          "colors": [
-            "red",
             "green",
             "gold"
-          ]
-        },
-        {
-          "colors": [
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "blue"
-          ]
-        }
-      ],
-      "dice": [
-        {
-          "type": "color",
-          "value": "green"
-        },
-        {
-          "type": "operator",
-          "value": "∪"
-        },
-        {
-          "type": "color",
-          "value": "blue"
-        },
-        {
-          "type": "color",
-          "value": "blue"
-        },
-        {
-          "type": "operator",
-          "value": "−"
-        },
-        {
-          "type": "operator",
-          "value": "−"
-        },
-        {
-          "type": "color",
-          "value": "red"
-        },
-        {
-          "type": "operator",
-          "value": "′"
-        }
-      ],
-      "goal": 7,
-      "difficulty": "beginner",
-      "generatedSolution": {
-        "topRow": null,
-        "bottomRow": "green ∪ blue − red − blue′"
-      },
-      "shortestSolution": {
-        "cubeCount": 3,
-        "hasRestriction": false
-      }
-    },
-    {
-      "id": 20,
-      "cards": [
-        {
-          "colors": [
-            "red",
-            "blue"
-          ]
-        },
-        {
-          "colors": [
-            "green"
           ]
         },
         {
@@ -1872,30 +1762,19 @@
         },
         {
           "colors": [
-            "blue",
-            "green"
+            "red",
+            "blue"
+          ]
+        },
+        {
+          "colors": [
+            "gold"
           ]
         },
         {
           "colors": [
             "red",
             "gold"
-          ]
-        },
-        {
-          "colors": [
-            "red"
-          ]
-        },
-        {
-          "colors": [
-            "blue",
-            "gold"
-          ]
-        },
-        {
-          "colors": [
-            "blue"
           ]
         }
       ],
@@ -1906,19 +1785,11 @@
         },
         {
           "type": "restriction",
-          "value": "⊆"
-        },
-        {
-          "type": "set-constant",
-          "value": "∅"
+          "value": "="
         },
         {
           "type": "color",
-          "value": "gold"
-        },
-        {
-          "type": "operator",
-          "value": "−"
+          "value": "red"
         },
         {
           "type": "color",
@@ -1926,18 +1797,122 @@
         },
         {
           "type": "operator",
+          "value": "′"
+        },
+        {
+          "type": "operator",
+          "value": "′"
+        },
+        {
+          "type": "operator",
           "value": "∪"
         },
         {
           "type": "color",
-          "value": "green"
+          "value": "gold"
         }
       ],
       "goal": 1,
       "difficulty": "beginner",
       "generatedSolution": {
-        "topRow": "blue ⊆ ∅",
-        "bottomRow": "gold − red ∪ green"
+        "topRow": "blue = red′",
+        "bottomRow": "red ∪ gold′"
+      },
+      "shortestSolution": {
+        "cubeCount": 4,
+        "hasRestriction": true
+      }
+    },
+    {
+      "id": 20,
+      "cards": [
+        {
+          "colors": [
+            "red",
+            "blue",
+            "gold"
+          ]
+        },
+        {
+          "colors": []
+        },
+        {
+          "colors": [
+            "red",
+            "green",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "green"
+          ]
+        },
+        {
+          "colors": [
+            "green",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "blue",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "blue",
+            "green",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "blue"
+          ]
+        }
+      ],
+      "dice": [
+        {
+          "type": "set-constant",
+          "value": "∅"
+        },
+        {
+          "type": "operator",
+          "value": "−"
+        },
+        {
+          "type": "color",
+          "value": "blue"
+        },
+        {
+          "type": "operator",
+          "value": "∪"
+        },
+        {
+          "type": "operator",
+          "value": "∪"
+        },
+        {
+          "type": "color",
+          "value": "red"
+        },
+        {
+          "type": "color",
+          "value": "green"
+        },
+        {
+          "type": "operator",
+          "value": "′"
+        }
+      ],
+      "goal": 3,
+      "difficulty": "beginner",
+      "generatedSolution": {
+        "topRow": null,
+        "bottomRow": "∅ − blue ∪ red ∪ green′"
       },
       "shortestSolution": {
         "cubeCount": 3,
