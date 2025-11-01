@@ -54,93 +54,152 @@ class DailyPuzzleGenerator {
      */
     createTemplates() {
         const templates = [];
+        const ops = ['∪', '∩', '−']; // Regular operators
         
         // ===== CATEGORY 1: No Restriction (8 tokens) =====
-        templates.push(
-            // A ∪ B ∪ C ∪ D′ = 8 tokens ✓
-            { topRow: null, bottomRow: "A ∪ B ∪ C ∪ D′", pattern: "8-setname" },
-            // A ∪ B ∪ C′ ∪ D = 8 tokens ✓
-            { topRow: null, bottomRow: "A ∪ B ∪ C′ ∪ D", pattern: "8-setname-prime" },
-            // A ∩ B ∪ C ∪ D′ = 8 tokens ✓
-            { topRow: null, bottomRow: "A ∩ B ∪ C ∪ D′", pattern: "8-setname-mixed" },
-            // A ∪ B ∪ C ∪ A = 7 tokens, so add ′ → A ∪ B ∪ C ∪ A′ = 8 tokens ✓
-            { topRow: null, bottomRow: "A ∪ B ∪ C ∪ A′", pattern: "8-setname-reuse" }
-        );
         
-        // ===== CATEGORY 2: Restriction (topRow) + Set Name (bottomRow) = 8 total =====
+        // color op color op color op color′ (8 tokens)
+        ops.forEach(op1 => {
+            ops.forEach(op2 => {
+                ops.forEach(op3 => {
+                    templates.push({ 
+                        topRow: null, 
+                        bottomRow: `color ${op1} color ${op2} color ${op3} color′`, 
+                        pattern: "8-setname"
+                    });
+                });
+            });
+        });
         
-        // 3 + 5 = 8 tokens
-        templates.push(
-            // A = B (3 tokens) + C ∪ D ∪ A (5 tokens) = 8 ✓
-            { topRow: "A = B", bottomRow: "C ∪ D ∪ A", pattern: "3+5-eq" },
-            // A ⊆ B (3 tokens) + C ∪ D ∪ A (5 tokens) = 8 ✓
-            { topRow: "A ⊆ B", bottomRow: "C ∪ D ∪ A", pattern: "3+5-subset" },
-            // A = B (3 tokens) + C ∪ D ∪ E′ (5 tokens) = 8 ✓ (no reuse)
-            { topRow: "A = B", bottomRow: "C ∪ D′ ∪ A", pattern: "3+5-eq-prime" }
-        );
+        // setName op color op color op color′ (8 tokens)
+        ops.forEach(op1 => {
+            ops.forEach(op2 => {
+                ops.forEach(op3 => {
+                    templates.push({ 
+                        topRow: null, 
+                        bottomRow: `setName ${op1} color ${op2} color ${op3} color′`, 
+                        pattern: "8-setname-univ"
+                    });
+                });
+            });
+        });
         
-        // 5 + 3 = 8 tokens
-        templates.push(
-            // A ∪ B = C (5 tokens) + D ∪ A (3 tokens) = 8 ✓
-            { topRow: "A ∪ B = C", bottomRow: "D ∪ A", pattern: "5+3-eq" },
-            // A ∩ B = C (5 tokens) + D ∪ A (3 tokens) = 8 ✓
-            { topRow: "A ∩ B = C", bottomRow: "D ∪ A", pattern: "5+3-eq" },
-            // A − B = C (5 tokens) + D ∪ A (3 tokens) = 8 ✓
-            { topRow: "A − B = C", bottomRow: "D ∪ A", pattern: "5+3-eq" },
-            // A = B ∪ C (5 tokens) + D ∪ A (3 tokens) = 8 ✓
-            { topRow: "A = B ∪ C", bottomRow: "D ∪ A", pattern: "5+3-eq" },
-            // A = B ∩ C (5 tokens) + D ∪ A (3 tokens) = 8 ✓
-            { topRow: "A = B ∩ C", bottomRow: "D ∪ A", pattern: "5+3-eq" },
-            // A ∪ B ⊆ C (5 tokens) + D ∪ A (3 tokens) = 8 ✓
-            { topRow: "A ∪ B ⊆ C", bottomRow: "D ∪ A", pattern: "5+3-subset" },
-            // A ⊆ B ∪ C (5 tokens) + D ∪ A (3 tokens) = 8 ✓
-            { topRow: "A ⊆ B ∪ C", bottomRow: "D ∪ A", pattern: "5+3-subset" }
-        );
+        // ===== CATEGORY 2: Restriction + Set Name = 8 tokens =====
         
-        // 4 + 4 = 8 tokens
-        templates.push(
-            // A = B′ (4 tokens) + C ∪ D (3 tokens) = 7... need one more
-            // A = B′ (4 tokens) + C ∪ D′ (4 tokens) = 8 ✓
-            { topRow: "A = B′", bottomRow: "C ∪ D′", pattern: "4+4-prime" },
-            // A′ = B (4 tokens) + C ∪ D′ (4 tokens) = 8 ✓
-            { topRow: "A′ = B", bottomRow: "C ∪ D′", pattern: "4+4-prime" }
-        );
+        // 3+5: color restriction color + color op color op color (8 tokens)
+        ops.forEach(op => {
+            ['=', '⊆'].forEach(restr => {
+                templates.push({ 
+                    topRow: `color ${restr} color`, 
+                    bottomRow: `color ${op} color ${op} color`, 
+                    pattern: `3+5-${restr}`
+                });
+            });
+        });
         
-        // 6 + 2 = 8 tokens
-        templates.push(
-            // A ∪ B = C ∪ D (7 tokens) + A = 7 + 1 = 8 ✓
-            { topRow: "A ∪ B = C ∪ D", bottomRow: "A", pattern: "7+1-eq" },
-            // A ∪ B = C′ (6 tokens) + D′ (2 tokens) = 8 ✓
-            { topRow: "A ∪ B = C′", bottomRow: "D′", pattern: "6+2-prime" },
-            // A ∪ B′ = C (6 tokens) + D′ (2 tokens) = 8 ✓
-            { topRow: "A ∪ B′ = C", bottomRow: "D′", pattern: "6+2-prime" }
-        );
+        // 5+3: color op color restriction color + color op color (8 tokens)
+        ops.forEach(op1 => {
+            ops.forEach(op2 => {
+                ['=', '⊆'].forEach(restr => {
+                    templates.push({ 
+                        topRow: `color ${op1} color ${restr} color`, 
+                        bottomRow: `color ${op2} color`, 
+                        pattern: `5+3-${restr}`
+                    });
+                });
+            });
+        });
         
-        // ===== CATEGORY 3: Two restriction cubes (= AND ⊆) =====
-        templates.push(
-            // A ⊆ B = C (5 tokens - reads as "A subset B equals C") + D ∪ A (3) = 8 ✓
-            { topRow: "A ⊆ B = C", bottomRow: "D ∪ A", pattern: "5+3-both" },
-            // A = B ⊆ C (5 tokens) + D ∪ A (3) = 8 ✓
-            { topRow: "A = B ⊆ C", bottomRow: "D ∪ A", pattern: "5+3-both" }
-        );
+        // 5+3: color restriction color op color + color op color (8 tokens)
+        ops.forEach(op1 => {
+            ops.forEach(op2 => {
+                ['=', '⊆'].forEach(restr => {
+                    templates.push({ 
+                        topRow: `color ${restr} color ${op1} color`, 
+                        bottomRow: `color ${op2} color`, 
+                        pattern: `5+3-${restr}`
+                    });
+                });
+            });
+        });
         
-        // ===== CATEGORY 4: Universe/Null (8 tokens total) =====
-        templates.push(
-            // U = A ∪ B (5 tokens) + C ∪ D (3 tokens) = 8 ✓
-            { topRow: "U = A ∪ B", bottomRow: "C ∪ D", pattern: "5+3-univ-eq" },
-            // A ∪ B = U (5 tokens) + C ∪ D (3 tokens) = 8 ✓
-            { topRow: "A ∪ B = U", bottomRow: "C ∪ D", pattern: "5+3-univ-eq" },
-            // ∅ = A ∩ B (5 tokens) + C ∪ D (3 tokens) = 8 ✓
-            { topRow: "∅ = A ∩ B", bottomRow: "C ∪ D", pattern: "5+3-null-eq" },
-            // A ∩ B = ∅ (5 tokens) + C ∪ D (3 tokens) = 8 ✓
-            { topRow: "A ∩ B = ∅", bottomRow: "C ∪ D", pattern: "5+3-null-eq" },
-            // U = A (3 tokens) + B ∪ C ∪ D (5 tokens) = 8 ✓
-            { topRow: "U = A", bottomRow: "B ∪ C ∪ D", pattern: "3+5-univ-eq" },
-            // A = U (3 tokens) + B ∪ C ∪ D (5 tokens) = 8 ✓
-            { topRow: "A = U", bottomRow: "B ∪ C ∪ D", pattern: "3+5-univ-eq" },
-            // U − A − B − C′ (8 tokens, no restriction)
-            { topRow: null, bottomRow: "U − A − B − C′", pattern: "8-univ-diff" }
-        );
+        // 4+4: color restriction color′ + color op color′ (8 tokens)
+        ops.forEach(op => {
+            ['=', '⊆'].forEach(restr => {
+                templates.push({ 
+                    topRow: `color ${restr} color′`, 
+                    bottomRow: `color ${op} color′`, 
+                    pattern: `4+4-${restr}`
+                });
+            });
+        });
+        
+        // 7+1: color op color restriction color op color + color (8 tokens)
+        ops.forEach(op1 => {
+            ops.forEach(op2 => {
+                ['=', '⊆'].forEach(restr => {
+                    templates.push({ 
+                        topRow: `color ${op1} color ${restr} color ${op2} color`, 
+                        bottomRow: `color`, 
+                        pattern: `7+1-${restr}`
+                    });
+                });
+            });
+        });
+        
+        // ===== CATEGORY 3: Two Restriction Cubes (= AND ⊆) =====
+        
+        // 5+3: color restriction color restriction color + color op color (8 tokens)
+        ops.forEach(op => {
+            templates.push({ 
+                topRow: `color ⊆ color = color`, 
+                bottomRow: `color ${op} color`, 
+                pattern: `5+3-both`
+            });
+            templates.push({ 
+                topRow: `color = color ⊆ color`, 
+                bottomRow: `color ${op} color`, 
+                pattern: `5+3-both`
+            });
+        });
+        
+        // ===== CATEGORY 4: Universe/Null (8 tokens) =====
+        
+        // 5+3: setName restriction color op color + color op color (8 tokens)
+        ops.forEach(op1 => {
+            ops.forEach(op2 => {
+                ['=', '⊆'].forEach(restr => {
+                    templates.push({ 
+                        topRow: `setName ${restr} color ${op1} color`, 
+                        bottomRow: `color ${op2} color`, 
+                        pattern: `5+3-setName-${restr}`
+                    });
+                    templates.push({ 
+                        topRow: `color ${op1} color ${restr} setName`, 
+                        bottomRow: `color ${op2} color`, 
+                        pattern: `5+3-setName-${restr}`
+                    });
+                });
+            });
+        });
+        
+        // 3+5: setName restriction color + color op color op color (8 tokens)
+        ops.forEach(op1 => {
+            ops.forEach(op2 => {
+                ['=', '⊆'].forEach(restr => {
+                    templates.push({ 
+                        topRow: `setName ${restr} color`, 
+                        bottomRow: `color ${op1} color ${op2} color`, 
+                        pattern: `3+5-setName-${restr}`
+                    });
+                    templates.push({ 
+                        topRow: `color ${restr} setName`, 
+                        bottomRow: `color ${op1} color ${op2} color`, 
+                        pattern: `3+5-setName-${restr}`
+                    });
+                });
+            });
+        });
         
         // Validate all templates
         templates.forEach(t => {
@@ -169,11 +228,9 @@ class DailyPuzzleGenerator {
             // Pick a random template
             const template = this.pickRandomTemplate();
             
-            // Assign colors to A, B, C, D, U, ∅ placeholders
-            const colorMap = this.createColorMapping(template);
-            
             // Instantiate the template with real colors/operators
-            const solution = this.instantiateTemplate(template, colorMap);
+            // Abstract types (color, setName) are replaced with random concrete values
+            const solution = this.instantiateTemplate(template);
             
             // Generate 4 random cards with variety
             const cards = this.generateRandomCards();
@@ -224,51 +281,40 @@ class DailyPuzzleGenerator {
     }
     
     /**
-     * Create a color mapping for template placeholders
-     * A, B, C, D can be colors (red, blue, green, gold)
-     * U = Universe, ∅ = Null
-     * Colors can repeat for padding
+     * No color mapping needed - we replace abstract types directly
+     * This method is kept for backwards compatibility but not used
      */
     createColorMapping(template) {
-        const mapping = {};
-        
-        // Shuffle colors for randomness
-        const shuffledColors = [...this.COLORS].sort(() => Math.random() - 0.5);
-        
-        // Extract unique placeholders from template
-        const templateString = (template.topRow || '') + (template.bottomRow || '');
-        const placeholders = [...new Set(templateString.match(/[ABCD]/g) || [])];
-        
-        // Assign colors to placeholders
-        placeholders.forEach((placeholder, index) => {
-            // Allow color reuse by cycling through colors
-            mapping[placeholder] = shuffledColors[index % shuffledColors.length];
-        });
-        
-        // Universe and Null are constants
-        mapping['U'] = 'U';
-        mapping['∅'] = '∅';
-        
-        return mapping;
+        return {};
     }
     
     /**
      * Instantiate a template with actual colors
+     * Replaces abstract types: "color", "setName" with concrete values
+     * Allows natural reuse by picking colors randomly for each occurrence
      */
-    instantiateTemplate(template, colorMap) {
-        const replaceColors = (expr) => {
+    instantiateTemplate(template) {
+        const replaceAbstractTypes = (expr) => {
             if (!expr) return null;
+            
+            // Replace each "color" with a random color (allows natural reuse)
             let result = expr;
-            // Replace placeholders with actual colors
-            for (const [placeholder, color] of Object.entries(colorMap)) {
-                const regex = new RegExp(placeholder, 'g');
-                result = result.replace(regex, color);
+            while (result.includes('color')) {
+                const randomColor = this.COLORS[Math.floor(Math.random() * this.COLORS.length)];
+                result = result.replace('color', randomColor);
             }
+            
+            // Replace each "setName" with U or ∅ (50/50 chance)
+            while (result.includes('setName')) {
+                const randomSetName = Math.random() < 0.5 ? 'U' : '∅';
+                result = result.replace('setName', randomSetName);
+            }
+            
             return result;
         };
         
-        const topRow = replaceColors(template.topRow);
-        const bottomRow = replaceColors(template.bottomRow);
+        const topRow = replaceAbstractTypes(template.topRow);
+        const bottomRow = replaceAbstractTypes(template.bottomRow);
         
         // Count restriction cubes in the solution
         const fullSolution = (topRow || '') + ' ' + (bottomRow || '');
