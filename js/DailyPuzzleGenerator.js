@@ -197,7 +197,7 @@ class DailyPuzzleGenerator {
         const shuffledColors = [...this.COLORS].sort(() => Math.random() - 0.5);
         
         // Extract unique placeholders from template
-        const templateString = template.restriction + template.setName;
+        const templateString = (template.topRow || '') + (template.bottomRow || '');
         const placeholders = [...new Set(templateString.match(/[ABCD]/g) || [])];
         
         // Assign colors to placeholders
