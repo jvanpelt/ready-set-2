@@ -29,12 +29,18 @@ class DailyPuzzleGenerator {
     /**
      * Count total tokens (cubes) in a template
      * Each token = 1 cube (colors, operators, restrictions, set constants)
+     * CRITICAL: Prime (′) attached to letters counts as 2 tokens (e.g., "A′" = A + ′ = 2 cubes)
      */
     countTokens(template) {
         const expr = (template.topRow || '') + ' ' + (template.bottomRow || '');
         // Remove parentheses and split by spaces
         const tokens = expr.replace(/[()]/g, '').split(/\s+/).filter(t => t);
-        return tokens.length;
+        
+        // Count prime symbols separately - each attached prime adds 1 to the count
+        // "A′" is split as one token but represents 2 cubes
+        const primeCount = (expr.match(/′/g) || []).length;
+        
+        return tokens.length + primeCount;
     }
     
     /**
@@ -132,8 +138,8 @@ class DailyPuzzleGenerator {
             { topRow: "U = A", bottomRow: "B ∪ C ∪ D", pattern: "3+5-univ-eq" },
             // A = U (3 tokens) + B ∪ C ∪ D (5 tokens) = 8 ✓
             { topRow: "A = U", bottomRow: "B ∪ C ∪ D", pattern: "3+5-univ-eq" },
-            // U − A − B − C (7 tokens, no restriction)
-            { topRow: null, bottomRow: "U − A − B − C", pattern: "7-univ-diff" }
+            // U − A − B − C′ (8 tokens, no restriction)
+            { topRow: null, bottomRow: "U − A − B − C′", pattern: "8-univ-diff" }
         );
         
         // Validate all templates
