@@ -2,26 +2,18 @@
 
 ## Phase 1: Bulk Puzzle Generation ✅ (Current)
 
-### How to Generate Puzzles Offline
+### How Puzzles Are Generated
 
-1. **Run the generation script**:
-   ```bash
-   node scripts/generate-puzzles.js 50
-   ```
-   - Generates 50 puzzles (or specify any number)
-   - Shows statistics (difficulty distribution)
-   - Saves to `data/daily-puzzles.json`
+Puzzles are generated during development by the AI code agent using the `DailyPuzzleGenerator.js` logic:
 
-2. **Review the output**:
-   - Check console for statistics
-   - Open `data/daily-puzzles.json` to inspect puzzles
-   - Look for good variety in difficulty and goals
+1. **AI generates puzzles** using template instantiation
+2. **AI validates** puzzle quality and difficulty distribution
+3. **AI writes** directly to `data/daily-puzzles.json`
+4. **Developer reviews and commits** the generated file
 
-3. **Commit the generated file**:
-   ```bash
-   git add data/daily-puzzles.json
-   git commit -m "feat: Add daily puzzle data (50 puzzles)"
-   ```
+### What Gets Generated
+
+**Current Status**: 50 puzzles generated and saved to `data/daily-puzzles.json`
 
 ### What Gets Generated
 
