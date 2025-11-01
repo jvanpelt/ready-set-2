@@ -85,6 +85,7 @@ export class UIController {
         this.resetBtn = document.getElementById('reset-btn');
         this.passBtn = document.getElementById('pass-btn');
         this.menuBtn = document.getElementById('menu-btn');
+        this.nextPuzzleBtn = document.getElementById('next-puzzle-btn');
         
         // Settings
         this.solutionHelperToggle = document.getElementById('solution-helper-toggle');
@@ -119,6 +120,7 @@ export class UIController {
         this.goBtn.addEventListener('click', () => this.handleGo());
         this.resetBtn.addEventListener('click', () => this.handleReset());
         this.passBtn.addEventListener('click', () => this.handlePass());
+        this.nextPuzzleBtn.addEventListener('click', () => this.handleNextPuzzle());
         
         this.menuBtn.addEventListener('click', () => {
             // DEBUG: console.log('📋 MENU button clicked');
@@ -386,6 +388,19 @@ export class UIController {
         // Then render new round with entrance animations
         this.render({ animate: true });
         this.clearSolutionHelper();
+    }
+    
+    handleNextPuzzle() {
+        console.log('⏭️ Next Puzzle button clicked');
+        
+        // Only available in daily puzzle test mode
+        if (this.game.mode !== 'daily' || !window.dailyPuzzleManager) {
+            console.warn('Next Puzzle only available in daily puzzle test mode');
+            return;
+        }
+        
+        // Load next puzzle
+        window.dailyPuzzleManager.loadNextTestPuzzle();
     }
     
     playSuccessAnimation(matchingCards) {
@@ -778,6 +793,13 @@ export class UIController {
             this.puzzleIdValue.textContent = `#${this.game.dailyPuzzle.puzzleId}`;
         } else {
             this.puzzleIdDisplay.style.display = 'none';
+        }
+        
+        // Show "Next Puzzle" button in test mode
+        if (this.game.mode === 'daily' && window.dailyPuzzleManager && window.dailyPuzzleManager.testMode === 'systematic') {
+            this.nextPuzzleBtn.style.display = 'inline-block';
+        } else {
+            this.nextPuzzleBtn.style.display = 'none';
         }
         
         // Update status bar
