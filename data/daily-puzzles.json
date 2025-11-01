@@ -264,14 +264,13 @@
         {"type": "color", "value": "red"},
         {"type": "operator", "value": "−"},
         {"type": "color", "value": "blue"},
-        {"type": "operator", "value": "−"},
-        {"type": "color", "value": "green"}
+        {"type": "operator", "value": "′"}
       ],
-      "goal": 1,
+      "goal": 2,
       "difficulty": {"rating": "advanced", "cubeCount": 6},
       "generatedSolution": {
         "topRow": "green′ = U",
-        "bottomRow": "red − blue − green"
+        "bottomRow": "red − blue′"
       },
       "shortestSolution": {"cubeCount": 2, "hasRestriction": false}
     },
@@ -385,16 +384,15 @@
         {"type": "color", "value": "red"},
         {"type": "operator", "value": "∩"},
         {"type": "color", "value": "blue"},
-        {"type": "operator", "value": "∩"},
-        {"type": "color", "value": "green"}
+        {"type": "operator", "value": "′"}
       ],
       "goal": 1,
-      "difficulty": {"rating": "advanced", "cubeCount": 7},
+      "difficulty": {"rating": "advanced", "cubeCount": 6},
       "generatedSolution": {
         "topRow": "U′ = ∅",
-        "bottomRow": "red ∩ blue ∩ green"
+        "bottomRow": "red ∩ blue′"
       },
-      "shortestSolution": {"cubeCount": 5, "hasRestriction": false}
+      "shortestSolution": {"cubeCount": 3, "hasRestriction": false}
     },
     {
       "id": 14,
@@ -506,14 +504,13 @@
         {"type": "color", "value": "blue"},
         {"type": "operator", "value": "∪"},
         {"type": "color", "value": "green"},
-        {"type": "operator", "value": "∪"},
-        {"type": "color", "value": "gold"}
+        {"type": "operator", "value": "′"}
       ],
-      "goal": 7,
-      "difficulty": {"rating": "beginner", "cubeCount": 3},
+      "goal": 6,
+      "difficulty": {"rating": "intermediate", "cubeCount": 5},
       "generatedSolution": {
         "topRow": "∅′ = U",
-        "bottomRow": "blue ∪ green ∪ gold"
+        "bottomRow": "blue ∪ green′"
       },
       "shortestSolution": {"cubeCount": 3, "hasRestriction": false}
     },
