@@ -96,6 +96,9 @@ export class UIController {
         this.testModeToggle = document.getElementById('test-mode-toggle');
         this.testModeToggle.checked = this.settings.testMode || false;
         
+        this.reverseTestOrderToggle = document.getElementById('reverse-test-order-toggle');
+        this.reverseTestOrderToggle.checked = this.settings.reverseTestOrder || false;
+        
         this.themeSelector = document.getElementById('theme-selector');
         this.themeSelector.value = this.settings.theme || 'default';
         // Apply saved theme on load
@@ -199,6 +202,18 @@ export class UIController {
             
             // Re-render to show new goal score
             this.render();
+        });
+        
+        this.reverseTestOrderToggle.addEventListener('change', (e) => {
+            this.settings.reverseTestOrder = e.target.checked;
+            this.game.storage.saveSettings(this.settings);
+            
+            // Update DailyPuzzleManager if it exists
+            if (window.dailyPuzzleManager) {
+                window.dailyPuzzleManager.reverseOrder = e.target.checked;
+                console.log(`🔄 Reverse Test Order ${e.target.checked ? 'ENABLED' : 'DISABLED'}`);
+                console.log(`   Next puzzle will load from ${e.target.checked ? 'END' : 'BEGINNING'} of untested puzzles`);
+            }
         });
         
         // Test mode: Jump to level

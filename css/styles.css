@@ -554,9 +554,16 @@ body {
 
 .status-bar {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: 1fr auto 1fr auto;
     gap: 15px;
     align-items: stretch;
+}
+
+#next-puzzle-btn {
+    min-width: 80px;
+    padding: 15px 20px;
+    font-weight: 600;
+    align-self: center;
 }
 
 .score-display,
@@ -1616,6 +1623,12 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
         grid-template-columns: 1fr 1fr 1fr 1fr;
         gap: 8px;
         margin-bottom: 10px;
+    }
+    
+    #next-puzzle-btn {
+        min-width: 60px;
+        padding: 8px 12px;
+        font-size: 11px;
     }
     
     .score-display {

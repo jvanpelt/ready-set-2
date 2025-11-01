@@ -55,6 +55,8 @@
                 <div class="stat-label">Puzzle:</div>
                 <div class="stat-value" id="puzzle-id-value">#1</div>
             </div>
+            
+            <button id="next-puzzle-btn" class="btn btn-primary" style="display: none;">Next</button>
         </div>
 
         <!-- Controls -->
@@ -63,7 +65,6 @@
             <button id="reset-btn" class="btn btn-primary">Reset</button>
             <button id="pass-btn" class="btn btn-warning">Pass</button>
             <button id="go-btn" class="btn btn-success">GO!</button>
-            <button id="next-puzzle-btn" class="btn btn-primary" style="display: none;">Next Puzzle</button>
         </div>
     </div>
 
@@ -155,6 +156,13 @@
                             </select>
                             <button id="jump-to-level-btn" class="btn btn-primary">Jump</button>
                         </div>
+                    </label>
+                    <label class="setting-item" style="margin-top: 15px;">
+                        <input type="checkbox" id="reverse-test-order-toggle">
+                        <span class="setting-label">
+                            <strong>Reverse Daily Puzzle Test Order</strong>
+                            <small>Start testing from puzzle #261 and work backwards (for multiple testers)</small>
+                        </span>
                     </label>
                 </div>
                 <div class="settings-group" style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 15px; margin-top: 15px;">
@@ -355,7 +363,7 @@
         <script type="module" src="js/DailyPuzzleGenerator.js?v=4.9.0-load-from-json"></script>
         <script type="module" src="js/DailyPuzzleManager.js?v=4.9.0-load-from-json"></script>
         
-        <script type="module" src="js/main.js?v=4.10.0-test-mode"></script>
+        <script type="module" src="js/main.js?v=4.11.0-multi-tester"></script>
 </body>
 </html>
 

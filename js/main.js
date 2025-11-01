@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Initialize daily puzzle manager
         console.log('🎲 Initializing DailyPuzzleManager...');
-        const dailyPuzzleManager = new DailyPuzzleManager(game, ui);
+        const dailyPuzzleManager = new DailyPuzzleManager(game, ui, settings);
         window.dailyPuzzleManager = dailyPuzzleManager; // Make accessible globally
         console.log('✅ DailyPuzzleManager initialized');
         

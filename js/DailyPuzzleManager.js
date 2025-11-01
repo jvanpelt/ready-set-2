@@ -11,13 +11,14 @@
 import DailyPuzzleGenerator from './DailyPuzzleGenerator.js';
 
 class DailyPuzzleManager {
-    constructor(game, uiController) {
+    constructor(game, uiController, settings = {}) {
         this.game = game;
         this.uiController = uiController;
         this.generator = new DailyPuzzleGenerator();
         
         // Test mode options
         this.testMode = 'systematic'; // 'systematic' | 'random' | false (date-based)
+        this.reverseOrder = settings.reverseTestOrder || false; // When true, test from #261 backwards
         
         // Current puzzle
         this.currentPuzzle = null;
@@ -94,20 +95,26 @@ class DailyPuzzleManager {
     getNextUntestedPuzzle() {
         if (!this.puzzleBank) return null;
         
-        // Find first puzzle that hasn't been tested
-        for (let i = 0; i < this.puzzleBank.length; i++) {
+        // Determine iteration direction
+        const startIndex = this.reverseOrder ? this.puzzleBank.length - 1 : 0;
+        const endIndex = this.reverseOrder ? -1 : this.puzzleBank.length;
+        const step = this.reverseOrder ? -1 : 1;
+        
+        // Find first untested puzzle (forward or backward)
+        for (let i = startIndex; this.reverseOrder ? i > endIndex : i < endIndex; i += step) {
             const puzzleId = this.puzzleBank[i].id;
             if (!this.testingProgress.tested.includes(puzzleId)) {
                 const progress = this.testingProgress.tested.length;
                 const total = this.puzzleBank.length;
-                console.log(`🧪 Test Mode: Loading puzzle #${puzzleId} (Progress: ${progress}/${total} tested)`);
+                const direction = this.reverseOrder ? '(reverse order)' : '';
+                console.log(`🧪 Test Mode: Loading puzzle #${puzzleId} ${direction} (Progress: ${progress}/${total} tested)`);
                 return this.puzzleBank[i];
             }
         }
         
         // All puzzles tested!
         console.log('🎉 All puzzles tested!');
-        return this.puzzleBank[0]; // Loop back to first
+        return this.puzzleBank[this.reverseOrder ? this.puzzleBank.length - 1 : 0]; // Loop back
     }
     
     /**
