@@ -754,15 +754,20 @@ export class UIController {
         }
         
         // Show/hide timer display based on level config (Level 7+)
-        const config = getLevelConfig(this.game.level, this.settings.testMode);
-        if (config && config.timeLimit) {
-            this.timerDisplay.style.display = 'flex';
-            // If timer isn't running, show the initial time
-            if (this.game.timeRemaining === null) {
-                this.timerValue.textContent = config.timeLimit;
-            }
-        } else {
+        // Never show timer for daily puzzles
+        if (this.game.mode === 'daily') {
             this.timerDisplay.style.display = 'none';
+        } else {
+            const config = getLevelConfig(this.game.level, this.settings.testMode);
+            if (config && config.timeLimit) {
+                this.timerDisplay.style.display = 'flex';
+                // If timer isn't running, show the initial time
+                if (this.game.timeRemaining === null) {
+                    this.timerValue.textContent = config.timeLimit;
+                }
+            } else {
+                this.timerDisplay.style.display = 'none';
+            }
         }
         
         // Update status bar

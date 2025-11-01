@@ -123,12 +123,17 @@ export class Game {
         }));
         
         // Start timer if level has time limit (Level 7+)
-        const settings = this.storage.loadSettings();
-        const config = getLevelConfig(this.level, settings.testMode);
-        if (config.timeLimit) {
-            this.startTimer(config.timeLimit);
-        } else {
+        // Never start timer for daily puzzles
+        if (this.mode === 'daily') {
             this.stopTimer();
+        } else {
+            const settings = this.storage.loadSettings();
+            const config = getLevelConfig(this.level, settings.testMode);
+            if (config.timeLimit) {
+                this.startTimer(config.timeLimit);
+            } else {
+                this.stopTimer();
+            }
         }
     }
     
