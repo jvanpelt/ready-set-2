@@ -11,7 +11,7 @@
 
 import { findShortestSolution } from './solutionFinder.js';
 import { evaluateExpression, evaluateRestriction } from './setTheory.js';
-import { generateCardConfig } from './levels.js';
+import { generateCardConfig, generateDiceForLevel } from './levels.js';
 
 class DailyPuzzleGenerator {
     constructor() {
@@ -278,8 +278,16 @@ class DailyPuzzleGenerator {
                 templateAttempts++;
                 attempts++;
                 
-                // Instantiate template with random colors/setNames
-                const solution = this.instantiateTemplate(template);
+                // Generate valid dice using core game logic
+                const generatedDice = generateDiceForLevel(6);
+                
+                // Instantiate template using generated dice
+                const solution = this.instantiateTemplate(template, generatedDice);
+                
+                // If template needs more colors than available, skip
+                if (!solution) {
+                    continue;
+                }
                 
                 // Generate 8 random cards
                 const cards = generateCardConfig(8);
@@ -439,17 +447,25 @@ class DailyPuzzleGenerator {
         while (attempts < maxAttempts) {
             attempts++;
             
-            // Pick a random template
+            // STEP 1: Generate valid dice using core game logic (Level 6+)
+            // This ensures: 4 colors (max 2 each) + 2 operators + 2 special cubes
+            const generatedDice = generateDiceForLevel(6);
+            
+            // STEP 2: Pick a random template
             const template = this.pickRandomTemplate();
             
-            // Instantiate the template with real colors/operators
-            // Abstract types (color, setName) are replaced with random concrete values
-            const solution = this.instantiateTemplate(template);
+            // STEP 3: Instantiate the template using the generated dice
+            const solution = this.instantiateTemplate(template, generatedDice);
             
-            // Generate 8 random cards using existing game function
+            // If instantiation failed (not enough dice for template), try again
+            if (!solution) {
+                continue;
+            }
+            
+            // STEP 4: Generate 8 random cards using existing game function
             const cards = generateCardConfig(8);
             
-            // Evaluate the solution against these cards
+            // STEP 5: Evaluate the solution against these cards
             const matchingIndices = this.evaluateSolution(solution, cards);
             
             // The goal is the number of matching cards
@@ -461,7 +477,7 @@ class DailyPuzzleGenerator {
                 continue; // Try again
             }
             
-            // Generate dice from the 8-cube solution
+            // STEP 6: Generate dice from the 8-cube solution
             const dice = this.generateDiceFromSolution(solution);
             
             // Find the shortest possible solution with these cards and dice
@@ -504,25 +520,54 @@ class DailyPuzzleGenerator {
     }
     
     /**
-     * Instantiate a template with actual colors
-     * Replaces abstract types: "color", "setName" with concrete values
-     * Allows natural reuse by picking colors randomly for each occurrence
+     * Instantiate a template using generated dice from generateDiceForLevel()
+     * This ensures all cube generation rules are followed:
+     * - Exactly 4 color cubes (max 2 of each color)
+     * - Exactly 2 operators
+     * - Exactly 2 special cubes (U, ∅, =, ⊆)
      */
-    instantiateTemplate(template) {
+    instantiateTemplate(template, generatedDice) {
+        // Extract dice by type
+        const colorDice = generatedDice.filter(d => d.type === 'color');
+        const operatorDice = generatedDice.filter(d => 
+            d.type === 'operator' && ['∪', '∩', '−', '′'].includes(d.value)
+        );
+        const specialDice = generatedDice.filter(d => 
+            d.type === 'operator' && ['U', '∅', '=', '⊆'].includes(d.value) ||
+            d.type === 'set-constant'
+        );
+        
+        // Create pools for instantiation
+        const availableColors = [...colorDice].map(d => d.value);
+        const availableOperators = [...operatorDice].map(d => d.value);
+        const availableSetNames = specialDice.filter(d => ['U', '∅'].includes(d.value)).map(d => d.value);
+        const availableRestrictions = specialDice.filter(d => ['=', '⊆'].includes(d.value)).map(d => d.value);
+        
+        // Helper to replace abstract types with actual dice values
+        // Note: Operators (∪, ∩, −, ′) and restrictions (=, ⊆) are already baked into templates
+        // We only need to replace "color" and "setName" placeholders
         const replaceAbstractTypes = (expr) => {
             if (!expr) return null;
             
-            // Replace each "color" with a random color (allows natural reuse)
             let result = expr;
+            
+            // Replace each "color" with an available color from generated dice
             while (result.includes('color')) {
-                const randomColor = this.COLORS[Math.floor(Math.random() * this.COLORS.length)];
-                result = result.replace('color', randomColor);
+                if (availableColors.length === 0) {
+                    return null; // Not enough colors
+                }
+                // Pick randomly, allow reuse (same color can appear multiple times)
+                const randomIdx = Math.floor(Math.random() * availableColors.length);
+                result = result.replace('color', availableColors[randomIdx]);
             }
             
-            // Replace each "setName" with U or ∅ (50/50 chance)
+            // Replace "setName" with U or ∅ from generated dice
             while (result.includes('setName')) {
-                const randomSetName = Math.random() < 0.5 ? 'U' : '∅';
-                result = result.replace('setName', randomSetName);
+                if (availableSetNames.length === 0) {
+                    return null; // No Universe/Null available
+                }
+                const randomIdx = Math.floor(Math.random() * availableSetNames.length);
+                result = result.replace('setName', availableSetNames[randomIdx]);
             }
             
             return result;
@@ -530,6 +575,11 @@ class DailyPuzzleGenerator {
         
         const topRow = replaceAbstractTypes(template.topRow);
         const bottomRow = replaceAbstractTypes(template.bottomRow);
+        
+        // If instantiation failed, return null
+        if ((template.topRow && !topRow) || (template.bottomRow && !bottomRow)) {
+            return null;
+        }
         
         // Count restriction cubes in the solution
         const fullSolution = (topRow || '') + ' ' + (bottomRow || '');
