@@ -57,35 +57,9 @@ class DailyPuzzleGenerator {
         const templates = [];
         const ops = ['∪', '∩', '−']; // Regular operators
         
-        // ===== CATEGORY 1: No Restriction (8 tokens) =====
-        
-        // color op color op color op color′ (8 tokens)
-        ops.forEach(op1 => {
-            ops.forEach(op2 => {
-                ops.forEach(op3 => {
-                    templates.push({ 
-                        topRow: null, 
-                        bottomRow: `color ${op1} color ${op2} color ${op3} color′`, 
-                        pattern: "8-setname"
-                    });
-                });
-            });
-        });
-        
-        // setName op color op color op color′ (8 tokens)
-        ops.forEach(op1 => {
-            ops.forEach(op2 => {
-                ops.forEach(op3 => {
-                    templates.push({ 
-                        topRow: null, 
-                        bottomRow: `setName ${op1} color ${op2} color ${op3} color′`, 
-                        pattern: "8-setname-univ"
-                    });
-                });
-            });
-        });
-        
-        // ===== CATEGORY 2: Restriction + Set Name = 8 tokens =====
+        // ===== CATEGORY 1: Restriction + Set Name = 8 tokens =====
+        // Note: "No restriction" templates with 3+ operators were removed
+        // as they violate the 2-operator maximum rule
         
         // 3+5: color restriction color + color op color op color (8 tokens)
         ops.forEach(op => {
@@ -242,22 +216,10 @@ class DailyPuzzleGenerator {
             });
         });
         
-        // 4-operand groupings: (A op B) op (C op D)′
-        // Note: Nested groups like ((A op B) op C) are NOT supported
-        // because grouping is based on physical proximity, not nested parentheses
-        ops.forEach(op1 => {
-            ops.forEach(op2 => {
-                ops.forEach(op3 => {
-                    templates.push({
-                        topRow: null,
-                        bottomRow: `(color ${op1} color) ${op2} (color ${op3} color)′`,
-                        pattern: "8-grouped-balanced"
-                    });
-                });
-            });
-        });
+        // Note: 4-operand balanced grouping templates like (A op B) op (C op D)′
+        // were removed as they require 3 operators, violating the 2-operator max
         
-        console.log(`✅ Created ${templates.length} validated 8-token templates`);
+        console.log(`✅ Created ${templates.length} validated templates (2-operator max enforced)`);
         
         return templates;
     }
