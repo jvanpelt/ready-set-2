@@ -57,48 +57,13 @@ class DailyPuzzleGenerator {
         const templates = [];
         const ops = ['∪', '∩', '−']; // Regular operators
         
-        // ===== CATEGORY 1: Restriction + Set Name = 8 tokens =====
-        // Note: "No restriction" templates with 3+ operators were removed
-        // as they violate the 2-operator maximum rule
+        // ===== CATEGORY 1: Valid Restriction + Set Name Templates =====
+        // Note: Templates with 5+ color tokens have been removed
+        // as they violate the 4-color maximum rule
         
-        // 3+5: color restriction color + color op color op color (8 tokens)
-        ops.forEach(op => {
-            ['=', '⊆'].forEach(restr => {
-                templates.push({ 
-                    topRow: `color ${restr} color`, 
-                    bottomRow: `color ${op} color ${op} color`, 
-                    pattern: `3+5-${restr}`
-                });
-            });
-        });
+        // REMOVED: 3+5, 5+3, 7+1, 5+3-both patterns (all had 5 color tokens)
         
-        // 5+3: color op color restriction color + color op color (8 tokens)
-        ops.forEach(op1 => {
-            ops.forEach(op2 => {
-                ['=', '⊆'].forEach(restr => {
-                    templates.push({ 
-                        topRow: `color ${op1} color ${restr} color`, 
-                        bottomRow: `color ${op2} color`, 
-                        pattern: `5+3-${restr}`
-                    });
-                });
-            });
-        });
-        
-        // 5+3: color restriction color op color + color op color (8 tokens)
-        ops.forEach(op1 => {
-            ops.forEach(op2 => {
-                ['=', '⊆'].forEach(restr => {
-                    templates.push({ 
-                        topRow: `color ${restr} color ${op1} color`, 
-                        bottomRow: `color ${op2} color`, 
-                        pattern: `5+3-${restr}`
-                    });
-                });
-            });
-        });
-        
-        // 4+4: color restriction color′ + color op color′ (8 tokens)
+        // 4+4: color restriction color′ + color op color′ (8 tokens, 4 colors max)
         ops.forEach(op => {
             ['=', '⊆'].forEach(restr => {
                 templates.push({ 
@@ -106,35 +71,6 @@ class DailyPuzzleGenerator {
                     bottomRow: `color ${op} color′`, 
                     pattern: `4+4-${restr}`
                 });
-            });
-        });
-        
-        // 7+1: color op color restriction color op color + color (8 tokens)
-        ops.forEach(op1 => {
-            ops.forEach(op2 => {
-                ['=', '⊆'].forEach(restr => {
-                    templates.push({ 
-                        topRow: `color ${op1} color ${restr} color ${op2} color`, 
-                        bottomRow: `color`, 
-                        pattern: `7+1-${restr}`
-                    });
-                });
-            });
-        });
-        
-        // ===== CATEGORY 3: Two Restriction Cubes (= AND ⊆) =====
-        
-        // 5+3: color restriction color restriction color + color op color (8 tokens)
-        ops.forEach(op => {
-            templates.push({ 
-                topRow: `color ⊆ color = color`, 
-                bottomRow: `color ${op} color`, 
-                pattern: `5+3-both`
-            });
-            templates.push({ 
-                topRow: `color = color ⊆ color`, 
-                bottomRow: `color ${op} color`, 
-                pattern: `5+3-both`
             });
         });
         
@@ -185,39 +121,11 @@ class DailyPuzzleGenerator {
         });
         
         // ===== CATEGORY 4: Templates with GROUPING =====
-        // These templates use parentheses to specify evaluation order
-        // Players must discover the correct grouping to match the goal
-        
-        // 3-operand groupings: (A op B) op C
-        ops.forEach(op1 => {
-            ops.forEach(op2 => {
-                ['=', '⊆'].forEach(restr => {
-                    // (color op color) restriction color + color op color (8 tokens)
-                    templates.push({
-                        topRow: `(color ${op1} color) ${restr} color`,
-                        bottomRow: `color ${op2} color`,
-                        pattern: `grouped-5+3-${restr}`
-                    });
-                });
-            });
-        });
-        
-        // 3-operand groupings in set name: (A op B) op C
-        ops.forEach(op1 => {
-            ops.forEach(op2 => {
-                ['=', '⊆'].forEach(restr => {
-                    // color restriction color + (color op color) op color (8 tokens)
-                    templates.push({
-                        topRow: `color ${restr} color`,
-                        bottomRow: `(color ${op1} color) ${op2} color`,
-                        pattern: `3+grouped-5-${restr}`
-                    });
-                });
-            });
-        });
-        
-        // Note: 4-operand balanced grouping templates like (A op B) op (C op D)′
-        // were removed as they require 3 operators, violating the 2-operator max
+        // REMOVED: grouped-5+3 and 3+grouped-5 patterns (all had 5 color tokens)
+        // 
+        // Note: Valid grouped templates with 4 colors could be added here
+        // e.g., (color op color) restriction color′ + color op color′
+        // But for now focusing on simpler 4+4 and setName templates
         
         console.log(`✅ Created ${templates.length} validated templates (2-operator max enforced)`);
         
