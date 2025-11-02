@@ -454,19 +454,33 @@ class DailyPuzzleGenerator {
         // Helper to replace abstract types with actual dice values
         // Note: Operators (∪, ∩, −, ′) and restrictions (=, ⊆) are already baked into templates
         // We only need to replace "color" and "setName" placeholders
+        // IMPORTANT: Respect the actual counts of each color in generated dice
         const replaceAbstractTypes = (expr) => {
             if (!expr) return null;
             
             let result = expr;
             
+            // Track color usage to respect generated dice limits
+            const colorUsage = {};
+            availableColors.forEach(c => {
+                colorUsage[c] = (colorUsage[c] || 0) + 1;
+            });
+            
             // Replace each "color" with an available color from generated dice
             while (result.includes('color')) {
-                if (availableColors.length === 0) {
-                    return null; // Not enough colors
+                // Find colors that still have usage remaining
+                const usableColors = Object.keys(colorUsage).filter(c => colorUsage[c] > 0);
+                
+                if (usableColors.length === 0) {
+                    return null; // No more colors available
                 }
-                // Pick randomly, allow reuse (same color can appear multiple times)
-                const randomIdx = Math.floor(Math.random() * availableColors.length);
-                result = result.replace('color', availableColors[randomIdx]);
+                
+                // Pick randomly from usable colors
+                const randomColor = usableColors[Math.floor(Math.random() * usableColors.length)];
+                result = result.replace('color', randomColor);
+                
+                // Decrement usage count
+                colorUsage[randomColor]--;
             }
             
             // Replace "setName" with U or ∅ from generated dice
