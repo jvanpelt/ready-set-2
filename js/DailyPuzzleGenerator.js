@@ -45,6 +45,98 @@ class DailyPuzzleGenerator {
     }
     
     /**
+     * Generate all grouping variations for expressions with 2+ operators
+     * For example: "color ∪ color ∩ color" generates:
+     *   - "(color ∪ color) ∩ color" (left grouping)
+     *   - "color ∪ (color ∩ color)" (right grouping)
+     */
+    generateGroupingVariations(expr) {
+        if (!expr) return [expr];
+        
+        const variations = [expr]; // Include ungrouped version
+        
+        // Count operators in expression (including prime)
+        const operators = (expr.match(/[∪∩−′]/g) || []);
+        
+        // If less than 2 operators, no grouping needed
+        if (operators.length < 2) return [expr];
+        
+        // Split expression into tokens
+        const tokens = expr.split(' ').filter(t => t && !t.match(/^[()]+$/));
+        
+        // PATTERN 1: Two regular operators (A op1 B op2 C)
+        // Matches: "color ∪ color ∩ color"
+        if (tokens.length === 5 && operators.length === 2 && !expr.includes('′')) {
+            const [t0, op1, t1, op2, t2] = tokens;
+            variations.push(`(${t0} ${op1} ${t1}) ${op2} ${t2}`); // Left
+            variations.push(`${t0} ${op1} (${t1} ${op2} ${t2})`); // Right
+        }
+        
+        // PATTERN 2: Operator + Prime (A op B′)
+        // Matches: "color ∪ color′"
+        else if (tokens.length === 3 && expr.includes('′')) {
+            const primeIndex = tokens.findIndex(t => t.includes('′'));
+            if (primeIndex === 2) { // Prime on last token
+                const [t0, op, t1] = tokens;
+                const t1Base = t1.replace('′', '');
+                variations.push(`(${t0} ${op} ${t1Base})′`); // Prime on whole
+                variations.push(`${t0} ${op} (${t1Base}′)`); // Prime on last only
+            }
+        }
+        
+        // PATTERN 3: Prime + Operator (A′ op B)
+        // Matches: "color′ ∪ color"
+        else if (tokens.length === 3 && expr.includes('′')) {
+            const primeIndex = tokens.findIndex(t => t.includes('′'));
+            if (primeIndex === 0) { // Prime on first token
+                const [t0, op, t1] = tokens;
+                const t0Base = t0.replace('′', '');
+                variations.push(`(${t0Base}′) ${op} ${t1}`); // Explicit grouping (same as ungrouped)
+                variations.push(`(${t0Base} ${op} ${t1})′`); // Prime on whole
+            }
+        }
+        
+        // PATTERN 4: Two operators + Prime (A op1 B op2 C′)
+        // Matches: "color ∪ color ∩ color′"
+        else if (tokens.length === 5 && expr.includes('′')) {
+            const primeIndex = tokens.findIndex(t => t.includes('′'));
+            if (primeIndex === 4) { // Prime on last token
+                const [t0, op1, t1, op2, t2] = tokens;
+                const t2Base = t2.replace('′', '');
+                // All grouping combinations
+                variations.push(`(${t0} ${op1} ${t1}) ${op2} (${t2Base}′)`); // Left + prime on last
+                variations.push(`${t0} ${op1} (${t1} ${op2} ${t2Base}′)`); // Right + prime on last
+                variations.push(`(${t0} ${op1} ${t1}) ${op2} ${t2Base})`); // Left + prime on whole (invalid - ignoring for now)
+                variations.push(`((${t0} ${op1} ${t1}) ${op2} ${t2Base})′`); // Prime on entire expression
+                variations.push(`(${t0} ${op1} (${t1} ${op2} ${t2Base}))′`); // Prime on right-grouped
+            }
+        }
+        
+        // PATTERN 5: Prime + Two operators (A′ op1 B op2 C)
+        // Matches: "color′ ∪ color ∩ color"
+        else if (tokens.length === 5 && expr.includes('′')) {
+            const primeIndex = tokens.findIndex(t => t.includes('′'));
+            if (primeIndex === 0) { // Prime on first token
+                const [t0, op1, t1, op2, t2] = tokens;
+                const t0Base = t0.replace('′', '');
+                variations.push(`(${t0Base}′ ${op1} ${t1}) ${op2} ${t2}`); // Left with prime
+                variations.push(`${t0Base}′ ${op1} (${t1} ${op2} ${t2})`); // Right with prime
+                variations.push(`((${t0Base}′ ${op1} ${t1}) ${op2} ${t2})`); // Whole left
+                variations.push(`((${t0Base} ${op1} ${t1}) ${op2} ${t2})′`); // Prime on whole
+            }
+        }
+        
+        // PATTERN 6: Four tokens with prime (A op B prime op C)
+        // Matches: "color ∪ color′ ∩ color"
+        else if (tokens.length === 4 && expr.includes('′')) {
+            // This is complex, variations depend on where the prime is
+            // For now, return ungrouped version
+        }
+        
+        return variations;
+    }
+    
+    /**
      * Create comprehensive template library for 8-cube solutions
      * CRITICAL: Each template must use EXACTLY 8 cubes total
      * Count includes: colors, operators (∪,∩,−,′), restrictions (=,⊆), set constants (U,∅)
@@ -67,66 +159,68 @@ class DailyPuzzleGenerator {
         // ===== CATEGORY 4: Universe/Null (8 tokens) =====
         
         // 5+3: setName restriction color op color + color op color (8 tokens)
+        // WITH GROUPING VARIATIONS for restriction row (has 2 operators)
         ops.forEach(op1 => {
             ops.forEach(op2 => {
                 ['=', '⊆'].forEach(restr => {
-                    templates.push({ 
-                        topRow: `setName ${restr} color ${op1} color`, 
-                        bottomRow: `color ${op2} color`, 
-                        pattern: `5+3-setName-${restr}`
-                    });
-                    templates.push({ 
-                        topRow: `color ${op1} setName ${restr} color`, 
-                        bottomRow: `color ${op2} color`, 
-                        pattern: `5+3-setName-${restr}`
-                    });
-                    templates.push({ 
-                        topRow: `color ${op1} color ${restr} setName`, 
-                        bottomRow: `color ${op2} color`, 
-                        pattern: `5+3-setName-${restr}`
-                    });
-                    templates.push({ 
-                        topRow: `color ${op1} color ${restr} color`, 
-                        bottomRow: `setName ${op2} color`, 
-                        pattern: `5+3-setName-${restr}`
-                    });
-                    templates.push({ 
-                        topRow: `color ${op1} color ${restr} color`, 
-                        bottomRow: `color ${op2} setName`, 
-                        pattern: `5+3-setName-${restr}`
+                    // Base patterns with all setName positions
+                    const basePatterns = [
+                        { topRow: `setName ${restr} color ${op1} color`, bottomRow: `color ${op2} color` },
+                        { topRow: `color ${op1} setName ${restr} color`, bottomRow: `color ${op2} color` },
+                        { topRow: `color ${op1} color ${restr} setName`, bottomRow: `color ${op2} color` },
+                        { topRow: `color ${op1} color ${restr} color`, bottomRow: `setName ${op2} color` },
+                        { topRow: `color ${op1} color ${restr} color`, bottomRow: `color ${op2} setName` }
+                    ];
+                    
+                    basePatterns.forEach((base, idx) => {
+                        // Generate grouping variations for the row with 2 operators
+                        const topVariations = this.generateGroupingVariations(base.topRow);
+                        const bottomVariations = this.generateGroupingVariations(base.bottomRow);
+                        
+                        // Create template for each combination of variations
+                        topVariations.forEach((topVar, tIdx) => {
+                            bottomVariations.forEach((bottomVar, bIdx) => {
+                                templates.push({
+                                    topRow: topVar,
+                                    bottomRow: bottomVar,
+                                    pattern: `5+3-p${idx}-${restr}-t${tIdx}b${bIdx}`
+                                });
+                            });
+                        });
                     });
                 });
             });
         });
         
         // 3+5: setName restriction color + color op color op color (8 tokens)
+        // WITH GROUPING VARIATIONS for set name row (has 2 operators)
         ops.forEach(op1 => {
             ops.forEach(op2 => {
                 ['=', '⊆'].forEach(restr => {
-                    templates.push({ 
-                        topRow: `setName ${restr} color`, 
-                        bottomRow: `color ${op1} color ${op2} color`, 
-                        pattern: `3+5-setName-${restr}`
-                    });
-                    templates.push({ 
-                        topRow: `color ${restr} setName`, 
-                        bottomRow: `color ${op1} color ${op2} color`, 
-                        pattern: `3+5-setName-${restr}`
-                    });
-                    templates.push({ 
-                        topRow: `color ${restr} color`, 
-                        bottomRow: `setName ${op1} color ${op2} color`, 
-                        pattern: `3+5-setName-${restr}`
-                    });
-                    templates.push({ 
-                        topRow: `color ${restr} color`, 
-                        bottomRow: `color ${op1} setName ${op2} color`, 
-                        pattern: `3+5-setName-${restr}`
-                    });
-                    templates.push({ 
-                        topRow: `color ${restr} color`, 
-                        bottomRow: `color ${op1} color ${op2} setName`, 
-                        pattern: `3+5-setName-${restr}`
+                    // Base patterns with all setName positions
+                    const basePatterns = [
+                        { topRow: `setName ${restr} color`, bottomRow: `color ${op1} color ${op2} color` },
+                        { topRow: `color ${restr} setName`, bottomRow: `color ${op1} color ${op2} color` },
+                        { topRow: `color ${restr} color`, bottomRow: `setName ${op1} color ${op2} color` },
+                        { topRow: `color ${restr} color`, bottomRow: `color ${op1} setName ${op2} color` },
+                        { topRow: `color ${restr} color`, bottomRow: `color ${op1} color ${op2} setName` }
+                    ];
+                    
+                    basePatterns.forEach((base, idx) => {
+                        // Generate grouping variations for the row with 2 operators
+                        const topVariations = this.generateGroupingVariations(base.topRow);
+                        const bottomVariations = this.generateGroupingVariations(base.bottomRow);
+                        
+                        // Create template for each combination of variations
+                        topVariations.forEach((topVar, tIdx) => {
+                            bottomVariations.forEach((bottomVar, bIdx) => {
+                                templates.push({
+                                    topRow: topVar,
+                                    bottomRow: bottomVar,
+                                    pattern: `3+5-p${idx}-${restr}-t${tIdx}b${bIdx}`
+                                });
+                            });
+                        });
                     });
                 });
             });

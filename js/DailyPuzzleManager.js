@@ -17,7 +17,7 @@ class DailyPuzzleManager {
         this.generator = new DailyPuzzleGenerator();
         
         // Test mode options
-        this.testMode = 'systematic'; // 'systematic' | 'random' | false (date-based)
+        this.testMode = 'random'; // 'systematic' | 'random' | false (date-based)
         this.reverseOrder = settings.reverseTestOrder || false; // When true, test from #261 backwards
         
         // Current puzzle
