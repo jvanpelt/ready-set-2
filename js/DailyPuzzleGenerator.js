@@ -102,6 +102,62 @@ class DailyPuzzleGenerator {
             });
         });
         
+        // ===== CATEGORY 5: 7+1 Templates (7-cube restriction + 1-cube set name) =====
+        // These use all 2 operators in the restriction row, leaving just 1 cube for set name
+        // All 7-cube restriction patterns from setTheory.js have exactly 2 operators
+        
+        // Pattern 1: color op color restriction color op setName + color (7+1)
+        ops.forEach(op1 => {
+            ops.forEach(op2 => {
+                ['=', '⊆'].forEach(restr => {
+                    templates.push({
+                        topRow: `color ${op1} color ${restr} color ${op2} setName`,
+                        bottomRow: `color`,
+                        pattern: `7+1-pattern1-${restr}`
+                    });
+                });
+            });
+        });
+        
+        // Pattern 2: color op color restriction setName op color + color (7+1)
+        ops.forEach(op1 => {
+            ops.forEach(op2 => {
+                ['=', '⊆'].forEach(restr => {
+                    templates.push({
+                        topRow: `color ${op1} color ${restr} setName ${op2} color`,
+                        bottomRow: `color`,
+                        pattern: `7+1-pattern2-${restr}`
+                    });
+                });
+            });
+        });
+        
+        // Pattern 3: color op setName restriction color op color + color (7+1)
+        ops.forEach(op1 => {
+            ops.forEach(op2 => {
+                ['=', '⊆'].forEach(restr => {
+                    templates.push({
+                        topRow: `color ${op1} setName ${restr} color ${op2} color`,
+                        bottomRow: `color`,
+                        pattern: `7+1-pattern3-${restr}`
+                    });
+                });
+            });
+        });
+        
+        // Pattern 4: setName op color restriction color op color + color (7+1)
+        ops.forEach(op1 => {
+            ops.forEach(op2 => {
+                ['=', '⊆'].forEach(restr => {
+                    templates.push({
+                        topRow: `setName ${op1} color ${restr} color ${op2} color`,
+                        bottomRow: `color`,
+                        pattern: `7+1-pattern4-${restr}`
+                    });
+                });
+            });
+        });
+        
         // Validate all templates
         templates.forEach(t => {
             const count = this.countTokens(t);
