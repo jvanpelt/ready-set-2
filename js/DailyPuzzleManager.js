@@ -153,6 +153,11 @@ class DailyPuzzleManager {
         }
         
         this.currentPuzzle = puzzle;
+        
+        // Log puzzle details for testing
+        this.generator.logPuzzle(puzzle);
+        
+        // Load puzzle into game
         this.loadPuzzleIntoGame(puzzle);
         
         // Hide home screen if visible
