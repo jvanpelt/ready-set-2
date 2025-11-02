@@ -76,8 +76,23 @@ class DailyPuzzleGenerator {
                         pattern: `5+3-setName-${restr}`
                     });
                     templates.push({ 
+                        topRow: `color ${op1} setName ${restr} color`, 
+                        bottomRow: `color ${op2} color`, 
+                        pattern: `5+3-setName-${restr}`
+                    });
+                    templates.push({ 
                         topRow: `color ${op1} color ${restr} setName`, 
                         bottomRow: `color ${op2} color`, 
+                        pattern: `5+3-setName-${restr}`
+                    });
+                    templates.push({ 
+                        topRow: `color ${op1} color ${restr} color`, 
+                        bottomRow: `setName ${op2} color`, 
+                        pattern: `5+3-setName-${restr}`
+                    });
+                    templates.push({ 
+                        topRow: `color ${op1} color ${restr} color`, 
+                        bottomRow: `color ${op2} setName`, 
                         pattern: `5+3-setName-${restr}`
                     });
                 });
@@ -96,6 +111,21 @@ class DailyPuzzleGenerator {
                     templates.push({ 
                         topRow: `color ${restr} setName`, 
                         bottomRow: `color ${op1} color ${op2} color`, 
+                        pattern: `3+5-setName-${restr}`
+                    });
+                    templates.push({ 
+                        topRow: `color ${restr} color`, 
+                        bottomRow: `setName ${op1} color ${op2} color`, 
+                        pattern: `3+5-setName-${restr}`
+                    });
+                    templates.push({ 
+                        topRow: `color ${restr} color`, 
+                        bottomRow: `color ${op1} setName ${op2} color`, 
+                        pattern: `3+5-setName-${restr}`
+                    });
+                    templates.push({ 
+                        topRow: `color ${restr} color`, 
+                        bottomRow: `color ${op1} color ${op2} setName`, 
                         pattern: `3+5-setName-${restr}`
                     });
                 });
@@ -154,6 +184,33 @@ class DailyPuzzleGenerator {
                         bottomRow: `color`,
                         pattern: `7+1-pattern4-${restr}`
                     });
+                });
+            });
+        });
+        
+        // Pattern 5:  
+        ops.forEach(op1 => {
+            ops.forEach(op2 => {
+                ['=', '⊆'].forEach(restr => {
+                    templates.push({
+                        topRow: `color ${op1} color ${restr} color ${op2} color`,
+                        bottomRow: `setName`,
+                        pattern: `7+1-pattern5-${restr}`
+                    });
+                });
+            });
+        });
+        
+        // ===== CATEGORY 6: 6+2 Templates with 2 Restrictions (double restriction) =====
+        // Pattern: color restr1 color restr2 color prime + color prime (6+2)
+        // Uses 2 restrictions in top row, 2 prime operators (one in each row)
+        // Total: 4 colors, 2 operators (both prime), 2 restrictions
+        ['=', '⊆'].forEach(restr1 => {
+            ['=', '⊆'].forEach(restr2 => {
+                templates.push({
+                    topRow: `color ${restr1} color ${restr2} color′`,
+                    bottomRow: `color′`,
+                    pattern: `6+2-double-${restr1}${restr2}`
                 });
             });
         });
