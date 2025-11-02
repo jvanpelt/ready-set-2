@@ -554,22 +554,22 @@ export class UIController {
     
     evaluateSolutionHelper() {
         if (!this.settings.solutionHelper) {
-            console.log('Solution Helper: OFF');
+            // console.log('Solution Helper: OFF');
             return;
         }
         
-        console.log('=== SOLUTION HELPER EVALUATION ===');
+        // console.log('=== SOLUTION HELPER EVALUATION ===');
         
         // Sort dice by X position (left-to-right) before evaluation
         const restrictionRow = (this.game.solutions[0] || []).sort((a, b) => a.x - b.x);
         const setNameRow = (this.game.solutions[1] || []).sort((a, b) => a.x - b.x);
         
-        console.log('Restriction row (sorted L→R):', restrictionRow.map(d => d.value).join(' '));
-        console.log('Set name row (sorted L→R):', setNameRow.map(d => d.value).join(' '));
+        // console.log('Restriction row (sorted L→R):', restrictionRow.map(d => d.value).join(' '));
+        // console.log('Set name row (sorted L→R):', setNameRow.map(d => d.value).join(' '));
         
         // If both rows are empty, clear helper
         if (restrictionRow.length === 0 && setNameRow.length === 0) {
-            console.log('Both rows empty - clearing helper');
+            // console.log('Both rows empty - clearing helper');
             // Force clear all card states
             this.game.cardStates.forEach((state) => {
                 state.dimmed = false;
@@ -586,16 +586,16 @@ export class UIController {
         if (hasRestriction(restrictionRow)) {
             restrictionRow_actual = restrictionRow;
             setNameRow_actual = setNameRow;
-            console.log('Restriction in row 0, set name in row 1');
+            // console.log('Restriction in row 0, set name in row 1');
         } else if (hasRestriction(setNameRow)) {
             restrictionRow_actual = setNameRow;
             setNameRow_actual = restrictionRow;
-            console.log('Restriction in row 1, set name in row 0');
+            // console.log('Restriction in row 1, set name in row 0');
         } else {
             // No restriction detected
             // If BOTH rows have content, this is invalid (can't have two set names)
             if (restrictionRow.length > 0 && setNameRow.length > 0) {
-                console.log('⚠️ Both rows have content but no restriction - treating as invalid');
+                // console.log('⚠️ Both rows have content but no restriction - treating as invalid');
                 // Clear all card states and exit
                 this.game.cardStates.forEach((state) => {
                     state.dimmed = false;
@@ -606,14 +606,14 @@ export class UIController {
             }
             // Just one row with a regular set name
             setNameRow_actual = restrictionRow.length > 0 ? restrictionRow : setNameRow;
-            console.log('No restriction detected - single set name');
+            // console.log('No restriction detected - single set name');
         }
         
         // Validate each row independently
         const restrictionValid = !restrictionRow_actual || this.isSolutionSyntaxValid(restrictionRow_actual);
         const setNameValid = !setNameRow_actual || this.isSolutionSyntaxValid(setNameRow_actual);
         
-        console.log('Validation:', { restrictionValid, setNameValid });
+        // console.log('Validation:', { restrictionValid, setNameValid });
         
         const cards = this.cardsContainer.querySelectorAll('.card');
         
@@ -631,11 +631,11 @@ export class UIController {
         
         if (restrictionRow_actual && restrictionRow_actual.length > 0) {
             if (restrictionValid) {
-                console.log('Evaluating restriction:', restrictionRow_actual.map(d => d.value).join(' '));
+                // console.log('Evaluating restriction:', restrictionRow_actual.map(d => d.value).join(' '));
                 cardsToFlip = evaluateRestriction(restrictionRow_actual, this.game.cards);
-                console.log('Cards to flip from restriction:', cardsToFlip);
+                // console.log('Cards to flip from restriction:', cardsToFlip);
             } else {
-                console.log('❌ Restriction syntax invalid - clearing flips');
+                // console.log('❌ Restriction syntax invalid - clearing flips');
                 // Clear only flips, not dimming
                 this.game.cardStates.forEach((state) => {
                     state.excluded = false;
@@ -648,7 +648,7 @@ export class UIController {
         
         if (setNameRow_actual && setNameRow_actual.length > 0) {
             if (setNameValid) {
-                console.log('Evaluating set name:', setNameRow_actual.map(d => d.value).join(' '));
+                // console.log('Evaluating set name:', setNameRow_actual.map(d => d.value).join(' '));
                 // Filter out flipped cards for set name evaluation
                 const activeCardIndices = new Set(
                     this.game.cards.map((_, idx) => idx).filter(idx => 
@@ -665,9 +665,9 @@ export class UIController {
                 matchingCards = new Set(
                     Array.from(matchingCardsRaw).map(activeIdx => activeCardsArray[activeIdx])
                 );
-                console.log('Matching cards from set name:', Array.from(matchingCards));
+                // console.log('Matching cards from set name:', Array.from(matchingCards));
             } else {
-                console.log('❌ Set name syntax invalid - clearing dimming');
+                // console.log('❌ Set name syntax invalid - clearing dimming');
                 // Clear only dimming, not flips
                 this.game.cardStates.forEach((state) => {
                     state.dimmed = false;
@@ -677,11 +677,11 @@ export class UIController {
         
         // STEP 3: Apply visual states
         // Priority: Flipped (excluded) > Matches set name (bright) > Doesn't match set name (dimmed)
-        console.log('Applying visual states...');
+        // console.log('Applying visual states...');
         cards.forEach((cardEl, index) => {
             if (cardsToFlip.includes(index)) {
                 // Flipped by restriction - highest priority (always shown as excluded)
-                console.log(`Card ${index}: FLIPPED (excluded by restriction)`);
+                // console.log(`Card ${index}: FLIPPED (excluded by restriction)`);
                 cardEl.classList.add('excluded');
                 cardEl.classList.remove('dimmed');
                 this.game.cardStates[index].excluded = true;
@@ -690,13 +690,13 @@ export class UIController {
                 // Set name is valid, apply dimming logic
                 if (matchingCards.has(index)) {
                     // Matches set name - bright
-                    console.log(`Card ${index}: MATCHES set name (bright)`);
+                    // console.log(`Card ${index}: MATCHES set name (bright)`);
                     cardEl.classList.remove('dimmed', 'excluded');
                     this.game.cardStates[index].dimmed = false;
                     this.game.cardStates[index].excluded = false;
                 } else {
                     // Doesn't match set name - dimmed
-                    console.log(`Card ${index}: Does NOT match set name (dimmed)`);
+                    // console.log(`Card ${index}: Does NOT match set name (dimmed)`);
                     cardEl.classList.add('dimmed');
                     cardEl.classList.remove('excluded');
                     this.game.cardStates[index].dimmed = true;
@@ -704,14 +704,14 @@ export class UIController {
                 }
             } else {
                 // No valid set name - all cards bright (unless already handled by restriction)
-                console.log(`Card ${index}: No valid set name (bright)`);
+                // console.log(`Card ${index}: No valid set name (bright)`);
                 cardEl.classList.remove('dimmed', 'excluded');
                 this.game.cardStates[index].dimmed = false;
                 this.game.cardStates[index].excluded = false;
             }
         });
         
-        console.log('=== END SOLUTION HELPER ===\n');
+        // console.log('=== END SOLUTION HELPER ===\n');
     }
     
     clearSolutionHelper() {
