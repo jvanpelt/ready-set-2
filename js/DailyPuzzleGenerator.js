@@ -62,17 +62,7 @@ class DailyPuzzleGenerator {
         // as they violate the 4-color maximum rule
         
         // REMOVED: 3+5, 5+3, 7+1, 5+3-both patterns (all had 5 color tokens)
-        
-        // 4+4: color restriction color′ + color op color′ (8 tokens, 4 colors max)
-        ops.forEach(op => {
-            ['=', '⊆'].forEach(restr => {
-                templates.push({ 
-                    topRow: `color ${restr} color′`, 
-                    bottomRow: `color ${op} color′`, 
-                    pattern: `4+4-${restr}`
-                });
-            });
-        });
+        // REMOVED: 4+4 pattern (had 3 operators: 2× ′ + 1× regular operator)
         
         // ===== CATEGORY 4: Universe/Null (8 tokens) =====
         
