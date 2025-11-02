@@ -811,7 +811,7 @@ export class UIController {
         }
         
         // Show "Next Puzzle" button in test mode
-        if (this.game.mode === 'daily' && window.dailyPuzzleManager && window.dailyPuzzleManager.testMode === 'systematic') {
+        if (this.game.mode === 'daily' && window.dailyPuzzleManager && window.dailyPuzzleManager.testMode) {
             this.nextPuzzleBtn.style.display = 'inline-block';
         } else {
             this.nextPuzzleBtn.style.display = 'none';
