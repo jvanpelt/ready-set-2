@@ -142,6 +142,31 @@ class DailyPuzzleManager {
     }
     
     /**
+     * Jump to a specific puzzle by ID (for testing)
+     * Usage in console: dailyPuzzleManager.jumpToPuzzle(261)
+     */
+    jumpToPuzzle(id) {
+        const puzzle = this.puzzleBank.find(p => p.id === id);
+        if (!puzzle) {
+            console.error(`❌ Puzzle #${id} not found`);
+            return;
+        }
+        
+        this.currentPuzzle = puzzle;
+        this.loadPuzzleIntoGame(puzzle);
+        
+        // Hide home screen if visible
+        if (window.homeScreen) {
+            window.homeScreen.hide();
+        }
+        
+        // Render the puzzle
+        this.uiController.render({ animate: true });
+        
+        console.log(`✅ Jumped to puzzle #${id}`);
+    }
+    
+    /**
      * Load testing progress from localStorage
      */
     loadTestingProgress() {
