@@ -319,9 +319,11 @@ export function generateDiceForLevel(level) {
         dice.push({ type: 'color', value: color });
     }
     
-    // Separate operators from special sets (Universe, Null)
-    const regularOperators = config.operators.filter(op => !['UNIVERSE', 'NULL'].includes(op));
-    const specialSets = config.operators.filter(op => ['UNIVERSE', 'NULL'].includes(op));
+    // Separate regular operators from special cubes
+    // Regular operators: ∪, ∩, −, ′ (always 2 of these)
+    // Special cubes (Level 5+): U, ∅ (Level 5), plus =, ⊆ (Level 6+)
+    const regularOperators = config.operators.filter(op => !['UNIVERSE', 'NULL', 'EQUALS', 'SUBSET'].includes(op));
+    const specialSets = config.operators.filter(op => ['UNIVERSE', 'NULL', 'EQUALS', 'SUBSET'].includes(op));
     
     // Add regular operator dice (2 dice)
     // Levels 1-3: Always get exactly 2 operators (no duplicates)
@@ -351,7 +353,7 @@ export function generateDiceForLevel(level) {
         }
     }
     
-    // Level 5+: Add 2 special set dice (Universe and/or Null)
+    // Level 5+: Add 2 special cubes (U, ∅ in Level 5; U, ∅, =, ⊆ in Level 6+)
     if (numDice === 8 && specialSets.length > 0) {
         for (let i = 0; i < 2; i++) {
             const randomIndex = Math.floor(Math.random() * specialSets.length);
