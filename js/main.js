@@ -6,11 +6,10 @@ import { AppScaler } from './ui/AppScaler.js';
 import { HomeScreenManager } from './ui/HomeScreenManager.js';
 import DailyPuzzleManager from './DailyPuzzleManager.js';
 
-// Extract and log version from script tag
-const scriptTag = document.querySelector('script[src*="main.js"]');
-const version = scriptTag ? new URLSearchParams(scriptTag.src.split('?')[1]).get('v') : 'unknown';
+// Display version (hardcoded for console, cache busting uses timestamps)
+const VERSION = 'v4.16.0';
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-console.log('🎮 Ready, Set 2 - Version:', version);
+console.log('🎮 Ready, Set 2 - Version:', VERSION);
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
 // Initialize the game when DOM is ready
