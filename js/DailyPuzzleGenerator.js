@@ -15,12 +15,11 @@ import { generateCardConfig, generateDiceForLevel } from './levels.js';
 
 class DailyPuzzleGenerator {
     constructor() {
-        // Color options
-        this.COLORS = ['red', 'blue', 'green', 'gold'];
-        
-        // Operators
-        this.OPERATORS = ['∪', '∩', '−'];
-        this.RESTRICTIONS = ['=', '⊆'];
+        // UNUSED: These arrays are defined but never referenced
+        // Keeping commented out in case needed for future features
+        // this.COLORS = ['red', 'blue', 'green', 'gold'];
+        // this.OPERATORS = ['∪', '∩', '−'];
+        // this.RESTRICTIONS = ['=', '⊆'];
         
         // 8-cube solution templates
         // Format: { restriction, operator, setName, description }
@@ -317,49 +316,44 @@ class DailyPuzzleGenerator {
             }
         });
         
-        // ===== CATEGORY 4: Templates with GROUPING =====
-        // REMOVED: grouped-5+3 and 3+grouped-5 patterns (all had 5 color tokens)
-        // 
-        // Note: Valid grouped templates with 4 colors could be added here
-        // e.g., (color op color) restriction color′ + color op color′
-        // But for now focusing on simpler 4+4 and setName templates
-        
         console.log(`✅ Created ${templates.length} validated templates (2-operator max enforced)`);
         
         return templates;
     }
     
-    /**
-     * Generate a batch of puzzles for offline storage
-     * @param {number} count - Number of puzzles to generate
-     * @returns {Array} - Array of puzzle objects
-     */
-    generateBatch(count) {
-        console.log(`\n🎲 Generating batch of ${count} daily puzzles...`);
-        const puzzles = [];
-        const startTime = Date.now();
-        
-        for (let i = 0; i < count; i++) {
-            const puzzle = this.generatePuzzle();
-            if (puzzle) {
-                puzzles.push({
-                    id: i + 1,
-                    ...puzzle
-                });
-                console.log(`✅ Puzzle ${i + 1}/${count} generated (Difficulty: ${puzzle.difficulty.rating}, Goal: ${puzzle.goal})`);
-            } else {
-                console.warn(`⚠️ Puzzle ${i + 1}/${count} failed to generate after max attempts`);
-            }
-        }
-        
-        const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
-        console.log(`\n✅ Batch complete! Generated ${puzzles.length}/${count} puzzles in ${elapsed}s`);
-        
-        // Generate statistics
-        this.logBatchStatistics(puzzles);
-        
-        return puzzles;
-    }
+    // UNUSED: We use generateTestSet() instead for creating one puzzle per template
+    // Keeping commented out in case we want random generation in the future
+    // /**
+    //  * Generate a batch of puzzles for offline storage
+    //  * @param {number} count - Number of puzzles to generate
+    //  * @returns {Array} - Array of puzzle objects
+    //  */
+    // generateBatch(count) {
+    //     console.log(`\n🎲 Generating batch of ${count} daily puzzles...`);
+    //     const puzzles = [];
+    //     const startTime = Date.now();
+    //     
+    //     for (let i = 0; i < count; i++) {
+    //         const puzzle = this.generatePuzzle();
+    //         if (puzzle) {
+    //             puzzles.push({
+    //                 id: i + 1,
+    //                 ...puzzle
+    //             });
+    //             console.log(`✅ Puzzle ${i + 1}/${count} generated (Difficulty: ${puzzle.difficulty.rating}, Goal: ${puzzle.goal})`);
+    //         } else {
+    //             console.warn(`⚠️ Puzzle ${i + 1}/${count} failed to generate after max attempts`);
+    //         }
+    //     }
+    //     
+    //     const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+    //     console.log(`\n✅ Batch complete! Generated ${puzzles.length}/${count} puzzles in ${elapsed}s`);
+    //     
+    //     // Generate statistics
+    //     this.logBatchStatistics(puzzles);
+    //     
+    //     return puzzles;
+    // }
     
     /**
      * Generate one puzzle per template for comprehensive testing
@@ -510,121 +504,127 @@ class DailyPuzzleGenerator {
         console.log('\n');
     }
     
-    /**
-     * Export batch to JSON format (for offline storage)
-     * Solutions are stored in plain text for now - will obfuscate in Phase 2
-     */
-    exportBatch(puzzles) {
-        const exportData = {
-            version: '1.0.0',
-            generatedAt: new Date().toISOString(),
-            count: puzzles.length,
-            puzzles: puzzles.map(p => ({
-                id: p.id,
-                cards: p.cards,
-                dice: p.dice,
-                goal: p.goal,
-                difficulty: p.difficulty,
-                // 8-cube solution (for reference/validation, not shown to player)
-                generatedSolution: {
-                    topRow: p.solution.topRow,
-                    bottomRow: p.solution.bottomRow
-                },
-                // Shortest solution (for scoring/difficulty calculation)
-                shortestSolution: {
-                    cubeCount: p.shortestSolution.cubeCount,
-                    hasRestriction: p.shortestSolution.hasRestriction
-                }
-            }))
-        };
-        
-        return JSON.stringify(exportData, null, 2);
-    }
+    // UNUSED: Export is handled by Node.js script (regenerate-test-puzzles.mjs)
+    // Keeping commented out in case we need alternative export method
+    // /**
+    //  * Export batch to JSON format (for offline storage)
+    //  * Solutions are stored in plain text for now - will obfuscate in Phase 2
+    //  */
+    // exportBatch(puzzles) {
+    //     const exportData = {
+    //         version: '1.0.0',
+    //         generatedAt: new Date().toISOString(),
+    //         count: puzzles.length,
+    //         puzzles: puzzles.map(p => ({
+    //             id: p.id,
+    //             cards: p.cards,
+    //             dice: p.dice,
+    //             goal: p.goal,
+    //             difficulty: p.difficulty,
+    //             // 8-cube solution (for reference/validation, not shown to player)
+    //             generatedSolution: {
+    //                 topRow: p.solution.topRow,
+    //                 bottomRow: p.solution.bottomRow
+    //             },
+    //             // Shortest solution (for scoring/difficulty calculation)
+    //             shortestSolution: {
+    //                 cubeCount: p.shortestSolution.cubeCount,
+    //                 hasRestriction: p.shortestSolution.hasRestriction
+    //             }
+    //         }))
+    //     };
+    //     
+    //     return JSON.stringify(exportData, null, 2);
+    // }
     
-    /**
-     * Generate a single random puzzle
-     */
-    generatePuzzle() {
-        let attempts = 0;
-        const maxAttempts = 50;
-        
-        // Keep trying until we get a valid puzzle
-        while (attempts < maxAttempts) {
-            attempts++;
-            
-            // STEP 1: Generate valid dice using core game logic (Level 6+)
-            // This ensures: 4 colors (max 2 each) + 2 operators + 2 special cubes
-            const generatedDice = generateDiceForLevel(6);
-            
-            // STEP 2: Pick a random template
-            const template = this.pickRandomTemplate();
-            
-            // STEP 3: Instantiate the template using the generated dice
-            const solution = this.instantiateTemplate(template, generatedDice);
-            
-            // If instantiation failed (not enough dice for template), try again
-            if (!solution) {
-                continue;
-            }
-            
-            // STEP 4: Generate 8 random cards using existing game function
-            const cards = generateCardConfig(8);
-            
-            // STEP 5: Evaluate the solution against these cards
-            const matchingIndices = this.evaluateSolution(solution, cards);
-            
-            // The goal is the number of matching cards
-            const goal = matchingIndices.size;
-            
-            // Validate: we want 1-7 matching cards (matching regular game goal range)
-            // Exclude 0 (impossible) and 8 (too easy - everything matches)
-            if (goal === 0 || goal === 8 || goal > 8) {
-                continue; // Try again
-            }
-            
-            // STEP 6: Generate dice from the solution
-            // Now that instantiateTemplate() respects color constraints, we can
-            // safely parse the solution to get all dice (colors + operators + special)
-            const dice = this.generateDiceFromSolution(solution);
-            
-            // Find the shortest possible solution with these cards and dice
-            const shortestSolution = findShortestSolution(cards, dice, goal);
-            
-            // Calculate difficulty based on shortest solution
-            const difficulty = this.calculateDifficulty(shortestSolution);
-            
-            return {
-                cards: cards,
-                dice: dice, // Pre-generated dice - no need to regenerate at runtime
-                solution: solution, // The 8-cube solution we generated
-                goal: goal,
-                matchingCards: Array.from(matchingIndices),
-                difficulty: difficulty,
-                shortestSolution: shortestSolution, // The easiest way to solve it
-                template: template.pattern,
-                timestamp: Date.now()
-            };
-        }
-        
-        // Fallback: if we couldn't generate a valid puzzle, return a simple one
-        console.warn('⚠️ Failed to generate valid puzzle after', maxAttempts, 'attempts. Using fallback.');
-        return this.generateFallbackPuzzle();
-    }
+    // UNUSED: We use pre-generated puzzles (generateTestSet) instead of random generation
+    // Keeping commented out in case we want runtime puzzle generation in the future
+    // /**
+    //  * Generate a single random puzzle
+    //  */
+    // generatePuzzle() {
+    //     let attempts = 0;
+    //     const maxAttempts = 50;
+    //     
+    //     // Keep trying until we get a valid puzzle
+    //     while (attempts < maxAttempts) {
+    //         attempts++;
+    //         
+    //         // STEP 1: Generate valid dice using core game logic (Level 6+)
+    //         // This ensures: 4 colors (max 2 each) + 2 operators + 2 special cubes
+    //         const generatedDice = generateDiceForLevel(6);
+    //         
+    //         // STEP 2: Pick a random template
+    //         const template = this.pickRandomTemplate();
+    //         
+    //         // STEP 3: Instantiate the template using the generated dice
+    //         const solution = this.instantiateTemplate(template, generatedDice);
+    //         
+    //         // If instantiation failed (not enough dice for template), try again
+    //         if (!solution) {
+    //             continue;
+    //         }
+    //         
+    //         // STEP 4: Generate 8 random cards using existing game function
+    //         const cards = generateCardConfig(8);
+    //         
+    //         // STEP 5: Evaluate the solution against these cards
+    //         const matchingIndices = this.evaluateSolution(solution, cards);
+    //         
+    //         // The goal is the number of matching cards
+    //         const goal = matchingIndices.size;
+    //         
+    //         // Validate: we want 1-7 matching cards (matching regular game goal range)
+    //         // Exclude 0 (impossible) and 8 (too easy - everything matches)
+    //         if (goal === 0 || goal === 8 || goal > 8) {
+    //             continue; // Try again
+    //         }
+    //         
+    //         // STEP 6: Generate dice from the solution
+    //         // Now that instantiateTemplate() respects color constraints, we can
+    //         // safely parse the solution to get all dice (colors + operators + special)
+    //         const dice = this.generateDiceFromSolution(solution);
+    //         
+    //         // Find the shortest possible solution with these cards and dice
+    //         const shortestSolution = findShortestSolution(cards, dice, goal);
+    //         
+    //         // Calculate difficulty based on shortest solution
+    //         const difficulty = this.calculateDifficulty(shortestSolution);
+    //         
+    //         return {
+    //             cards: cards,
+    //             dice: dice, // Pre-generated dice - no need to regenerate at runtime
+    //             solution: solution, // The 8-cube solution we generated
+    //             goal: goal,
+    //             matchingCards: Array.from(matchingIndices),
+    //             difficulty: difficulty,
+    //             shortestSolution: shortestSolution, // The easiest way to solve it
+    //             template: template.pattern,
+    //             timestamp: Date.now()
+    //         };
+    //     }
+    //     
+    //     // Fallback: if we couldn't generate a valid puzzle, return a simple one
+    //     console.warn('⚠️ Failed to generate valid puzzle after', maxAttempts, 'attempts. Using fallback.');
+    //     return this.generateFallbackPuzzle();
+    // }
     
-    /**
-     * Pick a random template from the library
-     */
-    pickRandomTemplate() {
-        return this.TEMPLATES[Math.floor(Math.random() * this.TEMPLATES.length)];
-    }
+    // UNUSED: Only called by generatePuzzle() which is also commented out
+    // /**
+    //  * Pick a random template from the library
+    //  */
+    // pickRandomTemplate() {
+    //     return this.TEMPLATES[Math.floor(Math.random() * this.TEMPLATES.length)];
+    // }
     
-    /**
-     * No color mapping needed - we replace abstract types directly
-     * This method is kept for backwards compatibility but not used
-     */
-    createColorMapping(template) {
-        return {};
-    }
+    // UNUSED: Placeholder method never implemented
+    // /**
+    //  * No color mapping needed - we replace abstract types directly
+    //  * This method is kept for backwards compatibility but not used
+    //  */
+    // createColorMapping(template) {
+    //     return {};
+    // }
     
     /**
      * Instantiate a template using generated dice from generateDiceForLevel()
@@ -646,9 +646,11 @@ class DailyPuzzleGenerator {
         
         // Create pools for instantiation
         const availableColors = [...colorDice].map(d => d.value);
-        const availableOperators = [...operatorDice].map(d => d.value);
+        // UNUSED: Operators are baked into templates (e.g., "color ∪ color"), not replaced
+        // const availableOperators = [...operatorDice].map(d => d.value);
         const availableSetNames = specialDice.filter(d => ['U', '∅'].includes(d.value)).map(d => d.value);
-        const availableRestrictions = specialDice.filter(d => ['=', '⊆'].includes(d.value)).map(d => d.value);
+        // UNUSED: Restrictions are baked into templates (e.g., "color = color"), not replaced
+        // const availableRestrictions = specialDice.filter(d => ['=', '⊆'].includes(d.value)).map(d => d.value);
         
         // Track color usage ACROSS both rows (not per-row)
         // This ensures we don't use more of any color than we have in generatedDice
@@ -883,57 +885,59 @@ class DailyPuzzleGenerator {
     }
     
     
-    /**
-     * Generate a simple fallback puzzle when generation fails
-     */
-    generateFallbackPuzzle() {
-        const cards = [
-            { colors: ['red'] },
-            { colors: ['blue'] },
-            { colors: ['green'] },
-            { colors: ['gold'] },
-            { colors: ['red', 'blue'] },
-            { colors: ['green', 'gold'] },
-            { colors: ['red', 'green'] },
-            { colors: ['blue', 'gold'] }
-        ];
-        
-        const solution = {
-            topRow: "red ∪ blue = green ∪ gold",
-            bottomRow: "red ∪ green",
-            pattern: "fallback",
-            hasRestriction: true,
-            hasTwoRestrictions: false
-        };
-        
-        // Generate dice for the fallback puzzle
-        const dice = this.generateDiceFromSolution(solution);
-        
-        // Hardcoded shortest solution for the fallback (3 cubes: "red ∪ green")
-        const shortestSolution = {
-            cubeCount: 3,
-            hasRestriction: false,
-            restrictionDice: null,
-            setNameDice: [
-                { value: 'red', type: 'color', id: 'fallback-1', x: 0, y: 10 },
-                { value: '∪', type: 'operator', id: 'fallback-2', x: 100, y: 10 },
-                { value: 'green', type: 'color', id: 'fallback-3', x: 200, y: 10 }
-            ],
-            totalCubes: 3
-        };
-        
-        return {
-            cards: cards,
-            dice: dice, // Pre-generated dice
-            solution: solution,
-            goal: 4, // cards with red or green match (after restriction)
-            matchingCards: [0, 2, 4, 6],
-            difficulty: 'beginner',
-            shortestSolution: shortestSolution,
-            template: 'fallback',
-            timestamp: Date.now()
-        };
-    }
+    // UNUSED: Only called by generatePuzzle() which is commented out
+    // Keeping as emergency fallback if needed
+    // /**
+    //  * Generate a simple fallback puzzle when generation fails
+    //  */
+    // generateFallbackPuzzle() {
+    //     const cards = [
+    //         { colors: ['red'] },
+    //         { colors: ['blue'] },
+    //         { colors: ['green'] },
+    //         { colors: ['gold'] },
+    //         { colors: ['red', 'blue'] },
+    //         { colors: ['green', 'gold'] },
+    //         { colors: ['red', 'green'] },
+    //         { colors: ['blue', 'gold'] }
+    //     ];
+    //     
+    //     const solution = {
+    //         topRow: "red ∪ blue = green ∪ gold",
+    //         bottomRow: "red ∪ green",
+    //         pattern: "fallback",
+    //         hasRestriction: true
+    //         // UNUSED property: hasTwoRestrictions: false
+    //     };
+    //     
+    //     // Generate dice for the fallback puzzle
+    //     const dice = this.generateDiceFromSolution(solution);
+    //     
+    //     // Hardcoded shortest solution for the fallback (3 cubes: "red ∪ green")
+    //     const shortestSolution = {
+    //         cubeCount: 3,
+    //         hasRestriction: false,
+    //         restrictionDice: null,
+    //         setNameDice: [
+    //             { value: 'red', type: 'color', id: 'fallback-1', x: 0, y: 10 },
+    //             { value: '∪', type: 'operator', id: 'fallback-2', x: 100, y: 10 },
+    //             { value: 'green', type: 'color', id: 'fallback-3', x: 200, y: 10 }
+    //         ],
+    //         totalCubes: 3
+    //     };
+    //     
+    //     return {
+    //         cards: cards,
+    //         dice: dice, // Pre-generated dice
+    //         solution: solution,
+    //         goal: 4, // cards with red or green match (after restriction)
+    //         matchingCards: [0, 2, 4, 6],
+    //         difficulty: 'beginner',
+    //         shortestSolution: shortestSolution,
+    //         template: 'fallback',
+    //         timestamp: Date.now()
+    //     };
+    // }
     
     /**
      * Generate dice from a solution template
