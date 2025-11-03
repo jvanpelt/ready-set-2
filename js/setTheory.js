@@ -598,6 +598,7 @@ const RESTRICTION_PATTERNS = [
     "color,operator,color,prime,restriction,setName",
     "color,restriction,color,prime,operator,setName",
     // seven cubes
+    "color,operator,color,restriction,color,operator,color",
     "color,operator,color,restriction,color,operator,setName",
     "color,operator,color,restriction,setName,operator,color",
     "color,operator,setName,restriction,color,operator,color",
