@@ -85,7 +85,6 @@ export class UIController {
         this.resetBtn = document.getElementById('reset-btn');
         this.passBtn = document.getElementById('pass-btn');
         this.menuBtn = document.getElementById('menu-btn');
-        this.nextPuzzleBtn = document.getElementById('next-puzzle-btn');
         
         // Settings
         this.solutionHelperToggle = document.getElementById('solution-helper-toggle');
@@ -123,7 +122,6 @@ export class UIController {
         this.goBtn.addEventListener('click', () => this.handleGo());
         this.resetBtn.addEventListener('click', () => this.handleReset());
         this.passBtn.addEventListener('click', () => this.handlePass());
-        this.nextPuzzleBtn.addEventListener('click', () => this.handleNextPuzzle());
         
         this.menuBtn.addEventListener('click', () => {
             // DEBUG: console.log('📋 MENU button clicked');
@@ -267,7 +265,22 @@ export class UIController {
         
         if (result.valid) {
             this.playSuccessAnimation(result.matchingCards);
-            // Show result modal, then animate cards, dice, and solution dice out simultaneously
+            
+            // In daily puzzle test mode, automatically load next puzzle after success
+            if (this.game.mode === 'daily' && window.dailyPuzzleManager && window.dailyPuzzleManager.testMode) {
+                console.log('✅ Solution correct! Loading next test puzzle...');
+                // Quick animation out
+                await Promise.all([
+                    this.renderer.animateCardsOut(),
+                    this.renderer.animateDiceOut(),
+                    this.renderer.animateSolutionDiceOut()
+                ]);
+                // Load next puzzle
+                window.dailyPuzzleManager.loadNextTestPuzzle();
+                return;
+            }
+            
+            // Normal game mode: show result modal and wait for user
             this.modals.showResult('Success!', result.message, result.points);
             await Promise.all([
                 this.renderer.animateCardsOut(),
@@ -405,18 +418,7 @@ export class UIController {
         this.clearSolutionHelper();
     }
     
-    handleNextPuzzle() {
-        console.log('⏭️ Next Puzzle button clicked');
-        
-        // Only available in daily puzzle test mode
-        if (this.game.mode !== 'daily' || !window.dailyPuzzleManager) {
-            console.warn('Next Puzzle only available in daily puzzle test mode');
-            return;
-        }
-        
-        // Load next puzzle
-        window.dailyPuzzleManager.loadNextTestPuzzle();
-    }
+    // Next puzzle button removed - Go button now auto-loads next puzzle in test mode
     
     playSuccessAnimation(matchingCards) {
         matchingCards.forEach(index => {
@@ -810,12 +812,7 @@ export class UIController {
             this.puzzleIdDisplay.style.display = 'none';
         }
         
-        // Show "Next Puzzle" button in test mode
-        if (this.game.mode === 'daily' && window.dailyPuzzleManager && window.dailyPuzzleManager.testMode) {
-            this.nextPuzzleBtn.style.display = 'inline-block';
-        } else {
-            this.nextPuzzleBtn.style.display = 'none';
-        }
+        // Next button removed - Go button now auto-loads next puzzle in test mode
         
         // Update status bar
         this.renderer.updateStatusBar(
