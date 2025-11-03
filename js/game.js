@@ -319,23 +319,31 @@ export class Game {
     }
     
     validateSolution() {
+        console.log('🎯 ===== VALIDATING SOLUTION =====');
+        
         // Sort dice by X position (left-to-right) before validation
         const restrictionRow = (this.solutions[0] || []).sort((a, b) => a.x - b.x);
         const setNameRow = (this.solutions[1] || []).sort((a, b) => a.x - b.x);
         
+        console.log('  Row 0:', restrictionRow.map(d => d.value).join(' ') || '(empty)');
+        console.log('  Row 1:', setNameRow.map(d => d.value).join(' ') || '(empty)');
+        
         // Check if any row has dice
         if (restrictionRow.length === 0 && setNameRow.length === 0) {
+            console.log('❌ No dice in solution');
             return { valid: false, message: 'Add dice to create a solution!' };
         }
         
         // Check for restrictions in both rows (not allowed)
         if (hasRestriction(restrictionRow) && hasRestriction(setNameRow)) {
+            console.log('❌ Both rows have restrictions');
             return { valid: false, message: "You can't have 2 restrictions!" };
         }
         
         // Check for set names in both rows (not allowed)
         if (restrictionRow.length > 0 && !hasRestriction(restrictionRow) && 
             setNameRow.length > 0 && !hasRestriction(setNameRow)) {
+            console.log('❌ Both rows have set names (no restriction)');
             return { valid: false, message: "You can't have 2 set names!" };
         }
         
@@ -500,22 +508,34 @@ export class Game {
     }
     
     submitSolution() {
-        const result = this.validateSolution();
+        console.log('🚀 submitSolution() called');
         
-        if (result.valid) {
-            // Stop timer on successful submission
-            this.stopTimer();
+        try {
+            const result = this.validateSolution();
+            console.log('📋 Validation result:', result.valid ? '✅ VALID' : '❌ INVALID', '-', result.message);
             
-            // Apply restriction flips if present
-            if (result.cardsToFlip && result.cardsToFlip.length > 0) {
-                this.flipCardsByRestriction(result.cardsToFlip);
+            if (result.valid) {
+                // Stop timer on successful submission
+                this.stopTimer();
+                
+                // Apply restriction flips if present
+                if (result.cardsToFlip && result.cardsToFlip.length > 0) {
+                    this.flipCardsByRestriction(result.cardsToFlip);
+                }
+                
+                this.score += result.points;
+                this.saveState();
             }
             
-            this.score += result.points;
-            this.saveState();
+            return result;
+        } catch (error) {
+            console.error('💥 ERROR in submitSolution():', error);
+            console.error('Stack trace:', error.stack);
+            return {
+                valid: false,
+                message: 'An error occurred: ' + error.message
+            };
         }
-        
-        return result;
     }
     
     pass() {
