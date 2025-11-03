@@ -54,7 +54,7 @@ export class UIRenderer {
             cardsContainer.appendChild(cardEl);
         });
 
-        console.log('🎨 renderCards - Cards:', cards);
+        // console.log('🎨 renderCards - Cards:', cards);
         
         // Animate cards in after rendering (only if shouldAnimate is true)
         if (this.shouldAnimate) {

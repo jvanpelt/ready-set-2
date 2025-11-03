@@ -780,6 +780,15 @@ export class UIController {
     }
     
     render(options = {}) {
+        // Track render frequency for debugging
+        if (!window._renderCount) window._renderCount = 0;
+        if (!window._lastRenderTime) window._lastRenderTime = Date.now();
+        window._renderCount++;
+        const now = Date.now();
+        const timeSinceLastRender = now - window._lastRenderTime;
+        console.log(`🎨 RENDER #${window._renderCount} (${timeSinceLastRender}ms since last render)`);
+        window._lastRenderTime = now;
+        
         const state = this.game.getState();
         
         // Enable entrance animations if requested
