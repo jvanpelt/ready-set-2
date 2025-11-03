@@ -25,18 +25,18 @@ export function evaluateExpression(expression, cards) {
         return new Set();
     }
     
-    // console.log('=== EVALUATING EXPRESSION ===');
-    // console.log('Dice (left-to-right by X):', 
-    //     [...expression].sort((a, b) => a.x - b.x).map(d => d.value).join(' '));
+    console.log('=== EVALUATING EXPRESSION ===');
+    console.log('Dice (left-to-right by X):', 
+        [...expression].sort((a, b) => a.x - b.x).map(d => d.value).join(' '));
     
     // Detect groups based on physical proximity
     const groups = detectGroups(expression);
-    // console.log('Detected groups:', groups.length);
+    console.log('Detected groups:', groups.length);
     
     // Evaluate valid groups first, then the remaining expression
     const result = evaluateWithGroups(expression, groups, cards);
-    // console.log('Result: Found', result.size, 'matching cards');
-    // console.log('=============================\n');
+    console.log('Result: Found', result.size, 'matching cards');
+    console.log('=============================\n');
     
     return result;
 }
@@ -125,11 +125,11 @@ function evaluateWithGroups(dice, groups, cards) {
     // Filter to only valid groups
     const validGroups = groups.filter(group => isValidGroup(group, dice));
     
-    // console.log('Valid groups:', validGroups.length, 'of', groups.length);
+    console.log('Valid groups:', validGroups.length, 'of', groups.length);
     
     // If no valid groups, evaluate left-to-right by X position
     if (validGroups.length === 0) {
-        // console.log('No valid groups - evaluating left-to-right');
+        console.log('No valid groups - evaluating left-to-right');
         // Sort dice by X position for left-to-right evaluation
         const sortedDice = dice
             .map((die, index) => ({ die, index }))
@@ -138,7 +138,7 @@ function evaluateWithGroups(dice, groups, cards) {
         return evaluate(tokens, cards);
     }
     
-    // console.log('Evaluating with groups...');
+    console.log('Evaluating with groups...');
 
     
     // Create a mapping of which group each die belongs to
@@ -731,7 +731,7 @@ export function isValidRestriction(expression) {
 export function evaluateRestriction(restriction, cards) {
     if (!restriction || restriction.length === 0) return [];
     
-    // console.log('=== EVALUATING RESTRICTION ===');
+    console.log('=== EVALUATING RESTRICTION ===');
     
     // Find the restriction operator
     const restrictionDie = restriction.find(die => die.value === '=' || die.value === '⊆');
@@ -745,8 +745,8 @@ export function evaluateRestriction(restriction, cards) {
     const leftCards = evaluateExpression(leftSide, cards);
     const rightCards = evaluateExpression(rightSide, cards);
     
-    // console.log(`Left side (${leftSide.map(d => d.value).join(' ')}):`, Array.from(leftCards));
-    // console.log(`Right side (${rightSide.map(d => d.value).join(' ')}):`, Array.from(rightCards));
+    console.log(`Left side (${leftSide.map(d => d.value).join(' ')}):`, Array.from(leftCards));
+    console.log(`Right side (${rightSide.map(d => d.value).join(' ')}):`, Array.from(rightCards));
     
     let cardsToFlip = [];
     
@@ -754,18 +754,18 @@ export function evaluateRestriction(restriction, cards) {
         // Subset: All cards in left must be in right
         // Flip any cards in left that are NOT in right
         cardsToFlip = Array.from(leftCards).filter(cardIndex => !rightCards.has(cardIndex));
-        // console.log(`Subset restriction: Flipping ${cardsToFlip.length} cards from left that aren't in right`);
+        console.log(`Subset restriction: Flipping ${cardsToFlip.length} cards from left that aren't in right`);
     } else if (restrictionDie.value === '=') {
         // Equals: Left and right must be identical
         // Flip any cards that are in one but not the other
         const leftOnly = Array.from(leftCards).filter(cardIndex => !rightCards.has(cardIndex));
         const rightOnly = Array.from(rightCards).filter(cardIndex => !leftCards.has(cardIndex));
         cardsToFlip = [...leftOnly, ...rightOnly];
-        // console.log(`Equals restriction: Flipping ${cardsToFlip.length} cards (${leftOnly.length} left-only + ${rightOnly.length} right-only)`);
+        console.log(`Equals restriction: Flipping ${cardsToFlip.length} cards (${leftOnly.length} left-only + ${rightOnly.length} right-only)`);
     }
     
-    // console.log('Cards to flip:', cardsToFlip);
-    // console.log('==============================\n');
+    console.log('Cards to flip:', cardsToFlip);
+    console.log('==============================\n');
     
     return cardsToFlip;
 }
