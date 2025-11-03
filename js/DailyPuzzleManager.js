@@ -38,8 +38,8 @@ class DailyPuzzleManager {
      */
     async loadPuzzleBank() {
         try {
-            // Load from test set if in systematic test mode
-            const filename = this.testMode === 'systematic' 
+            // Load from test set if in any test mode
+            const filename = this.testMode 
                 ? 'data/daily-puzzles-test.json' 
                 : 'data/daily-puzzles.json';
             
