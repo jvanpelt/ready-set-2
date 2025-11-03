@@ -12,7 +12,9 @@
     <title>Ready, Set 2 - Set Theory Puzzle Game</title>
     <!-- Cache busting: Generate unique timestamp on each page load -->
     <script>
-        const cacheBust = Date.now();
+        // Make cacheBust globally accessible
+        window.cacheBust = Date.now();
+        
         // Load stylesheets dynamically with cache bust
         const styles = [
             'css/styles.css',
@@ -21,7 +23,7 @@
         styles.forEach(href => {
             const link = document.createElement('link');
             link.rel = 'stylesheet';
-            link.href = `${href}?v=${cacheBust}`;
+            link.href = `${href}?v=${window.cacheBust}`;
             document.head.appendChild(link);
         });
     </script>
@@ -371,20 +373,11 @@
         <!-- GSAP Animation Library -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
         
-        <!-- Load game scripts with cache busting -->
+        <!-- Daily Puzzle System - write script tags with cache busting -->
         <script>
-            // Use the same cacheBust value from head
-            const scripts = [
-                'js/DailyPuzzleGenerator.js',
-                'js/DailyPuzzleManager.js',
-                'js/main.js'
-            ];
-            scripts.forEach(src => {
-                const script = document.createElement('script');
-                script.type = 'module';
-                script.src = `${src}?v=${cacheBust}`;
-                document.body.appendChild(script);
-            });
+            document.write('<script type="module" src="js/DailyPuzzleGenerator.js?v=' + window.cacheBust + '"><\/script>');
+            document.write('<script type="module" src="js/DailyPuzzleManager.js?v=' + window.cacheBust + '"><\/script>');
+            document.write('<script type="module" src="js/main.js?v=' + window.cacheBust + '"><\/script>');
         </script>
 </body>
 </html>
