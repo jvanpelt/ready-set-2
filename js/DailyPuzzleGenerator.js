@@ -403,8 +403,8 @@ class DailyPuzzleGenerator {
                 
                 // Keep if goal is valid (1-7)
                 if (goal >= 1 && goal <= 7) {
-                    // Create dice that match the solution while respecting color constraints
-                    const dice = this.createValidDiceSet(generatedDice, solution);
+                    // Generate dice from the solution (now that solutions respect color constraints)
+                    const dice = this.generateDiceFromSolution(solution);
                     
                     // For test puzzles, use a simple difficulty based on cube count
                     // (We're testing templates, not optimizing for difficulty)
@@ -582,10 +582,10 @@ class DailyPuzzleGenerator {
                 continue; // Try again
             }
             
-            // STEP 6: Create dice that match the solution while respecting color constraints
-            // We take the COLOR dice from generatedDice (respects max-2-per-color)
-            // But we take the OPERATORS/SPECIAL from the solution (ensures solvability)
-            const dice = this.createValidDiceSet(generatedDice, solution);
+            // STEP 6: Generate dice from the solution
+            // Now that instantiateTemplate() respects color constraints, we can
+            // safely parse the solution to get all dice (colors + operators + special)
+            const dice = this.generateDiceFromSolution(solution);
             
             // Find the shortest possible solution with these cards and dice
             const shortestSolution = findShortestSolution(cards, dice, goal);
@@ -936,88 +936,11 @@ class DailyPuzzleGenerator {
     }
     
     /**
-     * Create a valid dice set by:
-     * - Taking COLOR cubes from generatedDice (respects 4-color, max-2-per-color rule)
-     * - Taking OPERATOR/SPECIAL cubes from the solution (ensures puzzle is solvable)
+     * Generate dice from a solution template
      * 
-     * NOTE: After fixing instantiateTemplate to track colors across both rows,
-     * the solution now respects color constraints. However, templates have baked-in
-     * operators (∪, ∩, −, ′) that may differ from what generateDiceForLevel() randomly
-     * created. So we still need to extract operators from the solution to ensure
-     * the puzzle is solvable.
-     */
-    createValidDiceSet(generatedDice, solution) {
-        // Extract color dice from generated set (these respect all constraints)
-        const colorDice = generatedDice.filter(d => d.type === 'color');
-        
-        // Parse solution to get operators and special cubes needed
-        let expr = '';
-        if (solution.topRow) expr += solution.topRow + ' ';
-        if (solution.bottomRow) expr += solution.bottomRow;
-        expr = expr.trim();
-        
-        // Extract all tokens from solution
-        let tokens = expr.split(/\s+/).map(t => t.replace(/[()]/g, ''));
-        
-        // Split tokens that have prime attached (e.g., "gold′" → ["gold", "′"])
-        const finalTokens = [];
-        tokens.forEach(token => {
-            if (token.includes('′')) {
-                const parts = token.split('′');
-                parts.forEach((part, i) => {
-                    if (part) finalTokens.push(part);
-                    if (i < parts.length - 1) finalTokens.push('′');
-                });
-            } else if (token) {
-                finalTokens.push(token);
-            }
-        });
-        
-        // Count non-color tokens (operators, restrictions, set constants)
-        const nonColorCounts = {};
-        finalTokens.forEach(token => {
-            // Skip color tokens - we already have those from generatedDice
-            if (!['red', 'blue', 'green', 'gold'].includes(token)) {
-                nonColorCounts[token] = (nonColorCounts[token] || 0) + 1;
-            }
-        });
-        
-        // Create non-color dice from solution
-        const nonColorDice = [];
-        for (const [token, count] of Object.entries(nonColorCounts)) {
-            for (let i = 0; i < count; i++) {
-                let dieType = 'operator';
-                
-                if (['=', '⊆'].includes(token)) {
-                    dieType = 'restriction';
-                } else if (['U', '∅'].includes(token)) {
-                    dieType = 'set-constant';
-                } else if (['∪', '∩', '−', '′'].includes(token)) {
-                    dieType = 'operator';
-                }
-                
-                nonColorDice.push({ 
-                    type: dieType,
-                    value: token
-                });
-            }
-        }
-        
-        // Combine: color dice from generatedDice + operators/special from solution
-        const dice = [...colorDice, ...nonColorDice];
-        
-        // Validate we have exactly 8 dice
-        if (dice.length !== 8) {
-            console.warn(`⚠️ createValidDiceSet: Expected 8 dice, got ${dice.length}`);
-        }
-        
-        return dice;
-    }
-    
-    /**
-     * OLD METHOD: Generate dice from a solution template
-     * DEPRECATED: Use createValidDiceSet() instead
-     * This was miscounting colors and violating the max-2-per-color constraint
+     * This parses the solution string and creates the 8 dice that the player will use.
+     * Works correctly because instantiateTemplate() now ensures solutions respect
+     * the max-2-per-color constraint.
      */
     generateDiceFromSolution(solution) {
         const dice = [];
