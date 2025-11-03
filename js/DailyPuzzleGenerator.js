@@ -650,6 +650,13 @@ class DailyPuzzleGenerator {
         const availableSetNames = specialDice.filter(d => ['U', '∅'].includes(d.value)).map(d => d.value);
         const availableRestrictions = specialDice.filter(d => ['=', '⊆'].includes(d.value)).map(d => d.value);
         
+        // Track color usage ACROSS both rows (not per-row)
+        // This ensures we don't use more of any color than we have in generatedDice
+        const colorUsage = {};
+        availableColors.forEach(c => {
+            colorUsage[c] = (colorUsage[c] || 0) + 1;
+        });
+        
         // Helper to replace abstract types with actual dice values
         // Note: Operators (∪, ∩, −, ′) and restrictions (=, ⊆) are already baked into templates
         // We only need to replace "color" and "setName" placeholders
@@ -658,12 +665,6 @@ class DailyPuzzleGenerator {
             if (!expr) return null;
             
             let result = expr;
-            
-            // Track color usage to respect generated dice limits
-            const colorUsage = {};
-            availableColors.forEach(c => {
-                colorUsage[c] = (colorUsage[c] || 0) + 1;
-            });
             
             // Replace each "color" with an available color from generated dice
             while (result.includes('color')) {
@@ -678,7 +679,7 @@ class DailyPuzzleGenerator {
                 const randomColor = usableColors[Math.floor(Math.random() * usableColors.length)];
                 result = result.replace('color', randomColor);
                 
-                // Decrement usage count
+                // Decrement usage count (shared across both rows)
                 colorUsage[randomColor]--;
             }
             
@@ -938,6 +939,12 @@ class DailyPuzzleGenerator {
      * Create a valid dice set by:
      * - Taking COLOR cubes from generatedDice (respects 4-color, max-2-per-color rule)
      * - Taking OPERATOR/SPECIAL cubes from the solution (ensures puzzle is solvable)
+     * 
+     * NOTE: After fixing instantiateTemplate to track colors across both rows,
+     * the solution now respects color constraints. However, templates have baked-in
+     * operators (∪, ∩, −, ′) that may differ from what generateDiceForLevel() randomly
+     * created. So we still need to extract operators from the solution to ensure
+     * the puzzle is solvable.
      */
     createValidDiceSet(generatedDice, solution) {
         // Extract color dice from generated set (these respect all constraints)
