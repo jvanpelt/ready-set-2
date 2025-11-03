@@ -403,8 +403,9 @@ class DailyPuzzleGenerator {
                 
                 // Keep if goal is valid (1-7)
                 if (goal >= 1 && goal <= 7) {
-                    // Generate dice from solution
-                    const dice = this.generateDiceFromSolution(solution);
+                    // Use the original generated dice (NOT generateDiceFromSolution)
+                    // This ensures we respect the 4-color, max-2-per-color constraint
+                    const dice = generatedDice;
                     
                     // For test puzzles, use a simple difficulty based on cube count
                     // (We're testing templates, not optimizing for difficulty)
@@ -582,8 +583,9 @@ class DailyPuzzleGenerator {
                 continue; // Try again
             }
             
-            // STEP 6: Generate dice from the 8-cube solution
-            const dice = this.generateDiceFromSolution(solution);
+            // STEP 6: Use the original generated dice (NOT generateDiceFromSolution)
+            // This ensures we respect the 4-color, max-2-per-color constraint
+            const dice = generatedDice;
             
             // Find the shortest possible solution with these cards and dice
             const shortestSolution = findShortestSolution(cards, dice, goal);
