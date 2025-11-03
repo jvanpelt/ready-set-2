@@ -602,7 +602,24 @@ const RESTRICTION_PATTERNS = [
     "color,operator,color,restriction,setName,operator,color",
     "color,operator,setName,restriction,color,operator,color",
     "setName,operator,color,restriction,color,operator,color",
-    "color,operator,color,restriction,setName,operator,color"
+    "color,operator,color,restriction,setName,operator,color",
+    // seven cubes - left side is simple (color or setName)
+    "setName,restriction,color,operator,color,operator,color",
+    "color,restriction,color,operator,color,operator,color",
+    "setName,restriction,color,operator,color,operator,setName",
+    "color,restriction,color,operator,color,operator,setName",
+    "setName,restriction,setName,operator,color,operator,color",
+    "color,restriction,setName,operator,color,operator,color",
+    "setName,restriction,color,operator,setName,operator,color",
+    "color,restriction,color,operator,setName,operator,color",
+    "setName,restriction,setName,operator,setName,operator,color",
+    "color,restriction,setName,operator,setName,operator,color",
+    "setName,restriction,color,operator,setName,operator,setName",
+    "color,restriction,color,operator,setName,operator,setName",
+    "setName,restriction,setName,operator,color,operator,setName",
+    "color,restriction,setName,operator,color,operator,setName",
+    "setName,restriction,setName,operator,setName,operator,setName",
+    "color,restriction,setName,operator,setName,operator,setName"
 ];
 
 /**
