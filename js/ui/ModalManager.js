@@ -16,6 +16,16 @@ export class ModalManager {
         this.resultMessage = document.getElementById('result-message');
         this.resultScore = document.getElementById('result-score');
         
+        // Daily Puzzle Result
+        this.dailyPuzzleResultModal = document.getElementById('daily-puzzle-result-modal');
+        this.dailyPuzzleNumber = document.getElementById('daily-puzzle-number');
+        this.dailyPuzzleScore = document.getElementById('daily-puzzle-score');
+        this.dailyPuzzleCubeCount = document.getElementById('daily-puzzle-cube-count');
+        this.dailyPuzzleEmoji = document.getElementById('daily-puzzle-emoji');
+        this.dailyPuzzleShareBtn = document.getElementById('daily-puzzle-share-btn');
+        this.dailyPuzzleDoneBtn = document.getElementById('daily-puzzle-done-btn');
+        this.shareToast = document.getElementById('share-toast');
+        
         // Menu
         this.menuModal = document.getElementById('menu-modal');
         this.menuMainView = document.getElementById('menu-main-view');
@@ -386,5 +396,140 @@ export class ModalManager {
         return new Promise((resolve) => {
             this.showInterstitial(level, resolve);
         });
+    }
+    
+    /**
+     * Show daily puzzle result modal
+     * @param {Object} result - Result object with puzzleId, score, cubes, solution
+     * @param {Function} onDone - Callback when user clicks Done
+     */
+    showDailyPuzzleResult(result, onDone) {
+        console.log('🎉 Showing daily puzzle result:', result);
+        
+        // Populate modal
+        this.dailyPuzzleNumber.textContent = result.puzzleId;
+        this.dailyPuzzleScore.textContent = result.score;
+        this.dailyPuzzleCubeCount.textContent = result.cubes;
+        this.dailyPuzzleEmoji.textContent = this.generateEmojiSolution(result.solution);
+        
+        // Store result for sharing
+        this.currentDailyResult = result;
+        
+        // Show modal
+        this.dailyPuzzleResultModal.classList.remove('hidden');
+        
+        // Handle Share button
+        this.dailyPuzzleShareBtn.onclick = () => this.shareDailyPuzzleResult();
+        
+        // Handle Done button
+        this.dailyPuzzleDoneBtn.onclick = () => {
+            this.hideDailyPuzzleResult();
+            if (onDone) onDone();
+        };
+    }
+    
+    /**
+     * Hide daily puzzle result modal
+     */
+    hideDailyPuzzleResult() {
+        this.dailyPuzzleResultModal.classList.add('hidden');
+        this.currentDailyResult = null;
+    }
+    
+    /**
+     * Generate emoji representation of solution
+     * @param {Array} solution - Array of dice in solution rows
+     * @returns {string} Emoji string
+     */
+    generateEmojiSolution(solution) {
+        const emojiMap = {
+            'red': '🔴',
+            'blue': '🔵',
+            'green': '🟢',
+            'gold': '🟡',
+            '∪': '➕',
+            '∩': '✖️',
+            '−': '➖',
+            '′': '❌',
+            'U': '🌐',
+            '∅': '⭕',
+            '=': '⚖️',
+            '⊆': '⬅️'
+        };
+        
+        const topRow = solution.topRow || [];
+        const bottomRow = solution.bottomRow || [];
+        
+        let emoji = '';
+        
+        // Top row (restriction)
+        if (topRow.length > 0) {
+            emoji += topRow.map(die => emojiMap[die.value] || die.value).join('');
+            emoji += '\n';
+        }
+        
+        // Bottom row (set name)
+        if (bottomRow.length > 0) {
+            emoji += bottomRow.map(die => emojiMap[die.value] || die.value).join('');
+        }
+        
+        return emoji;
+    }
+    
+    /**
+     * Share daily puzzle result (uses native share API on mobile, clipboard on desktop)
+     */
+    async shareDailyPuzzleResult() {
+        if (!this.currentDailyResult) return;
+        
+        const result = this.currentDailyResult;
+        const emoji = this.dailyPuzzleEmoji.textContent;
+        
+        // Format share text
+        const shareText = `Ready, Set 2 🎲
+Daily Puzzle #${result.puzzleId}
+
+Score: ${result.score} (${result.cubes} cubes)
+
+${emoji}
+
+Play: https://jvanpelt.github.io/ready-set-2`;
+        
+        // Try native share API first (mobile)
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: 'Ready, Set 2 - Daily Puzzle',
+                    text: shareText
+                });
+                console.log('📤 Shared via native API');
+                return;
+            } catch (err) {
+                // User cancelled or error occurred
+                console.log('Share cancelled or failed:', err);
+            }
+        }
+        
+        // Fallback to clipboard (desktop)
+        try {
+            await navigator.clipboard.writeText(shareText);
+            this.showShareToast();
+            console.log('📋 Copied to clipboard');
+        } catch (err) {
+            console.error('Failed to copy to clipboard:', err);
+            alert('Failed to copy to clipboard. Please try again.');
+        }
+    }
+    
+    /**
+     * Show "Copied!" toast message
+     */
+    showShareToast() {
+        this.shareToast.classList.remove('hidden');
+        
+        // Hide after animation completes
+        setTimeout(() => {
+            this.shareToast.classList.add('hidden');
+        }, 2000);
     }
 }

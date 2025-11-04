@@ -100,6 +100,24 @@
         </div>
     </div>
 
+    <!-- Daily Puzzle Result Modal -->
+    <div id="daily-puzzle-result-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>🎉 Puzzle Complete!</h2>
+            <div id="daily-puzzle-result-info" class="daily-puzzle-result">
+                <div class="puzzle-number">Daily Puzzle #<span id="daily-puzzle-number">1</span></div>
+                <div class="puzzle-score">Score: <span id="daily-puzzle-score">0</span></div>
+                <div class="puzzle-cubes"><span id="daily-puzzle-cube-count">0</span> cubes used</div>
+                <div id="daily-puzzle-emoji" class="puzzle-emoji"></div>
+            </div>
+            <div class="daily-puzzle-actions">
+                <button id="daily-puzzle-share-btn" class="btn btn-primary">📤 Share Result</button>
+                <button id="daily-puzzle-done-btn" class="btn btn-success">Done</button>
+            </div>
+            <div id="share-toast" class="share-toast hidden">✓ Copied to clipboard!</div>
+        </div>
+    </div>
+
     <!-- Menu Modal -->
     <div id="menu-modal" class="modal hidden">
         <div class="modal-content">

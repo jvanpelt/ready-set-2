@@ -266,17 +266,45 @@ export class UIController {
         if (result.valid) {
             this.playSuccessAnimation(result.matchingCards);
             
-            // In daily puzzle test mode, automatically load next puzzle after success
-            if (this.game.mode === 'daily' && window.dailyPuzzleManager && window.dailyPuzzleManager.testMode) {
-                console.log('✅ Solution correct! Loading next test puzzle...');
-                // Quick animation out
+            // Daily puzzle mode: show result modal with share option
+            if (this.game.mode === 'daily' && window.dailyPuzzleManager) {
+                console.log('✅ Daily puzzle solved!');
+                
+                // Animate out
                 await Promise.all([
                     this.renderer.animateCardsOut(),
                     this.renderer.animateDiceOut(),
                     this.renderer.animateSolutionDiceOut()
                 ]);
-                // Load next puzzle
-                window.dailyPuzzleManager.loadNextTestPuzzle();
+                
+                // Count cubes used in solution
+                const cubeCount = (this.game.solutions[0] || []).length + (this.game.solutions[1] || []).length;
+                
+                // Prepare result data
+                const dailyResult = {
+                    puzzleId: this.game.dailyPuzzle.puzzleId,
+                    score: result.points,
+                    cubes: cubeCount,
+                    solution: {
+                        topRow: this.game.solutions[0] || [],
+                        bottomRow: this.game.solutions[1] || []
+                    }
+                };
+                
+                // Show daily puzzle result modal
+                this.modals.showDailyPuzzleResult(dailyResult, () => {
+                    // After user clicks Done
+                    if (window.dailyPuzzleManager.testMode) {
+                        // In test mode, load next puzzle
+                        window.dailyPuzzleManager.loadNextTestPuzzle();
+                    } else {
+                        // In production, return to home
+                        if (window.homeScreen) {
+                            window.homeScreen.show();
+                        }
+                    }
+                });
+                
                 return;
             }
             
