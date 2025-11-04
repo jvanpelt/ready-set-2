@@ -437,40 +437,67 @@ export class ModalManager {
     }
     
     /**
-     * Generate emoji representation of solution
+     * Generate emoji representation of solution (abstracted to avoid spoilers)
+     * Shows cube types used but not structure/order
      * @param {Array} solution - Array of dice in solution rows
      * @returns {string} Emoji string
      */
     generateEmojiSolution(solution) {
-        const emojiMap = {
-            'red': '🔴',
-            'blue': '🔵',
-            'green': '🟢',
-            'gold': '🟡',
-            '∪': '➕',
-            '∩': '✖️',
-            '−': '➖',
-            '′': '❌',
-            'U': '🌐',
-            '∅': '⭕',
-            '=': '⚖️',
-            '⊆': '⬅️'
-        };
-        
         const topRow = solution.topRow || [];
         const bottomRow = solution.bottomRow || [];
+        const allDice = [...topRow, ...bottomRow];
         
+        // Count each type of cube
+        let colorCount = 0;
+        let operatorCount = 0;
+        let restrictionCount = 0;
+        let setConstantCount = 0;
+        
+        allDice.forEach(die => {
+            const value = die.value;
+            
+            // Color cubes
+            if (['red', 'blue', 'green', 'gold'].includes(value)) {
+                colorCount++;
+            }
+            // Operators (including prime)
+            else if (['∪', '∩', '−', '′'].includes(value)) {
+                operatorCount++;
+            }
+            // Restrictions
+            else if (['=', '⊆'].includes(value)) {
+                restrictionCount++;
+            }
+            // Set constants
+            else if (['U', '∅'].includes(value)) {
+                setConstantCount++;
+            }
+        });
+        
+        // Build emoji string grouped by type
         let emoji = '';
         
-        // Top row (restriction)
-        if (topRow.length > 0) {
-            emoji += topRow.map(die => emojiMap[die.value] || die.value).join('');
-            emoji += '\n';
+        // Colors (gold circles)
+        if (colorCount > 0) {
+            emoji += '🟡'.repeat(colorCount);
         }
         
-        // Bottom row (set name)
-        if (bottomRow.length > 0) {
-            emoji += bottomRow.map(die => emojiMap[die.value] || die.value).join('');
+        // Operators (red circles)
+        if (operatorCount > 0) {
+            if (emoji.length > 0) emoji += ' ';
+            emoji += '🔴'.repeat(operatorCount);
+        }
+        
+        // Restrictions (blue circles)
+        if (restrictionCount > 0) {
+            if (emoji.length > 0) emoji += ' ';
+            emoji += '🔵'.repeat(restrictionCount);
+        }
+        
+        // Set constants (white circles)
+        if (setConstantCount > 0) {
+            if (emoji.length > 0) emoji += ' ';
+            emoji += '⚪'.repeat(setConstantCount);
         }
         
         return emoji;
@@ -489,8 +516,7 @@ export class ModalManager {
         const shareText = `Ready, Set 2 🎲
 Daily Puzzle #${result.puzzleId}
 
-Score: ${result.score} (${result.cubes} cubes)
-
+Score: ${result.score} | ${result.cubes} cubes
 ${emoji}
 
 Play: https://jvanpelt.github.io/ready-set-2`;
