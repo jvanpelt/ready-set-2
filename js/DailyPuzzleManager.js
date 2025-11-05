@@ -16,18 +16,14 @@ class DailyPuzzleManager {
         this.uiController = uiController;
         this.generator = new DailyPuzzleGenerator();
         
-        // Test mode options
-        this.testMode = 'random'; // 'systematic' | 'random' | false (date-based)
-        this.reverseOrder = settings.reverseTestOrder || false; // When true, test from #261 backwards
+        // Test mode: load from localStorage
+        this.testMode = localStorage.getItem('rs2_dailyPuzzleTestMode') === 'true';
         
         // Current puzzle
         this.currentPuzzle = null;
         
         // Puzzle bank (loaded from JSON)
         this.puzzleBank = null;
-        
-        // Testing progress (for systematic testing)
-        this.testingProgress = this.loadTestingProgress();
         
         // Load puzzle bank
         this.loadPuzzleBank();
@@ -71,139 +67,31 @@ class DailyPuzzleManager {
             return this.generator.generatePuzzle();
         }
         
-        if (this.testMode === 'systematic') {
-            // Systematic test mode: get next untested puzzle
-            return this.getNextUntestedPuzzle();
-        } else if (this.testMode === 'random' || this.testMode === true) {
-            // Random test mode: pick a random puzzle from bank
+        if (this.testMode) {
+            // TEST MODE: Random puzzle each time
             const randomIndex = Math.floor(Math.random() * this.puzzleBank.length);
-            console.log(`🎲 Test mode: Loading random puzzle #${randomIndex + 1}/${this.puzzleBank.length}`);
+            console.log(`🎲 Test mode: Loading random puzzle #${this.puzzleBank[randomIndex].id}/${this.puzzleBank.length}`);
             return this.puzzleBank[randomIndex];
         }
         
-        // Production mode: get puzzle for today's date
-        const today = this.getTodayString();
-        const puzzleIndex = this.getPuzzleIndexForDate(today);
+        // PRODUCTION MODE: Date-based deterministic puzzle
+        const puzzleIndex = this.getPuzzleIndexForToday();
+        const puzzle = this.puzzleBank[puzzleIndex];
         
-        console.log(`📅 Loading puzzle #${puzzleIndex + 1} for ${today}`);
-        return this.puzzleBank[puzzleIndex % this.puzzleBank.length];
+        console.log(`📅 Production mode: Loading puzzle #${puzzle.id} for today (index ${puzzleIndex})`);
+        return puzzle;
     }
     
     /**
-     * Get next untested puzzle for systematic testing
+     * Set test mode on/off
      */
-    getNextUntestedPuzzle() {
-        if (!this.puzzleBank) return null;
+    setTestMode(enabled) {
+        this.testMode = enabled;
+        localStorage.setItem('rs2_dailyPuzzleTestMode', enabled.toString());
+        console.log(`🎲 Daily Puzzle Test Mode: ${enabled ? 'ENABLED' : 'DISABLED'}`);
         
-        // Determine iteration direction
-        const startIndex = this.reverseOrder ? this.puzzleBank.length - 1 : 0;
-        const endIndex = this.reverseOrder ? -1 : this.puzzleBank.length;
-        const step = this.reverseOrder ? -1 : 1;
-        
-        // Find first untested puzzle (forward or backward)
-        for (let i = startIndex; this.reverseOrder ? i > endIndex : i < endIndex; i += step) {
-            const puzzleId = this.puzzleBank[i].id;
-            if (!this.testingProgress.tested.includes(puzzleId)) {
-                const progress = this.testingProgress.tested.length;
-                const total = this.puzzleBank.length;
-                const direction = this.reverseOrder ? '(reverse order)' : '';
-                console.log(`🧪 Test Mode: Loading puzzle #${puzzleId} ${direction} (Progress: ${progress}/${total} tested)`);
-                return this.puzzleBank[i];
-            }
-        }
-        
-        // All puzzles tested!
-        console.log('🎉 All puzzles tested!');
-        return this.puzzleBank[this.reverseOrder ? this.puzzleBank.length - 1 : 0]; // Loop back
-    }
-    
-    /**
-     * Mark current puzzle as tested
-     */
-    markPuzzleAsTested(puzzleId) {
-        if (!this.testingProgress.tested.includes(puzzleId)) {
-            this.testingProgress.tested.push(puzzleId);
-            this.saveTestingProgress();
-            console.log(`✅ Puzzle #${puzzleId} marked as tested (${this.testingProgress.tested.length}/${this.puzzleBank.length})`);
-        }
-    }
-    
-    /**
-     * Load next puzzle in test mode
-     */
-    loadNextTestPuzzle() {
-        // Mark current puzzle as tested
-        if (this.currentPuzzle && this.currentPuzzle.id) {
-            this.markPuzzleAsTested(this.currentPuzzle.id);
-        }
-        
-        // Load next puzzle
-        this.startDailyPuzzle();
-    }
-    
-    /**
-     * Jump to a specific puzzle by ID (for testing)
-     * Usage in console: dailyPuzzleManager.jumpToPuzzle(261)
-     */
-    jumpToPuzzle(id) {
-        const puzzle = this.puzzleBank.find(p => p.id === id);
-        if (!puzzle) {
-            console.error(`❌ Puzzle #${id} not found`);
-            return;
-        }
-        
-        this.currentPuzzle = puzzle;
-        
-        // Log puzzle details for testing
-        this.generator.logPuzzle(puzzle);
-        
-        // Load puzzle into game
-        this.loadPuzzleIntoGame(puzzle);
-        
-        // Hide home screen if visible
-        if (window.homeScreen) {
-            window.homeScreen.hide();
-        }
-        
-        // Render the puzzle
-        this.uiController.render({ animate: true });
-        
-        console.log(`✅ Jumped to puzzle #${id}`);
-    }
-    
-    /**
-     * Load testing progress from localStorage
-     */
-    loadTestingProgress() {
-        try {
-            const saved = localStorage.getItem('rs2_testing_progress');
-            if (saved) {
-                return JSON.parse(saved);
-            }
-        } catch (error) {
-            console.error('Error loading testing progress:', error);
-        }
-        return { tested: [] };
-    }
-    
-    /**
-     * Save testing progress to localStorage
-     */
-    saveTestingProgress() {
-        try {
-            localStorage.setItem('rs2_testing_progress', JSON.stringify(this.testingProgress));
-        } catch (error) {
-            console.error('Error saving testing progress:', error);
-        }
-    }
-    
-    /**
-     * Reset testing progress
-     */
-    resetTestingProgress() {
-        this.testingProgress = { tested: [] };
-        this.saveTestingProgress();
-        console.log('🔄 Testing progress reset');
+        // Reload puzzle bank for correct file
+        this.loadPuzzleBank();
     }
     
     /**
@@ -211,6 +99,27 @@ class DailyPuzzleManager {
      */
     startDailyPuzzle() {
         console.log('🎯 Starting Daily Puzzle mode...');
+        
+        // In non-test mode, check if today's puzzle is already complete
+        if (!this.testMode && this.isTodaysPuzzleComplete()) {
+            const completion = this.getTodayCompletion();
+            console.log('✅ Today\'s puzzle already completed!');
+            
+            // Show the result modal again (so they can re-share)
+            this.uiController.modals.showDailyPuzzleResult({
+                puzzleId: completion.puzzleId,
+                score: completion.score,
+                cubes: completion.cubeCount,
+                solution: completion.solution
+            }, () => {
+                // Done button just returns to home
+                if (window.homeScreen) {
+                    window.homeScreen.show();
+                }
+            });
+            
+            return; // Don't load the puzzle
+        }
         
         // Generate/load puzzle
         this.currentPuzzle = this.getTodaysPuzzle();
@@ -281,59 +190,80 @@ class DailyPuzzleManager {
     }
     
     /**
-     * Get today's date as a string (YYYY-MM-DD)
+     * Get puzzle index for today (deterministic based on date)
      */
-    getTodayString() {
-        const now = new Date();
-        return now.toISOString().split('T')[0];
-    }
-    
-    /**
-     * Get puzzle index for a given date (deterministic)
-     */
-    getPuzzleIndexForDate(dateString) {
-        // Simple hash function to get consistent puzzle for each date
-        const epoch = new Date('2025-01-01');
-        const current = new Date(dateString);
-        const daysSinceEpoch = Math.floor((current - epoch) / (1000 * 60 * 60 * 24));
+    getPuzzleIndexForToday() {
+        // Epoch: 2025-01-01 00:00:00 UTC (obscured as Unix timestamp in ms)
+        const epoch = 1735689600000; // new Date('2025-01-01T00:00:00Z').getTime()
         
-        // TODO: When we have a puzzle bank, use this to index into it
-        return daysSinceEpoch % 1000; // Assuming 1000 puzzles in bank
+        // Get today at midnight local time
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        // Calculate days since epoch
+        const msPerDay = 86400000; // 1000 * 60 * 60 * 24
+        const daysSinceEpoch = Math.floor((today.getTime() - epoch) / msPerDay);
+        
+        // Return index, looping if we exceed puzzle count
+        return daysSinceEpoch % this.puzzleBank.length;
     }
     
     /**
-     * Check if today's puzzle is complete
+     * Get today's date key for localStorage (obscured format)
+     */
+    getTodayKey() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        // Use Unix timestamp in seconds (obscured but deterministic)
+        return Math.floor(today.getTime() / 1000);
+    }
+    
+    /**
+     * Check if today's puzzle is complete (non-test mode only)
      */
     isTodaysPuzzleComplete() {
-        const today = this.getTodayString();
-        const saved = localStorage.getItem(`rs2_daily_${today}`);
+        if (this.testMode) return false; // Test mode never shows as complete
+        
+        const todayKey = this.getTodayKey();
+        const saved = localStorage.getItem(`rs2_dp_${todayKey}`);
         return saved !== null;
+    }
+    
+    /**
+     * Get today's completion data (if completed)
+     */
+    getTodayCompletion() {
+        if (this.testMode) return null;
+        
+        const todayKey = this.getTodayKey();
+        const saved = localStorage.getItem(`rs2_dp_${todayKey}`);
+        if (saved) {
+            try {
+                return JSON.parse(saved);
+            } catch (error) {
+                console.error('Error parsing completion data:', error);
+                return null;
+            }
+        }
+        return null;
     }
     
     /**
      * Mark today's puzzle as complete
      */
-    markPuzzleComplete(score) {
-        const today = this.getTodayString();
+    markPuzzleComplete(result) {
+        if (this.testMode) return; // Don't save in test mode
+        
+        const todayKey = this.getTodayKey();
         const data = {
-            completed: true,
-            score: score,
-            timestamp: Date.now()
+            puzzleId: this.currentPuzzle.id,
+            score: result.score,
+            cubeCount: result.cubeCount,
+            solution: result.solution,
+            completed: Date.now()
         };
-        localStorage.setItem(`rs2_daily_${today}`, JSON.stringify(data));
-    }
-    
-    /**
-     * Get today's puzzle score (if completed)
-     */
-    getTodayScore() {
-        const today = this.getTodayString();
-        const saved = localStorage.getItem(`rs2_daily_${today}`);
-        if (saved) {
-            const data = JSON.parse(saved);
-            return data.score;
-        }
-        return null;
+        localStorage.setItem(`rs2_dp_${todayKey}`, JSON.stringify(data));
+        console.log(`✅ Daily puzzle marked complete! Score: ${result.score}`);
     }
 }
 

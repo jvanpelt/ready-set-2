@@ -10,6 +10,7 @@
     --color-blue: #055db4;
     --color-green: #2b8103;
     --color-gold: #e9c600;
+    --color-white: #fff;
     
     /* === BACKGROUND & STRUCTURE === */
     --bg-gradient-start: rgb(60, 130, 140);
@@ -28,7 +29,7 @@
     --color-card-border: transparent;
     
     /* === DICE/CUBES === */
-    --color-die-bg: white;
+    --color-die-bg: #fff;
     --color-die-border: #555;
     --color-die-border-light: #888;
     --color-die-text: #333;
@@ -73,12 +74,12 @@
     /* === UI ELEMENTS === */
     --color-border: #1a1a1a;
     --color-highlight: #ff6b6b;
-    --color-text-primary: white;
+    --color-text-primary: var(--color-white, #fff);
     --color-text-secondary: rgba(255, 255, 255, 0.7);
     --color-text-dark: #333;
     
     /* === BUTTONS === */
-    --color-btn-primary: var(--color-blue);
+    --color-btn-primary: #066bce;
     --color-btn-secondary: #5cb85c;
     --color-btn-warning: var(--color-red);
     --color-btn-success: #5cb85c;
@@ -97,9 +98,9 @@
     --color-goal-label: #666;
     
     /* === MODALS & OVERLAYS === */
-    --color-modal-backdrop: rgba(0, 0, 0, 0.8);
+    --color-modal-backdrop: rgba(0, 0, 0, 0.75);
     --color-modal-bg: rgba(40, 145, 177, 0.75);
-    --color-modal-border: white;
+    --color-modal-border: var(--color-white, #fff);
     --color-modal-close-btn: #dc3545;
     --color-modal-close-btn-hover: #c82333;
     

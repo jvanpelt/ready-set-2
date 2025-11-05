@@ -767,10 +767,7 @@ body {
 }
 
 /* Daily Puzzle Result Modal Styles */
-#daily-puzzle-result-modal {
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-}
+
 
 .daily-puzzle-result {
     text-align: center;
@@ -784,20 +781,20 @@ body {
 }
 
 .daily-puzzle-result .puzzle-score {
-    font-size: 36px;
+    font-size: 48px;
     font-weight: bold;
     color: var(--color-white);
     margin-bottom: 10px;
 }
 
 .daily-puzzle-result .puzzle-cubes {
-    font-size: 16px;
+    font-size: 18px;
     color: var(--color-text-secondary);
     margin-bottom: 20px;
 }
 
 .daily-puzzle-result .puzzle-emoji {
-    font-size: 28px;
+    font-size: 32px;
     line-height: 1.4;
     padding: 15px;
     background: var(--overlay-dark-20);

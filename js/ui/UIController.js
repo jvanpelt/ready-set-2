@@ -95,8 +95,11 @@ export class UIController {
         this.testModeToggle = document.getElementById('test-mode-toggle');
         this.testModeToggle.checked = this.settings.testMode || false;
         
-        this.reverseTestOrderToggle = document.getElementById('reverse-test-order-toggle');
-        this.reverseTestOrderToggle.checked = this.settings.reverseTestOrder || false;
+        this.dailyTestModeToggle = document.getElementById('daily-test-mode-toggle');
+        // Load from DailyPuzzleManager if it exists (it's initialized before UIController)
+        if (window.dailyPuzzleManager) {
+            this.dailyTestModeToggle.checked = window.dailyPuzzleManager.testMode;
+        }
         
         this.themeSelector = document.getElementById('theme-selector');
         this.themeSelector.value = this.settings.theme || 'default';
@@ -202,15 +205,10 @@ export class UIController {
             this.render();
         });
         
-        this.reverseTestOrderToggle.addEventListener('change', (e) => {
-            this.settings.reverseTestOrder = e.target.checked;
-            this.game.storage.saveSettings(this.settings);
-            
+        this.dailyTestModeToggle.addEventListener('change', (e) => {
             // Update DailyPuzzleManager if it exists
             if (window.dailyPuzzleManager) {
-                window.dailyPuzzleManager.reverseOrder = e.target.checked;
-                console.log(`🔄 Reverse Test Order ${e.target.checked ? 'ENABLED' : 'DISABLED'}`);
-                console.log(`   Next puzzle will load from ${e.target.checked ? 'END' : 'BEGINNING'} of untested puzzles`);
+                window.dailyPuzzleManager.setTestMode(e.target.checked);
             }
         });
         
@@ -284,6 +282,11 @@ export class UIController {
                     }
                 };
                 
+                // Mark puzzle as complete in non-test mode
+                if (window.dailyPuzzleManager && !window.dailyPuzzleManager.testMode) {
+                    window.dailyPuzzleManager.markPuzzleComplete(dailyResult);
+                }
+                
                 // Show daily puzzle result modal (with cards/dice still visible behind)
                 this.modals.showDailyPuzzleResult(dailyResult, async () => {
                     // After user clicks Done, animate out
@@ -294,8 +297,8 @@ export class UIController {
                     ]);
                     
                     if (window.dailyPuzzleManager.testMode) {
-                        // In test mode, load next puzzle
-                        window.dailyPuzzleManager.loadNextTestPuzzle();
+                        // In test mode, load another random puzzle
+                        window.dailyPuzzleManager.startDailyPuzzle();
                     } else {
                         // In production, return to home
                         if (window.homeScreen) {

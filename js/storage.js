@@ -193,7 +193,6 @@ export class GameStorage {
         return {
             solutionHelper: true,  // On by default - it's a great feature!
             testMode: false,  // When enabled, use easy scores (50) for quick testing
-            reverseTestOrder: false,  // When enabled, test daily puzzles from #261 backwards
             theme: 'default'  // Default theme
         };
     }
