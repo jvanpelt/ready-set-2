@@ -204,8 +204,11 @@ class DailyPuzzleManager {
         const msPerDay = 86400000; // 1000 * 60 * 60 * 24
         const daysSinceEpoch = Math.floor((today.getTime() - epoch) / msPerDay);
         
-        // Return index, looping if we exceed puzzle count
-        return daysSinceEpoch % this.puzzleBank.length;
+        // Handle negative days (before epoch) - use modulo that wraps properly
+        // JavaScript's % returns negative for negative numbers, so we normalize it
+        const index = ((daysSinceEpoch % this.puzzleBank.length) + this.puzzleBank.length) % this.puzzleBank.length;
+        
+        return index;
     }
     
     /**
@@ -264,6 +267,20 @@ class DailyPuzzleManager {
         };
         localStorage.setItem(`rs2_dp_${todayKey}`, JSON.stringify(data));
         console.log(`✅ Daily puzzle marked complete! Score: ${result.score}`);
+    }
+    
+    /**
+     * Clear today's puzzle completion (for testing)
+     */
+    clearTodayCompletion() {
+        if (this.testMode) {
+            console.log('ℹ️ Test mode - no completion data to clear');
+            return;
+        }
+        
+        const todayKey = this.getTodayKey();
+        localStorage.removeItem(`rs2_dp_${todayKey}`);
+        console.log('✅ Today\'s daily puzzle cleared!');
     }
 }
 

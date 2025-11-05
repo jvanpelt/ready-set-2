@@ -236,6 +236,16 @@ export class UIController {
             await this.showTutorialForLevel(targetLevel);
         });
         
+        // Clear today's daily puzzle
+        document.getElementById('clear-daily-puzzle-btn').addEventListener('click', () => {
+            if (window.dailyPuzzleManager) {
+                window.dailyPuzzleManager.clearTodayCompletion();
+                alert('✅ Today\'s puzzle has been cleared!\n\nYou can now play it again.');
+            } else {
+                console.error('❌ DailyPuzzleManager not initialized');
+            }
+        });
+        
         // Clear game data
         document.getElementById('clear-data-btn').addEventListener('click', () => {
             if (confirm('⚠️ Are you sure you want to clear all game data?\n\nThis will:\n• Reset your level to 1\n• Reset your score to 0\n• Clear all tutorial progress\n• Clear all settings\n\nThis action cannot be undone!')) {
