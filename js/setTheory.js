@@ -634,14 +634,29 @@ const RESTRICTION_PATTERNS = [
     "color,operator,color,operator,setName,restriction",
     "setName,operator,setName,operator,color,restriction",
     "setName,operator,color,operator,setName,restriction",
-    // seven cubes - restriction at end
+    // seven cubes - restriction at end (right side from other row)
     "color,operator,color,operator,color,setName,restriction",
     "setName,operator,color,operator,color,color,restriction",
     "color,operator,setName,operator,color,color,restriction",
     "color,operator,color,operator,setName,color,restriction",
     "setName,operator,setName,operator,color,color,restriction",
     "setName,operator,color,operator,setName,color,restriction",
-    "color,operator,color,operator,color,operator,restriction"
+    "color,operator,color,operator,color,operator,restriction",
+    // seven cubes - restriction in middle (right side continues in same row)
+    "setName,operator,color,restriction,color,operator,color",
+    "color,operator,color,restriction,color,operator,color",
+    "setName,operator,color,restriction,color,operator,setName",
+    "color,operator,color,restriction,color,operator,setName",
+    "setName,operator,color,restriction,setName,operator,color",
+    "color,operator,color,restriction,setName,operator,color",
+    "setName,operator,color,operator,color,restriction,color",
+    "color,operator,color,operator,color,restriction,color",
+    "setName,operator,setName,restriction,color,operator,color",
+    "color,operator,setName,restriction,color,operator,color",
+    "setName,operator,setName,restriction,color,operator,setName",
+    "color,operator,setName,restriction,color,operator,setName",
+    "setName,operator,setName,operator,color,restriction,color",
+    "color,operator,setName,operator,color,restriction,color"
 ];
 
 /**
