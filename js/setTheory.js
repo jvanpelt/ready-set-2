@@ -484,7 +484,12 @@ export function calculateScore(expression) {
 }
 
 /**
- * Valid solution patterns for set names (based on original game)
+ * Valid set name patterns (Level 1+)
+ * 
+ * Physical constraints (8 cubes total):
+ * - 4 color cubes (max)
+ * - 2 operator cubes including prime (max)
+ * - 2 setName cubes: U, ∅ (max)
  */
 const SETNAME_PATTERNS = [
     "color",
@@ -508,15 +513,15 @@ const SETNAME_PATTERNS = [
     "setName,prime,operator,setName",
     "setName,operator,setName,prime",
     "setName,operator,color,prime",
-    // five cubes
+    // five cubes (7 patterns - removed 1 impossible)
     "color,operator,color,operator,color",
     "color,operator,setName,operator,color",
     "color,operator,color,operator,setName",
     "color,operator,setName,operator,setName",
     "setName,operator,color,operator,color",
     "setName,operator,setName,operator,color",
-    "setName,operator,color,operator,setName",
-    "setName,operator,setName,operator,setName"
+    "setName,operator,color,operator,setName"
+    // REMOVED: "setName,operator,setName,operator,setName" - needs 3 setName cubes (max is 2)
 ];
 
 /**
