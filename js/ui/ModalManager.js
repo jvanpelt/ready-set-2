@@ -474,33 +474,39 @@ export class ModalManager {
             }
         });
         
-        // Build emoji string grouped by type
-        let emoji = '';
+        // Build emoji string grouped by type (with spaces between each)
+        // Order: set names, restrictions, operators, colors
+        let emojis = [];
         
-        // Colors (gold circles)
-        if (colorCount > 0) {
-            emoji += '🟡'.repeat(colorCount);
-        }
-        
-        // Operators (red circles)
-        if (operatorCount > 0) {
-            if (emoji.length > 0) emoji += ' ';
-            emoji += '🔴'.repeat(operatorCount);
-        }
-        
-        // Restrictions (blue circles)
-        if (restrictionCount > 0) {
-            if (emoji.length > 0) emoji += ' ';
-            emoji += '🔵'.repeat(restrictionCount);
-        }
-        
-        // Set constants (white circles)
+        // Set constants (white circles) - FIRST
         if (setConstantCount > 0) {
-            if (emoji.length > 0) emoji += ' ';
-            emoji += '⚪'.repeat(setConstantCount);
+            for (let i = 0; i < setConstantCount; i++) {
+                emojis.push('⚪');
+            }
         }
         
-        return emoji;
+        // Restrictions (blue circles) - SECOND
+        if (restrictionCount > 0) {
+            for (let i = 0; i < restrictionCount; i++) {
+                emojis.push('🔵');
+            }
+        }
+        
+        // Operators (red circles) - THIRD
+        if (operatorCount > 0) {
+            for (let i = 0; i < operatorCount; i++) {
+                emojis.push('🔴');
+            }
+        }
+        
+        // Colors (gold circles) - FOURTH
+        if (colorCount > 0) {
+            for (let i = 0; i < colorCount; i++) {
+                emojis.push('🟡');
+            }
+        }
+        
+        return emojis.join(' ');
     }
     
     /**
