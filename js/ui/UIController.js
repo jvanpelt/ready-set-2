@@ -270,13 +270,6 @@ export class UIController {
             if (this.game.mode === 'daily' && window.dailyPuzzleManager) {
                 console.log('✅ Daily puzzle solved!');
                 
-                // Animate out
-                await Promise.all([
-                    this.renderer.animateCardsOut(),
-                    this.renderer.animateDiceOut(),
-                    this.renderer.animateSolutionDiceOut()
-                ]);
-                
                 // Count cubes used in solution
                 const cubeCount = (this.game.solutions[0] || []).length + (this.game.solutions[1] || []).length;
                 
@@ -291,9 +284,15 @@ export class UIController {
                     }
                 };
                 
-                // Show daily puzzle result modal
-                this.modals.showDailyPuzzleResult(dailyResult, () => {
-                    // After user clicks Done
+                // Show daily puzzle result modal (with cards/dice still visible behind)
+                this.modals.showDailyPuzzleResult(dailyResult, async () => {
+                    // After user clicks Done, animate out
+                    await Promise.all([
+                        this.renderer.animateCardsOut(),
+                        this.renderer.animateDiceOut(),
+                        this.renderer.animateSolutionDiceOut()
+                    ]);
+                    
                     if (window.dailyPuzzleManager.testMode) {
                         // In test mode, load next puzzle
                         window.dailyPuzzleManager.loadNextTestPuzzle();
