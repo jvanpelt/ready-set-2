@@ -717,8 +717,17 @@ export class UIRenderer {
      * Update status bar elements
      */
     updateStatusBar(currentScoreEl, goalScoreEl, goalCardsEl, state) {
-        currentScoreEl.textContent = state.score;
-        goalScoreEl.textContent = state.goalScore;
-        goalCardsEl.textContent = state.goalCards;
+        // Daily puzzle mode: show dynamic score based on current cube placement
+        if (state.mode === 'daily') {
+            const currentScore = this.game.getCurrentDailyScore();
+            currentScoreEl.textContent = currentScore;
+            goalScoreEl.textContent = '?'; // Unknown until solved
+            goalCardsEl.textContent = state.goalCards;
+        } else {
+            // Regular game mode: show accumulated score / goal score
+            currentScoreEl.textContent = state.score;
+            goalScoreEl.textContent = state.goalScore;
+            goalCardsEl.textContent = state.goalCards;
+        }
     }
 }
