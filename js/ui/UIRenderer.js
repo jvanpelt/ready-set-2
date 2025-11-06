@@ -717,15 +717,22 @@ export class UIRenderer {
      * Update status bar elements
      */
     updateStatusBar(currentScoreEl, goalScoreEl, goalCardsEl, state) {
-        // Daily puzzle mode: show cube count (not score)
+        // Daily puzzle mode: show calculated score, no goal
         if (state.mode === 'daily') {
-            const cubeCount = this.game.getCurrentCubeCount();
-            currentScoreEl.textContent = cubeCount;
-            goalScoreEl.textContent = '?'; // Unknown until solved
+            const currentScore = this.game.getCurrentDailyScore();
+            currentScoreEl.textContent = currentScore;
+            // Hide the " / " divider and goal score for daily puzzles
+            const divider = currentScoreEl.nextElementSibling; // The " / " span
+            if (divider) divider.style.display = 'none';
+            goalScoreEl.style.display = 'none';
             goalCardsEl.textContent = state.goalCards;
         } else {
             // Regular game mode: show accumulated score / goal score
             currentScoreEl.textContent = state.score;
+            // Show the " / " divider and goal score
+            const divider = currentScoreEl.nextElementSibling;
+            if (divider) divider.style.display = '';
+            goalScoreEl.style.display = '';
             goalScoreEl.textContent = state.goalScore;
             goalCardsEl.textContent = state.goalCards;
         }
