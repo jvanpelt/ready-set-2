@@ -390,8 +390,8 @@ export class UIRenderer {
                 }
             }
             
-            // Row 0 (top) is disabled until Level 6 (when restrictions are enabled)
-            if (rowIndex === 0 && !restrictionsEnabled) {
+            // Row 1 (bottom) is disabled until Level 6 (when restrictions are enabled)
+            if (rowIndex === 1 && !restrictionsEnabled) {
                 row.classList.add('disabled');
                 row.dataset.disabled = 'true';
             }
