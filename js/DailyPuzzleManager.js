@@ -85,20 +85,26 @@ class DailyPuzzleManager {
     /**
      * Set test mode on/off
      */
-    setTestMode(enabled) {
+    async setTestMode(enabled) {
         this.testMode = enabled;
         localStorage.setItem('rs2_dailyPuzzleTestMode', enabled.toString());
         console.log(`🎲 Daily Puzzle Test Mode: ${enabled ? 'ENABLED' : 'DISABLED'}`);
         
         // Reload puzzle bank for correct file
-        this.loadPuzzleBank();
+        await this.loadPuzzleBank();
     }
     
     /**
      * Start daily puzzle mode
      */
-    startDailyPuzzle() {
+    async startDailyPuzzle() {
         console.log('🎯 Starting Daily Puzzle mode...');
+        
+        // Ensure puzzle bank is loaded before proceeding
+        if (!this.puzzleBank) {
+            console.log('⏳ Waiting for puzzle bank to load...');
+            await this.loadPuzzleBank();
+        }
         
         // In non-test mode, check if today's puzzle is already complete
         if (!this.testMode && this.isTodaysPuzzleComplete()) {
