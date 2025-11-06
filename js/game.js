@@ -650,7 +650,8 @@ export class Game {
             goalCards: this.goalCards,
             canAdvance: this.canAdvanceLevel(),
             hasNextLevel: hasNextLevel(this.level),
-            restrictionsEnabled: this.level >= 6, // Whether top row (restrictions) is enabled
+            // Daily puzzles always have both rows enabled, regular game enables at level 6+
+            restrictionsEnabled: this.mode === 'daily' ? true : this.level >= 6,
             timerStartTime: this.timerStartTime,
             timerDuration: this.timerDuration,
             mode: this.mode // 'daily' or undefined (regular game)
