@@ -309,42 +309,14 @@ export class Game {
     }
     
     /**
-     * Calculate current score for daily puzzle (dynamic, updates as cubes are placed)
-     * Uses same scoring logic as calculateScore but for all solution cubes combined
+     * Get current cube count for daily puzzle (dynamic, updates as cubes are placed)
      */
-    getCurrentDailyScore() {
+    getCurrentCubeCount() {
         if (this.mode !== 'daily') return 0;
         
-        // Combine all cubes from both solution rows
-        const allCubes = [...(this.solutions[0] || []), ...(this.solutions[1] || [])];
-        
-        if (allCubes.length === 0) return 0;
-        
-        let totalPoints = 0;
-        
-        allCubes.forEach(die => {
-            if (die.type === 'color') {
-                totalPoints += 5; // Base points for colors
-            } else if (die.type === 'wild') {
-                totalPoints += 25; // Wild cubes (Level 9+)
-            } else if (die.type === 'operator') {
-                // Operator points (union=10, intersection=15, etc)
-                const operatorPoints = {
-                    '∪': 10,  // Union
-                    '∩': 15,  // Intersection
-                    '−': 20,  // Difference
-                    '′': 25   // Prime
-                };
-                totalPoints += operatorPoints[die.value] || 0;
-            } else if (die.type === 'set-constant') {
-                totalPoints += 30; // Universe/Null
-            } else if (die.type === 'restriction') {
-                totalPoints += 30; // Equals/Subset
-            }
-        });
-        
-        // Multiply by cube count for complexity bonus
-        return totalPoints * allCubes.length;
+        // Count all cubes from both solution rows
+        const cubeCount = (this.solutions[0] || []).length + (this.solutions[1] || []).length;
+        return cubeCount;
     }
     
     // Flip cards based on restriction (called during evaluation)
@@ -652,7 +624,8 @@ export class Game {
             hasNextLevel: hasNextLevel(this.level),
             restrictionsEnabled: this.level >= 6, // Whether top row (restrictions) is enabled
             timerStartTime: this.timerStartTime,
-            timerDuration: this.timerDuration
+            timerDuration: this.timerDuration,
+            mode: this.mode // 'daily' or undefined (regular game)
         };
     }
 }

@@ -717,10 +717,10 @@ export class UIRenderer {
      * Update status bar elements
      */
     updateStatusBar(currentScoreEl, goalScoreEl, goalCardsEl, state) {
-        // Daily puzzle mode: show dynamic score based on current cube placement
+        // Daily puzzle mode: show cube count (not score)
         if (state.mode === 'daily') {
-            const currentScore = this.game.getCurrentDailyScore();
-            currentScoreEl.textContent = currentScore;
+            const cubeCount = this.game.getCurrentCubeCount();
+            currentScoreEl.textContent = cubeCount;
             goalScoreEl.textContent = '?'; // Unknown until solved
             goalCardsEl.textContent = state.goalCards;
         } else {
