@@ -9,6 +9,7 @@
  */
 
 import DailyPuzzleGenerator from './DailyPuzzleGenerator.js';
+import { decodePuzzle } from './puzzleCodec.js';
 
 class DailyPuzzleManager {
     constructor(game, uiController, settings = {}) {
@@ -24,6 +25,7 @@ class DailyPuzzleManager {
         
         // Puzzle bank (loaded from JSON)
         this.puzzleBank = null;
+        this.puzzleBankEncoded = false; // Whether puzzle data is encoded
         
         // Load puzzle bank
         this.loadPuzzleBank();
@@ -45,7 +47,13 @@ class DailyPuzzleManager {
             // Handle both array format and {puzzles: []} format
             this.puzzleBank = Array.isArray(data) ? data : data.puzzles;
             
+            // Check if puzzles are encoded
+            this.puzzleBankEncoded = data.encoded === true;
+            
             console.log(`✅ Loaded ${this.puzzleBank.length} puzzles from ${filename}`);
+            if (this.puzzleBankEncoded) {
+                console.log('🔒 Puzzle data is encoded');
+            }
             
             if (this.testMode === 'systematic') {
                 console.log(`📊 Testing Progress: ${this.testingProgress.tested.length}/${this.puzzleBank.length} puzzles tested`);
@@ -67,18 +75,25 @@ class DailyPuzzleManager {
             return this.generator.generatePuzzle();
         }
         
+        let puzzle;
+        
         if (this.testMode) {
             // TEST MODE: Random puzzle each time
             const randomIndex = Math.floor(Math.random() * this.puzzleBank.length);
             console.log(`🎲 Test mode: Loading random puzzle #${this.puzzleBank[randomIndex].id}/${this.puzzleBank.length}`);
-            return this.puzzleBank[randomIndex];
+            puzzle = this.puzzleBank[randomIndex];
+        } else {
+            // PRODUCTION MODE: Date-based deterministic puzzle
+            const puzzleIndex = this.getPuzzleIndexForToday();
+            puzzle = this.puzzleBank[puzzleIndex];
+            console.log(`📅 Production mode: Loading puzzle #${puzzle.id} for today (index ${puzzleIndex})`);
         }
         
-        // PRODUCTION MODE: Date-based deterministic puzzle
-        const puzzleIndex = this.getPuzzleIndexForToday();
-        const puzzle = this.puzzleBank[puzzleIndex];
+        // Decode if encoded
+        if (this.puzzleBankEncoded) {
+            return decodePuzzle(puzzle);
+        }
         
-        console.log(`📅 Production mode: Loading puzzle #${puzzle.id} for today (index ${puzzleIndex})`);
         return puzzle;
     }
     
