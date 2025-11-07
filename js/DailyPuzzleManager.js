@@ -115,7 +115,7 @@ class DailyPuzzleManager {
             this.uiController.modals.showDailyPuzzleResult({
                 puzzleId: completion.puzzleId,
                 score: completion.score,
-                cubes: completion.cubeCount,
+                cubes: completion.cubes,
                 solution: completion.solution
             }, () => {
                 // Done button just returns to home
@@ -267,7 +267,7 @@ class DailyPuzzleManager {
         const data = {
             puzzleId: this.currentPuzzle.id,
             score: result.score,
-            cubeCount: result.cubeCount,
+            cubes: result.cubes,
             solution: result.solution,
             completed: Date.now()
         };

@@ -519,13 +519,11 @@ export class ModalManager {
         const emoji = this.dailyPuzzleEmoji.textContent;
         
         // Format share text
-        const shareText = `Ready, Set 2 🎲
+        const shareText = `Ready, Set! 🎲
 Daily Puzzle #${result.puzzleId}
 
 Score: ${result.score} | ${result.cubes} cubes
-${emoji}
-
-Play: https://jvanpelt.github.io/ready-set-2`;
+${emoji}`;
         
         // Try native share API first (mobile)
         if (navigator.share) {
