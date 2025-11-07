@@ -299,5 +299,161 @@ function getPermutations(array) {
     return results;
 }
 
+/**
+ * Count ALL possible solutions for a puzzle (exhaustive search)
+ * @param {Array} cards - Array of card configurations
+ * @param {Array} dice - Array of available dice
+ * @param {number} goal - Target number of cards
+ * @param {boolean} verbose - Log progress (default false)
+ * @returns {Object} - { totalSolutions, shortestCubeCount, longestCubeCount, checksPerformed, timeMs }
+ */
+export function countAllSolutions(cards, dice, goal, verbose = false) {
+    if (verbose) {
+        console.log('🔢 Counting all solutions...');
+        console.log('   Dice:', dice.length, 'Goal:', goal);
+    }
+    
+    let totalSolutions = 0;
+    let shortestCubeCount = Infinity;
+    let longestCubeCount = 0;
+    let checksPerformed = 0;
+    const startTime = Date.now();
+    
+    // Try all possible dice combinations from size 2 to dice.length
+    for (let size = 2; size <= dice.length; size++) {
+        const combinations = getCombinations(dice, size);
+        
+        for (let combo of combinations) {
+            // Try as a simple set name (no restriction)
+            const simpleCount = countSimpleSetNameSolutions(combo, cards, goal);
+            if (simpleCount > 0) {
+                totalSolutions += simpleCount;
+                shortestCubeCount = Math.min(shortestCubeCount, size);
+                longestCubeCount = Math.max(longestCubeCount, size);
+            }
+            checksPerformed++;
+            
+            // Try splitting into restriction + set name
+            if (size >= 3) {
+                for (let restrictionSize = 2; restrictionSize <= size - 1; restrictionSize++) {
+                    const restrictionCombos = getCombinations(combo, restrictionSize);
+                    
+                    for (let restrictionDice of restrictionCombos) {
+                        const setNameDice = combo.filter(die => !restrictionDice.includes(die));
+                        
+                        const restrictionCount = countRestrictionSolutions(restrictionDice, setNameDice, cards, goal);
+                        if (restrictionCount > 0) {
+                            totalSolutions += restrictionCount;
+                            shortestCubeCount = Math.min(shortestCubeCount, size);
+                            longestCubeCount = Math.max(longestCubeCount, size);
+                        }
+                        checksPerformed++;
+                    }
+                }
+            }
+        }
+        
+        // Log progress every cube size
+        if (verbose) {
+            const elapsed = Date.now() - startTime;
+            console.log(`   ${size} cubes: ${totalSolutions} solutions so far (${elapsed}ms)`);
+        }
+    }
+    
+    const elapsed = Date.now() - startTime;
+    
+    if (verbose) {
+        console.log(`✅ Count complete: ${totalSolutions} solutions (${checksPerformed} checks in ${elapsed}ms)`);
+        if (totalSolutions > 0) {
+            console.log(`   Shortest: ${shortestCubeCount} cubes, Longest: ${longestCubeCount} cubes`);
+        }
+    }
+    
+    return {
+        totalSolutions,
+        shortestCubeCount: totalSolutions > 0 ? shortestCubeCount : null,
+        longestCubeCount: totalSolutions > 0 ? longestCubeCount : null,
+        checksPerformed,
+        timeMs: elapsed
+    };
+}
+
+/**
+ * Count all valid simple set name solutions (no restriction)
+ */
+function countSimpleSetNameSolutions(dice, cards, goal) {
+    let count = 0;
+    const perms = getPermutations(dice);
+    
+    for (let perm of perms) {
+        const diceWithPositions = perm.map((die, i) => ({
+            ...die,
+            x: i * 100,
+            y: 10
+        }));
+        
+        if (isValidSyntax(diceWithPositions)) {
+            const result = evaluateExpression(diceWithPositions, cards);
+            if (result.size === goal) {
+                count++;
+            }
+        }
+    }
+    
+    return count;
+}
+
+/**
+ * Count all valid restriction + set name solutions
+ */
+function countRestrictionSolutions(restrictionDice, setNameDice, cards, goal) {
+    let count = 0;
+    const restrictionPerms = getPermutations(restrictionDice);
+    
+    for (let restrictionPerm of restrictionPerms) {
+        const restrictionWithPos = restrictionPerm.map((die, i) => ({
+            ...die,
+            x: i * 100,
+            y: 10
+        }));
+        
+        if (!isValidRestriction(restrictionWithPos)) {
+            continue;
+        }
+        
+        const cardsToFlip = evaluateRestriction(restrictionWithPos, cards);
+        const activeCardIndices = new Set(
+            cards.map((_, idx) => idx).filter(idx => !cardsToFlip.includes(idx))
+        );
+        const activeCards = cards.filter((_, idx) => activeCardIndices.has(idx));
+        
+        const setNamePerms = getPermutations(setNameDice);
+        
+        for (let setNamePerm of setNamePerms) {
+            const setNameWithPos = setNamePerm.map((die, i) => ({
+                ...die,
+                x: i * 100,
+                y: 10
+            }));
+            
+            if (!isValidSyntax(setNameWithPos)) {
+                continue;
+            }
+            
+            const result = evaluateExpression(setNameWithPos, activeCards);
+            const activeCardsArray = Array.from(activeCardIndices);
+            const finalMatchingCards = new Set(
+                Array.from(result).map(activeIdx => activeCardsArray[activeIdx])
+            );
+            
+            if (finalMatchingCards.size === goal) {
+                count++;
+            }
+        }
+    }
+    
+    return count;
+}
+
 
 
