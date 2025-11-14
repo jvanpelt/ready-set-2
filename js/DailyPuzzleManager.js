@@ -127,6 +127,10 @@ class DailyPuzzleManager {
         // Clear daily puzzle data
         this.game.dailyPuzzle = null;
         
+        // IMPORTANT: Save state to clear mode from localStorage
+        // Otherwise, loadState() will restore the 'daily' mode
+        this.game.saveState();
+        
         // Don't clear cards/dice/solutions - let player see what they did
         // The next generateNewRound() or newGame() will reset them
         
