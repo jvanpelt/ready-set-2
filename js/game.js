@@ -35,54 +35,7 @@ export class Game {
         console.log('💾 Saved state loaded:', savedState ? 'YES' : 'NO');
         
         if (savedState && savedState.cards.length > 0) {
-            console.log('✅ Restoring from saved state');
-            console.log('  - Level:', savedState.level);
-            console.log('  - Cards:', savedState.cards.length);
-            console.log('  - Dice:', savedState.dice.length);
-            
-            // Restore from saved state
-            this.level = savedState.level;
-            this.score = savedState.score;
-            this.goalCards = savedState.goalCards;
-            this.cards = savedState.cards;
-            this.dice = savedState.dice;
-            this.cardStates = savedState.cardStates;
-            this.tutorialShown = savedState.tutorialShown;
-            
-            // Migrate old saved state to new 2-row format
-            if (savedState.solutions.length === 1) {
-                console.log('  - Migrating old 1-row format to 2-row format');
-                this.solutions = [[], savedState.solutions[0]];
-            } else {
-                this.solutions = savedState.solutions;
-            }
-            
-            console.log('  - Solutions:', this.solutions.length, 'rows');
-            
-            // Restore timer if it was running
-            if (savedState.timerStartTime && savedState.timerDuration) {
-                console.log('⏱️ Timer data found in saved state...');
-                const elapsed = Math.floor((Date.now() - savedState.timerStartTime) / 1000);
-                const remaining = savedState.timerDuration - elapsed;
-                console.log('  - Elapsed:', elapsed, 'seconds');
-                console.log('  - Remaining:', remaining, 'seconds');
-                
-                if (remaining > 0) {
-                    console.log('  - Timer still active - will restore after UI ready');
-                    // Store timer state for UIController to restore
-                    // (Can't start now - callbacks not set yet)
-                    this.timerStartTime = savedState.timerStartTime;
-                    this.timerDuration = savedState.timerDuration;
-                    this.timeRemaining = remaining;
-                    // UIController will call startTimer() after setting callbacks
-                } else {
-                    console.log('  - Timer expired - generating new round');
-                    // Timer expired while away - start new round
-                    this.generateNewRound();
-                }
-            } else {
-                console.log('  - No timer to restore');
-            }
+            this.restoreFromSavedState(savedState);
         } else {
             console.log('🆕 Starting fresh - generating new round');
             // Start fresh
@@ -100,6 +53,61 @@ export class Game {
         }
         
         console.log('✅ Game.init() complete');
+    }
+    
+    /**
+     * Restore game state from saved data
+     * @param {Object} savedState - The saved game state to restore
+     */
+    restoreFromSavedState(savedState) {
+        console.log('✅ Restoring from saved state');
+        console.log('  - Level:', savedState.level);
+        console.log('  - Cards:', savedState.cards.length);
+        console.log('  - Dice:', savedState.dice.length);
+        
+        // Restore from saved state
+        this.level = savedState.level;
+        this.score = savedState.score;
+        this.goalCards = savedState.goalCards;
+        this.cards = savedState.cards;
+        this.dice = savedState.dice;
+        this.cardStates = savedState.cardStates;
+        this.tutorialShown = savedState.tutorialShown;
+        
+        // Migrate old saved state to new 2-row format
+        if (savedState.solutions.length === 1) {
+            console.log('  - Migrating old 1-row format to 2-row format');
+            this.solutions = [[], savedState.solutions[0]];
+        } else {
+            this.solutions = savedState.solutions;
+        }
+        
+        console.log('  - Solutions:', this.solutions.length, 'rows');
+        
+        // Restore timer if it was running
+        if (savedState.timerStartTime && savedState.timerDuration) {
+            console.log('⏱️ Timer data found in saved state...');
+            const elapsed = Math.floor((Date.now() - savedState.timerStartTime) / 1000);
+            const remaining = savedState.timerDuration - elapsed;
+            console.log('  - Elapsed:', elapsed, 'seconds');
+            console.log('  - Remaining:', remaining, 'seconds');
+            
+            if (remaining > 0) {
+                console.log('  - Timer still active - will restore after UI ready');
+                // Store timer state for UIController to restore
+                // (Can't start now - callbacks not set yet)
+                this.timerStartTime = savedState.timerStartTime;
+                this.timerDuration = savedState.timerDuration;
+                this.timeRemaining = remaining;
+                // UIController will call startTimer() after setting callbacks
+            } else {
+                console.log('  - Timer expired - generating new round');
+                // Timer expired while away - start new round
+                this.generateNewRound();
+            }
+        } else {
+            console.log('  - No timer to restore');
+        }
     }
     
     generateNewRound() {

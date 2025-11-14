@@ -32,25 +32,7 @@ export class HomeScreenManager {
                 // Restore saved state (don't generate new round!)
                 const savedState = this.game.storage.loadGameState();
                 if (savedState && savedState.cards && savedState.cards.length > 0) {
-                    console.log('📂 Restoring saved game state...');
-                    
-                    // Restore game state manually (same logic as init())
-                    this.game.level = savedState.level;
-                    this.game.score = savedState.score;
-                    this.game.goalCards = savedState.goalCards;
-                    this.game.cards = savedState.cards;
-                    this.game.dice = savedState.dice;
-                    this.game.cardStates = savedState.cardStates;
-                    this.game.tutorialShown = savedState.tutorialShown;
-                    
-                    // Restore solutions (handle old 1-row format)
-                    if (savedState.solutions.length === 1) {
-                        this.game.solutions = [[], savedState.solutions[0]];
-                    } else {
-                        this.game.solutions = savedState.solutions;
-                    }
-                    
-                    console.log('✅ Saved state restored');
+                    this.game.restoreFromSavedState(savedState);
                 } else {
                     console.log('⚠️ No saved state found, generating new round');
                     this.game.generateNewRound();
