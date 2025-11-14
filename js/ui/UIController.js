@@ -518,8 +518,9 @@ export class UIController {
         // Find the existing theme link
         const themeLink = document.querySelector('link[href*="/themes/"]');
         if (themeLink) {
-            // Update the href to the new theme
-            themeLink.href = `css/themes/${themeName}.css?v=4.0.2`;
+            // Update the href to the new theme with dynamic cache busting
+            const cacheBust = window.cacheBust || Date.now();
+            themeLink.href = `css/themes/${themeName}.css?v=${cacheBust}`;
         }
     }
     
