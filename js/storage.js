@@ -7,6 +7,11 @@ export class GameStorage {
     constructor() {
         this.keys = {
             version: `${STORAGE_KEY_PREFIX}version`,
+            // Regular game state (persistent across sessions)
+            regularGame: `${STORAGE_KEY_PREFIX}regularGame`,
+            // Daily puzzle state (temporary, cleared when exiting daily mode)
+            dailyPuzzle: `${STORAGE_KEY_PREFIX}dailyPuzzle`,
+            // Legacy keys (for backward compatibility)
             level: `${STORAGE_KEY_PREFIX}currentLevel`,
             highestLevel: `${STORAGE_KEY_PREFIX}highestLevel`,
             score: `${STORAGE_KEY_PREFIX}currentScore`,
@@ -15,8 +20,8 @@ export class GameStorage {
             dice: `${STORAGE_KEY_PREFIX}dice`,
             solutions: `${STORAGE_KEY_PREFIX}solutions`,
             cardStates: `${STORAGE_KEY_PREFIX}cardStates`,
-            tutorialShown: `${STORAGE_KEY_PREFIX}tutorialShown`, // DEPRECATED: Use tutorialsViewed instead
-            tutorialsViewed: `${STORAGE_KEY_PREFIX}tutorialsViewed`, // NEW: Object tracking which level tutorials have been viewed
+            tutorialShown: `${STORAGE_KEY_PREFIX}tutorialShown`,
+            tutorialsViewed: `${STORAGE_KEY_PREFIX}tutorialsViewed`,
             isFirstGame: `${STORAGE_KEY_PREFIX}isFirstGame`,
             settings: `${STORAGE_KEY_PREFIX}settings`,
             timerStartTime: `${STORAGE_KEY_PREFIX}timerStartTime`,
@@ -39,40 +44,65 @@ export class GameStorage {
         }
     }
     
-    // Save entire game state
+    // Save regular game state (persistent)
     saveGameState(gameState) {
         try {
-            localStorage.setItem(this.keys.level, gameState.level);
-            localStorage.setItem(this.keys.score, gameState.score);
-            localStorage.setItem(this.keys.goalCards, gameState.goalCards);
-            localStorage.setItem(this.keys.cards, JSON.stringify(gameState.cards));
-            localStorage.setItem(this.keys.dice, JSON.stringify(gameState.dice));
-            localStorage.setItem(this.keys.solutions, JSON.stringify(gameState.solutions));
-            localStorage.setItem(this.keys.cardStates, JSON.stringify(gameState.cardStates));
-            localStorage.setItem(this.keys.tutorialShown, gameState.tutorialShown);
+            const state = {
+                level: gameState.level,
+                score: gameState.score,
+                goalCards: gameState.goalCards,
+                cards: gameState.cards,
+                dice: gameState.dice,
+                solutions: gameState.solutions,
+                cardStates: gameState.cardStates,
+                tutorialShown: gameState.tutorialShown,
+                timerStartTime: gameState.timerStartTime,
+                timerDuration: gameState.timerDuration
+            };
             
-            // Save timer state if active
-            if (gameState.timerStartTime) {
-                localStorage.setItem(this.keys.timerStartTime, gameState.timerStartTime);
-                localStorage.setItem(this.keys.timerDuration, gameState.timerDuration);
-            }
+            localStorage.setItem(this.keys.regularGame, JSON.stringify(state));
             
             // Update highest level
             this.saveHighestLevel(gameState.level);
             
             return true;
         } catch (e) {
-            console.error('Failed to save game state:', e);
+            console.error('Failed to save regular game state:', e);
             return false;
         }
     }
     
-    // Load entire game state
+    // Save daily puzzle state (temporary)
+    saveDailyPuzzleState(gameState) {
+        try {
+            const state = {
+                cards: gameState.cards,
+                dice: gameState.dice,
+                goalCards: gameState.goalCards,
+                solutions: gameState.solutions,
+                cardStates: gameState.cardStates,
+                dailyPuzzle: gameState.dailyPuzzle
+            };
+            
+            localStorage.setItem(this.keys.dailyPuzzle, JSON.stringify(state));
+            return true;
+        } catch (e) {
+            console.error('Failed to save daily puzzle state:', e);
+            return false;
+        }
+    }
+    
+    // Load regular game state
     loadGameState() {
         try {
-            const level = localStorage.getItem(this.keys.level);
+            // Try new format first (single JSON object)
+            const regularGameData = localStorage.getItem(this.keys.regularGame);
+            if (regularGameData) {
+                return JSON.parse(regularGameData);
+            }
             
-            // If no saved game, return null
+            // Fall back to legacy format (multiple keys)
+            const level = localStorage.getItem(this.keys.level);
             if (!level) {
                 return null;
             }
@@ -96,12 +126,33 @@ export class GameStorage {
                 state.timerDuration = parseInt(timerDuration);
             }
             
+            // Migrate to new format
+            this.saveGameState(state);
+            
             return state;
         } catch (e) {
-            console.error('Failed to load game state:', e);
-            this.clear();
+            console.error('Failed to load regular game state:', e);
             return null;
         }
+    }
+    
+    // Load daily puzzle state
+    loadDailyPuzzleState() {
+        try {
+            const dailyPuzzleData = localStorage.getItem(this.keys.dailyPuzzle);
+            if (!dailyPuzzleData) {
+                return null;
+            }
+            return JSON.parse(dailyPuzzleData);
+        } catch (e) {
+            console.error('Failed to load daily puzzle state:', e);
+            return null;
+        }
+    }
+    
+    // Clear daily puzzle state
+    clearDailyPuzzleState() {
+        localStorage.removeItem(this.keys.dailyPuzzle);
     }
     
     // Check if saved game exists

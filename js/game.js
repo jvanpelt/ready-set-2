@@ -628,7 +628,7 @@ export class Game {
     }
     
     saveState() {
-        this.storage.saveGameState({
+        const stateData = {
             level: this.level,
             score: this.score,
             goalCards: this.goalCards,
@@ -636,8 +636,18 @@ export class Game {
             dice: this.dice,
             solutions: this.solutions,
             cardStates: this.cardStates,
-            tutorialShown: this.tutorialShown
-        });
+            tutorialShown: this.tutorialShown,
+            timerStartTime: this.timerStartTime,
+            timerDuration: this.timerDuration,
+            dailyPuzzle: this.dailyPuzzle
+        };
+        
+        // Save to appropriate storage location based on mode
+        if (this.mode === 'daily') {
+            this.storage.saveDailyPuzzleState(stateData);
+        } else {
+            this.storage.saveGameState(stateData);
+        }
     }
     
     hasSavedGame() {
@@ -686,6 +696,7 @@ export class Game {
         
         // Clear daily puzzle data
         this.dailyPuzzle = null;
+        this.storage.clearDailyPuzzleState();
         
         // Stop any timer (will restart if needed for Level 7+)
         this.stopTimer();
