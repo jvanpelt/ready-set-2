@@ -41,7 +41,9 @@ class DailyPuzzleManager {
                 ? 'data/daily-puzzles-test.json' 
                 : 'data/daily-puzzles.json';
             
-            const response = await fetch(filename);
+            // Add cache busting to ensure fresh puzzle data
+            const cacheBust = window.cacheBust || Date.now();
+            const response = await fetch(`${filename}?v=${cacheBust}`);
             const data = await response.json();
             
             // Handle both array format and {puzzles: []} format
