@@ -125,14 +125,51 @@ export class GameStorage {
                 state.timerDuration = parseInt(timerDuration);
             }
             
+            // VALIDATE before migrating
+            // Check if data is corrupted (daily puzzle data in regular game slot)
+            const expectedDice = state.level < 5 ? 6 : 8;
+            const isCorrupted = state.dice && state.dice.length !== expectedDice;
+            
+            if (isCorrupted) {
+                console.warn('🚫 Legacy save is corrupted (wrong dice count for level)');
+                console.warn('  - Level:', state.level);
+                console.warn('  - Expected:', expectedDice, 'dice');
+                console.warn('  - Found:', state.dice.length, 'dice');
+                console.warn('  - NOT migrating corrupted data - discarding');
+                
+                // Clear legacy keys to prevent re-detection
+                this.clearLegacyKeys();
+                
+                // Return null to force fresh start
+                return null;
+            }
+            
+            console.log('✅ Migrating valid legacy save to new format');
             // Migrate to new format
             this.saveGameState(state);
+            
+            // Clear legacy keys after successful migration
+            this.clearLegacyKeys();
             
             return state;
         } catch (e) {
             console.error('Failed to load regular game state:', e);
             return null;
         }
+    }
+    
+    // Clear legacy storage keys (after migration)
+    clearLegacyKeys() {
+        localStorage.removeItem(this.keys.level);
+        localStorage.removeItem(this.keys.score);
+        localStorage.removeItem(this.keys.goalCards);
+        localStorage.removeItem(this.keys.cards);
+        localStorage.removeItem(this.keys.dice);
+        localStorage.removeItem(this.keys.solutions);
+        localStorage.removeItem(this.keys.cardStates);
+        localStorage.removeItem(this.keys.tutorialShown);
+        localStorage.removeItem(this.keys.timerStartTime);
+        localStorage.removeItem(this.keys.timerDuration);
     }
     
     // Load daily puzzle state
