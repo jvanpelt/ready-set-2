@@ -704,11 +704,32 @@ export class Game {
         // Restore saved regular game state
         const savedState = this.storage.loadGameState();
         if (savedState && savedState.cards && savedState.cards.length > 0) {
-            console.log('📂 Restoring saved regular game state');
+            console.log('📂 Found saved regular game state');
             console.log('  - Level:', savedState.level);
             console.log('  - Cards:', savedState.cards.length);
             console.log('  - Dice:', savedState.dice?.length);
-            this.restoreFromSavedState(savedState);
+            
+            // VALIDATE: Check if this is actually regular game data, not daily puzzle data
+            const expectedDice = savedState.level < 5 ? 6 : 8;
+            const actualDice = savedState.dice?.length || 0;
+            
+            if (actualDice !== 0 && actualDice !== expectedDice) {
+                console.error('🚫 Regular game save contains wrong dice count!');
+                console.error('  - Expected:', expectedDice, 'for level', savedState.level);
+                console.error('  - Found:', actualDice, '(possible daily puzzle contamination)');
+                console.error('  - Discarding and generating fresh round at saved level');
+                
+                // Keep level/score but regenerate puzzle
+                this.level = savedState.level;
+                this.score = savedState.score || 0;
+                this.generateNewRound();
+                
+                // Save the fresh state to overwrite corruption
+                this.saveState();
+            } else {
+                console.log('✅ Valid regular game state, restoring');
+                this.restoreFromSavedState(savedState);
+            }
         } else {
             console.log('⚠️ No saved state found, generating new round');
             this.generateNewRound();
@@ -725,8 +746,12 @@ export class Game {
     enterDailyMode(puzzle) {
         console.log('🎲 ===== ENTERING DAILY PUZZLE MODE =====');
         
-        // Regular game state is already saved to localStorage
-        // We don't need to save it again - just switch modes
+        // CRITICAL: Save current regular game state BEFORE switching modes
+        // This ensures we can always restore back to it
+        if (this.mode === 'regular' && this.cards && this.cards.length > 0) {
+            console.log('💾 Saving regular game state before entering daily mode');
+            this.saveState(); // Will save to regularGame because mode is still 'regular'
+        }
         
         // Set mode explicitly
         this.mode = 'daily';
