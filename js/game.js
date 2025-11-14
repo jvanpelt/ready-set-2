@@ -704,11 +704,33 @@ export class Game {
         // Restore saved regular game state
         const savedState = this.storage.loadGameState();
         if (savedState && savedState.cards && savedState.cards.length > 0) {
-            console.log('📂 Restoring saved regular game state');
+            console.log('📂 Found saved regular game state');
             console.log('  - Level:', savedState.level);
             console.log('  - Cards:', savedState.cards.length);
-            console.log('  - First card colors:', savedState.cards.slice(0, 3).map(c => c.colors));
-            this.restoreFromSavedState(savedState);
+            console.log('  - Dice:', savedState.dice?.length);
+            
+            // Detect corrupted state: Level 1-4 should have 6 dice, not 8
+            // If we have 8 dice at early levels, it's likely daily puzzle data
+            const expectedDice = savedState.level < 5 ? 6 : 8;
+            const isCorrupted = savedState.dice && savedState.dice.length !== expectedDice;
+            
+            if (isCorrupted) {
+                console.warn('⚠️ Corrupted save detected (wrong dice count for level)');
+                console.warn('  - Expected:', expectedDice, 'dice for level', savedState.level);
+                console.warn('  - Found:', savedState.dice.length, 'dice (likely daily puzzle data)');
+                console.warn('  - Auto-fixing: Clearing save and generating fresh round');
+                
+                // Clear corrupted save
+                this.storage.clearRegularGameState();
+                
+                // Generate fresh round at the saved level
+                this.level = savedState.level;
+                this.score = savedState.score || 0;
+                this.generateNewRound();
+            } else {
+                console.log('✅ Restoring valid save state');
+                this.restoreFromSavedState(savedState);
+            }
         } else {
             console.log('⚠️ No saved state found, generating new round');
             this.generateNewRound();
