@@ -4,9 +4,10 @@
  * 
  * This script:
  * 1. Loads puzzle data
- * 2. Encodes sensitive fields (cards, dice, solution)
- * 3. Minifies JSON output
- * 4. Saves obfuscated version
+ * 2. Removes metadata fields (templatePattern, templateIndex)
+ * 3. Encodes only the solution field (to prevent spoilers)
+ * 4. Formats each puzzle as one line
+ * 5. Minifies overall JSON output
  */
 
 import fs from 'fs';
@@ -39,22 +40,23 @@ function encodeData(str) {
 }
 
 /**
- * Encode puzzle data
+ * Prepare puzzle for production
+ * - Remove metadata fields (templatePattern, templateIndex)
+ * - Encode only the solution (to prevent spoilers)
+ * - Keep cards/dice/metadata visible (displayed in-game anyway)
  */
 function encodePuzzle(puzzle) {
-    const encoded = { ...puzzle };
+    const encoded = {
+        id: puzzle.id,
+        cards: puzzle.cards,
+        dice: puzzle.dice,
+        goal: puzzle.goal,
+        solutionCount: puzzle.solutionCount,
+        shortestSolution: puzzle.shortestSolution,
+        longestSolution: puzzle.longestSolution
+    };
     
-    // Encode cards
-    if (puzzle.cards) {
-        encoded.cards = encodeData(JSON.stringify(puzzle.cards));
-    }
-    
-    // Encode dice
-    if (puzzle.dice) {
-        encoded.dice = encodeData(JSON.stringify(puzzle.dice));
-    }
-    
-    // Encode solution
+    // Encode only the solution to prevent spoilers
     if (puzzle.solution) {
         encoded.solution = encodeData(JSON.stringify(puzzle.solution));
     }
@@ -105,22 +107,39 @@ const encodedPuzzles = puzzles.map((puzzle, index) => {
 });
 console.log('\n✓ All puzzles encoded');
 
-// Create output data
-const outputData = {
+// Create output data with custom formatting
+// Each puzzle on one line, overall structure readable
+console.log('\n🗜️  Formatting output...');
+
+const header = {
     version: (data.version || '1.0.0') + '-obfuscated',
     generatedAt: new Date().toISOString(),
-    description: (data.description || 'Daily puzzles') + ' (obfuscated)',
+    description: 'Daily puzzles (solution encoded, one per line)',
     encoded: true,
-    count: encodedPuzzles.length,
-    puzzles: encodedPuzzles
+    count: encodedPuzzles.length
 };
 
-// Minify JSON (no spaces)
-console.log('\n🗜️  Minifying JSON...');
-const minified = JSON.stringify(outputData);
-const minifiedSize = Buffer.byteLength(minified, 'utf8');
+// Build JSON with one puzzle per line
+let output = '{\n';
+output += `  "version": "${header.version}",\n`;
+output += `  "generatedAt": "${header.generatedAt}",\n`;
+output += `  "description": "${header.description}",\n`;
+output += `  "encoded": true,\n`;
+output += `  "count": ${header.count},\n`;
+output += '  "puzzles": [\n';
 
-console.log(`✓ Minified size: ${(minifiedSize / 1024 / 1024).toFixed(2)} MB`);
+// Each puzzle on one line (minified)
+encodedPuzzles.forEach((puzzle, index) => {
+    const line = JSON.stringify(puzzle);
+    const comma = index < encodedPuzzles.length - 1 ? ',' : '';
+    output += `    ${line}${comma}\n`;
+});
+
+output += '  ]\n';
+output += '}\n';
+
+const minifiedSize = Buffer.byteLength(output, 'utf8');
+console.log(`✓ Formatted size: ${(minifiedSize / 1024 / 1024).toFixed(2)} MB`);
 
 const reduction = ((originalSize - minifiedSize) / originalSize * 100).toFixed(1);
 console.log(`✓ Size reduction: ${reduction}%`);
@@ -131,28 +150,39 @@ const inputBasename = path.basename(inputFile, '.json');
 const outputPath = path.join(inputDir, `${inputBasename}-obfuscated.json`);
 
 console.log('\n💾 Saving obfuscated data...');
-fs.writeFileSync(outputPath, minified);
+fs.writeFileSync(outputPath, output);
 
 console.log(`✓ Saved to: ${path.relative(projectRoot, outputPath)}`);
 
-// Sample encoded data
-console.log('\n📋 SAMPLE ENCODED DATA:');
+// Sample data
+console.log('\n📋 SAMPLE OUTPUT:');
 console.log('');
-console.log('Before (puzzle #1 cards):');
-console.log(JSON.stringify(puzzles[0].cards, null, 2).slice(0, 200) + '...');
+console.log('Puzzle #1 (one line):');
+const sampleLine = JSON.stringify(encodedPuzzles[0]);
+console.log(sampleLine.slice(0, 200) + '...');
 console.log('');
-console.log('After (puzzle #1 cards):');
-console.log('"' + encodedPuzzles[0].cards.slice(0, 100) + '..."');
+console.log('Solution field (encoded):');
+console.log('"' + encodedPuzzles[0].solution.slice(0, 80) + '..."');
+console.log('');
+console.log('Cards/Dice (visible):');
+console.log('Cards:', JSON.stringify(encodedPuzzles[0].cards).slice(0, 100) + '...');
+console.log('Dice:', JSON.stringify(encodedPuzzles[0].dice).slice(0, 100) + '...');
 
 console.log('\n' + '='.repeat(60));
 console.log('✅ OBFUSCATION COMPLETE!\n');
 console.log('Summary:');
-console.log(`  • Puzzles encoded: ${encodedPuzzles.length}`);
+console.log(`  • Puzzles processed: ${encodedPuzzles.length}`);
+console.log(`  • Removed: templatePattern, templateIndex`);
+console.log(`  • Encoded: solution only`);
+console.log(`  • Visible: cards, dice, metadata`);
+console.log(`  • Format: one puzzle per line`);
 console.log(`  • Original size: ${(originalSize / 1024 / 1024).toFixed(2)} MB`);
 console.log(`  • Final size: ${(minifiedSize / 1024 / 1024).toFixed(2)} MB`);
 console.log(`  • Reduction: ${reduction}%`);
 console.log(`  • Output: ${path.relative(projectRoot, outputPath)}`);
-console.log('\n⚠️  IMPORTANT:');
-console.log('   DailyPuzzleManager must decode puzzles using puzzleCodec.js');
-console.log('   Ensure "encoded: true" flag is checked before decoding.\n');
+console.log('\n✨ Benefits:');
+console.log('   • Solution hidden from casual inspection');
+console.log('   • Cards/dice debuggable in dev tools');
+console.log('   • One-line-per-puzzle format reduces file size');
+console.log('   • DailyPuzzleManager will auto-decode when "encoded: true"\n');
 

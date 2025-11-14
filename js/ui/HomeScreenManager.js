@@ -17,7 +17,22 @@ export class HomeScreenManager {
     setupEventListeners() {
         // Continue button - resume current level
         this.continueBtn.addEventListener('click', () => {
-            // DEBUG: console.log('🏠 Continue button clicked');
+            console.log('🏠 Continue button clicked');
+            
+            // Ensure we're not in daily puzzle mode
+            if (this.game.mode === 'daily') {
+                console.log('⚠️ Was in daily mode, exiting...');
+                if (window.dailyPuzzleManager) {
+                    window.dailyPuzzleManager.exitDailyPuzzle();
+                } else {
+                    // Fallback if manager not available
+                    this.game.mode = undefined;
+                }
+            }
+            
+            // Generate a fresh round for regular game
+            this.game.generateNewRound();
+            
             this.hide();
         });
         

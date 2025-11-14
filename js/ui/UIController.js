@@ -57,11 +57,10 @@ export class UIController {
         };
         this.game.onTimeout = () => this.handleTimeout();
         
-        // If timer is already running (restored from saved state), trigger immediate update
-        if (this.game.timeRemaining !== null) {
-            // DEBUG: console.log('⏱️ Timer already running on init, remaining:', this.game.timeRemaining);
-            // DEBUG: console.log('   Timer interval active?', this.game.timerInterval !== null);
-            this.updateTimer(this.game.timeRemaining);
+        // If timer was paused (restored from saved state), start it now that callbacks are set
+        if (this.game.timeRemaining !== null && this.game.timerInterval === null) {
+            console.log('⏱️ Starting restored timer with', this.game.timeRemaining, 'seconds');
+            this.game.startTimer(this.game.timeRemaining);
         }
     }
     
@@ -310,7 +309,10 @@ export class UIController {
                         // In test mode, load another random puzzle
                         window.dailyPuzzleManager.startDailyPuzzle();
                     } else {
-                        // In production, return to home
+                        // In production, exit daily puzzle mode and return to home
+                        if (window.dailyPuzzleManager) {
+                            window.dailyPuzzleManager.exitDailyPuzzle();
+                        }
                         if (window.homeScreen) {
                             window.homeScreen.show();
                         }

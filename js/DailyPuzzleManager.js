@@ -110,6 +110,28 @@ class DailyPuzzleManager {
     }
     
     /**
+     * Exit daily puzzle mode and clean up state
+     * Call this before returning to home screen or regular game
+     */
+    exitDailyPuzzle() {
+        console.log('🏁 Exiting daily puzzle mode...');
+        
+        // Clear daily puzzle mode
+        this.game.mode = undefined;
+        
+        // Stop timer (should already be stopped, but be safe)
+        this.game.stopTimer();
+        
+        // Clear daily puzzle data
+        this.game.dailyPuzzle = null;
+        
+        // Don't clear cards/dice/solutions - let player see what they did
+        // The next generateNewRound() or newGame() will reset them
+        
+        console.log('✅ Daily puzzle mode exited - ready for regular game');
+    }
+    
+    /**
      * Start daily puzzle mode
      */
     async startDailyPuzzle() {
@@ -133,7 +155,8 @@ class DailyPuzzleManager {
                 cubes: completion.cubes,
                 solution: completion.solution
             }, () => {
-                // Done button just returns to home
+                // Exit daily puzzle mode and return to home
+                this.exitDailyPuzzle();
                 if (window.homeScreen) {
                     window.homeScreen.show();
                 }

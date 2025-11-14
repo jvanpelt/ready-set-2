@@ -24,7 +24,6 @@ const DailyPuzzleGeneratorModule = await import(`file://${projectRoot}/js/DailyP
 const DailyPuzzleGenerator = DailyPuzzleGeneratorModule.default;
 const solutionFinderModule = await import(`file://${projectRoot}/js/solutionFinder.js`);
 const findShortestSolution = solutionFinderModule.findShortestSolution;
-const countAllSolutions = solutionFinderModule.countAllSolutions;
 const setTheoryModule = await import(`file://${projectRoot}/js/setTheory.js`);
 const evaluateExpression = setTheoryModule.evaluateExpression;
 const evaluateRestriction = setTheoryModule.evaluateRestriction;
@@ -43,14 +42,21 @@ global.isValidRestriction = isValidRestriction;
 global.generateCardConfig = generateCardConfig;
 global.generateDiceForLevel = generateDiceForLevel;
 
-// Weighted goal array (from game.js)
+// Weighted goal array (from game.js regular mode)
+// Produces bell curve: 14%, 19%, 19%, 19%, 14%, 10%, 5%
 const WEIGHTED_GOALS = [1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7];
 
 console.log('\n🎯 REBALANCING PUZZLE GOAL DISTRIBUTION\n');
+console.log('Target: Weighted bell curve from regular game mode\n');
 console.log('='.repeat(60));
 
+// Get input file from command line or use default
+const inputFile = process.argv[2] || 'data/daily-puzzles-decoded-with-counts.json';
+const inputPath = path.resolve(projectRoot, inputFile);
+
+console.log(`\nInput file: ${path.relative(projectRoot, inputPath)}\n`);
+
 // Load existing puzzles
-const inputPath = path.join(projectRoot, 'data', 'daily-puzzles-production-with-counts.json');
 const existingData = JSON.parse(fs.readFileSync(inputPath, 'utf8'));
 const existingPuzzles = existingData.puzzles;
 
@@ -62,7 +68,7 @@ existingPuzzles.forEach(p => {
     currentCounts[p.goal] = (currentCounts[p.goal] || 0) + 1;
 });
 
-// Calculate target counts based on weight array
+// Calculate target counts based on WEIGHTED_GOALS array
 const totalPuzzles = existingPuzzles.length;
 const targetCounts = {};
 const weightCounts = {};
@@ -173,34 +179,9 @@ Object.entries(toAdd).forEach(([goal, count]) => {
 
 console.log(`\n✅ Generated ${newPuzzles.length} new puzzles\n`);
 
-// STEP 2: Count solutions for new puzzles
+// STEP 2: Remove excess puzzles from overrepresented goals
 console.log('='.repeat(60));
-console.log('STEP 2: Counting solutions for new puzzles\n');
-console.log(`This will take ~${Math.ceil(newPuzzles.length * 2.5 / 60)} minutes...\n`);
-
-const countStartTime = Date.now();
-newPuzzles.forEach((puzzle, index) => {
-    if ((index + 1) % 10 === 0 || index === 0 || index === newPuzzles.length - 1) {
-        const progress = Math.floor(((index + 1) / newPuzzles.length) * 100);
-        const elapsed = (Date.now() - countStartTime) / 1000;
-        const avgTime = elapsed / (index + 1);
-        const remaining = Math.ceil((newPuzzles.length - (index + 1)) * avgTime);
-        console.log(`[${progress}%] Counting puzzle ${index + 1}/${newPuzzles.length} (~${remaining}s remaining)`);
-    }
-    
-    const result = countAllSolutions(puzzle.cards, puzzle.dice, puzzle.goal, false);
-    puzzle.solutionCount = result.totalSolutions;
-    puzzle.shortestSolution = result.shortestCubeCount;
-    puzzle.longestSolution = result.longestCubeCount;
-    delete puzzle.isNew;
-});
-
-const countElapsed = ((Date.now() - countStartTime) / 1000).toFixed(1);
-console.log(`\n✅ Counted solutions in ${countElapsed}s\n`);
-
-// STEP 3: Remove excess puzzles from overrepresented goals
-console.log('='.repeat(60));
-console.log('STEP 3: Removing excess puzzles from goals 1-3\n');
+console.log('STEP 2: Removing excess puzzles from goals 1-3\n');
 
 const keptPuzzles = [];
 
@@ -223,9 +204,9 @@ const keptPuzzles = [];
 
 console.log(`\n✅ Kept ${keptPuzzles.length} existing puzzles\n`);
 
-// STEP 4: Merge and reassign IDs
+// STEP 3: Merge and reassign IDs
 console.log('='.repeat(60));
-console.log('STEP 4: Merging and finalizing\n');
+console.log('STEP 3: Merging and finalizing\n');
 
 const finalPuzzles = [...keptPuzzles, ...newPuzzles];
 
@@ -239,9 +220,9 @@ finalPuzzles.forEach((puzzle, index) => {
 
 console.log(`Final puzzle count: ${finalPuzzles.length}\n`);
 
-// STEP 5: Verify final distribution
+// STEP 4: Verify final distribution
 console.log('='.repeat(60));
-console.log('STEP 5: Verifying final distribution\n');
+console.log('STEP 4: Verifying final distribution\n');
 
 const finalCounts = {};
 finalPuzzles.forEach(p => {
@@ -271,27 +252,29 @@ console.log('');
 
 // STEP 6: Save
 console.log('\n' + '='.repeat(60));
-console.log('STEP 6: Saving rebalanced puzzles\n');
+console.log('STEP 5: Saving rebalanced puzzles\n');
 
 const outputData = {
     version: '3.1.0-rebalanced',
     generatedAt: new Date().toISOString(),
     description: 'Production daily puzzles with rebalanced weighted goal distribution',
     goalWeighting: 'Bell curve favoring goals 2-4 (properly balanced)',
-    rebalancedFrom: 'daily-puzzles-production-with-counts.json',
+    rebalancedFrom: path.basename(inputPath),
     count: finalPuzzles.length,
     puzzles: finalPuzzles
 };
 
-const outputPath = path.join(projectRoot, 'data', 'daily-puzzles-production-rebalanced.json');
+// Generate output filename based on input
+const outputFile = inputFile.replace('.json', '-rebalanced.json');
+const outputPath = path.resolve(projectRoot, outputFile);
 fs.writeFileSync(outputPath, JSON.stringify(outputData, null, 2));
 
-console.log(`💾 Saved to: data/daily-puzzles-production-rebalanced.json`);
+const outputRelative = path.relative(projectRoot, outputPath);
+console.log(`💾 Saved to: ${outputRelative}`);
 console.log('\n✅ REBALANCING COMPLETE!\n');
 console.log('Next steps:');
 console.log('  1. Review the distribution above');
-console.log('  2. If satisfied, deploy:');
-console.log('     cp data/daily-puzzles-production-rebalanced.json data/daily-puzzles.json');
-console.log('  3. Test in-game to verify');
+console.log('  2. Verify with: node scripts/verify-goal-distribution.mjs ' + outputRelative);
+console.log('  3. Obfuscate: node scripts/obfuscate-puzzles.mjs ' + outputRelative);
 console.log('\nDone! 🎉\n');
 

@@ -61,20 +61,20 @@ export class Game {
             
             // Restore timer if it was running
             if (savedState.timerStartTime && savedState.timerDuration) {
-                console.log('⏱️ Restoring timer...');
+                console.log('⏱️ Timer data found in saved state...');
                 const elapsed = Math.floor((Date.now() - savedState.timerStartTime) / 1000);
                 const remaining = savedState.timerDuration - elapsed;
                 console.log('  - Elapsed:', elapsed, 'seconds');
                 console.log('  - Remaining:', remaining, 'seconds');
                 
                 if (remaining > 0) {
-                    console.log('  - Timer still active - restoring');
-                    // Set the original start time and duration BEFORE calling startTimer
-                    // This prevents startTimer from creating a new timestamp
+                    console.log('  - Timer still active - will restore after UI ready');
+                    // Store timer state for UIController to restore
+                    // (Can't start now - callbacks not set yet)
                     this.timerStartTime = savedState.timerStartTime;
                     this.timerDuration = savedState.timerDuration;
-                    // Timer still has time left - restore it
-                    this.startTimer(remaining);
+                    this.timeRemaining = remaining;
+                    // UIController will call startTimer() after setting callbacks
                 } else {
                     console.log('  - Timer expired - generating new round');
                     // Timer expired while away - start new round
