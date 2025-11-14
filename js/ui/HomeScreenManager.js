@@ -44,7 +44,7 @@ export class HomeScreenManager {
             // Render with animation
             if (window.uiController) {
                 window.uiController.render();
-                window.uiController.animateCardsIn();
+                window.uiController.renderer.animateCardsIn();
             }
         });
         
