@@ -744,7 +744,6 @@ export class Game {
         // Load puzzle data into game state
         this.cards = puzzle.cards;
         this.goalCards = puzzle.goal;
-        this.solutions = [[], []]; // Clear any previous solutions
         
         // Load dice and add runtime properties (id, x, y)
         const timestamp = Date.now();
@@ -755,14 +754,35 @@ export class Game {
             y: 0
         }));
         
-        // Initialize card states
-        this.cardStates = this.cards.map(() => ({
-            dimmed: false,
-            excluded: false,
-            flipped: false
-        }));
+        // Check for saved work-in-progress for this puzzle
+        const savedWork = this.storage.loadDailyPuzzleState();
+        if (savedWork && savedWork.puzzleId === puzzle.id) {
+            console.log('📂 Restoring work-in-progress for puzzle #' + puzzle.id);
+            const topRowDice = savedWork.solutions[0]?.length || 0;
+            const bottomRowDice = savedWork.solutions[1]?.length || 0;
+            console.log(`  - Restoring ${topRowDice + bottomRowDice} dice in solution (${topRowDice} top, ${bottomRowDice} bottom)`);
+            
+            // Restore player's solutions (dice with positions) and card states
+            this.solutions = savedWork.solutions || [[], []];
+            this.cardStates = savedWork.cardStates || this.cards.map(() => ({
+                dimmed: false,
+                excluded: false,
+                flipped: false
+            }));
+        } else {
+            if (savedWork) {
+                console.log('⚠️ Saved work found but for different puzzle (saved: #' + savedWork.puzzleId + ', current: #' + puzzle.id + ')');
+            }
+            // Starting fresh
+            this.solutions = [[], []];
+            this.cardStates = this.cards.map(() => ({
+                dimmed: false,
+                excluded: false,
+                flipped: false
+            }));
+        }
         
-        console.log(`✅ Daily puzzle mode active - Puzzle #${puzzle.puzzleId}`);
+        console.log(`✅ Daily puzzle mode active - Puzzle #${puzzle.id}`);
         console.log(`  - Goal: ${puzzle.goal} cards`);
         console.log(`  - Cards: ${this.cards.length}`);
         console.log(`  - Dice: ${this.dice.length}`);

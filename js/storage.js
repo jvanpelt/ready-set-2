@@ -72,16 +72,15 @@ export class GameStorage {
         }
     }
     
-    // Save daily puzzle state (temporary)
+    // Save daily puzzle state (only player's work, not puzzle definition)
     saveDailyPuzzleState(gameState) {
         try {
             const state = {
-                cards: gameState.cards,
-                dice: gameState.dice,
-                goalCards: gameState.goalCards,
+                // Player's work in progress
                 solutions: gameState.solutions,
                 cardStates: gameState.cardStates,
-                dailyPuzzle: gameState.dailyPuzzle
+                // Puzzle metadata (to verify we're resuming the same puzzle)
+                puzzleId: gameState.dailyPuzzle?.puzzleId
             };
             
             localStorage.setItem(this.keys.dailyPuzzle, JSON.stringify(state));
