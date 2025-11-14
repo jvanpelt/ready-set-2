@@ -19,27 +19,8 @@ export class HomeScreenManager {
         this.continueBtn.addEventListener('click', () => {
             console.log('🏠 Continue button clicked');
             
-            // Exit daily puzzle mode if active
-            if (this.game.mode === 'daily') {
-                console.log('⚠️ Was in daily mode, exiting...');
-                if (window.dailyPuzzleManager) {
-                    window.dailyPuzzleManager.exitDailyPuzzle();
-                } else {
-                    // Fallback if manager not available
-                    this.game.mode = undefined;
-                    this.game.saveState();
-                }
-            }
-            
-            // ALWAYS restore saved regular game state (not just when exiting daily mode)
-            const savedState = this.game.storage.loadGameState();
-            if (savedState && savedState.cards && savedState.cards.length > 0) {
-                console.log('📂 Restoring saved regular game state');
-                this.game.restoreFromSavedState(savedState);
-            } else {
-                console.log('⚠️ No saved state found, generating new round');
-                this.game.generateNewRound();
-            }
+            // Enter regular game mode (handles all state restoration)
+            this.game.enterRegularMode();
             
             this.hide();
             

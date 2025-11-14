@@ -7,6 +7,11 @@ import { GameStorage } from './storage.js';
 export class Game {
     constructor() {
         this.storage = new GameStorage();
+        
+        // Mode management - ALWAYS one of: 'regular' | 'daily'
+        this.mode = 'regular'; // Default to regular game mode
+        
+        // Regular game state
         this.level = 1;
         this.score = 0;
         this.cards = [];
@@ -15,6 +20,9 @@ export class Game {
         this.goalCards = 3;
         this.tutorialShown = false;
         this.isTutorialActive = false; // Set by TutorialManager to suppress timer timeout
+        
+        // Daily puzzle state (set when in daily mode)
+        this.dailyPuzzle = null;
         
         // Timer (Level 7+)
         this.timeRemaining = null;
@@ -662,8 +670,91 @@ export class Game {
             restrictionsEnabled: this.mode === 'daily' ? true : this.level >= 6,
             timerStartTime: this.timerStartTime,
             timerDuration: this.timerDuration,
-            mode: this.mode // 'daily' or undefined (regular game)
+            mode: this.mode // 'daily' or 'regular'
         };
+    }
+    
+    /**
+     * Enter regular game mode
+     * Restores saved regular game state and ensures clean mode transition
+     */
+    enterRegularMode() {
+        console.log('🎮 ===== ENTERING REGULAR GAME MODE =====');
+        
+        // Set mode explicitly
+        this.mode = 'regular';
+        
+        // Clear daily puzzle data
+        this.dailyPuzzle = null;
+        
+        // Stop any timer (will restart if needed for Level 7+)
+        this.stopTimer();
+        
+        // Restore saved regular game state
+        const savedState = this.storage.loadGameState();
+        if (savedState && savedState.cards && savedState.cards.length > 0) {
+            console.log('📂 Restoring saved regular game state');
+            this.restoreFromSavedState(savedState);
+        } else {
+            console.log('⚠️ No saved state found, generating new round');
+            this.generateNewRound();
+        }
+        
+        console.log('✅ Regular game mode active');
+    }
+    
+    /**
+     * Enter daily puzzle mode
+     * Sets up daily puzzle state without affecting regular game save
+     * @param {Object} puzzle - The daily puzzle data
+     */
+    enterDailyMode(puzzle) {
+        console.log('🎲 ===== ENTERING DAILY PUZZLE MODE =====');
+        
+        // Regular game state is already saved to localStorage
+        // We don't need to save it again - just switch modes
+        
+        // Set mode explicitly
+        this.mode = 'daily';
+        
+        // Store daily puzzle data (enhanced with metadata)
+        this.dailyPuzzle = {
+            puzzleId: puzzle.id,
+            templatePattern: puzzle.templatePattern, // For debugging
+            difficulty: puzzle.difficulty,
+            solution: puzzle.solution || puzzle.generatedSolution,
+            matchingCards: puzzle.matchingCards,
+            startTime: Date.now()
+        };
+        
+        // Stop any timer (daily puzzles don't have timers)
+        this.stopTimer();
+        
+        // Load puzzle data into game state
+        this.cards = puzzle.cards;
+        this.goalCards = puzzle.goal;
+        this.solutions = [[], []]; // Clear any previous solutions
+        
+        // Load dice and add runtime properties (id, x, y)
+        const timestamp = Date.now();
+        this.dice = puzzle.dice.map((die, i) => ({
+            ...die,
+            id: `die-${i}-${timestamp}`,
+            x: 0,
+            y: 0
+        }));
+        
+        // Initialize card states
+        this.cardStates = this.cards.map(() => ({
+            dimmed: false,
+            excluded: false,
+            flipped: false
+        }));
+        
+        console.log(`✅ Daily puzzle mode active - Puzzle #${puzzle.puzzleId}`);
+        console.log(`  - Goal: ${puzzle.goal} cards`);
+        console.log(`  - Cards: ${this.cards.length}`);
+        console.log(`  - Dice: ${this.dice.length}`);
     }
 }
 

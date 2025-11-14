@@ -111,31 +111,6 @@ class DailyPuzzleManager {
         await this.loadPuzzleBank();
     }
     
-    /**
-     * Exit daily puzzle mode and clean up state
-     * Call this before returning to home screen or regular game
-     */
-    exitDailyPuzzle() {
-        console.log('🏁 Exiting daily puzzle mode...');
-        
-        // Clear daily puzzle mode
-        this.game.mode = undefined;
-        
-        // Stop timer (should already be stopped, but be safe)
-        this.game.stopTimer();
-        
-        // Clear daily puzzle data
-        this.game.dailyPuzzle = null;
-        
-        // IMPORTANT: Save state to clear mode from localStorage
-        // Otherwise, loadState() will restore the 'daily' mode
-        this.game.saveState();
-        
-        // Don't clear cards/dice/solutions - let player see what they did
-        // The next generateNewRound() or newGame() will reset them
-        
-        console.log('✅ Daily puzzle mode exited - ready for regular game');
-    }
     
     /**
      * Start daily puzzle mode
@@ -161,8 +136,7 @@ class DailyPuzzleManager {
                 cubes: completion.cubes,
                 solution: completion.solution
             }, () => {
-                // Exit daily puzzle mode and return to home
-                this.exitDailyPuzzle();
+                // Return to home (will let user choose what to do next)
                 if (window.homeScreen) {
                     window.homeScreen.show();
                 }
@@ -172,16 +146,14 @@ class DailyPuzzleManager {
         }
         
         // Generate/load puzzle
-        this.currentPuzzle = this.getTodaysPuzzle();
+        const puzzle = this.getTodaysPuzzle();
+        this.currentPuzzle = puzzle;
         
         // Log for debugging
-        this.generator.logPuzzle(this.currentPuzzle);
+        this.generator.logPuzzle(puzzle);
         
-        // Set game mode (don't change level - daily puzzles are level-independent)
-        this.game.mode = 'daily';
-        
-        // Load puzzle into game
-        this.loadPuzzleIntoGame(this.currentPuzzle);
+        // Enter daily mode (handles all state setup)
+        this.game.enterDailyMode(puzzle);
         
         // Hide home screen and show game
         if (window.homeScreen) {
@@ -192,51 +164,6 @@ class DailyPuzzleManager {
         this.uiController.render({ animate: true });
         
         console.log('✅ Daily Puzzle loaded!');
-    }
-    
-    /**
-     * Load puzzle data into game state
-     */
-    loadPuzzleIntoGame(puzzle) {
-        // Set cards
-        this.game.cards = puzzle.cards;
-        
-        // Initialize card states
-        this.game.cardStates = this.game.cards.map(() => ({
-            dimmed: false,
-            excluded: false,
-            flipped: false
-        }));
-        
-        // Set goal from the puzzle (number of cards that should match)
-        this.game.goal = puzzle.goal;
-        this.game.goalCards = puzzle.goal; // UI displays goalCards, not goal
-        
-        // Load pre-generated dice and add runtime properties (id, x, y)
-        const timestamp = Date.now();
-        this.game.dice = puzzle.dice.map((die, i) => ({
-            ...die,
-            id: `die-${i}-${timestamp}`,
-            x: 0,
-            y: 0
-        }));
-        
-        // Clear solutions
-        this.game.solutions = [[], []];
-        
-        // Set timer and score
-        this.game.timer = null; // No timer for daily puzzle (or maybe we add one?)
-        this.game.score = 0;
-        
-        // Daily puzzle specific settings
-        this.game.dailyPuzzle = {
-            puzzleId: puzzle.id,
-            templatePattern: puzzle.templatePattern, // For debugging
-            difficulty: puzzle.difficulty,
-            solution: puzzle.solution || puzzle.generatedSolution,
-            matchingCards: puzzle.matchingCards,
-            startTime: Date.now()
-        };
     }
     
     /**

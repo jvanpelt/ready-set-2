@@ -309,10 +309,8 @@ export class UIController {
                         // In test mode, load another random puzzle
                         window.dailyPuzzleManager.startDailyPuzzle();
                     } else {
-                        // In production, exit daily puzzle mode and return to home
-                        if (window.dailyPuzzleManager) {
-                            window.dailyPuzzleManager.exitDailyPuzzle();
-                        }
+                        // In production, return to home screen
+                        // Mode transition happens when user chooses Continue or Daily Puzzle
                         if (window.homeScreen) {
                             window.homeScreen.show();
                         }
