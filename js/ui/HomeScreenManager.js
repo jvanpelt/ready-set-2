@@ -29,15 +29,23 @@ export class HomeScreenManager {
                     this.game.mode = undefined;
                 }
                 
-                // Generate fresh round for regular game
-                this.game.generateNewRound();
+                // Restore saved state (don't generate new round!)
+                const savedState = this.game.storage.loadGameState();
+                if (savedState) {
+                    console.log('📂 Restoring saved game state...');
+                    this.game.loadState(savedState);
+                } else {
+                    console.log('⚠️ No saved state found, generating new round');
+                    this.game.generateNewRound();
+                }
             }
             
             this.hide();
             
-            // Render the UI (whether fresh round or saved state)
+            // Render with animation
             if (window.uiController) {
                 window.uiController.render();
+                window.uiController.animateCardsIn();
             }
         });
         
