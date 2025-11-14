@@ -16,8 +16,19 @@ export class HomeScreenManager {
     
     setupEventListeners() {
         // Continue button - resume current level
-        this.continueBtn.addEventListener('click', () => {
+        this.continueBtn.addEventListener('click', async () => {
             console.log('🏠 Continue button clicked');
+            
+            // If coming from daily puzzle, animate out old content first
+            if (this.game.mode === 'daily') {
+                console.log('🎬 Animating out daily puzzle content...');
+                if (window.uiController) {
+                    await Promise.all([
+                        window.uiController.renderer.animateCardsOut(),
+                        window.uiController.renderer.animateDiceOut()
+                    ]);
+                }
+            }
             
             // Enter regular game mode (handles all state restoration)
             this.game.enterRegularMode();
