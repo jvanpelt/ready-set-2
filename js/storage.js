@@ -154,6 +154,12 @@ export class GameStorage {
         localStorage.removeItem(this.keys.dailyPuzzle);
     }
     
+    // Clear regular game state (for debugging/fixing corrupted state)
+    clearRegularGameState() {
+        localStorage.removeItem(this.keys.regularGame);
+        console.log('🗑️ Cleared regular game state - start a new game to regenerate');
+    }
+    
     // Check if saved game exists
     hasSavedGame() {
         return localStorage.getItem(this.keys.level) !== null;

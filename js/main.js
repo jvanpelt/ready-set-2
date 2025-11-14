@@ -7,7 +7,7 @@ import { HomeScreenManager } from './ui/HomeScreenManager.js';
 import DailyPuzzleManager from './DailyPuzzleManager.js';
 
 // Display version (hardcoded for console, cache busting uses timestamps)
-const VERSION = 'v4.19.3';
+const VERSION = 'v4.19.4';
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 console.log('🎮 Ready, Set 2 - Version:', VERSION);
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Make game accessible for debugging
         window.game = game;
         window.ui = ui;
+        window.storage = game.storage; // Access to storage for debugging
         
         console.log('✅ Game initialization complete!');
     } catch (error) {

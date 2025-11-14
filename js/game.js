@@ -705,6 +705,9 @@ export class Game {
         const savedState = this.storage.loadGameState();
         if (savedState && savedState.cards && savedState.cards.length > 0) {
             console.log('📂 Restoring saved regular game state');
+            console.log('  - Level:', savedState.level);
+            console.log('  - Cards:', savedState.cards.length);
+            console.log('  - First card colors:', savedState.cards.slice(0, 3).map(c => c.colors));
             this.restoreFromSavedState(savedState);
         } else {
             console.log('⚠️ No saved state found, generating new round');
