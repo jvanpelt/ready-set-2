@@ -280,11 +280,16 @@ export class Game {
         if (this.timerInterval) {
             clearInterval(this.timerInterval);
             this.timerInterval = null;
+            this.timeRemaining = null;
+            this.timerStartTime = null;
+            this.timerDuration = null;
+            this.saveState(); // Clear timer from storage
+        } else {
+            // No active timer, just clear the properties without saving
+            this.timeRemaining = null;
+            this.timerStartTime = null;
+            this.timerDuration = null;
         }
-        this.timeRemaining = null;
-        this.timerStartTime = null;
-        this.timerDuration = null;
-        this.saveState(); // Clear timer from storage
     }
     
     handleTimeout() {
@@ -697,17 +702,20 @@ export class Game {
     enterRegularMode() {
         console.log('🎮 ===== ENTERING REGULAR GAME MODE =====');
         
-        // Set mode explicitly
-        this.mode = 'regular';
+        // CRITICAL: Don't set mode until AFTER we've restored the correct data!
+        // If we set mode='regular' now, but this.cards/this.dice still contain
+        // daily puzzle data, any saveState() call will corrupt the regular game save.
         
         // Clear daily puzzle data
         this.dailyPuzzle = null;
         this.storage.clearDailyPuzzleState();
         
         // Stop any timer (will restart if needed for Level 7+)
-        this.stopTimer();
+        if (this.timerInterval) {
+            this.stopTimer();
+        }
         
-        // Restore saved regular game state
+        // Restore saved regular game state FIRST
         const savedState = this.storage.loadGameState();
         if (savedState && savedState.cards && savedState.cards.length > 0) {
             console.log('📂 Found saved regular game state');
@@ -729,9 +737,6 @@ export class Game {
                 this.level = savedState.level;
                 this.score = savedState.score || 0;
                 this.generateNewRound();
-                
-                // Save the fresh state to overwrite corruption
-                this.saveState();
             } else {
                 console.log('✅ Valid regular game state, restoring');
                 this.restoreFromSavedState(savedState);
@@ -740,6 +745,9 @@ export class Game {
             console.log('⚠️ No saved state found, generating new round');
             this.generateNewRound();
         }
+        
+        // NOW set mode to 'regular' - data is correct
+        this.mode = 'regular';
         
         console.log('✅ Regular game mode active');
     }
@@ -769,7 +777,9 @@ export class Game {
         };
         
         // Stop any timer (daily puzzles don't have timers)
-        this.stopTimer();
+        if (this.timerInterval) {
+            this.stopTimer();
+        }
         
         // Load puzzle data into game state
         this.cards = puzzle.cards;
