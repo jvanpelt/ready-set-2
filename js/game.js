@@ -642,10 +642,16 @@ export class Game {
             dailyPuzzle: this.dailyPuzzle
         };
         
+        // DEBUG: Log what we're saving and where
+        console.log(`💾 saveState() - mode: ${this.mode}`);
+        console.log(`  - Level: ${this.level}, Dice: ${this.dice?.length}`);
+        
         // Save to appropriate storage location based on mode
         if (this.mode === 'daily') {
+            console.log(`  → Saving to DAILY PUZZLE storage`);
             this.storage.saveDailyPuzzleState(stateData);
         } else {
+            console.log(`  → Saving to REGULAR GAME storage`);
             this.storage.saveGameState(stateData);
         }
     }
@@ -746,12 +752,8 @@ export class Game {
     enterDailyMode(puzzle) {
         console.log('🎲 ===== ENTERING DAILY PUZZLE MODE =====');
         
-        // CRITICAL: Save current regular game state BEFORE switching modes
-        // This ensures we can always restore back to it
-        if (this.mode === 'regular' && this.cards && this.cards.length > 0) {
-            console.log('💾 Saving regular game state before entering daily mode');
-            this.saveState(); // Will save to regularGame because mode is still 'regular'
-        }
+        // NOTE: Regular game state is saved by DailyPuzzleManager BEFORE calling this
+        // This ensures we save clean data before any daily puzzle loading
         
         // Set mode explicitly
         this.mode = 'daily';

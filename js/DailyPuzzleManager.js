@@ -145,6 +145,15 @@ class DailyPuzzleManager {
             return; // Don't load the puzzle
         }
         
+        // CRITICAL: Save regular game state BEFORE loading daily puzzle
+        // Must happen here, not in enterDailyMode, to guarantee clean data
+        if (this.game.mode === 'regular' && this.game.cards && this.game.cards.length > 0) {
+            console.log('💾 [DPM] Saving regular game state before loading daily puzzle');
+            console.log('  - Current cards:', this.game.cards.length);
+            console.log('  - Current dice:', this.game.dice?.length);
+            this.game.saveState(); // Saves while mode is still 'regular'
+        }
+        
         // Generate/load puzzle
         const puzzle = this.getTodaysPuzzle();
         this.currentPuzzle = puzzle;
