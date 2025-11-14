@@ -28,12 +28,17 @@ export class HomeScreenManager {
                     // Fallback if manager not available
                     this.game.mode = undefined;
                 }
+                
+                // Generate fresh round for regular game
+                this.game.generateNewRound();
             }
             
-            // Generate a fresh round for regular game
-            this.game.generateNewRound();
-            
             this.hide();
+            
+            // Render the UI (whether fresh round or saved state)
+            if (window.uiController) {
+                window.uiController.render();
+            }
         });
         
         // Daily Puzzle button - start daily puzzle mode
