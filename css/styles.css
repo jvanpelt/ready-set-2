@@ -794,7 +794,7 @@ body {
 }
 
 .daily-puzzle-result .puzzle-emoji {
-    font-size: 30px;
+    font-size: 28px;
     line-height: 1.4;
     padding: 15px;
     background: var(--overlay-dark-20);
