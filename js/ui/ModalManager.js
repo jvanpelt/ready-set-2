@@ -533,14 +533,15 @@ ${emoji}`;
                     text: shareText
                 });
                 console.log('📤 Shared via native API');
-                return;
             } catch (err) {
-                // User cancelled or error occurred
+                // User cancelled or error occurred - this is normal, just log it
                 console.log('Share cancelled or failed:', err);
             }
+            // Always return after attempting native share (don't fall through to clipboard)
+            return;
         }
         
-        // Fallback to clipboard (desktop)
+        // Fallback to clipboard (desktop only - when native share not available)
         try {
             await navigator.clipboard.writeText(shareText);
             this.showShareToast();
