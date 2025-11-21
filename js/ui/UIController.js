@@ -9,6 +9,7 @@ import { TutorialManager } from './TutorialManager.js';
 import { evaluateExpression, hasRestriction, evaluateRestriction } from '../setTheory.js';
 import { hasPossibleSolution } from '../solutionFinder.js';
 import { getLevelConfig } from '../levels.js';
+import { isSolutionSyntaxValid } from '../utils/validation.js';
 
 export class UIController {
     constructor(game, onUpdate) {
@@ -530,67 +531,8 @@ export class UIController {
      * @returns {boolean} - True if syntax is valid
      */
     isSolutionSyntaxValid(dice) {
-        if (dice.length === 0) return true;
-        
-        // Check for wild cubes without operator selection - these are invalid (incomplete)
-        const hasIncompleteWild = dice.some(die => die.type === 'wild' && !die.selectedOperator);
-        if (hasIncompleteWild) {
-            return false;
-        }
-        
-        // Binary operators (infix: operand → operator → operand)
-        const binaryOperators = ['∪', '∩', '−', '=', '⊆'];
-        // Postfix operators (operand → operator)
-        const postfixOperators = ['′'];
-        
-        // Helper: Get effective value (for wild cubes, use selectedOperator)
-        const getEffectiveValue = (die) => {
-            if (die.type === 'wild' && die.selectedOperator) {
-                return die.selectedOperator;
-            }
-            return die.value;
-        };
-        
-        // Single die is valid only if it's an operand (not an operator)
-        if (dice.length === 1) {
-            const value = getEffectiveValue(dice[0]);
-            return !binaryOperators.includes(value) && !postfixOperators.includes(value);
-        }
-        
-        // Strategy: Treat "operand + optional postfix" as a single unit
-        // Valid patterns:
-        // - operand (with optional ′)
-        // - operand (with optional ′) operator operand (with optional ′) ...
-        
-        let expectingOperand = true; // Start expecting an operand
-        
-        for (let i = 0; i < dice.length; i++) {
-            const die = dice[i];
-            const value = getEffectiveValue(die);
-            const isBinaryOp = binaryOperators.includes(value);
-            const isPostfixOp = postfixOperators.includes(value);
-            
-            if (expectingOperand) {
-                // Should be an operand (color/set)
-                if (isBinaryOp || isPostfixOp) {
-                    return false; // Can't start with operator
-                }
-                // Consume all consecutive postfix operators (e.g., ′ ′ for double complement)
-                while (i + 1 < dice.length && postfixOperators.includes(getEffectiveValue(dice[i + 1]))) {
-                    i++; // Skip each postfix operator
-                }
-                expectingOperand = false; // Next should be binary operator (or end)
-            } else {
-                // Should be a binary operator
-                if (!isBinaryOp) {
-                    return false; // Expected binary operator, got something else
-                }
-                expectingOperand = true; // Next should be operand
-            }
-        }
-        
-        // Must end with an operand (not expecting an operator)
-        return !expectingOperand;
+        // Use shared validation utility (no sorting needed - dice are already sorted)
+        return isSolutionSyntaxValid(dice, false);
     }
     
     evaluateSolutionHelper() {
