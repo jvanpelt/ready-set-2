@@ -532,7 +532,7 @@ const SETNAME_PATTERNS = [
  * - 2 operator cubes including prime (max)
  * - 2 special cubes: setName + restriction combined (max)
  */
-// Complete set of physically possible RESTRICTION patterns (65 total)
+// Complete set of physically possible RESTRICTION patterns (73 total)
 // Generated and validated with scripts/validate-all-patterns.mjs
 // Constraints: max 4 colors, max 2 operators (∪∩−′), max 2 special cubes (U∅=⊆)
 const RESTRICTION_PATTERNS = [
@@ -547,7 +547,7 @@ const RESTRICTION_PATTERNS = [
     "color,restriction,setName,prime",
     "setName,prime,restriction,color",
     "setName,restriction,color,prime",
-    // 5 cubes (17 patterns)
+    // 5 cubes (25 patterns - includes 8 with double restrictions)
     "color,operator,color,restriction,color",
     "color,operator,color,restriction,setName",
     "color,operator,setName,restriction,color",
@@ -565,6 +565,15 @@ const RESTRICTION_PATTERNS = [
     "setName,prime,restriction,color,prime",
     "setName,restriction,color,operator,color",
     "setName,restriction,color,prime,prime",
+    // 5 cubes with TWO restrictions (8 patterns added)
+    "color,restriction,color,restriction,color",
+    "color,restriction,color,restriction,setName",
+    "color,restriction,setName,restriction,color",
+    "color,restriction,setName,restriction,setName",
+    "setName,restriction,color,restriction,color",
+    "setName,restriction,color,restriction,setName",
+    "setName,restriction,setName,restriction,color",
+    "setName,restriction,setName,restriction,setName",
     // 6 cubes (24 patterns)
     "color,operator,color,prime,restriction,color",
     "color,operator,color,prime,restriction,setName",
