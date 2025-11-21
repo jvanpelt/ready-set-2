@@ -619,11 +619,9 @@ export class UIRenderer {
                 if (isBinaryOp || isPostfixOp) {
                     return false; // Can't start with operator
                 }
-                // Check if next die is a postfix operator
-                const nextDie = sortedDice[i + 1];
-                if (nextDie && postfixOperators.includes(getEffectiveValue(nextDie))) {
-                    // Skip the postfix operator, it's part of this operand
-                    i++;
+                // Consume all consecutive postfix operators (e.g., ′ ′ for double complement)
+                while (i + 1 < sortedDice.length && postfixOperators.includes(getEffectiveValue(sortedDice[i + 1]))) {
+                    i++; // Skip each postfix operator
                 }
                 expectingOperand = false; // Next should be binary operator (or end)
             } else {
