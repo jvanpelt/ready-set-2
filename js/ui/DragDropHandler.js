@@ -361,11 +361,26 @@ export class DragDropHandler {
                             const currentX = parseFloat(this.currentDragElement.style.left) || 0;
                             const currentY = parseFloat(this.currentDragElement.style.top) || 0;
                             
-                            // Animate to ghost position
+                            // Get ghost rotation and scale
+                            const ghostTransform = window.getComputedStyle(ghostDie).transform;
+                            let ghostRotation = 0;
+                            let ghostScale = 1;
+                            
+                            if (ghostTransform && ghostTransform !== 'none') {
+                                const matrix = new DOMMatrix(ghostTransform);
+                                // Extract rotation from matrix
+                                ghostRotation = Math.round(Math.atan2(matrix.b, matrix.a) * (180 / Math.PI));
+                                // Extract scale
+                                ghostScale = matrix.a; // Assuming uniform scale
+                            }
+                            
+                            // Animate to ghost position, rotation, and scale
                             gsap.to(this.currentDragElement, {
                                 duration: 0.3,
                                 left: (currentX + deltaX) + 'px',
                                 top: (currentY + deltaY) + 'px',
+                                rotation: ghostRotation,
+                                scale: ghostScale,
                                 ease: 'power2.out',
                                 onComplete: () => {
                                     // After slide, remove from solution and re-render
