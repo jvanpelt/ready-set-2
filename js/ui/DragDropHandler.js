@@ -243,14 +243,15 @@ export class DragDropHandler {
                     const appScale = this.getAppScale();
                     
                     // Get bounds for vertical constraints
-                    const diceAreaRect = this.diceContainer.getBoundingClientRect();
+                    const diceAreaElement = document.querySelector('.dice-area');
+                    const diceAreaRect = diceAreaElement.getBoundingClientRect();
                     const solutionAreaRect = this.solutionArea.getBoundingClientRect();
                     
                     // Convert mouse position to unscaled space (relative to current row)
                     let x = ((coords.clientX - rowRect.left) / appScale) - this.dragOffset.x;
                     let y = ((coords.clientY - rowRect.top) / appScale) - this.dragOffset.y;
                     
-                    // Constrain Y to stay within game bounds (between dice area and solution area)
+                    // Constrain Y to stay within game bounds (top of .dice-area to bottom of solution area)
                     // Convert bounds to row-relative coordinates
                     const minY = (diceAreaRect.top - rowRect.top) / appScale;
                     const maxY = (solutionAreaRect.bottom - rowRect.top) / appScale - getDieSize();
