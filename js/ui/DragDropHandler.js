@@ -243,14 +243,13 @@ export class DragDropHandler {
                     let x = ((coords.clientX - rowRect.left) / appScale) - this.dragOffset.x;
                     let y = ((coords.clientY - rowRect.top) / appScale) - this.dragOffset.y;
                     
-                    const dieSize = getDieSize();
-                    const maxX = (rowRect.width / appScale) - dieSize - 20;
-                    const maxY = (rowRect.height / appScale) - dieSize - 20;
-                    x = Math.max(0, Math.min(x, maxX));
-                    y = Math.max(0, Math.min(y, maxY));
-                    
+                    // During drag, DON'T constrain to row bounds (allow dragging outside)
+                    // This lets the die follow the cursor to other rows or dice area
                     this.currentDragElement.style.left = `${x}px`;
                     this.currentDragElement.style.top = `${y}px`;
+                    
+                    // Allow die to be visible outside row during drag
+                    row.style.overflow = 'visible';
                     
                     // Visual feedback: highlight valid drop zones
                     const elementUnderCursor = document.elementFromPoint(coords.clientX, coords.clientY);
@@ -363,6 +362,9 @@ export class DragDropHandler {
                 // Clear all drag-over highlights
                 document.querySelectorAll('.solution-row.drag-over').forEach(r => r.classList.remove('drag-over'));
                 this.diceContainer.classList.remove('drag-over');
+                
+                // Reset row overflow to default
+                document.querySelectorAll('.solution-row').forEach(r => r.style.overflow = '');
                 
                 this.currentDragElement.style.zIndex = '1';
                 this.currentDragElement = null;
