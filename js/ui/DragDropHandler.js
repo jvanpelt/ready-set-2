@@ -147,8 +147,23 @@ export class DragDropHandler {
                 const halfWidth = this.touchDragClone.offsetWidth / 2;
                 const halfHeight = this.touchDragClone.offsetHeight / 2;
                 
-                this.touchDragClone.style.left = (coords.clientX - halfWidth) + 'px';
-                this.touchDragClone.style.top = (coords.clientY - halfHeight) + 'px';
+                // Get bounds for vertical constraints
+                const diceAreaElement = document.querySelector('.dice-area');
+                const solutionAreaElement = this.solutionArea;
+                const diceAreaRect = diceAreaElement.getBoundingClientRect();
+                const solutionAreaRect = solutionAreaElement.getBoundingClientRect();
+                
+                // Calculate position
+                let left = coords.clientX - halfWidth;
+                let top = coords.clientY - halfHeight;
+                
+                // Constrain Y to stay within game bounds (top of .dice-area to bottom of solution area)
+                const minTop = diceAreaRect.top;
+                const maxTop = solutionAreaRect.bottom - this.touchDragClone.offsetHeight;
+                top = Math.max(minTop, Math.min(top, maxTop));
+                
+                this.touchDragClone.style.left = left + 'px';
+                this.touchDragClone.style.top = top + 'px';
             }
         }, { passive: false });
         
