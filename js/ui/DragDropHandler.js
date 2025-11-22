@@ -361,37 +361,24 @@ export class DragDropHandler {
                             const currentX = parseFloat(this.currentDragElement.style.left) || 0;
                             const currentY = parseFloat(this.currentDragElement.style.top) || 0;
                             
-                            // Get ghost rotation and scale
-                            const ghostTransform = window.getComputedStyle(ghostDie).transform;
-                            let ghostRotation = 0;
-                            let ghostScale = 1;
+                            // Get rotation from the original die data (stored when dragged from dice area)
+                            // The ghost won't have rotation because dice are removed when added to solution
+                            const dieFromSolution = this.game.solutions[sourceRowIndex][dieIndex];
+                            const targetRotation = dieFromSolution?.rotation || 0;
                             
-                            if (ghostTransform && ghostTransform !== 'none') {
-                                const matrix = new DOMMatrix(ghostTransform);
-                                // Extract rotation from matrix
-                                ghostRotation = Math.round(Math.atan2(matrix.b, matrix.a) * (180 / Math.PI));
-                                // Extract scale
-                                ghostScale = Math.sqrt(matrix.a * matrix.a + matrix.b * matrix.b);
-                            }
+                            console.log('🎯 Animating back to dice area:', { 
+                                targetRotation, 
+                                dieRotation: dieFromSolution?.rotation,
+                                ghostId: ghostDie.dataset.id 
+                            });
                             
-                            console.log('🎯 Ghost transform:', { rotation: ghostRotation, scale: ghostScale, transform: ghostTransform });
-                            
-                            // Get current dragged element's rotation for comparison
-                            const currentTransform = window.getComputedStyle(this.currentDragElement).transform;
-                            let currentRotation = 0;
-                            if (currentTransform && currentTransform !== 'none') {
-                                const currentMatrix = new DOMMatrix(currentTransform);
-                                currentRotation = Math.round(Math.atan2(currentMatrix.b, currentMatrix.a) * (180 / Math.PI));
-                            }
-                            console.log('🎯 Current rotation:', currentRotation);
-                            
-                            // Animate to ghost position, rotation, and scale
+                            // Animate to ghost position with original rotation
                             gsap.to(this.currentDragElement, {
                                 duration: 0.3,
                                 left: (currentX + deltaX) + 'px',
                                 top: (currentY + deltaY) + 'px',
-                                rotation: ghostRotation,
-                                scale: ghostScale,
+                                rotation: targetRotation,
+                                scale: 1,
                                 ease: 'power2.out',
                                 onComplete: () => {
                                     // After slide, remove from solution and re-render
