@@ -366,12 +366,13 @@ export class DragDropHandler {
                             const dieFromSolution = this.game.solutions[sourceRowIndex][dieIndex];
                             const targetRotation = dieFromSolution?.rotation || 0;
                             
-                            console.log('🎯 Animating back to dice area');
+                            // Get current rotation from the element's inline transform
+                            const currentRotation = gsap.getProperty(this.currentDragElement, 'rotation') || 0;
                             
-                            // First, explicitly set current scale to 1.0 (solution die base size)
-                            gsap.set(this.currentDragElement, { 
-                                scale: 1.0,
-                                transformOrigin: 'center center'
+                            console.log('🎯 Animating back to dice area', {
+                                currentRotation,
+                                targetRotation,
+                                willScale: '1.0 → 1.25'
                             });
                             
                             // Animate to ghost position with original rotation and scale up
@@ -381,7 +382,8 @@ export class DragDropHandler {
                                 left: (currentX + deltaX) + 'px',
                                 top: (currentY + deltaY) + 'px',
                                 rotation: targetRotation,
-                                scale: 1.25, // Scale from 80px (solution) to 100px (dice area)
+                                scale: 1.25, // Scale from 1.0 (80px solution) to 1.25 (100px dice area)
+                                transformOrigin: 'center center',
                                 ease: 'power2.out',
                                 onComplete: () => {
                                     // After slide, remove from solution and re-render
