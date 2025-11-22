@@ -343,58 +343,7 @@ export class DragDropHandler {
                     if (diceAreaUnderDrop) {
                         console.log('🎲 Dropped on dice area - sliding back to ghost');
                         this.currentDragElement.classList.remove('dragging');
-                        
-                        // Find the ghost die in dice area
-                        const ghostDie = this.diceContainer.querySelector(`.die[data-id="${this.draggedDieId}"]`);
-                        
-                        if (ghostDie) {
-                            // Get positions
-                            const ghostRect = ghostDie.getBoundingClientRect();
-                            const draggedRect = this.currentDragElement.getBoundingClientRect();
-                            const appScale = this.getAppScale();
-                            
-                            // Current element is 80px, will scale to 100px (1.25x)
-                            // When scaling from center, top-left corner shifts by (newSize - oldSize) / 2
-                            const currentSize = 80; // solution die size
-                            const targetSize = 100; // dice area die size
-                            const sizeIncrease = targetSize - currentSize;
-                            const cornerShift = sizeIncrease / 2; // 10px shift in each direction
-                            
-                            // Calculate offset to slide (in unscaled space)
-                            // Adjust for the corner shift that will happen when scaling
-                            const deltaX = (ghostRect.left - draggedRect.left) / appScale + cornerShift;
-                            const deltaY = (ghostRect.top - draggedRect.top) / appScale + cornerShift;
-                            
-                            // Get current position
-                            const currentX = parseFloat(this.currentDragElement.style.left) || 0;
-                            const currentY = parseFloat(this.currentDragElement.style.top) || 0;
-                            
-                            // Get rotation from the original die data (stored when dragged from dice area)
-                            // The ghost won't have rotation because dice are removed when added to solution
-                            const dieFromSolution = this.game.solutions[sourceRowIndex][dieIndex];
-                            const targetRotation = dieFromSolution?.rotation || 0;
-                            
-                            // Animate to ghost position with original rotation and scale up
-                            // Solution dice are 80px, dice area dice are 100px (scale 1.25x larger)
-                            gsap.to(this.currentDragElement, {
-                                duration: 0.3,
-                                left: (currentX + deltaX) + 'px',
-                                top: (currentY + deltaY) + 'px',
-                                rotation: targetRotation,
-                                scale: 1.25, // Scale from 1.0 (80px solution) to 1.25 (100px dice area)
-                                transformOrigin: 'center center',
-                                ease: 'power2.out',
-                                onComplete: () => {
-                                    // After slide, remove from solution and re-render
-                                    this.game.removeDieFromSolution(sourceRowIndex, dieIndex);
-                                    this.onDrop();
-                                }
-                            });
-                        } else {
-                            // Fallback: no animation, just remove
-                            this.game.removeDieFromSolution(sourceRowIndex, dieIndex);
-                            this.onDrop();
-                        }
+                        this.animateDieBackToDiceArea(this.currentDragElement, sourceRowIndex, dieIndex);
                     }
                     // CASE 2: Dropped on a different row - move between rows
                     else if (targetRow && parseInt(targetRow.dataset.row) !== sourceRowIndex && !targetRow.dataset.disabled) {
@@ -596,12 +545,12 @@ export class DragDropHandler {
             if (solutionDie) {
                 const row = solutionDie.closest('.solution-row');
                 const rowIndex = parseInt(row.dataset.row);
-                const dieId = solutionDie.dataset.id;  // Use ID instead of index
-                // Find die by ID
+                const dieId = solutionDie.dataset.id;
                 const dieIndex = this.game.solutions[rowIndex].findIndex(d => d.id === dieId);
+                
                 if (dieIndex !== -1) {
-                    this.game.removeDieFromSolution(rowIndex, dieIndex);
-                    this.onDrop();
+                    // Animate die back to dice area
+                    this.animateDieBackToDiceArea(solutionDie, rowIndex, dieIndex);
                 }
             }
         });
@@ -724,6 +673,57 @@ export class DragDropHandler {
             x: Math.max(0, Math.min(newDie.x, unscaledRowWidth - dieSize - 20)),
             y: Math.max(0, Math.min(newDie.y, unscaledRowHeight - dieSize - 20))
         };
+    }
+    
+    /**
+     * Animate a die back to its ghost position in the dice area
+     * Used for both drag-to-dice-area and double-click removal
+     */
+    animateDieBackToDiceArea(solutionDie, rowIndex, dieIndex) {
+        const dieFromSolution = this.game.solutions[rowIndex][dieIndex];
+        const ghostDie = document.querySelector(`.die[data-id="${dieFromSolution.id}"]`);
+        
+        if (ghostDie) {
+            const ghostRect = ghostDie.getBoundingClientRect();
+            const draggedRect = solutionDie.getBoundingClientRect();
+            const appScale = this.getAppScale();
+            
+            // Current element is 80px, will scale to 100px (1.25x)
+            const currentSize = 80;
+            const targetSize = 100;
+            const sizeIncrease = targetSize - currentSize;
+            const cornerShift = sizeIncrease / 2;
+            
+            // Calculate offset to slide (accounting for scale change)
+            const deltaX = (ghostRect.left - draggedRect.left) / appScale + cornerShift;
+            const deltaY = (ghostRect.top - draggedRect.top) / appScale + cornerShift;
+            
+            // Get current position
+            const currentX = parseFloat(solutionDie.style.left) || 0;
+            const currentY = parseFloat(solutionDie.style.top) || 0;
+            
+            // Get target rotation from die data
+            const targetRotation = dieFromSolution?.rotation || 0;
+            
+            // Animate to ghost position with rotation and scale
+            gsap.to(solutionDie, {
+                duration: 0.3,
+                left: (currentX + deltaX) + 'px',
+                top: (currentY + deltaY) + 'px',
+                rotation: targetRotation,
+                scale: 1.25,
+                transformOrigin: 'center center',
+                ease: 'power2.out',
+                onComplete: () => {
+                    this.game.removeDieFromSolution(rowIndex, dieIndex);
+                    this.onDrop();
+                }
+            });
+        } else {
+            // Fallback: no animation, just remove
+            this.game.removeDieFromSolution(rowIndex, dieIndex);
+            this.onDrop();
+        }
     }
     
     /**
