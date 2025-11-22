@@ -405,7 +405,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'solution-helper',
-                    message: 'When the "solution helper" is enabled, like during tutorials, it will highlight the cards that match your current solution.',
+                    message: 'When the "Solution Helper" is enabled, like during tutorials, it will highlight the cards that match your current solution.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -437,9 +437,17 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'swap-and',
-                    message: 'Double-tap the <strong>OR</strong> cube to remove it, then replace it with the <strong>AND</strong> operator.',
-                    highlight: { dice: [3] },
-                    nextTrigger: 'solution'  // Wait for correct solution
+                    message: 'Now try a solution of <strong>"red AND blue"</strong>. Tip: Double-tap any cube to remove it from your solution.',
+                    highlight: { dice: [0, 1, 3] }, // Highlight red, blue, and AND
+                    validation: (game) => {
+                        // Check if solution contains red, AND, blue (in any row, any order)
+                        const allDice = [...game.solutions[0], ...game.solutions[1]];
+                        const hasRed = allDice.some(d => d.value === 'red');
+                        const hasAnd = allDice.some(d => d.value === '∩');
+                        const hasBlue = allDice.some(d => d.value === 'blue');
+                        return hasRed && hasAnd && hasBlue;
+                    },
+                    nextTrigger: 'validation'
                 },
                 {
                     id: 'and-success',
