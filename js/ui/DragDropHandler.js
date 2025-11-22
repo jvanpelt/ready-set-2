@@ -242,12 +242,23 @@ export class DragDropHandler {
                     const rowRect = row.getBoundingClientRect();
                     const appScale = this.getAppScale();
                     
-                    // Convert mouse position to unscaled space
+                    // Get bounds for vertical constraints
+                    const diceAreaRect = this.diceContainer.getBoundingClientRect();
+                    const solutionAreaRect = this.solutionArea.getBoundingClientRect();
+                    
+                    // Convert mouse position to unscaled space (relative to current row)
                     let x = ((coords.clientX - rowRect.left) / appScale) - this.dragOffset.x;
                     let y = ((coords.clientY - rowRect.top) / appScale) - this.dragOffset.y;
                     
-                    // During drag, DON'T constrain to row bounds (allow dragging outside)
-                    // This lets the die follow the cursor to other rows or dice area
+                    // Constrain Y to stay within game bounds (between dice area and solution area)
+                    // Convert bounds to row-relative coordinates
+                    const minY = (diceAreaRect.top - rowRect.top) / appScale;
+                    const maxY = (solutionAreaRect.bottom - rowRect.top) / appScale - getDieSize();
+                    
+                    // Clamp Y position
+                    y = Math.max(minY, Math.min(y, maxY));
+                    
+                    // X is unconstrained (can move freely horizontally)
                     this.currentDragElement.style.left = `${x}px`;
                     this.currentDragElement.style.top = `${y}px`;
                     
