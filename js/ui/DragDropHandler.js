@@ -732,9 +732,35 @@ export class DragDropHandler {
      * @returns {boolean} - True if allowed, false if restricted
      */
     isDieAllowedInTutorial(dieElement) {
-        // Always allow dice to be dragged during tutorials
-        // Players learn better through free exploration
-        return true;
+        // If no tutorial is active, allow all dice
+        if (!this.tutorialManager || !this.tutorialManager.isActive) {
+            return true;
+        }
+        
+        // Get current tutorial step
+        const currentStep = this.tutorialManager.scenario?.walkthrough?.steps[this.tutorialManager.currentStep];
+        
+        if (!currentStep || !currentStep.highlight || !currentStep.highlight.dice) {
+            // No dice specified on this step = allow all dice (for auto/submit steps)
+            return true;
+        }
+        
+        // Get the allowed dice indices from highlight
+        const allowedIndices = currentStep.highlight.dice;
+        
+        // Find this die's index in the dice array
+        let dieIndex;
+        if (dieElement.dataset.index !== undefined) {
+            // Use cached index from data attribute (faster)
+            dieIndex = parseInt(dieElement.dataset.index, 10);
+        } else {
+            // Fallback: compute index from DOM (slower but reliable)
+            const allDice = Array.from(this.diceContainer.querySelectorAll('.die:not(.solution-die)'));
+            dieIndex = allDice.indexOf(dieElement);
+        }
+        
+        // Only allow dice that are highlighted for this step
+        return allowedIndices.includes(dieIndex);
     }
     
     // ========================================
