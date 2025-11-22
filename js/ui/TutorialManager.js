@@ -257,27 +257,37 @@ export class TutorialManager {
         // 2. Object (new format - level 6+): expectedSolution: { restriction: [...], setName: [...] }
         
         if (Array.isArray(expected)) {
-            // Old format: validate row 1 (set name)
+            // Old format: Check BOTH rows (player can use either during tutorial)
             // For wild cubes, use selectedOperator; for others, use value
-            const actual = this.game.solutions[1].map(die => 
+            const row0 = this.game.solutions[0].map(die => 
                 die.type === 'wild' ? die.selectedOperator : die.value
             );
-            console.log('   Actual (set name):', actual);
+            const row1 = this.game.solutions[1].map(die => 
+                die.type === 'wild' ? die.selectedOperator : die.value
+            );
             
-            if (actual.length !== expected.length) {
-                console.log('   ❌ Wrong number of dice');
-                return false;
-            }
+            console.log('   Actual row 0:', row0);
+            console.log('   Actual row 1:', row1);
             
-            for (let i = 0; i < expected.length; i++) {
-                if (actual[i] !== expected[i]) {
-                    console.log(`   ❌ Mismatch at position ${i}: expected "${expected[i]}", got "${actual[i]}"`);
-                    return false;
+            // Check if either row matches the expected solution
+            const checkRow = (actual) => {
+                if (actual.length !== expected.length) return false;
+                for (let i = 0; i < expected.length; i++) {
+                    if (actual[i] !== expected[i]) return false;
                 }
+                return true;
+            };
+            
+            const row0Matches = checkRow(row0);
+            const row1Matches = checkRow(row1);
+            
+            if (row0Matches || row1Matches) {
+                console.log('   ✅ Dice match!');
+                return true;
             }
             
-            console.log('   ✅ Dice match!');
-            return true;
+            console.log('   ❌ Neither row matches expected solution');
+            return false;
         } else {
             // New format: validate both restriction and set name
             let valid = true;
