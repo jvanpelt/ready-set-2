@@ -1402,10 +1402,16 @@ body {
     box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
 }
 
-.tutorial-next-btn:disabled {
-    opacity: 0.4;
+/* Disabled button state for tutorials */
+.tutorial-next-btn:disabled,
+.btn:disabled {
+    opacity: 0.5;
     cursor: not-allowed;
-    background: var(--overlay-white-10);
+    background: var(--overlay-dark-30) !important;
+    color: var(--overlay-white-40) !important;
+    border: 2px solid var(--overlay-dark-50) !important;
+    box-shadow: none !important;
+    transform: none !important;
 }
 
 .tutorial-skip-btn {

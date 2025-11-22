@@ -18,6 +18,11 @@ export class TutorialManager {
         this.skipBtn = document.getElementById('tutorial-skip-btn');
         this.nextBtn = document.getElementById('tutorial-next-btn');
         
+        // Game control buttons (for disabling during validation steps)
+        this.goBtn = document.getElementById('go-btn');
+        this.passBtn = document.getElementById('pass-btn');
+        this.resetBtn = document.getElementById('reset-btn');
+        
         this.skipBtn.addEventListener('click', () => this.skip());
         this.nextBtn.addEventListener('click', () => this.handleNextClick());
     }
@@ -94,17 +99,31 @@ export class TutorialManager {
             this.nextBtn.style.display = 'block';
             this.nextBtn.disabled = true;
             this.skipBtn.style.display = 'inline-block';
+            
+            // Disable GO and PASS during validation steps
+            // Players should focus on the achievement, not submitting yet
+            if (this.goBtn) this.goBtn.disabled = true;
+            if (this.passBtn) this.passBtn.disabled = true;
+            
             this.startValidationLoop(step.validation);
         } else if (step.nextTrigger === 'submit') {
             // Hide Next button and Skip button - user must submit
             this.nextBtn.style.display = 'none';
             this.nextBtn.disabled = true;
             this.skipBtn.style.display = 'none';
+            
+            // Enable GO and PASS for submit steps
+            if (this.goBtn) this.goBtn.disabled = false;
+            if (this.passBtn) this.passBtn.disabled = false;
         } else {
             // Show Next button for manual progression (including 'auto' steps)
             this.nextBtn.style.display = 'block';
             this.nextBtn.disabled = false;
             this.skipBtn.style.display = 'inline-block';
+            
+            // Enable GO and PASS for auto steps
+            if (this.goBtn) this.goBtn.disabled = false;
+            if (this.passBtn) this.passBtn.disabled = false;
         }
     }
     
@@ -154,6 +173,11 @@ export class TutorialManager {
                 
                 // Enable the Next button so user can proceed when ready
                 this.nextBtn.disabled = false;
+                
+                // Also enable GO and PASS now that achievement is met
+                if (this.goBtn) this.goBtn.disabled = false;
+                if (this.passBtn) this.passBtn.disabled = false;
+                
                 this.celebrateSuccess();
                 
                 // No longer auto-advance - let user click Next when ready
@@ -322,6 +346,11 @@ export class TutorialManager {
         this.clearHighlights();
         this.instructionEl.classList.add('hidden');
         document.body.classList.remove('tutorial-active');
+        
+        // Re-enable all buttons
+        if (this.goBtn) this.goBtn.disabled = false;
+        if (this.passBtn) this.passBtn.disabled = false;
+        if (this.resetBtn) this.resetBtn.disabled = false;
         
         // Clear tutorial flag in Game and handle expired timer
         this.game.isTutorialActive = false;

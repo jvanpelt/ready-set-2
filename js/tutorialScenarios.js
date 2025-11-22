@@ -405,7 +405,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'set-name',
-                    message: 'Drag cubes to the <strong>SOLUTION AREA</strong> to create a "set name" - a formula that selects cards. <strong>Your formula is read left-to-right, just like a math equation.</strong>',
+                    message: 'Drag cubes to the <strong>SOLUTION AREA</strong> to create a "set name" - a formula that selects a set of cards. Your formula is read <strong>left-to-right</strong>, just like a math equation.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
