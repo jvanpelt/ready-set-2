@@ -3,7 +3,7 @@
  * These are used when players choose "Show Me How" on the interstitial screen
  */
 
-import { isValidSolutionSyntax } from './utils/validation.js';
+import { isSolutionSyntaxValid } from './utils/validation.js';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // INTRO TUTORIAL - Now Interactive! 
@@ -426,7 +426,7 @@ export const TUTORIAL_SCENARIOS = {
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
                         
                         // Must be valid syntax (prevents 'red blue ∪' or '∪ red blue' etc.)
-                        if (!isValidSolutionSyntax(allDice)) return false;
+                        if (!isSolutionSyntaxValid(allDice, false)) return false;
                         
                         // Must have red, ∪, and blue
                         const values = allDice.map(d => d.value);
