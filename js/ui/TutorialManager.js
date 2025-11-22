@@ -354,20 +354,23 @@ export class TutorialManager {
     
     complete() {
         console.log('✅ Tutorial complete!');
+        console.log('   Entry point was:', this.entryPoint);
         this.cleanup();
         
         // Route based on entry point
         if (this.entryPoint === 'level-interstitial') {
             // Entered from Level 1 interstitial - start a Level 1 puzzle
-            console.log('   Returning to Level 1 gameplay');
+            console.log('   → Returning to Level 1 gameplay');
             this.ui.modals.showTutorialComplete(() => {
+                console.log('   → Tutorial complete modal closed, resetting round');
                 this.game.resetRound();
                 this.ui.render();
             });
         } else {
             // Entered from menu/home - return to home screen
-            console.log('   Returning to home screen');
+            console.log('   → Returning to home screen');
             this.ui.modals.showTutorialComplete(() => {
+                console.log('   → Tutorial complete modal closed, showing home screen');
                 this.ui.homeScreenManager.show();
             });
         }
