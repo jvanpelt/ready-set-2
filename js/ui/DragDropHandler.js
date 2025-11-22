@@ -257,9 +257,9 @@ export class DragDropHandler {
                     const rowRect = row.getBoundingClientRect();
                     const appScale = this.getAppScale();
                     
-                    // Get bounds for vertical constraints
+                    // Get bounds for vertical constraints and highlighting
                     const diceAreaElement = document.querySelector('.dice-area');
-                    const diceAreaRect = diceAreaElement.getBoundingClientRect();
+                    const diceAreaRect = diceAreaElement ? diceAreaElement.getBoundingClientRect() : null;
                     const solutionAreaRect = this.solutionArea.getBoundingClientRect();
                     
                     // Convert mouse position to unscaled space (relative to current row)
@@ -267,12 +267,14 @@ export class DragDropHandler {
                     let y = ((coords.clientY - rowRect.top) / appScale) - this.dragOffset.y;
                     
                     // Constrain Y to stay within game bounds (top of .dice-area to bottom of solution area)
-                    // Convert bounds to row-relative coordinates
-                    const minY = (diceAreaRect.top - rowRect.top) / appScale;
-                    const maxY = (solutionAreaRect.bottom - rowRect.top) / appScale - getDieSize();
-                    
-                    // Clamp Y position
-                    y = Math.max(minY, Math.min(y, maxY));
+                    if (diceAreaRect) {
+                        // Convert bounds to row-relative coordinates
+                        const minY = (diceAreaRect.top - rowRect.top) / appScale;
+                        const maxY = (solutionAreaRect.bottom - rowRect.top) / appScale - getDieSize();
+                        
+                        // Clamp Y position
+                        y = Math.max(minY, Math.min(y, maxY));
+                    }
                     
                     // X is unconstrained (can move freely horizontally)
                     this.currentDragElement.style.left = `${x}px`;
@@ -287,20 +289,20 @@ export class DragDropHandler {
                     
                     const elementUnderCursor = document.elementFromPoint(coords.clientX, coords.clientY);
                     const targetRow = elementUnderCursor ? elementUnderCursor.closest('.solution-row') : null;
-                    const diceArea = elementUnderCursor ? elementUnderCursor.closest('#dice-container') : null;
+                    const diceArea = elementUnderCursor ? (elementUnderCursor.closest('#dice-container') || elementUnderCursor.closest('.dice-area')) : null;
                     
                     // Restore pointer events
                     this.currentDragElement.style.pointerEvents = '';
                     
                     // Remove all previous highlights
                     document.querySelectorAll('.solution-row.drag-over').forEach(r => r.classList.remove('drag-over'));
-                    this.diceContainer.classList.remove('drag-over');
+                    if (diceAreaElement) diceAreaElement.classList.remove('drag-over');
                     
                     // Add highlight to current target
                     if (targetRow && !targetRow.dataset.disabled) {
                         targetRow.classList.add('drag-over');
-                    } else if (diceArea) {
-                        this.diceContainer.classList.add('drag-over');
+                    } else if (diceArea && diceAreaElement) {
+                        diceAreaElement.classList.add('drag-over');
                     }
                 }
             }
@@ -322,7 +324,7 @@ export class DragDropHandler {
                     // Detect what's under the drop point (now we can see through the dragged die)
                     const elementUnderDrop = document.elementFromPoint(coords.clientX, coords.clientY);
                     const targetRow = elementUnderDrop ? elementUnderDrop.closest('.solution-row') : null;
-                    const diceAreaUnderDrop = elementUnderDrop ? elementUnderDrop.closest('#dice-container') : null;
+                    const diceAreaUnderDrop = elementUnderDrop ? (elementUnderDrop.closest('#dice-container') || elementUnderDrop.closest('.dice-area')) : null;
                     
                     // Restore pointer events
                     this.currentDragElement.style.pointerEvents = '';
@@ -424,7 +426,8 @@ export class DragDropHandler {
                 
                 // Clear all drag-over highlights
                 document.querySelectorAll('.solution-row.drag-over').forEach(r => r.classList.remove('drag-over'));
-                this.diceContainer.classList.remove('drag-over');
+                const diceAreaElement = document.querySelector('.dice-area');
+                if (diceAreaElement) diceAreaElement.classList.remove('drag-over');
                 
                 // Reset row overflow to default
                 document.querySelectorAll('.solution-row').forEach(r => r.style.overflow = '');
