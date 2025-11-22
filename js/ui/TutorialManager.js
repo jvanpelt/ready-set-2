@@ -88,6 +88,10 @@ export class TutorialManager {
             this.applyHighlights(step.highlight);
         }
         
+        // Re-render to update dice draggable attributes based on new step
+        // This ensures tutorial-disabled cubes are properly updated
+        this.ui.render();
+        
         // Show instruction (now always top-right, draggable)
         this.instructionEl.classList.remove('hidden');
         
@@ -349,6 +353,9 @@ export class TutorialManager {
         // Clear tutorial flag in Game and handle expired timer
         this.game.isTutorialActive = false;
         console.log('⏰ Timer timeout re-enabled');
+        
+        // Re-render to remove tutorial-disabled class from dice
+        this.ui.render();
         
         // If timer expired during tutorial, start fresh round
         if (this.game.timeRemaining !== null && this.game.timeRemaining <= 0) {
