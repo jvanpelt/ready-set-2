@@ -367,12 +367,26 @@ export class TutorialManager {
                 this.ui.render();
             });
         } else {
-            // Entered from menu/home - return to home screen
-            console.log('   → Returning to home screen');
-            this.ui.modals.showTutorialComplete(() => {
-                console.log('   → Tutorial complete modal closed, showing home screen');
-                window.homeScreen.show();
-            });
+            // Entered from menu - restore saved game state or show home
+            const savedState = this.game.storage.loadGameState();
+            
+            if (savedState && savedState.cards && savedState.cards.length > 0) {
+                // Has saved game - restore it
+                console.log('   → Restoring saved game state');
+                this.ui.modals.showTutorialComplete(() => {
+                    console.log('   → Tutorial complete modal closed, restoring state');
+                    this.game.restoreFromSavedState(savedState);
+                    this.ui.render();
+                    console.log('✅ Game state restored');
+                });
+            } else {
+                // No saved state - return to home screen
+                console.log('   → Returning to home screen (no saved game)');
+                this.ui.modals.showTutorialComplete(() => {
+                    console.log('   → Tutorial complete modal closed, showing home screen');
+                    window.homeScreen.show();
+                });
+            }
         }
     }
     
