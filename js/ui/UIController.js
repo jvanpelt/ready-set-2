@@ -975,7 +975,7 @@ export class UIController {
         const introScenario = getTutorialScenario('intro');
         
         if (introScenario) {
-            this.tutorialManager.start(introScenario);
+            this.tutorialManager.start(introScenario, 'menu');
         } else {
             console.error('❌ Intro tutorial scenario not found!');
         }
@@ -990,7 +990,7 @@ export class UIController {
             const { getTutorialScenario } = await import('../tutorialScenarios.js');
             const tutorialScenario = getTutorialScenario(1);
             if (tutorialScenario) {
-                this.tutorialManager.start(tutorialScenario);
+                this.tutorialManager.start(tutorialScenario, 'level-interstitial');
                 
                 // Mark tutorial as viewed (COMMENTED OUT FOR TESTING)
                 // TODO: Uncomment this after testing complete
@@ -1022,7 +1022,7 @@ export class UIController {
         
         if (wantsTutorial) {
             // Start interactive tutorial
-            this.tutorialManager.start(tutorialScenario);
+            this.tutorialManager.start(tutorialScenario, 'level-interstitial');
             
             // Mark tutorial as viewed (COMMENTED OUT FOR TESTING)
             // TODO: Uncomment this after testing complete

@@ -11,6 +11,7 @@ export class TutorialManager {
         this.isActive = false;
         this.validationInterval = null;
         this.achievementCelebrated = false; // Track if we've celebrated this step's achievement
+        this.entryPoint = null; // Track where tutorial was launched from: 'menu' or 'level-interstitial'
         this.savedSolutionHelperState = null; // Store user's preference before tutorial
         
         this.instructionEl = document.getElementById('tutorial-instruction');
@@ -28,14 +29,16 @@ export class TutorialManager {
         this.nextBtn.addEventListener('click', () => this.handleNextClick());
     }
     
-    start(scenarioData) {
+    start(scenarioData, entryPoint = 'menu') {
         if (!scenarioData?.walkthrough?.enabled) return;
         
         console.log('🎓 Starting tutorial...');
+        console.log('   Entry point:', entryPoint);
         
         this.scenario = scenarioData;
         this.currentStep = 0;
         this.isActive = true;
+        this.entryPoint = entryPoint;
         
         // Set flag in Game to suppress timer timeout during tutorial
         this.game.isTutorialActive = true;
@@ -352,11 +355,22 @@ export class TutorialManager {
     complete() {
         console.log('✅ Tutorial complete!');
         this.cleanup();
-        // Show completion modal, then reset to fresh round
-        this.ui.modals.showTutorialComplete(() => {
-            this.game.resetRound();
-            this.ui.render();
-        });
+        
+        // Route based on entry point
+        if (this.entryPoint === 'level-interstitial') {
+            // Entered from Level 1 interstitial - start a Level 1 puzzle
+            console.log('   Returning to Level 1 gameplay');
+            this.ui.modals.showTutorialComplete(() => {
+                this.game.resetRound();
+                this.ui.render();
+            });
+        } else {
+            // Entered from menu/home - return to home screen
+            console.log('   Returning to home screen');
+            this.ui.modals.showTutorialComplete(() => {
+                this.ui.homeScreenManager.show();
+            });
+        }
     }
     
     cleanup() {

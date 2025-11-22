@@ -137,7 +137,7 @@ export class ModalManager {
                 if (wantsTutorial) {
                     const tutorialScenario = getTutorialScenario(newLevel);
                     if (tutorialScenario && window.uiController) {
-                        window.uiController.tutorialManager.start(tutorialScenario);
+                        window.uiController.tutorialManager.start(tutorialScenario, 'level-interstitial');
                         
                         // Mark tutorial as viewed (COMMENTED OUT FOR TESTING)
                         // TODO: Uncomment this after testing complete
