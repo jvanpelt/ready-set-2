@@ -257,36 +257,33 @@ export class TutorialManager {
         // 2. Object (new format - level 6+): expectedSolution: { restriction: [...], setName: [...] }
         
         if (Array.isArray(expected)) {
-            // Old format: Check BOTH rows (player can use either during tutorial)
+            // Old format: Check BOTH rows, order-agnostic (player can arrange freely)
             // For wild cubes, use selectedOperator; for others, use value
-            const row0 = this.game.solutions[0].map(die => 
-                die.type === 'wild' ? die.selectedOperator : die.value
+            const allDice = [
+                ...this.game.solutions[0].map(die => die.type === 'wild' ? die.selectedOperator : die.value),
+                ...this.game.solutions[1].map(die => die.type === 'wild' ? die.selectedOperator : die.value)
+            ];
+            
+            console.log('   All dice (both rows):', allDice);
+            
+            // Check if all expected dice are present (order doesn't matter)
+            const hasAllExpected = expected.every(expectedDie => 
+                allDice.includes(expectedDie)
             );
-            const row1 = this.game.solutions[1].map(die => 
-                die.type === 'wild' ? die.selectedOperator : die.value
-            );
             
-            console.log('   Actual row 0:', row0);
-            console.log('   Actual row 1:', row1);
+            // Check count matches (prevent extra dice)
+            const countMatches = allDice.length === expected.length;
             
-            // Check if either row matches the expected solution
-            const checkRow = (actual) => {
-                if (actual.length !== expected.length) return false;
-                for (let i = 0; i < expected.length; i++) {
-                    if (actual[i] !== expected[i]) return false;
-                }
-                return true;
-            };
-            
-            const row0Matches = checkRow(row0);
-            const row1Matches = checkRow(row1);
-            
-            if (row0Matches || row1Matches) {
-                console.log('   ✅ Dice match!');
+            if (hasAllExpected && countMatches) {
+                console.log('   ✅ All expected dice present!');
                 return true;
             }
             
-            console.log('   ❌ Neither row matches expected solution');
+            if (!hasAllExpected) {
+                console.log('   ❌ Missing some expected dice');
+            } else {
+                console.log('   ❌ Wrong number of dice');
+            }
             return false;
         } else {
             // New format: validate both restriction and set name
