@@ -10,6 +10,7 @@ export class TutorialManager {
         this.currentStep = 0;
         this.isActive = false;
         this.validationInterval = null;
+        this.achievementCelebrated = false; // Track if we've celebrated this step's achievement
         this.savedSolutionHelperState = null; // Store user's preference before tutorial
         
         this.instructionEl = document.getElementById('tutorial-instruction');
@@ -75,6 +76,15 @@ export class TutorialManager {
         this.currentStep = stepIndex;
         
         console.log(`📚 Tutorial Step ${stepIndex + 1}/${this.scenario.walkthrough.steps.length}:`, step.message);
+        
+        // Clear any previous validation loop
+        if (this.validationInterval) {
+            clearInterval(this.validationInterval);
+            this.validationInterval = null;
+        }
+        
+        // Reset achievement celebration for new step
+        this.achievementCelebrated = false;
         
         // Clear previous highlights
         this.clearHighlights();
@@ -167,18 +177,23 @@ export class TutorialManager {
     }
     
     startValidationLoop(validationFn) {
-        // Check every 100ms if user completed the step
+        // Check every 100ms if achievement is met
+        // Keep checking continuously - achievement can be met, then un-met
         this.validationInterval = setInterval(() => {
-            if (validationFn(this.game)) {
-                clearInterval(this.validationInterval);
-                this.validationInterval = null;
-                
-                // Enable the Next button so user can proceed when ready
-                this.nextBtn.disabled = false;
-                
+            const isValid = validationFn(this.game);
+            
+            // Enable/disable Next button based on current state
+            this.nextBtn.disabled = !isValid;
+            
+            // Only celebrate once when first achieved
+            if (isValid && !this.achievementCelebrated) {
+                this.achievementCelebrated = true;
                 this.celebrateSuccess();
-                
-                // No longer auto-advance - let user click Next when ready
+            }
+            
+            // Reset celebration flag if they break the achievement
+            if (!isValid && this.achievementCelebrated) {
+                this.achievementCelebrated = false;
             }
         }, 100);
     }

@@ -396,7 +396,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'cubes',
-                    message: 'Use <strong>CUBES</strong> to build a formula. Each cube has a color or operator symbol.',
+                    message: 'Use <strong>CUBES</strong> to build a solution. Each cube has a color or operator symbol.',
                     highlight: { dice: [0, 1, 2, 3] },
                     nextTrigger: 'auto',
                     onEnter: () => {
@@ -404,14 +404,20 @@ export const TUTORIAL_SCENARIOS = {
                     }
                 },
                 {
+                    id: 'solution-helper',
+                    message: 'When the "solution helper" is enabled, like during tutorials, it will highlight the cards that match your current solution.',
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
                     id: 'set-name',
-                    message: 'Drag cubes to the <strong>SOLUTION AREA</strong> to create a "set name" - a formula that selects a set of cards. Your formula is read <strong>left-to-right</strong>, just like a math equation.',
+                    message: 'Drag cubes to the <strong>SOLUTION AREA</strong> to create a "set name" - a formula that selects a set of cards. Your solution is read <strong>left-to-right</strong>, just like a math equation.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'build-red-or-blue',
-                    message: 'Try it! Add <strong>"red ∪ blue"</strong> to the solution area. You can drag the cubes in any order and rearrange them however you like!',
+                    message: 'Try it! Add <strong>"red OR blue"</strong> to the solution area. You can drag the cubes in any order and rearrange them however you like!',
                     highlight: { dice: [0, 1, 2] }, // Highlight red, blue, and OR
                     validation: (game) => {
                         // Check if solution contains all three cubes (in any row, any order)
