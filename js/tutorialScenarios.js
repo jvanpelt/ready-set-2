@@ -3,6 +3,8 @@
  * These are used when players choose "Show Me How" on the interstitial screen
  */
 
+import { isValidSolutionSyntax } from './utils/validation.js';
+
 // ═══════════════════════════════════════════════════════════════════════════
 // INTRO TUTORIAL - Now Interactive! 
 // Players learn by doing, not watching
@@ -422,12 +424,12 @@ export const TUTORIAL_SCENARIOS = {
                     validation: (game) => {
                         // Check if solution contains EXACTLY red, OR, blue (in any row, any order)
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
-                        const values = allDice.map(d => d.value);
                         
-                        // Must have exactly 3 cubes
-                        if (values.length !== 3) return false;
+                        // Must be valid syntax (prevents 'red blue ∪' or '∪ red blue' etc.)
+                        if (!isValidSolutionSyntax(allDice)) return false;
                         
                         // Must have red, ∪, and blue
+                        const values = allDice.map(d => d.value);
                         return values.includes('red') && values.includes('∪') && values.includes('blue');
                     },
                     nextTrigger: 'validation'
@@ -447,11 +449,14 @@ export const TUTORIAL_SCENARIOS = {
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
                         const values = allDice.map(d => d.value);
                         
-                        // Must have exactly 3 cubes
-                        if (values.length !== 3) return false;
-                        
                         // Must have red, ∩, and blue
-                        return values.includes('red') && values.includes('∩') && values.includes('blue');
+                        if (!(values.includes('red') && values.includes('∩') && values.includes('blue'))) {
+                            return false;
+                        }
+                        
+                        // Must be a valid solution (correct syntax AND matches goal of 3 cards)
+                        const result = game.validateSolution();
+                        return result.valid;
                     },
                     nextTrigger: 'validation'
                 },
