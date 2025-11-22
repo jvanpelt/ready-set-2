@@ -143,8 +143,12 @@ export class TutorialManager {
         const step = this.scenario?.walkthrough?.steps[this.currentStep];
         if (!step) return;
         
-        // Only allow Next for non-validation, non-submit steps
-        if (step.nextTrigger !== 'validation' && step.nextTrigger !== 'submit') {
+        // Don't allow Next if button is disabled
+        if (this.nextBtn.disabled) return;
+        
+        // Allow Next for validation steps (when achievement is met and button is enabled)
+        // Don't allow Next for submit steps (user must submit)
+        if (step.nextTrigger !== 'submit') {
             this.nextStep();
         }
     }
