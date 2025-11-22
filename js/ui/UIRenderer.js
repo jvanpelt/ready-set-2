@@ -191,6 +191,18 @@ export class UIRenderer {
                 dieEl.draggable = false;
             }
             
+            // Check if tutorial restricts this die
+            // Tutorial highlights certain dice - others get dimmed
+            if (window.tutorialManager?.isActive) {
+                const currentStep = window.tutorialManager.scenario?.walkthrough?.steps[window.tutorialManager.currentStep];
+                if (currentStep?.highlight?.dice) {
+                    const allowedIndices = currentStep.highlight.dice;
+                    if (!allowedIndices.includes(index)) {
+                        dieEl.classList.add('tutorial-disabled');
+                    }
+                }
+            }
+            
             // Add required class if this die is required (Level 8+)
             if (die.isRequired) {
                 dieEl.classList.add('required');

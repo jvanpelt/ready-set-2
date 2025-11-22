@@ -198,6 +198,11 @@ body {
     cursor: not-allowed;
 }
 
+.die.tutorial-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .die.operator {
     font-size: 36px;
 }
