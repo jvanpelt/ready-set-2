@@ -596,24 +596,20 @@ export const TUTORIAL_SCENARIOS = {
                     nextTrigger: 'auto'
                 },
                 {
-                    id: 'build-green-minus-blue',
-                    message: '<strong>Green minus Blue</strong> = "All cards with green, but NOT blue". Add <strong>GREEN - BLUE</strong> to the solution area to match the goal.',
-                    highlight: { dice: [0, 1, 2] }, // Enable GREEN, MINUS, BLUE
+                    id: 'build-with-minus',
+                    message: '<strong>Green MINUS Blue</strong> is one way to get 3 cards. Try it, or explore other ways to use <strong>MINUS</strong>!',
+                    highlight: { dice: [0, 1, 2, 3, 4, 5] }, // Enable all dice
                     validation: (game) => {
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
-                        
-                        // Check they're using exactly the cubes we're teaching: green, −, blue
                         const values = allDice.map(die => die.value);
-                        const hasGreen = values.includes('green');
-                        const hasMinus = values.includes('−');
-                        const hasBlue = values.includes('blue');
-                        const exactCount = values.length === 3;
                         
-                        if (!hasGreen || !hasMinus || !hasBlue || !exactCount) {
+                        // Must use the MINUS operator (the concept we're teaching)
+                        const hasMinus = values.includes('−');
+                        if (!hasMinus) {
                             return false;
                         }
                         
-                        // Use full solution validation (syntax + goal matching)
+                        // Must be a valid solution that matches the goal
                         const result = game.validateSolution();
                         return result.valid;
                     },
