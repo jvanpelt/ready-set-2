@@ -420,12 +420,15 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Try it! Add <strong>"red OR blue"</strong> to the solution area. You can drag the cubes in any order and rearrange them however you like!',
                     highlight: { dice: [0, 1, 2] }, // Highlight red, blue, and OR
                     validation: (game) => {
-                        // Check if solution contains all three cubes (in any row, any order)
+                        // Check if solution contains EXACTLY red, OR, blue (in any row, any order)
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
-                        const hasRed = allDice.some(d => d.value === 'red');
-                        const hasOr = allDice.some(d => d.value === '∪');
-                        const hasBlue = allDice.some(d => d.value === 'blue');
-                        return hasRed && hasOr && hasBlue;
+                        const values = allDice.map(d => d.value);
+                        
+                        // Must have exactly 3 cubes
+                        if (values.length !== 3) return false;
+                        
+                        // Must have red, ∪, and blue
+                        return values.includes('red') && values.includes('∪') && values.includes('blue');
                     },
                     nextTrigger: 'validation'
                 },
@@ -440,12 +443,15 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Now try a solution of <strong>"red AND blue"</strong>. Tip: Double-tap any cube to remove it from your solution.',
                     highlight: { dice: [0, 1, 3] }, // Highlight red, blue, and AND
                     validation: (game) => {
-                        // Check if solution contains red, AND, blue (in any row, any order)
+                        // Check if solution contains EXACTLY red, AND, blue (in any row, any order)
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
-                        const hasRed = allDice.some(d => d.value === 'red');
-                        const hasAnd = allDice.some(d => d.value === '∩');
-                        const hasBlue = allDice.some(d => d.value === 'blue');
-                        return hasRed && hasAnd && hasBlue;
+                        const values = allDice.map(d => d.value);
+                        
+                        // Must have exactly 3 cubes
+                        if (values.length !== 3) return false;
+                        
+                        // Must have red, ∩, and blue
+                        return values.includes('red') && values.includes('∩') && values.includes('blue');
                     },
                     nextTrigger: 'validation'
                 },
