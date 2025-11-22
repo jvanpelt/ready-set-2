@@ -986,9 +986,9 @@ export class UIController {
         const wantsTutorial = await this.modals.showInterstitialAsync(1);
         
         if (wantsTutorial) {
-            // Start interactive tutorial
+            // Start intro tutorial (used for both Level 1 and menu access)
             const { getTutorialScenario } = await import('../tutorialScenarios.js');
-            const tutorialScenario = getTutorialScenario(1);
+            const tutorialScenario = getTutorialScenario('intro');
             if (tutorialScenario) {
                 this.tutorialManager.start(tutorialScenario, 'level-interstitial');
                 
@@ -1021,12 +1021,17 @@ export class UIController {
         const wantsTutorial = await this.modals.showInterstitialAsync(level);
         
         if (wantsTutorial) {
-            // Start interactive tutorial
-            this.tutorialManager.start(tutorialScenario, 'level-interstitial');
+            // Level 1 uses the intro tutorial, other levels use their own
+            const scenarioKey = level === 1 ? 'intro' : level;
+            const tutorialToShow = getTutorialScenario(scenarioKey);
             
-            // Mark tutorial as viewed (COMMENTED OUT FOR TESTING)
-            // TODO: Uncomment this after testing complete
-            // this.game.storage.markTutorialAsViewed(level);
+            if (tutorialToShow) {
+                this.tutorialManager.start(tutorialToShow, 'level-interstitial');
+                
+                // Mark tutorial as viewed (COMMENTED OUT FOR TESTING)
+                // TODO: Uncomment this after testing complete
+                // this.game.storage.markTutorialAsViewed(level);
+            }
         } else {
             // User declined tutorial
             // Mark as viewed so they don't see it again (COMMENTED OUT FOR TESTING)

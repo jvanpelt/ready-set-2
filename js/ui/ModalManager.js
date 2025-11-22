@@ -135,7 +135,9 @@ export class ModalManager {
                 
                 // Start tutorial if requested
                 if (wantsTutorial) {
-                    const tutorialScenario = getTutorialScenario(newLevel);
+                    // Level 1 uses the intro tutorial, other levels use their own
+                    const scenarioKey = newLevel === 1 ? 'intro' : newLevel;
+                    const tutorialScenario = getTutorialScenario(scenarioKey);
                     if (tutorialScenario && window.uiController) {
                         window.uiController.tutorialManager.start(tutorialScenario, 'level-interstitial');
                         
@@ -336,8 +338,9 @@ export class ModalManager {
         
         const config = levelConfig[level] || { title: `Level ${level}`, symbol: '?', feature: 'New Features', desc: 'Keep learning!' };
         
-        // Check if tutorial exists for this level
-        const hasTutorial = getTutorialScenario(level) !== null;
+        // Check if tutorial exists for this level (Level 1 uses 'intro')
+        const scenarioKey = level === 1 ? 'intro' : level;
+        const hasTutorial = getTutorialScenario(scenarioKey) !== null;
         
         // Populate content
         this.interstitialLevel.textContent = level;
