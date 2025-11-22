@@ -282,9 +282,15 @@ export class DragDropHandler {
                     row.style.overflow = 'visible';
                     
                     // Visual feedback: highlight valid drop zones
+                    // Temporarily hide dragged element so we can detect what's underneath
+                    this.currentDragElement.style.pointerEvents = 'none';
+                    
                     const elementUnderCursor = document.elementFromPoint(coords.clientX, coords.clientY);
                     const targetRow = elementUnderCursor ? elementUnderCursor.closest('.solution-row') : null;
                     const diceArea = elementUnderCursor ? elementUnderCursor.closest('#dice-container') : null;
+                    
+                    // Restore pointer events
+                    this.currentDragElement.style.pointerEvents = '';
                     
                     // Remove all previous highlights
                     document.querySelectorAll('.solution-row.drag-over').forEach(r => r.classList.remove('drag-over'));
