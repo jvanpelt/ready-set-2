@@ -596,47 +596,30 @@ export const TUTORIAL_SCENARIOS = {
                     nextTrigger: 'auto'
                 },
                 {
-                    id: 'explain-example',
-                    message: '<strong>Green minus Blue</strong> = "All cards with green, but NOT blue". Think: green EXCEPT blue.',
-                    highlight: null,
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'drag-green',
-                    message: 'First, drag the <strong>GREEN</strong> cube to the solution area.',
-                    highlight: { dice: [0] },
+                    id: 'build-green-minus-blue',
+                    message: '<strong>Green minus Blue</strong> = "All cards with green, but NOT blue". Add <strong>GREEN - BLUE</strong> to the solution area to match the goal.',
+                    highlight: { dice: [0, 1, 2] }, // Enable GREEN, MINUS, BLUE
                     validation: (game) => {
-                        return game.solutions[0].some(die => die.value === 'green');
+                        const { isSolutionSyntaxValid } = require('./utils/validation.js');
+                        const allDice = [...game.solutions[0], ...game.solutions[1]];
+                        
+                        // Check for exact cubes: green, −, blue
+                        const values = allDice.map(die => die.value);
+                        const hasGreen = values.includes('green');
+                        const hasMinus = values.includes('−');
+                        const hasBlue = values.includes('blue');
+                        const exactCount = values.length === 3;
+                        
+                        // Check syntax validity
+                        const validSyntax = isSolutionSyntaxValid(allDice, false);
+                        
+                        return hasGreen && hasMinus && hasBlue && exactCount && validSyntax;
                     },
                     nextTrigger: 'validation'
-                },
-                {
-                    id: 'drag-diff',
-                    message: 'Great! Now drag the <strong>minus</strong> cube. (It has a minus sign.)',
-                    highlight: { dice: [1] },
-                    validation: (game) => {
-                        return game.solutions[0].some(die => die.value === '−');
-                    },
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'drag-blue',
-                    message: 'Perfect! Finally, drag the <strong>BLUE</strong> cube to complete your solution.',
-                    highlight: { dice: [2] },
-                    validation: (game) => {
-                        return game.solutions[0].some(die => die.value === 'blue');
-                    },
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'explain-result',
-                    message: 'Your solution says: "Cards with green, but NOT blue". Count them - 3 cards! ✓',
-                    highlight: null,
-                    nextTrigger: 'auto'
                 },
                 {
                     id: 'submit',
-                    message: 'Excellent! Now click <strong>GO!</strong> to submit your solution!',
+                    message: 'Perfect! Your solution "Green MINUS Blue" finds 3 cards. Now click <strong>GO!</strong> to submit!',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'submit'
