@@ -339,24 +339,45 @@ export class DragDropHandler {
                         return;
                     }
                     
-                    // CASE 1: Dropped on dice area - fade out and return to ghost
+                    // CASE 1: Dropped on dice area - slide back to ghost position
                     if (diceAreaUnderDrop) {
-                        console.log('🎲 Dropped on dice area - removing from solution');
+                        console.log('🎲 Dropped on dice area - sliding back to ghost');
                         this.currentDragElement.classList.remove('dragging');
                         
-                        // Fade out the dragged die smoothly
-                        gsap.to(this.currentDragElement, {
-                            duration: 0.2,
-                            opacity: 0,
-                            scale: 0.8,
-                            ease: 'power2.in',
-                            onComplete: () => {
-                                // After fade, remove from solution and re-render
-                                // Re-render will show die back in dice area (at ghost position)
-                                this.game.removeDieFromSolution(sourceRowIndex, dieIndex);
-                                this.onDrop();
-                            }
-                        });
+                        // Find the ghost die in dice area
+                        const ghostDie = this.diceContainer.querySelector(`.die[data-id="${this.draggedDieId}"]`);
+                        
+                        if (ghostDie) {
+                            // Get positions
+                            const ghostRect = ghostDie.getBoundingClientRect();
+                            const draggedRect = this.currentDragElement.getBoundingClientRect();
+                            const appScale = this.getAppScale();
+                            
+                            // Calculate offset to slide (in unscaled space)
+                            const deltaX = (ghostRect.left - draggedRect.left) / appScale;
+                            const deltaY = (ghostRect.top - draggedRect.top) / appScale;
+                            
+                            // Get current position
+                            const currentX = parseFloat(this.currentDragElement.style.left) || 0;
+                            const currentY = parseFloat(this.currentDragElement.style.top) || 0;
+                            
+                            // Animate to ghost position
+                            gsap.to(this.currentDragElement, {
+                                duration: 0.3,
+                                left: (currentX + deltaX) + 'px',
+                                top: (currentY + deltaY) + 'px',
+                                ease: 'power2.out',
+                                onComplete: () => {
+                                    // After slide, remove from solution and re-render
+                                    this.game.removeDieFromSolution(sourceRowIndex, dieIndex);
+                                    this.onDrop();
+                                }
+                            });
+                        } else {
+                            // Fallback: no animation, just remove
+                            this.game.removeDieFromSolution(sourceRowIndex, dieIndex);
+                            this.onDrop();
+                        }
                     }
                     // CASE 2: Dropped on a different row - move between rows
                     else if (targetRow && parseInt(targetRow.dataset.row) !== sourceRowIndex && !targetRow.dataset.disabled) {
