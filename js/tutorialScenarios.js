@@ -590,14 +590,8 @@ export const TUTORIAL_SCENARIOS = {
                     nextTrigger: 'auto'
                 },
                 {
-                    id: 'identify-goal',
-                    message: 'Our goal is <strong>3 cards</strong>. Let\'s build "Green minus Blue".',
-                    highlight: { goal: true },
-                    nextTrigger: 'auto'
-                },
-                {
                     id: 'build-with-minus',
-                    message: '<strong>Green MINUS Blue</strong> is one way to get 3 cards. Try it, or explore other ways to use <strong>MINUS</strong>!',
+                    message: 'Our goal is <strong>3 cards</strong>. You can try a 3 cube solution like "Green minus Blue", or explore other ways to use <strong>MINUS</strong>!',
                     highlight: { dice: [0, 1, 2, 3, 4, 5] }, // Enable all dice
                     validation: (game) => {
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
@@ -606,6 +600,11 @@ export const TUTORIAL_SCENARIOS = {
                         // Must use the MINUS operator (the concept we're teaching)
                         const hasMinus = values.includes('−');
                         if (!hasMinus) {
+                            return false;
+                        }
+                        
+                        // Must use exactly 3 cubes (simple solution first)
+                        if (allDice.length !== 3) {
                             return false;
                         }
                         
