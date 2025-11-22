@@ -410,41 +410,22 @@ export const TUTORIAL_SCENARIOS = {
                     nextTrigger: 'auto'
                 },
                 {
-                    id: 'drag-red',
-                    message: 'Try it! Drag the <strong>RED</strong> cube to the solution area.',
-                    highlight: { dice: [0] },
+                    id: 'build-red-or-blue',
+                    message: 'Try it! Add <strong>"red ∪ blue"</strong> to the solution area. You can drag the cubes in any order and rearrange them however you like!',
+                    highlight: { dice: [0, 1, 2] }, // Highlight red, blue, and OR
                     validation: (game) => {
-                        return game.solutions[0].some(die => die.value === 'red');
-                    },
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'red-result',
-                    message: '<strong>RED</strong> selects all cards with red dots. That\'s 4 cards... but we need exactly 3!',
-                    highlight: null,
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'add-or',
-                    message: 'Now add the <strong>OR</strong> operator - it has two overlapping circles.',
-                    highlight: { dice: [2] },
-                    validation: (game) => {
-                        return game.solutions[0].some(die => die.value === '∪');
-                    },
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'add-blue',
-                    message: 'Great! Now add the <strong>BLUE</strong> cube to complete the formula.',
-                    highlight: { dice: [1] },
-                    validation: (game) => {
-                        return game.solutions[0].some(die => die.value === 'blue');
+                        // Check if solution contains all three cubes (in any row, any order)
+                        const allDice = [...game.solutions[0], ...game.solutions[1]];
+                        const hasRed = allDice.some(d => d.value === 'red');
+                        const hasOr = allDice.some(d => d.value === '∪');
+                        const hasBlue = allDice.some(d => d.value === 'blue');
+                        return hasRed && hasOr && hasBlue;
                     },
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'or-result',
-                    message: '<strong>RED OR BLUE</strong> (read left-to-right) selects cards with red dots OR blue dots. That\'s 5 cards - still too many!',
+                    message: '<strong>RED ∪ BLUE</strong> (read left-to-right) selects cards with red dots OR blue dots. That\'s 5 cards - still too many!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },

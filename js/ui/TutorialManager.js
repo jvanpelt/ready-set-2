@@ -89,18 +89,22 @@ export class TutorialManager {
         
         // Handle progression based on step type
         if (step.nextTrigger === 'validation') {
-            // Hide Next button, wait for user to complete action
-            this.nextBtn.style.display = 'none';
-            this.skipBtn.style.display = 'inline-block'; // Keep Skip visible
+            // Disable Next button, wait for user to complete action
+            // Keeping it visible (but disabled) helps prevent accidental Skip clicks
+            this.nextBtn.style.display = 'block';
+            this.nextBtn.disabled = true;
+            this.skipBtn.style.display = 'inline-block';
             this.startValidationLoop(step.validation);
         } else if (step.nextTrigger === 'submit') {
             // Hide Next button and Skip button - user must submit
             this.nextBtn.style.display = 'none';
+            this.nextBtn.disabled = true;
             this.skipBtn.style.display = 'none';
         } else {
             // Show Next button for manual progression (including 'auto' steps)
             this.nextBtn.style.display = 'block';
-            this.skipBtn.style.display = 'inline-block'; // Keep Skip visible
+            this.nextBtn.disabled = false;
+            this.skipBtn.style.display = 'inline-block';
         }
     }
     
@@ -147,8 +151,12 @@ export class TutorialManager {
             if (validationFn(this.game)) {
                 clearInterval(this.validationInterval);
                 this.validationInterval = null;
+                
+                // Enable the Next button so user can proceed when ready
+                this.nextBtn.disabled = false;
                 this.celebrateSuccess();
-                setTimeout(() => this.nextStep(), 800);
+                
+                // No longer auto-advance - let user click Next when ready
             }
         }, 100);
     }

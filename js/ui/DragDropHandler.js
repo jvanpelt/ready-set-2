@@ -732,35 +732,9 @@ export class DragDropHandler {
      * @returns {boolean} - True if allowed, false if restricted
      */
     isDieAllowedInTutorial(dieElement) {
-        // If no tutorial is active, allow all dice
-        if (!this.tutorialManager || !this.tutorialManager.isActive) {
-            return true;
-        }
-        
-        // Get current tutorial step
-        const currentStep = this.tutorialManager.scenario?.walkthrough?.steps[this.tutorialManager.currentStep];
-        
-        if (!currentStep || !currentStep.highlight || !currentStep.highlight.dice) {
-            // No dice specified on this step = lock ALL dice during tutorial
-            return false;
-        }
-        
-        // Get the allowed dice indices
-        const allowedIndices = currentStep.highlight.dice;
-        
-        // Find this die's index in the dice array
-        let dieIndex;
-        if (dieElement.dataset.index !== undefined) {
-            // Use cached index from data attribute (faster)
-            dieIndex = parseInt(dieElement.dataset.index, 10);
-        } else {
-            // Fallback: compute index from DOM (slower but reliable)
-            const allDice = Array.from(this.diceContainer.querySelectorAll('.die:not(.solution-die)'));
-            dieIndex = allDice.indexOf(dieElement);
-        }
-        
-        // Check if this die's index is in the allowed list
-        return allowedIndices.includes(dieIndex);
+        // Always allow dice to be dragged during tutorials
+        // Players learn better through free exploration
+        return true;
     }
     
     // ========================================
