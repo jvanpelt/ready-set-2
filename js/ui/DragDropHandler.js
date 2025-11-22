@@ -280,10 +280,16 @@ export class DragDropHandler {
                         { clientX: e.changedTouches[0].clientX, clientY: e.changedTouches[0].clientY } :
                         { clientX: e.clientX, clientY: e.clientY };
                     
-                    // Detect what's under the drop point
+                    // Temporarily hide the dragged element so elementFromPoint can see what's underneath
+                    this.currentDragElement.style.pointerEvents = 'none';
+                    
+                    // Detect what's under the drop point (now we can see through the dragged die)
                     const elementUnderDrop = document.elementFromPoint(coords.clientX, coords.clientY);
                     const targetRow = elementUnderDrop ? elementUnderDrop.closest('.solution-row') : null;
                     const diceAreaUnderDrop = elementUnderDrop ? elementUnderDrop.closest('#dice-container') : null;
+                    
+                    // Restore pointer events
+                    this.currentDragElement.style.pointerEvents = '';
                     
                     const sourceRowIndex = this.draggedRowIndex;
                     const sourceRow = this.currentDragElement.closest('.solution-row');
