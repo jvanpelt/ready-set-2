@@ -373,12 +373,13 @@ export class DragDropHandler {
                             });
                             
                             // Animate to ghost position with original rotation
+                            // Solution dice are 80px, dice area dice are 100px (scale 1.25x larger)
                             gsap.to(this.currentDragElement, {
                                 duration: 0.3,
                                 left: (currentX + deltaX) + 'px',
                                 top: (currentY + deltaY) + 'px',
                                 rotation: targetRotation,
-                                scale: 1,
+                                scale: 1.25, // Scale from 80px (solution) to 100px (dice area)
                                 ease: 'power2.out',
                                 onComplete: () => {
                                     // After slide, remove from solution and re-render
