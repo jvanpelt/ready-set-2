@@ -113,6 +113,12 @@ export class UIController {
     initEventListeners() {
         // Card clicks (for note-taking)
         this.cardsContainer.addEventListener('click', (e) => {
+            // Don't allow manual card clicks when Solution Helper is ON
+            // Solution Helper automatically manages card dimming/flipping
+            if (this.settings.solutionHelper) {
+                return;
+            }
+            
             const card = e.target.closest('.card');
             if (card) {
                 const index = parseInt(card.dataset.index);
@@ -814,6 +820,10 @@ export class UIController {
         
         // Render cards
         this.renderer.renderCards(this.cardsContainer, state.cards, state.cardStates);
+        
+        // Set data attribute to indicate if Solution Helper is active
+        // This allows CSS to change cursor and visual feedback
+        this.cardsContainer.dataset.solutionHelper = this.settings.solutionHelper ? 'true' : 'false';
         
         // Render dice
         this.renderer.renderDice(this.diceContainer, state.dice, state.solutions);

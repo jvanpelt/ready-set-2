@@ -91,6 +91,11 @@ body {
     position: relative;
 }
 
+/* When Solution Helper is active, cards are not manually clickable */
+.cards-container[data-solution-helper="true"] .card {
+    cursor: default;
+}
+
 .card.gray-bg {
     background: var(--color-card-gray);
 }
