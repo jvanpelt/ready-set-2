@@ -380,14 +380,22 @@ export class DragDropHandler {
                             // Animate to ghost position with original rotation and scale up
                             // Solution dice are 80px, dice area dice are 100px (scale 1.25x larger)
                             gsap.to(this.currentDragElement, {
-                                duration: 0.3,
+                                duration: 0.6, // Slower to make scale visible
                                 left: (currentX + deltaX) + 'px',
                                 top: (currentY + deltaY) + 'px',
                                 rotation: targetRotation,
                                 scale: 1.25, // Scale from 1.0 (80px solution) to 1.25 (100px dice area)
                                 transformOrigin: 'center center',
                                 ease: 'power2.out',
+                                onStart: () => {
+                                    console.log('🎬 Animation started - scale should grow from 1.0 to 1.25');
+                                },
+                                onUpdate: function() {
+                                    const currentScaleInAnim = gsap.getProperty(this.targets()[0], 'scale');
+                                    console.log('📊 Scale during animation:', currentScaleInAnim);
+                                },
                                 onComplete: () => {
+                                    console.log('✅ Animation complete');
                                     // After slide, remove from solution and re-render
                                     this.game.removeDieFromSolution(sourceRowIndex, dieIndex);
                                     this.onDrop();
