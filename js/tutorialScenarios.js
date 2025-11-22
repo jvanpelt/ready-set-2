@@ -602,17 +602,20 @@ export const TUTORIAL_SCENARIOS = {
                     validation: (game) => {
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
                         
-                        // Check for exact cubes: green, −, blue
+                        // Check they're using exactly the cubes we're teaching: green, −, blue
                         const values = allDice.map(die => die.value);
                         const hasGreen = values.includes('green');
                         const hasMinus = values.includes('−');
                         const hasBlue = values.includes('blue');
                         const exactCount = values.length === 3;
                         
-                        // Check syntax validity
-                        const validSyntax = isSolutionSyntaxValid(allDice, false);
+                        if (!hasGreen || !hasMinus || !hasBlue || !exactCount) {
+                            return false;
+                        }
                         
-                        return hasGreen && hasMinus && hasBlue && exactCount && validSyntax;
+                        // Use full solution validation (syntax + goal matching)
+                        const result = game.validateSolution();
+                        return result.valid;
                     },
                     nextTrigger: 'validation'
                 },
