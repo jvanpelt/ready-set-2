@@ -251,6 +251,22 @@ export class DragDropHandler {
                     
                     this.currentDragElement.style.left = `${x}px`;
                     this.currentDragElement.style.top = `${y}px`;
+                    
+                    // Visual feedback: highlight valid drop zones
+                    const elementUnderCursor = document.elementFromPoint(coords.clientX, coords.clientY);
+                    const targetRow = elementUnderCursor ? elementUnderCursor.closest('.solution-row') : null;
+                    const diceArea = elementUnderCursor ? elementUnderCursor.closest('#dice-container') : null;
+                    
+                    // Remove all previous highlights
+                    document.querySelectorAll('.solution-row.drag-over').forEach(r => r.classList.remove('drag-over'));
+                    this.diceContainer.classList.remove('drag-over');
+                    
+                    // Add highlight to current target
+                    if (targetRow && !targetRow.dataset.disabled) {
+                        targetRow.classList.add('drag-over');
+                    } else if (diceArea) {
+                        this.diceContainer.classList.add('drag-over');
+                    }
                 }
             }
         };
@@ -265,32 +281,88 @@ export class DragDropHandler {
                         { clientX: e.changedTouches[0].clientX, clientY: e.changedTouches[0].clientY } :
                         { clientX: e.clientX, clientY: e.clientY };
                     
-                    const row = this.currentDragElement.closest('.solution-row');
-                    const rowRect = row.getBoundingClientRect();
-                    const rowIndex = this.draggedRowIndex;
-                    const appScale = this.getAppScale();
+                    // Detect what's under the drop point
+                    const elementUnderDrop = document.elementFromPoint(coords.clientX, coords.clientY);
+                    const targetRow = elementUnderDrop ? elementUnderDrop.closest('.solution-row') : null;
+                    const diceAreaUnderDrop = elementUnderDrop ? elementUnderDrop.closest('#dice-container') : null;
                     
-                    // Convert mouse position to unscaled space
-                    let x = ((coords.clientX - rowRect.left) / appScale) - this.dragOffset.x;
-                    let y = ((coords.clientY - rowRect.top) / appScale) - this.dragOffset.y;
+                    const sourceRowIndex = this.draggedRowIndex;
+                    const sourceRow = this.currentDragElement.closest('.solution-row');
                     
-                    // Find die by ID instead of index
-                    const dieIndex = this.game.solutions[rowIndex].findIndex(d => d.id === this.draggedDieId);
+                    // Find die by ID in source row
+                    const dieIndex = this.game.solutions[sourceRowIndex].findIndex(d => d.id === this.draggedDieId);
                     if (dieIndex === -1) {
                         console.error('❌ Could not find die with ID:', this.draggedDieId);
                         return;
                     }
                     
-                    const tempDie = this.game.solutions[rowIndex][dieIndex];
-                    tempDie.x = x;
-                    tempDie.y = y;
-                    
-                    const snappedPos = this.smartSnapPosition(tempDie, rowIndex, rowRect, appScale);
-                    this.game.updateDiePosition(rowIndex, dieIndex, snappedPos.x, snappedPos.y);
-                    
-                    this.currentDragElement.classList.remove('dragging');
-                    this.onDrop(); // Trigger re-render
+                    // CASE 1: Dropped on dice area - remove from solution (returns to ghost)
+                    if (diceAreaUnderDrop) {
+                        console.log('🎲 Dropped on dice area - removing from solution');
+                        this.game.removeDieFromSolution(sourceRowIndex, dieIndex);
+                        this.currentDragElement.classList.remove('dragging');
+                        this.onDrop(); // Trigger re-render (die returns to ghost)
+                    }
+                    // CASE 2: Dropped on a different row - move between rows
+                    else if (targetRow && parseInt(targetRow.dataset.row) !== sourceRowIndex && !targetRow.dataset.disabled) {
+                        const targetRowIndex = parseInt(targetRow.dataset.row);
+                        const targetRowRect = targetRow.getBoundingClientRect();
+                        const appScale = this.getAppScale();
+                        
+                        console.log(`🔄 Moving die from row ${sourceRowIndex} to row ${targetRowIndex}`);
+                        
+                        // Calculate position in target row
+                        let x = ((coords.clientX - targetRowRect.left) / appScale) - 40;
+                        let y = ((coords.clientY - targetRowRect.top) / appScale) - 40;
+                        
+                        // Get the die object before removing
+                        const die = this.game.solutions[sourceRowIndex][dieIndex];
+                        
+                        // Remove from source row
+                        this.game.removeDieFromSolution(sourceRowIndex, dieIndex);
+                        
+                        // Add to target row
+                        this.game.addDieToSolution(die, targetRowIndex, x, y);
+                        
+                        // Snap to valid position in target row
+                        const newDieIndex = this.game.solutions[targetRowIndex].length - 1;
+                        const newDie = this.game.solutions[targetRowIndex][newDieIndex];
+                        const snappedPos = this.smartSnapPosition(newDie, targetRowIndex, targetRowRect, appScale);
+                        this.game.updateDiePosition(targetRowIndex, newDieIndex, snappedPos.x, snappedPos.y);
+                        
+                        this.currentDragElement.classList.remove('dragging');
+                        this.onDrop(); // Trigger re-render
+                    }
+                    // CASE 3: Dropped in same row - reposition within row
+                    else if (targetRow && parseInt(targetRow.dataset.row) === sourceRowIndex) {
+                        const rowRect = sourceRow.getBoundingClientRect();
+                        const appScale = this.getAppScale();
+                        
+                        // Convert mouse position to unscaled space
+                        let x = ((coords.clientX - rowRect.left) / appScale) - this.dragOffset.x;
+                        let y = ((coords.clientY - rowRect.top) / appScale) - this.dragOffset.y;
+                        
+                        const tempDie = this.game.solutions[sourceRowIndex][dieIndex];
+                        tempDie.x = x;
+                        tempDie.y = y;
+                        
+                        const snappedPos = this.smartSnapPosition(tempDie, sourceRowIndex, rowRect, appScale);
+                        this.game.updateDiePosition(sourceRowIndex, dieIndex, snappedPos.x, snappedPos.y);
+                        
+                        this.currentDragElement.classList.remove('dragging');
+                        this.onDrop(); // Trigger re-render
+                    }
+                    // CASE 4: Dropped elsewhere (outside solution/dice area) - return to original position
+                    else {
+                        console.log('⚠️ Dropped outside valid areas - returning to original position');
+                        this.currentDragElement.classList.remove('dragging');
+                        this.onDrop(); // Re-render to reset position
+                    }
                 }
+                
+                // Clear all drag-over highlights
+                document.querySelectorAll('.solution-row.drag-over').forEach(r => r.classList.remove('drag-over'));
+                this.diceContainer.classList.remove('drag-over');
                 
                 this.currentDragElement.style.zIndex = '1';
                 this.currentDragElement = null;
