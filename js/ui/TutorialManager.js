@@ -371,7 +371,7 @@ export class TutorialManager {
             console.log('   → Returning to home screen');
             this.ui.modals.showTutorialComplete(() => {
                 console.log('   → Tutorial complete modal closed, showing home screen');
-                this.ui.homeScreenManager.show();
+                window.homeScreen.show();
             });
         }
     }
