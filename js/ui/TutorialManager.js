@@ -56,6 +56,11 @@ export class TutorialManager {
         // Add tutorial-active class to body
         document.body.classList.add('tutorial-active');
         
+        // Disable GO and PASS for the entire tutorial
+        // They'll only be enabled on the final "press GO" step
+        if (this.goBtn) this.goBtn.disabled = true;
+        if (this.passBtn) this.passBtn.disabled = true;
+        
         // Start first step
         this.showStep(0);
     }
@@ -100,11 +105,6 @@ export class TutorialManager {
             this.nextBtn.disabled = true;
             this.skipBtn.style.display = 'inline-block';
             
-            // Disable GO and PASS during validation steps
-            // Players should focus on the achievement, not submitting yet
-            if (this.goBtn) this.goBtn.disabled = true;
-            if (this.passBtn) this.passBtn.disabled = true;
-            
             this.startValidationLoop(step.validation);
         } else if (step.nextTrigger === 'submit') {
             // Hide Next button and Skip button - user must submit
@@ -112,18 +112,16 @@ export class TutorialManager {
             this.nextBtn.disabled = true;
             this.skipBtn.style.display = 'none';
             
-            // Enable GO and PASS for submit steps
+            // Enable GO for submit steps (final step where they press GO)
             if (this.goBtn) this.goBtn.disabled = false;
-            if (this.passBtn) this.passBtn.disabled = false;
+            // PASS stays disabled - tutorial has a specific solution
         } else {
             // Show Next button for manual progression (including 'auto' steps)
             this.nextBtn.style.display = 'block';
             this.nextBtn.disabled = false;
             this.skipBtn.style.display = 'inline-block';
             
-            // Enable GO and PASS for auto steps
-            if (this.goBtn) this.goBtn.disabled = false;
-            if (this.passBtn) this.passBtn.disabled = false;
+            // GO and PASS stay disabled for auto steps
         }
     }
     
@@ -173,10 +171,6 @@ export class TutorialManager {
                 
                 // Enable the Next button so user can proceed when ready
                 this.nextBtn.disabled = false;
-                
-                // Also enable GO and PASS now that achievement is met
-                if (this.goBtn) this.goBtn.disabled = false;
-                if (this.passBtn) this.passBtn.disabled = false;
                 
                 this.celebrateSuccess();
                 

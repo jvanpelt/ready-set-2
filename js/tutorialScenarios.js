@@ -445,7 +445,7 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'press-go',
                     message: 'When you have a solution, press <strong>GO</strong> to check it. Ready to try Level 1?',
                     highlight: { goButton: true },
-                    nextTrigger: 'auto'
+                    nextTrigger: 'submit'
                 }
             ]
         }
