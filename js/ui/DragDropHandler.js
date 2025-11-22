@@ -366,13 +366,15 @@ export class DragDropHandler {
                             const dieFromSolution = this.game.solutions[sourceRowIndex][dieIndex];
                             const targetRotation = dieFromSolution?.rotation || 0;
                             
-                            // Get current rotation from the element's inline transform
+                            // Get current transform properties from the element
                             const currentRotation = gsap.getProperty(this.currentDragElement, 'rotation') || 0;
+                            const currentScale = gsap.getProperty(this.currentDragElement, 'scale') || 1;
                             
                             console.log('🎯 Animating back to dice area', {
                                 currentRotation,
                                 targetRotation,
-                                willScale: '1.0 → 1.25'
+                                currentScale,
+                                targetScale: 1.25
                             });
                             
                             // Animate to ghost position with original rotation and scale up
