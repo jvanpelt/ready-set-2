@@ -600,7 +600,6 @@ export const TUTORIAL_SCENARIOS = {
                     message: '<strong>Green minus Blue</strong> = "All cards with green, but NOT blue". Add <strong>GREEN - BLUE</strong> to the solution area to match the goal.',
                     highlight: { dice: [0, 1, 2] }, // Enable GREEN, MINUS, BLUE
                     validation: (game) => {
-                        const { isSolutionSyntaxValid } = require('./utils/validation.js');
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
                         
                         // Check for exact cubes: green, −, blue
