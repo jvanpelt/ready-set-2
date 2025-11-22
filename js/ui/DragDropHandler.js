@@ -366,10 +366,14 @@ export class DragDropHandler {
                             const dieFromSolution = this.game.solutions[sourceRowIndex][dieIndex];
                             const targetRotation = dieFromSolution?.rotation || 0;
                             
+                            // Get current transform to check scale
+                            const currentTransform = window.getComputedStyle(this.currentDragElement).transform;
                             console.log('🎯 Animating back to dice area:', { 
                                 targetRotation, 
                                 dieRotation: dieFromSolution?.rotation,
-                                ghostId: ghostDie.dataset.id 
+                                ghostId: ghostDie.dataset.id,
+                                currentTransform,
+                                targetScale: 1.25
                             });
                             
                             // Animate to ghost position with original rotation
