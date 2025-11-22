@@ -353,9 +353,17 @@ export class DragDropHandler {
                             const draggedRect = this.currentDragElement.getBoundingClientRect();
                             const appScale = this.getAppScale();
                             
+                            // Current element is 80px, will scale to 100px (1.25x)
+                            // When scaling from center, top-left corner shifts by (newSize - oldSize) / 2
+                            const currentSize = 80; // solution die size
+                            const targetSize = 100; // dice area die size
+                            const sizeIncrease = targetSize - currentSize;
+                            const cornerShift = sizeIncrease / 2; // 10px shift in each direction
+                            
                             // Calculate offset to slide (in unscaled space)
-                            const deltaX = (ghostRect.left - draggedRect.left) / appScale;
-                            const deltaY = (ghostRect.top - draggedRect.top) / appScale;
+                            // Adjust for the corner shift that will happen when scaling
+                            const deltaX = (ghostRect.left - draggedRect.left) / appScale + cornerShift;
+                            const deltaY = (ghostRect.top - draggedRect.top) / appScale + cornerShift;
                             
                             // Get current position
                             const currentX = parseFloat(this.currentDragElement.style.left) || 0;
@@ -366,36 +374,17 @@ export class DragDropHandler {
                             const dieFromSolution = this.game.solutions[sourceRowIndex][dieIndex];
                             const targetRotation = dieFromSolution?.rotation || 0;
                             
-                            // Get current transform properties from the element
-                            const currentRotation = gsap.getProperty(this.currentDragElement, 'rotation') || 0;
-                            const currentScale = gsap.getProperty(this.currentDragElement, 'scale') || 1;
-                            
-                            console.log('🎯 Animating back to dice area', {
-                                currentRotation,
-                                targetRotation,
-                                currentScale,
-                                targetScale: 1.25
-                            });
-                            
                             // Animate to ghost position with original rotation and scale up
                             // Solution dice are 80px, dice area dice are 100px (scale 1.25x larger)
                             gsap.to(this.currentDragElement, {
-                                duration: 0.6, // Slower to make scale visible
+                                duration: 0.3,
                                 left: (currentX + deltaX) + 'px',
                                 top: (currentY + deltaY) + 'px',
                                 rotation: targetRotation,
                                 scale: 1.25, // Scale from 1.0 (80px solution) to 1.25 (100px dice area)
                                 transformOrigin: 'center center',
                                 ease: 'power2.out',
-                                onStart: () => {
-                                    console.log('🎬 Animation started - scale should grow from 1.0 to 1.25');
-                                },
-                                onUpdate: function() {
-                                    const currentScaleInAnim = gsap.getProperty(this.targets()[0], 'scale');
-                                    console.log('📊 Scale during animation:', currentScaleInAnim);
-                                },
                                 onComplete: () => {
-                                    console.log('✅ Animation complete');
                                     // After slide, remove from solution and re-render
                                     this.game.removeDieFromSolution(sourceRowIndex, dieIndex);
                                     this.onDrop();
