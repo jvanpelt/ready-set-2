@@ -204,6 +204,9 @@ export class DragDropHandler {
                 const dieX = parseFloat(solutionDie.style.left) || 0;
                 const dieY = parseFloat(solutionDie.style.top) || 0;
                 
+                // Store original position for animating back on invalid drop
+                this.originalDiePosition = { x: dieX, y: dieY };
+                
                 this.dragOffset = {
                     x: mouseInRow.x - dieX,
                     y: mouseInRow.y - dieY
@@ -301,12 +304,24 @@ export class DragDropHandler {
                         return;
                     }
                     
-                    // CASE 1: Dropped on dice area - remove from solution (returns to ghost)
+                    // CASE 1: Dropped on dice area - fade out and return to ghost
                     if (diceAreaUnderDrop) {
                         console.log('🎲 Dropped on dice area - removing from solution');
-                        this.game.removeDieFromSolution(sourceRowIndex, dieIndex);
                         this.currentDragElement.classList.remove('dragging');
-                        this.onDrop(); // Trigger re-render (die returns to ghost)
+                        
+                        // Fade out the dragged die smoothly
+                        gsap.to(this.currentDragElement, {
+                            duration: 0.2,
+                            opacity: 0,
+                            scale: 0.8,
+                            ease: 'power2.in',
+                            onComplete: () => {
+                                // After fade, remove from solution and re-render
+                                // Re-render will show die back in dice area (at ghost position)
+                                this.game.removeDieFromSolution(sourceRowIndex, dieIndex);
+                                this.onDrop();
+                            }
+                        });
                     }
                     // CASE 2: Dropped on a different row - move between rows
                     else if (targetRow && parseInt(targetRow.dataset.row) !== sourceRowIndex && !targetRow.dataset.disabled) {
@@ -357,11 +372,20 @@ export class DragDropHandler {
                         this.currentDragElement.classList.remove('dragging');
                         this.onDrop(); // Trigger re-render
                     }
-                    // CASE 4: Dropped elsewhere (outside solution/dice area) - return to original position
+                    // CASE 4: Dropped elsewhere (outside solution/dice area) - animate back to original position
                     else {
-                        console.log('⚠️ Dropped outside valid areas - returning to original position');
+                        console.log('⚠️ Dropped outside valid areas - animating back to original position');
                         this.currentDragElement.classList.remove('dragging');
-                        this.onDrop(); // Re-render to reset position
+                        
+                        // Smoothly animate back to original position
+                        gsap.to(this.currentDragElement, {
+                            duration: 0.3,
+                            left: this.originalDiePosition.x + 'px',
+                            top: this.originalDiePosition.y + 'px',
+                            ease: 'power2.out'
+                        });
+                        
+                        // No need to re-render since we're just returning to original position
                     }
                 }
                 
