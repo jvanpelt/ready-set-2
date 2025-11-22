@@ -175,7 +175,6 @@ export class UIRenderer {
         dice.forEach((die, index) => {
             const dieEl = document.createElement('div');
             dieEl.className = 'die';
-            dieEl.draggable = true;
             dieEl.dataset.index = index; // For tutorial drag restrictions
             dieEl.dataset.type = die.type;
             dieEl.dataset.value = die.value;
@@ -185,23 +184,30 @@ export class UIRenderer {
             if (die.isBonus) dieEl.dataset.isBonus = 'true'; // Store in dataset for drag-and-drop
             if (die.selectedOperator) dieEl.dataset.selectedOperator = die.selectedOperator; // Store wild cube selection
             
+            // Determine if this die is draggable
+            let isDraggable = true;
+            
             // Check if this specific die instance is used
             if (usedDiceIds.includes(die.id)) {
                 dieEl.classList.add('disabled');
-                dieEl.draggable = false;
+                isDraggable = false;
             }
             
             // Check if tutorial restricts this die
-            // Tutorial highlights certain dice - others get dimmed
+            // Tutorial highlights certain dice - others get dimmed and made non-draggable
             if (window.tutorialManager?.isActive) {
                 const currentStep = window.tutorialManager.scenario?.walkthrough?.steps[window.tutorialManager.currentStep];
                 if (currentStep?.highlight?.dice) {
                     const allowedIndices = currentStep.highlight.dice;
                     if (!allowedIndices.includes(index)) {
                         dieEl.classList.add('tutorial-disabled');
+                        isDraggable = false;
                     }
                 }
             }
+            
+            // Set draggable attribute based on all checks
+            dieEl.draggable = isDraggable;
             
             // Add required class if this die is required (Level 8+)
             if (die.isRequired) {

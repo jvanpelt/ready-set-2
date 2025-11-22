@@ -8,7 +8,7 @@ export class DragDropHandler {
         this.solutionArea = solutionArea;
         this.onDrop = onDrop; // Callback when dice are added/moved/removed
         this.onWildCubeDrop = onWildCubeDrop; // Callback when wild cube is dropped (for auto-showing popover)
-        this.tutorialManager = tutorialManager; // For checking tutorial restrictions
+        this.tutorialManager = tutorialManager; // Kept for reference (restrictions now handled via draggable attribute)
         this.app = document.getElementById('app'); // For cloning within scaled container
         
         // Drag state
@@ -42,12 +42,8 @@ export class DragDropHandler {
         const handleDiceStart = (e) => {
             const die = e.target.closest('.die');
             if (die && !die.classList.contains('disabled')) {
-                // Check if tutorial restricts dragging this die
-                if (!this.isDieAllowedInTutorial(die)) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                }
+                // Note: Tutorial restrictions are now handled by draggable attribute in UIRenderer
+                // Non-draggable cubes won't trigger this event
                 
                 if (e.type === 'touchstart') {
                     e.preventDefault();
@@ -724,43 +720,6 @@ export class DragDropHandler {
             this.game.removeDieFromSolution(rowIndex, dieIndex);
             this.onDrop();
         }
-    }
-    
-    /**
-     * Check if a die is allowed to be dragged during tutorial
-     * @param {HTMLElement} dieElement - The die DOM element
-     * @returns {boolean} - True if allowed, false if restricted
-     */
-    isDieAllowedInTutorial(dieElement) {
-        // If no tutorial is active, allow all dice
-        if (!this.tutorialManager || !this.tutorialManager.isActive) {
-            return true;
-        }
-        
-        // Get current tutorial step
-        const currentStep = this.tutorialManager.scenario?.walkthrough?.steps[this.tutorialManager.currentStep];
-        
-        if (!currentStep || !currentStep.highlight || !currentStep.highlight.dice) {
-            // No dice specified on this step = allow all dice (for auto/submit steps)
-            return true;
-        }
-        
-        // Get the allowed dice indices from highlight
-        const allowedIndices = currentStep.highlight.dice;
-        
-        // Find this die's index in the dice array
-        let dieIndex;
-        if (dieElement.dataset.index !== undefined) {
-            // Use cached index from data attribute (faster)
-            dieIndex = parseInt(dieElement.dataset.index, 10);
-        } else {
-            // Fallback: compute index from DOM (slower but reliable)
-            const allDice = Array.from(this.diceContainer.querySelectorAll('.die:not(.solution-die)'));
-            dieIndex = allDice.indexOf(dieElement);
-        }
-        
-        // Only allow dice that are highlighted for this step
-        return allowedIndices.includes(dieIndex);
     }
     
     // ========================================
