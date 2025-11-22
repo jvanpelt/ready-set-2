@@ -371,8 +371,19 @@ export class DragDropHandler {
                                 // Extract rotation from matrix
                                 ghostRotation = Math.round(Math.atan2(matrix.b, matrix.a) * (180 / Math.PI));
                                 // Extract scale
-                                ghostScale = matrix.a; // Assuming uniform scale
+                                ghostScale = Math.sqrt(matrix.a * matrix.a + matrix.b * matrix.b);
                             }
+                            
+                            console.log('🎯 Ghost transform:', { rotation: ghostRotation, scale: ghostScale, transform: ghostTransform });
+                            
+                            // Get current dragged element's rotation for comparison
+                            const currentTransform = window.getComputedStyle(this.currentDragElement).transform;
+                            let currentRotation = 0;
+                            if (currentTransform && currentTransform !== 'none') {
+                                const currentMatrix = new DOMMatrix(currentTransform);
+                                currentRotation = Math.round(Math.atan2(currentMatrix.b, currentMatrix.a) * (180 / Math.PI));
+                            }
+                            console.log('🎯 Current rotation:', currentRotation);
                             
                             // Animate to ghost position, rotation, and scale
                             gsap.to(this.currentDragElement, {
