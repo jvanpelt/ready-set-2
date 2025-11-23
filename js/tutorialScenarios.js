@@ -635,7 +635,7 @@ export const TUTORIAL_SCENARIOS = {
                             return false;
                         }
                         
-                        // Must use exactly 3 cubes (simple solution first)
+                        // Must use exactly 5 cubes (simple solution first)
                         if (allDice.length !== 5) {
                             return false;
                         }
@@ -663,72 +663,106 @@ export const TUTORIAL_SCENARIOS = {
         // Cards: 5 without gold (yellow), 3 with gold (yellow)
         // 1=gold, 5=blue+gold, 9=red+gold (3 with gold)
         // 2=green, 4=blue, 6=blue+green, 8=red, 10=red+green (5 without gold)
-        cards: [1, 2, 4, 5, 6, 8, 9, 10],
+
+        
+        cards: [4, 6, 7, 8, 9, 10, 11, 14],
         dice: [
             { type: 'color', value: 'gold', name: 'YELLOW', id: 'tutorial-3-yellow' },
+            { type: 'color', value: 'gold', name: 'YELLOW', id: 'tutorial-3-yellow-2' },
             { type: 'operator', value: '′', name: 'COMPLEMENT', id: 'tutorial-3-prime' },
             { type: 'color', value: 'red', name: 'RED', id: 'tutorial-3-red' },
-            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-3-intersect' },
-            { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-3-union' },
-            { type: 'operator', value: '−', name: 'DIFFERENCE', id: 'tutorial-3-diff' }
+            { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-3-green' },
+            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-3-intersect' }
         ],
         goal: 5,
-        expectedSolution: ['gold', '′'], // Must use these exact dice
+        //expectedSolution: ['gold', '′'], // Must use these exact dice
         
         walkthrough: {
             enabled: true,
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome to Level 3! Meet the <strong>prime</strong> operator. Think "Opposite Day."',
-                    highlight: null,
+                    message: 'Welcome to Level 3, where we meet the <strong>complement</strong> operator.',
+                    highlight: { dice: [1] },
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-complement',
-                    message: '<strong>prime</strong> (the prime symbol) means "NOT this". It\'s the opposite or inverse.',
+                    message: '<strong>Complement</strong> goes by many names, like "Not" or "Prime". It means "the opposite," as in "Yellow Prime" means "Not Yellow."',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'identify-goal',
-                    message: 'Our goal is <strong>5 cards</strong>. Let\'s build "Yellow Complement" (all cards that are NOT yellow).',
-                    highlight: { goal: true },
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'drag-yellow',
-                    message: 'First, drag the <strong>YELLOW</strong> cube to the solution area.',
-                    highlight: { dice: [0] },
+                    message: 'Our goal is <strong>5 cards</strong>. Let\'s try "Yellow Prime" &mdash; all cards that are NOT yellow. Who knows, the other colors might work too?',
+                    highlight: { goal: true, dice: [1, 2] },
                     validation: (game) => {
-                        return game.solutions[0].some(die => die.value === 'gold');
+                        const allDice = [...game.solutions[0], ...game.solutions[1]];
+                        const values = allDice.map(die => die.value);
+                        
+                        // Must use the MINUS operator (the concept we're teaching)
+                        const hasPrime = values.includes('′');
+                        if (!hasPrime) {
+                            return false;
+                        }
+                        
+                        // Must use exactly 2 cubes (simple solution first)
+                        if (allDice.length !== 2) {
+                            return false;
+                        }
+                        
+                        // Must be a valid solution that matches the goal
+                        const result = game.validateSolution();
+                        return result.valid;
                     },
                     nextTrigger: 'validation'
                 },
                 {
-                    id: 'drag-prime',
-                    message: 'Great! Now drag the <strong>prime</strong> cube. (It looks like an apostrophe.)',
-                    highlight: { dice: [1] },
+                    id: 'explain-grouping',
+                    message: 'Complement is powerful, but it gets tricky when combined with other operators. This makes us think it\'s a good time to explain grouping.',
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'explain-grouping-order',
+                    message: 'When cubes touch, they form a group that acts as a unit in your solution. Groups are evaluated first, just like parentheses change the order of operations in algebra.',
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'explain-grouping-boxes',
+                    message: 'Experiment with different combinations. You\'ll see that valid groups are wrapped in a green box in your solution.',
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'explain-grouping-with-prime',
+                    message: 'Try adding red, green, AND, and PRIME to the solution area. Notice how "red and (green prime)" is different than "(red and green) prime"',
+                    highlight: { dice: [1, 2, 3, 5] },
                     validation: (game) => {
-                        return game.solutions[0].some(die => die.value === '′');
+                        const allDice = [...game.solutions[0], ...game.solutions[1]];
+                        const values = allDice.map(die => die.value);
+                        
+                        // Must use the MINUS operator (the concept we're teaching)
+                        const hasPrime = values.includes('′');
+                        if (!hasPrime) {
+                            return false;
+                        }
+
+                        // Must use exactly 4 cubes (simple solution first)
+                        if (allDice.length !== 4) {
+                            return false;
+                        }
+                        
+                        // Must be a valid solution that matches the goal
+                        const result = game.validateSolution();
+                        return result.valid;
                     },
                     nextTrigger: 'validation'
-                },
-                {
-                    id: 'explain-result',
-                    message: 'Your solution "Yellow Complement" means: "All cards that are NOT yellow". Count them - 5 cards! ✓',
-                    highlight: null,
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'explain-power',
-                    message: 'Complement is powerful! It gets tricky when combined with other operators. Experiment!',
-                    highlight: null,
-                    nextTrigger: 'auto'
                 },
                 {
                     id: 'submit',
-                    message: 'Perfect! Now click <strong>GO!</strong> to submit your solution!',
+                    message: 'Awesome! Now click <strong>GO!</strong> to submit your solution!',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'submit'
@@ -753,7 +787,7 @@ export const TUTORIAL_SCENARIOS = {
             { type: 'color', value: 'gold', name: 'YELLOW', id: 'tutorial-4-gold' }
         ],
         goal: 1,
-        expectedSolution: ['red', '∩', 'blue', '∩', 'green'], // Must use all 5 dice!
+        // No expectedSolution - allow exploration with any solution using 2 AND operators
         
         walkthrough: {
             enabled: true,
@@ -777,65 +811,28 @@ export const TUTORIAL_SCENARIOS = {
                     nextTrigger: 'auto'
                 },
                 {
-                    id: 'identify-goal',
-                    message: 'Our goal is <strong>1 card</strong>. Only one card has all three colors!',
-                    highlight: { goal: true },
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'drag-red',
-                    message: 'Start with <strong>RED</strong>.',
-                    highlight: { dice: [0] },
+                    id: 'build-with-double-and',
+                    message: 'Our goal is <strong>1 card</strong>. Try using <strong>both AND operators</strong> to find the card with all three colors! Hint: Red AND Blue AND Green.',
+                    highlight: { goal: true, dice: [0, 1, 2, 3, 4] }, // Enable all dice except yellow
                     validation: (game) => {
-                        return game.solutions[0].some(die => die.value === 'red');
+                        const allDice = [...game.solutions[0], ...game.solutions[1]];
+                        const values = allDice.map(die => die.value);
+                        
+                        // Must use TWO intersection operators (the concept we're teaching)
+                        const andCount = values.filter(v => v === '∩').length;
+                        if (andCount !== 2) {
+                            return false;
+                        }
+                        
+                        // Must be a valid solution that matches the goal
+                        const result = game.validateSolution();
+                        return result.valid;
                     },
                     nextTrigger: 'validation'
-                },
-                {
-                    id: 'drag-intersect-1',
-                    message: 'Now drag the first <strong>AND</strong> cube.',
-                    highlight: { dice: [1] },
-                    validation: (game) => {
-                        return game.solutions[0].filter(die => die.value === '∩').length >= 1;
-                    },
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'drag-blue',
-                    message: 'Add <strong>BLUE</strong>. Now we have "cards with red AND blue".',
-                    highlight: { dice: [2] },
-                    validation: (game) => {
-                        return game.solutions[0].some(die => die.value === 'blue');
-                    },
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'drag-intersect-2',
-                    message: 'Add the second <strong>AND</strong> cube. We\'re not done yet!',
-                    highlight: { dice: [3] },
-                    validation: (game) => {
-                        return game.solutions[0].filter(die => die.value === '∩').length >= 2;
-                    },
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'drag-green',
-                    message: 'Finally, add <strong>GREEN</strong>. Now we have all cards with red AND blue AND green!',
-                    highlight: { dice: [4] },
-                    validation: (game) => {
-                        return game.solutions[0].some(die => die.value === 'green');
-                    },
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'explain-result',
-                    message: 'Perfect! You used <strong>5 cubes</strong> to find 1 very specific card. More cubes = more points!',
-                    highlight: null,
-                    nextTrigger: 'auto'
                 },
                 {
                     id: 'submit',
-                    message: 'Duplicate operators unlock complex solutions. Click <strong>GO!</strong>',
+                    message: 'Perfect! Duplicate operators unlock complex solutions. More cubes = more points! Click <strong>GO!</strong>',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'submit'
