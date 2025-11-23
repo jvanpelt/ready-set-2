@@ -572,7 +572,7 @@ export const TUTORIAL_SCENARIOS = {
             { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-2-intersect' }
         ],
         goal: 3,
-        expectedSolution: ['green', '−', 'blue'], // Must use these exact dice
+        // No expectedSolution - allow exploration with any MINUS solution
         
         walkthrough: {
             enabled: true,
@@ -591,7 +591,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'build-with-minus',
-                    message: 'Our goal is <strong>3 cards</strong>. You can try a 3 cube solution like "Green minus Blue", or explore other ways to use <strong>MINUS</strong>!',
+                    message: 'Our goal is <strong>3 cards</strong>. Try a 3 cube solution like "Green minus Blue", or explore other ways to use <strong>MINUS</strong>!',
                     highlight: { dice: [0, 1, 2, 3, 4, 5] }, // Enable all dice
                     validation: (game) => {
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
@@ -615,8 +615,40 @@ export const TUTORIAL_SCENARIOS = {
                     nextTrigger: 'validation'
                 },
                 {
+                    id: 'get-more-complex',
+                    message: 'Perfect! Your solution finds 3 cards. Now let\'s try something a bit more complex.',
+                    highlight: { goButton: true },
+                    validation: (game) => false,
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'complex-with-minus',
+                    message: 'Try a 5 cube solution using more colors and operators, making sure to use <strong>MINUS</strong>! If you\'re stuck, try the <strong>OR</strong> operator.',
+                    highlight: { dice: [0, 1, 2, 3, 4, 5] }, // Enable all dice
+                    validation: (game) => {
+                        const allDice = [...game.solutions[0], ...game.solutions[1]];
+                        const values = allDice.map(die => die.value);
+                        
+                        // Must use the MINUS operator (the concept we're teaching)
+                        const hasMinus = values.includes('−');
+                        if (!hasMinus) {
+                            return false;
+                        }
+                        
+                        // Must use exactly 3 cubes (simple solution first)
+                        if (allDice.length !== 5) {
+                            return false;
+                        }
+                        
+                        // Must be a valid solution that matches the goal
+                        const result = game.validateSolution();
+                        return result.valid;
+                    },
+                    nextTrigger: 'validation'
+                },
+                {
                     id: 'submit',
-                    message: 'Perfect! Your solution "Green MINUS Blue" finds 3 cards. Now click <strong>GO!</strong> to submit!',
+                    message: 'Perfect! Try to maximize your score by using the most cubes possible! Click <strong>GO!</strong> to continue.',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'submit'
