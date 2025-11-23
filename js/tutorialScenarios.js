@@ -874,31 +874,43 @@ export const TUTORIAL_SCENARIOS = {
             steps: [
                 {
                     id: 'intro',
-                    message: `Welcome to Level 5! We\'re introducing two new cubes: <strong>Universe</strong> and <strong>Null</strong>  ${getNullSVG()}.`,
+                    message: `Welcome to Level 5! We\'re introducing two new cubes: <strong>Universe</strong> ${getUniverseSVG(25,25)} and <strong>Null</strong> ${getNullSVG(25,25)}.`,
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-universe',
-                    message: 'The <strong>Universe</strong> cube refers to ALL cards in the universe. It looks like a V with an underline.',
+                    message: `The <strong>Universe</strong> ${getUniverseSVG(25,25)} cube refers to ALL cards in the universe. If you place it alone in your solution, you\'ll see all cards stay highlighted.`,
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-null',
-                    message: '<strong>Null</strong> is an empty set with NO cards. It looks like an upside down V with an underline. Both cubes are useful for padding!',
+                    message: `<strong>Null</strong> ${getNullSVG(25,25)} is an empty set with NO cards. If you place it alone in your solution, you\'ll see all cards are dimmed.`,
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'padding-and-restrictions',
+                    message: 'Universe and Null are useful for padding your solution, or for use with restrictions in later levels.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-padding',
-                    message: '<strong>Padding</strong> means using extra cubes that don\'t change the result. More cubes equals more points!',
+                    message: '<strong>Padding</strong> means using extra cubes that don\'t change the result, e.g. "Universe And Red" is the same as "Red"!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'build-with-universe',
-                    message: 'Our goal is <strong>3 cards</strong>. Try building a solution using <strong>UNIVERSE</strong>. If you get stuck, try using "(Blue OR Red)" in your solution.',
+                    message: 'Our goal is <strong>3 cards</strong>. Try building a 5 cube solution using <strong>UNIVERSE</strong>.',
+                    highlight: { goal: true, dice: [0, 1, 2, 3, 4, 5, 6, 7] }, // Enable all dice
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'build-with-universe',
+                    message: 'If you get stuck, try using "Universe ___ (Blue OR Red)" in your solution. Try different operators in that blank spot, or create your own solution!',
                     highlight: { goal: true, dice: [0, 1, 2, 3, 4, 5, 6, 7] }, // Enable all dice
                     validation: (game) => {
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
@@ -907,6 +919,11 @@ export const TUTORIAL_SCENARIOS = {
                         // Must use UNIVERSE (the new concept)
                         const hasUniverse = values.includes('U');
                         if (!hasUniverse) {
+                            return false;
+                        }
+
+                        // Must use exactly 5 cubes (simple solution first)
+                        if (allDice.length !== 5) {
                             return false;
                         }
                         

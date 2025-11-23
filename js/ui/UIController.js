@@ -343,12 +343,6 @@ export class UIController {
     }
     
     handleReset() {
-        // Block reset during tutorial
-        if (this.tutorialManager.isActive) {
-            console.log('🎓 Tutorial active - Reset button disabled');
-            return;
-        }
-        
         // Clear solution area
         this.game.clearSolution();
         
