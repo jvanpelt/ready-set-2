@@ -3,9 +3,9 @@
 /**
  * Generate SVG for Union (∪) - Two overlapping circles, both filled
  */
-export function getUnionSVG() {
+export function getUnionSVG(width = 60, height = 60) {
     return `
-        <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+        <svg width="${width}" height="${height}" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
             <!-- Left circle -->
             <circle cx="20" cy="30" r="18" fill="currentColor" opacity="0.7" />
             <!-- Right circle -->
@@ -21,10 +21,10 @@ export function getUnionSVG() {
 /**
  * Generate SVG for Intersection (∩) - Two overlapping circles, only overlap filled
  */
-export function getIntersectionSVG() {
+export function getIntersectionSVG(width = 60, height = 60) {
     const uniqueId = `intersection-clip-${Math.random().toString(36).substr(2, 9)}`;
     return `
-        <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+        <svg width="${width}" height="${height}" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
             <defs>
                 <!-- Define a clip path for the intersection -->
                 <clipPath id="${uniqueId}">
@@ -44,9 +44,9 @@ export function getIntersectionSVG() {
 /**
  * Generate SVG for Equals (=) - Two horizontal blue lines
  */
-export function getEqualsSVG() {
+export function getEqualsSVG(width = 60, height = 60) {
     return `
-        <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+        <svg width="${width}" height="${height}" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
             <!-- Top line -->
             <rect x="10" y="22" width="40" height="6" fill="currentColor" rx="1" />
             <!-- Bottom line -->
@@ -58,9 +58,9 @@ export function getEqualsSVG() {
 /**
  * Generate SVG for Subset (⊆) - Curved C shape with horizontal line
  */
-export function getSubsetSVG() {
+export function getSubsetSVG(width = 60, height = 60) {
     return `
-        <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+        <svg width="${width}" height="${height}" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
             <!-- Wrap in group to position together -->
             <g transform="translate(5, 8)">
                 <!-- C-shaped curve -->
@@ -77,9 +77,9 @@ export function getSubsetSVG() {
 /**
  * Generate SVG for Minus (−) - Single horizontal red bar
  */
-export function getMinusSVG() {
+export function getMinusSVG(width = 60, height = 60) {
     return `
-        <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+        <svg width="${width}" height="${height}" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
             <!-- Horizontal bar -->
             <rect x="10" y="27" width="40" height="6" fill="currentColor" rx="1" />
         </svg>
@@ -89,9 +89,9 @@ export function getMinusSVG() {
 /**
  * Generate SVG for Complement/Prime (′) - Apostrophe-style mark
  */
-export function getComplementSVG() {
+export function getComplementSVG(width = 60, height = 60) {
     return `
-        <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+        <svg width="${width}" height="${height}" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
             <!-- Short apostrophe mark in upper area -->
             <line x1="35" y1="15" x2="28" y2="28" 
                   stroke="currentColor" 
@@ -104,9 +104,9 @@ export function getComplementSVG() {
 /**
  * Generate SVG for Universe (U) - V pointing down with underline
  */
-export function getUniverseSVG() {
+export function getUniverseSVG(width = 60, height = 60) {
     return `
-        <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+        <svg width="${width}" height="${height}" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
             <!-- V shape pointing down -->
             <path d="M 10 10 L 30 35 L 50 10" 
                   fill="none" 
@@ -126,9 +126,9 @@ export function getUniverseSVG() {
 /**
  * Generate SVG for Null (∅) - Caret pointing up with underline
  */
-export function getNullSVG() {
+export function getNullSVG(width = 60, height = 60) {
     return `
-        <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+        <svg width="${width}" height="${height}" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
             <!-- Caret/chevron pointing up -->
             <path d="M 10 32 L 30 10 L 50 32" 
                   fill="none" 

@@ -4,6 +4,16 @@
  */
 
 import { isSolutionSyntaxValid } from './utils/validation.js';
+import { 
+    getComplementSVG, 
+    getUniverseSVG, 
+    getNullSVG, 
+    getMinusSVG, 
+    getUnionSVG, 
+    getIntersectionSVG,
+    getEqualsSVG,
+    getSubsetSVG
+} from './svgSymbols.js';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // INTRO TUTORIAL - Now Interactive! 
@@ -864,19 +874,19 @@ export const TUTORIAL_SCENARIOS = {
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome to Level 5! We\'re introducing wo new cubes: <strong>universe</strong> and <strong>null</strong>. ',
+                    message: `Welcome to Level 5! We\'re introducing two new cubes: <strong>Universe</strong> and <strong>Null</strong>  ${getNullSVG()}.`,
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-universe',
-                    message: '<strong>universe</strong> refers to ALL cards in the universe. It looks like a V with an underline.',
+                    message: 'The <strong>Universe</strong> cube refers to ALL cards in the universe. It looks like a V with an underline.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-null',
-                    message: '<strong>Null (∅)</strong> is an empty set with NO cards. It looks like an upside down V with an underline. Both are useful for padding!',
+                    message: '<strong>Null</strong> is an empty set with NO cards. It looks like an upside down V with an underline. Both cubes are useful for padding!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -888,7 +898,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'build-with-universe',
-                    message: 'Our goal is <strong>3 cards</strong>. Try building a solution using <strong>UNIVERSE</strong>. Remember: you can use grouping to create complex expressions!',
+                    message: 'Our goal is <strong>3 cards</strong>. Try building a solution using <strong>UNIVERSE</strong>. If you get stuck, try using "(Blue OR Red)" in your solution.',
                     highlight: { goal: true, dice: [0, 1, 2, 3, 4, 5, 6, 7] }, // Enable all dice
                     validation: (game) => {
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
