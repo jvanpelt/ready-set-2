@@ -846,19 +846,38 @@ export function evaluateRestriction(restriction, cards, depth = 0) {
     // Track accumulated flips from nested restrictions
     let accumulatedFlips = [];
     
-    // Check if left side has nested restrictions (groups)
-    const leftSideGroups = detectGroups(leftSide);
-    const leftValidGroups = leftSideGroups.filter(g => isValidGroup(g, leftSide));
-    const leftHasRestrictionGroup = leftValidGroups.some(group => 
-        group.some(idx => leftSide[idx].value === '=' || leftSide[idx].value === '⊆')
-    );
+    // OPTIMIZATION: Only detect groups if side contains restriction operators
+    // This avoids unnecessary group detection on pure set name sides like "red ∪ blue"
     
-    // Check if right side has nested restrictions (groups)
-    const rightSideGroups = detectGroups(rightSide);
-    const rightValidGroups = rightSideGroups.filter(g => isValidGroup(g, rightSide));
-    const rightHasRestrictionGroup = rightValidGroups.some(group => 
-        group.some(idx => rightSide[idx].value === '=' || rightSide[idx].value === '⊆')
-    );
+    // Check if left side has any restriction operators
+    const leftHasRestrictionOp = leftSide.some(die => die.value === '=' || die.value === '⊆');
+    let leftHasRestrictionGroup = false;
+    
+    if (leftHasRestrictionOp) {
+        console.log('Left side contains restriction operator - checking for groups');
+        const leftSideGroups = detectGroups(leftSide);
+        const leftValidGroups = leftSideGroups.filter(g => isValidGroup(g, leftSide));
+        leftHasRestrictionGroup = leftValidGroups.some(group => 
+            group.some(idx => leftSide[idx].value === '=' || leftSide[idx].value === '⊆')
+        );
+    } else {
+        console.log('Left side is pure set name - no group detection needed');
+    }
+    
+    // Check if right side has any restriction operators
+    const rightHasRestrictionOp = rightSide.some(die => die.value === '=' || die.value === '⊆');
+    let rightHasRestrictionGroup = false;
+    
+    if (rightHasRestrictionOp) {
+        console.log('Right side contains restriction operator - checking for groups');
+        const rightSideGroups = detectGroups(rightSide);
+        const rightValidGroups = rightSideGroups.filter(g => isValidGroup(g, rightSide));
+        rightHasRestrictionGroup = rightValidGroups.some(group => 
+            group.some(idx => rightSide[idx].value === '=' || rightSide[idx].value === '⊆')
+        );
+    } else {
+        console.log('Right side is pure set name - no group detection needed');
+    }
     
     console.log('Left side has restriction group:', leftHasRestrictionGroup);
     console.log('Right side has restriction group:', rightHasRestrictionGroup);
