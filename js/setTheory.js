@@ -25,13 +25,20 @@ export function evaluateExpression(expression, cards) {
         return new Set();
     }
     
-    // console.log('=== EVALUATING EXPRESSION ===');
-    // console.log('Dice (left-to-right by X):', 
-    //     [...expression].sort((a, b) => a.x - b.x).map(d => d.value).join(' '));
+    console.log('=== EVALUATING EXPRESSION ===');
+    console.log('Dice (left-to-right by X):', 
+        [...expression].sort((a, b) => a.x - b.x).map(d => d.value).join(' '));
+    console.log('Dice positions:', expression.map(d => `${d.value}(${d.x},${d.y})`).join(', '));
     
     // Detect groups based on physical proximity
     const groups = detectGroups(expression);
-    // console.log('Detected groups:', groups.length);
+    console.log('Detected groups:', groups.length);
+    if (groups.length > 0) {
+        groups.forEach((group, i) => {
+            const groupDice = group.map(idx => expression[idx]);
+            console.log(`  Group ${i}: indices ${group}, dice: [${groupDice.map(d => d.value).join(', ')}]`);
+        });
+    }
     
     // Evaluate valid groups first, then the remaining expression
     const result = evaluateWithGroups(expression, groups, cards);
@@ -103,17 +110,29 @@ function isValidGroup(group, dice) {
     const groupDice = group.map(i => dice[i]);
     groupDice.sort((a, b) => a.x - b.x);
     const groupValues = groupDice.map(d => d.value).join(' ');
+    const groupTypes = groupDice.map(d => d.type).join(', ');
     
-    if (!group.some(index => dice[index].type === 'operator')) {
-        // console.log(`  Group [${groupValues}]: INVALID - no operator`);
+    // A valid group must contain at least one operator OR restriction
+    const hasOperator = group.some(index => 
+        dice[index].type === 'operator' || dice[index].type === 'restriction'
+    );
+    
+    console.log(`  Checking group [${groupValues}], types: [${groupTypes}], hasOperator: ${hasOperator}`);
+    
+    if (!hasOperator) {
+        console.log(`  Group [${groupValues}]: INVALID - no operator or restriction`);
         return false;
     }
     
     // Convert to pattern string
     const patternString = dicesToPatternString(groupDice);
-    const isValid = SETNAME_PATTERNS.includes(patternString);
     
-    // console.log(`  Group [${groupValues}]: ${isValid ? 'VALID' : 'INVALID'} (pattern: ${patternString})`);
+    // Check if it's a valid set name pattern OR a valid restriction pattern
+    const isValidSetName = SETNAME_PATTERNS.includes(patternString);
+    const isValidRestriction = RESTRICTION_PATTERNS.includes(patternString);
+    const isValid = isValidSetName || isValidRestriction;
+    
+    console.log(`  Group [${groupValues}]: ${isValid ? 'VALID' : 'INVALID'} (pattern: ${patternString}, setName: ${isValidSetName}, restriction: ${isValidRestriction})`);
     
     return isValid;
 }
@@ -125,7 +144,7 @@ function evaluateWithGroups(dice, groups, cards) {
     // Filter to only valid groups
     const validGroups = groups.filter(group => isValidGroup(group, dice));
     
-    // console.log('Valid groups:', validGroups.length, 'of', groups.length);
+    console.log('evaluateWithGroups: Valid groups:', validGroups.length, 'of', groups.length, 'total groups');
     
     // If no valid groups, evaluate left-to-right by X position
     if (validGroups.length === 0) {
@@ -154,8 +173,36 @@ function evaluateWithGroups(dice, groups, cards) {
         const groupDice = group.map(i => dice[i]);
         // Sort group dice left-to-right for proper evaluation within group
         groupDice.sort((a, b) => a.x - b.x);
-        const groupTokens = groupDice.map(die => getEffectiveValue(die));
-        const result = evaluate(groupTokens, cards);
+        
+        // Check if this group is a restriction
+        const isRestrictionGroup = groupDice.some(die => die.value === '=' || die.value === '⊆');
+        
+        console.log(`📦 Evaluating group: [${groupDice.map(d => d.value).join(' ')}], isRestriction: ${isRestrictionGroup}`);
+        
+        let result;
+        if (isRestrictionGroup) {
+            // This is a restriction group - evaluate it as a restriction
+            // Restrictions return cards to FLIP, so we need to invert that to get the cards that PASS
+            const cardsToFlip = evaluateRestriction(groupDice, cards);
+            const flippedSet = new Set(cardsToFlip);
+            
+            console.log(`  Restriction group flips cards: ${cardsToFlip}`);
+            
+            // Result is all cards that are NOT flipped
+            result = new Set();
+            cards.forEach((card, index) => {
+                if (!flippedSet.has(index)) {
+                    result.add(index);
+                }
+            });
+            
+            console.log(`  Restriction group result (non-flipped): ${Array.from(result)}`);
+        } else {
+            // Regular set name group - evaluate normally
+            const groupTokens = groupDice.map(die => getEffectiveValue(die));
+            result = evaluate(groupTokens, cards);
+            console.log(`  Set name group result: ${Array.from(result)}`);
+        }
         
         // Use leftmost X position as group position
         const minX = Math.min(...group.map(i => dice[i].x));
@@ -743,22 +790,111 @@ export function isValidRestriction(expression) {
 export function evaluateRestriction(restriction, cards) {
     if (!restriction || restriction.length === 0) return [];
     
-    // console.log('=== EVALUATING RESTRICTION ===');
+    console.log('=== EVALUATING RESTRICTION ===');
+    console.log('Restriction dice:', restriction.map(d => d.value).join(' '));
     
-    // Find the restriction operator
-    const restrictionDie = restriction.find(die => die.value === '=' || die.value === '⊆');
-    if (!restrictionDie) return [];
+    // IMPORTANT: Detect groups first before splitting on restriction operators
+    // This ensures grouped restrictions like (blue = green) are treated as single units
+    const groups = detectGroups(restriction);
+    const validGroups = groups.filter(group => isValidGroup(group, restriction));
     
-    const restrictionIndex = restriction.indexOf(restrictionDie);
+    // If there are valid groups, we need to find the restriction operator that's NOT in a group
+    let restrictionDie = null;
+    let restrictionIndex = -1;
+    
+    // Check each die to see if it's a restriction operator AND not part of a group
+    restriction.forEach((die, index) => {
+        if ((die.value === '=' || die.value === '⊆') && restrictionDie === null) {
+            // Check if this die is part of any valid group
+            const inGroup = validGroups.some(group => group.includes(index));
+            if (!inGroup) {
+                // This restriction operator is not grouped - use it as the split point
+                restrictionDie = die;
+                restrictionIndex = index;
+            }
+        }
+    });
+    
+    // If we didn't find an ungrouped restriction, fall back to finding ANY restriction
+    // This handles cases like (blue = green) where the entire expression is one group
+    if (!restrictionDie) {
+        console.log('No ungrouped restriction found - looking for any restriction operator');
+        restrictionDie = restriction.find(die => die.value === '=' || die.value === '⊆');
+        if (restrictionDie) {
+            restrictionIndex = restriction.indexOf(restrictionDie);
+            console.log(`Found grouped restriction operator: ${restrictionDie.value} at index ${restrictionIndex}`);
+        } else {
+            console.log('⚠️ No restriction operator found at all');
+            return [];
+        }
+    }
+    
     const leftSide = restriction.slice(0, restrictionIndex);
     const rightSide = restriction.slice(restrictionIndex + 1);
     
-    // Evaluate both sides
-    const leftCards = evaluateExpression(leftSide, cards);
-    const rightCards = evaluateExpression(rightSide, cards);
+    console.log('Left side:', leftSide.map(d => d.value).join(' '));
+    console.log('Right side:', rightSide.map(d => d.value).join(' '));
     
-    // console.log(`Left side (${leftSide.map(d => d.value).join(' ')}):`, Array.from(leftCards));
-    // console.log(`Right side (${rightSide.map(d => d.value).join(' ')}):`, Array.from(rightCards));
+    // Track accumulated flips from nested restrictions
+    let accumulatedFlips = [];
+    
+    // Check if left side has nested restrictions (groups)
+    const leftSideGroups = detectGroups(leftSide);
+    const leftValidGroups = leftSideGroups.filter(g => isValidGroup(g, leftSide));
+    const leftHasRestrictionGroup = leftValidGroups.some(group => 
+        group.some(idx => leftSide[idx].value === '=' || leftSide[idx].value === '⊆')
+    );
+    
+    // Check if right side has nested restrictions (groups)
+    const rightSideGroups = detectGroups(rightSide);
+    const rightValidGroups = rightSideGroups.filter(g => isValidGroup(g, rightSide));
+    const rightHasRestrictionGroup = rightValidGroups.some(group => 
+        group.some(idx => rightSide[idx].value === '=' || rightSide[idx].value === '⊆')
+    );
+    
+    console.log('Left side has restriction group:', leftHasRestrictionGroup);
+    console.log('Right side has restriction group:', rightHasRestrictionGroup);
+    
+    // If left side has a nested restriction, evaluate it and accumulate its flips
+    let leftCards;
+    if (leftHasRestrictionGroup) {
+        const leftFlips = evaluateRestriction(leftSide, cards);
+        console.log('Left side nested flips:', leftFlips);
+        accumulatedFlips.push(...leftFlips);
+        
+        // Get cards that PASS the left restriction (non-flipped)
+        const flippedSet = new Set(leftFlips);
+        leftCards = new Set();
+        cards.forEach((card, index) => {
+            if (!flippedSet.has(index)) {
+                leftCards.add(index);
+            }
+        });
+    } else {
+        leftCards = evaluateExpression(leftSide, cards);
+    }
+    
+    // If right side has a nested restriction, evaluate it and accumulate its flips
+    let rightCards;
+    if (rightHasRestrictionGroup) {
+        const rightFlips = evaluateRestriction(rightSide, cards);
+        console.log('Right side nested flips:', rightFlips);
+        accumulatedFlips.push(...rightFlips);
+        
+        // Get cards that PASS the right restriction (non-flipped)
+        const flippedSet = new Set(rightFlips);
+        rightCards = new Set();
+        cards.forEach((card, index) => {
+            if (!flippedSet.has(index)) {
+                rightCards.add(index);
+            }
+        });
+    } else {
+        rightCards = evaluateExpression(rightSide, cards);
+    }
+    
+    console.log(`Left cards:`, Array.from(leftCards));
+    console.log(`Right cards:`, Array.from(rightCards));
     
     let cardsToFlip = [];
     
@@ -766,19 +902,24 @@ export function evaluateRestriction(restriction, cards) {
         // Subset: All cards in left must be in right
         // Flip any cards in left that are NOT in right
         cardsToFlip = Array.from(leftCards).filter(cardIndex => !rightCards.has(cardIndex));
-        // console.log(`Subset restriction: Flipping ${cardsToFlip.length} cards from left that aren't in right`);
+        console.log(`Subset restriction: Flipping ${cardsToFlip.length} cards from left that aren't in right`);
     } else if (restrictionDie.value === '=') {
         // Equals: Left and right must be identical
         // Flip any cards that are in one but not the other
         const leftOnly = Array.from(leftCards).filter(cardIndex => !rightCards.has(cardIndex));
         const rightOnly = Array.from(rightCards).filter(cardIndex => !leftCards.has(cardIndex));
         cardsToFlip = [...leftOnly, ...rightOnly];
-        // console.log(`Equals restriction: Flipping ${cardsToFlip.length} cards (${leftOnly.length} left-only + ${rightOnly.length} right-only)`);
+        console.log(`Equals restriction: Flipping ${cardsToFlip.length} cards (${leftOnly.length} left-only + ${rightOnly.length} right-only)`);
     }
     
-    // console.log('Cards to flip:', cardsToFlip);
-    // console.log('==============================\n');
+    // Combine with accumulated flips from nested restrictions (remove duplicates)
+    const allFlips = [...new Set([...accumulatedFlips, ...cardsToFlip])];
     
-    return cardsToFlip;
+    console.log('Cards to flip from this restriction:', cardsToFlip);
+    console.log('Accumulated flips from nested restrictions:', accumulatedFlips);
+    console.log('Total cards to flip:', allFlips);
+    console.log('==============================\n');
+    
+    return allFlips;
 }
 

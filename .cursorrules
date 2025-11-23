@@ -1,6 +1,6 @@
 # Cursor Rules for Ready, Set 2
 
-- Don't refer to "the user" in chat. My name is "jason" or nickname "jvp". This includes when speaking between agents.
+- Don't refer to "the user" in chat. My name is "jason" or nickname "jvp". This includes when speaking between agents.  
 
 ## Workflow & Git Rules
 
@@ -25,14 +25,6 @@
 - Include context about PROBLEM, ROOT CAUSE, and SOLUTION for bug fixes
 - Commit related changes together
 - Don't commit unless user explicitly asks or it's part of a clear workflow
-
-### Version Numbers
-- **ALWAYS bump version** when pushing to origin
-- Update BOTH locations:
-  - `index.html` (Settings display)
-  - `js/main.js` (Console log)
-- Use semantic versioning: v4.MINOR.PATCH
-- Increment MINOR for features, PATCH for fixes
 
 ## Code Style & Practices
 

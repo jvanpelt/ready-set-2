@@ -4,6 +4,7 @@
  */
 
 import { isSolutionSyntaxValid } from './utils/validation.js';
+import { isValidRestriction } from './setTheory.js';
 import { 
     getComplementSVG, 
     getUniverseSVG, 
@@ -945,89 +946,86 @@ export const TUTORIAL_SCENARIOS = {
     },
     
     6: {
-        // Level 6: Restrictions - demonstrate Red ⊆ Blue
-        // Cards: 1=yellow, 2=green, 4=blue, 6=blue+green, 8=red, 12=red+blue, 13=red+blue+yellow, 14=red+blue+green
-        // Red ⊆ Blue removes: card 8 (red only, no blue)
-        // Remaining: 7 cards (1,2,4,6,12,13,14)
-        // Goal: 5 cards = green ∪ yellow = cards 1,2,6,13,14
-        cards: [1, 2, 4, 6, 8, 12, 13, 14],
+        // Level 6: Restrictions - Modified from Daily Puzzle #780
+        // Cards (bitwise): blue=4, green+red=10, green+gold=3, empty=0, blue+green=6, blue+green+gold=7, blue+gold=5, red+blue+green=14
+        // Goal: 2 cards
+        // Includes both SUBSET and EQUALS restriction cubes for player experimentation
+        cards: [4, 10, 3, 0, 6, 7, 5, 14],
         dice: [
-            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-6-red' },
-            { type: 'restriction', value: '⊆', name: 'SUBSET', id: 'tutorial-6-subset' },
-            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-6-blue' },
             { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-6-green' },
             { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-6-union' },
-            { type: 'color', value: 'gold', name: 'YELLOW', id: 'tutorial-6-yellow' }
+            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-6-blue-1' },
+            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-6-blue-2' },
+            { type: 'restriction', value: '⊆', name: 'SUBSET', id: 'tutorial-6-subset' },
+            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-6-intersection' },
+            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-6-red' },
+            { type: 'restriction', value: '=', name: 'EQUALS', id: 'tutorial-6-equals' }
         ],
-        goal: 5,
-        expectedSolution: {
-            restriction: ['red', '⊆', 'blue'],
-            setName: ['green', '∪', 'gold']
-        },
+        goal: 3,
+        expectedSolution: null, // Multiple valid solutions possible
         
         walkthrough: {
             enabled: true,
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome to Level 6! <strong>Restrictions</strong> are a game-changer!',
+                    message: 'Welcome to Level 6! <strong>Restrictions</strong> are a game changer! First, notice you have <strong>two solution rows</strong> now.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-two-rows',
-                    message: 'Notice you have <strong>two solution rows</strong> now. TOP = Restrictions, BOTTOM = Set Name.',
+                    message: 'Typically we put restrictions in the top row, and set names in the bottom. Do what you like, just don\'t put them in the <strong>same</strong> row!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-subset',
-                    message: '<strong>subset</strong>: "A subset B" means cards in A must also be in B. Cards that violate this are <strong>removed from the universe</strong>.',
+                    message: `<strong>Subset</strong> ${getSubsetSVG(25,25)}: "A subset B" means cards with A must be contained in B.`,
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'explain-subset-example',
+                    message: `For example, "Red Subset Blue" means cards with red must also contain blue. Cards with ONLY red will be <strong>flipped and removed from the Universe</strong>.`,
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'explain-equals',
+                    message: `<strong>Equals</strong> ${getEqualsSVG(25,25)}: "Red Equals Blue" means cards with red must also have blue, and cards with blue must also have red.`,
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-important',
-                    message: '<strong>Key point</strong>: Restrictions ONLY affect cards mentioned in the restriction. Other cards are unaffected!',
+                    message: 'Go ahead and try some restrictions! You can use Subset, Equals, or both in your solution.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'goal',
-                    message: 'Goal: <strong>5 cards</strong>. Let\'s build "Red subset Blue" to remove red-only cards, then name the remaining set.',
+                    message: 'Goal: <strong>3 cards</strong>. Let\'s try building a full solution, starting with something like "Red Subset Blue" to remove cards with red but not blue.',
                     highlight: { goal: true },
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'drag-red-restriction',
-                    message: 'Drag <strong>RED</strong> to the <strong>TOP ROW</strong> (Restrictions).',
-                    highlight: { dice: [0] },
-                    validation: (game) => game.solutions[0].some(die => die.value === 'red'),
+                    validation: (game) => {
+                        // Check if either row contains a valid restriction
+                        const topRow = game.solutions[0];
+                        const bottomRow = game.solutions[1];
+                        
+                        // Check if top row has a valid restriction
+                        const topRowValid = isValidRestriction(topRow);
+                        
+                        // Check if bottom row has a valid restriction
+                        const bottomRowValid = isValidRestriction(bottomRow);
+                        
+                        // At least one row must have a valid restriction
+                        return topRowValid || bottomRowValid;
+                    },
                     nextTrigger: 'validation'
-                },
-                {
-                    id: 'drag-subset',
-                    message: 'Drag <strong>subset</strong> to the TOP ROW.',
-                    highlight: { dice: [1] },
-                    validation: (game) => game.solutions[0].some(die => die.value === '⊆'),
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'drag-blue-restriction',
-                    message: 'Drag <strong>BLUE</strong> to the TOP ROW.',
-                    highlight: { dice: [2] },
-                    validation: (game) => game.solutions[0].some(die => die.value === 'blue'),
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'explain-effect',
-                    message: '"Red subset Blue" means: red cards must contain blue. Cards with ONLY red will be <strong>flipped and removed from play</strong>.',
-                    highlight: null,
-                    nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-setname-needed',
-                    message: '<strong>Important</strong>: Restrictions alone aren\'t enough! You must ALSO provide a set name in the BOTTOM ROW.',
+                    message: '<strong>Important</strong>: Restrictions alone aren\'t enough! You must ALSO provide a set name in your solution.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -1036,20 +1034,6 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Now for the set name. Drag <strong>GREEN</strong> to the <strong>BOTTOM ROW</strong>.',
                     highlight: { dice: [3] },
                     validation: (game) => game.solutions[1].some(die => die.value === 'green'),
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'drag-union',
-                    message: 'Drag <strong>OR</strong> to the BOTTOM ROW.',
-                    highlight: { dice: [4] },
-                    validation: (game) => game.solutions[1].some(die => die.value === '∪'),
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'drag-yellow',
-                    message: 'Drag <strong>YELLOW</strong> to the BOTTOM ROW.',
-                    highlight: { dice: [5] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'gold'),
                     nextTrigger: 'validation'
                 },
                 {

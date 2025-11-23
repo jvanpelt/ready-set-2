@@ -13,32 +13,28 @@ Daily puzzles use 8-cube solutions with weighted goal distribution to provide ba
 - Templates use complex restrictions (e.g., `U = red ∪ blue ∩ green`)
 - More complex restrictions naturally filter out more cards
 - This results in fewer matching cards → lower goals
-- Raw generation produces skewed distribution (too many goals 1-3)
+- Goals 1-2 are over-represented, goals 4-7 are under-represented
 
 ### Solution:
-**Manual rebalancing is required** to achieve the weighted bell curve distribution from the regular game mode.
+**Manual rebalancing is required** to achieve the desired bell curve distribution.
 
 ---
 
-## Target Goal Distribution (Weighted Bell Curve)
+## Target Goal Distribution (Bell Curve)
 
 For 1461 puzzles (4 years of daily puzzles):
 
-Based on `WEIGHTED_GOALS = [1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7]` from regular game mode.
-
 | Goal | Target % | Target Count | Description |
 |------|----------|--------------|-------------|
-| 1    | 14.3%    | 209          | Less common |
-| 2    | 19.0%    | 278          | Common      |
-| 3    | 19.0%    | 278          | Common      |
-| 4    | 19.0%    | 278          | Common      |
-| 5    | 14.3%    | 209          | Less common |
-| 6    | 9.5%     | 139          | Uncommon    |
-| 7    | 4.8%     | 70           | Rare        |
+| 1    | 5%       | 73           | Very rare   |
+| 2    | 20%      | 292          | Uncommon    |
+| 3    | 30%      | 438          | Common      |
+| 4    | 30%      | 438          | Common      |
+| 5    | 10%      | 146          | Uncommon    |
+| 6    | 4%       | 58           | Rare        |
+| 7    | 1%       | 15           | Very rare   |
 
-**Total:** 1461 puzzles
-
-This creates a bell curve weighted toward goals 2-4, matching the regular game's goal selection.
+**Total:** 1460 puzzles (1 variance acceptable)
 
 ---
 
@@ -62,10 +58,10 @@ This creates a bell curve weighted toward goals 2-4, matching the regular game's
 
 ### Core Scripts (Keep):
 1. **`scripts/decode-puzzles.mjs`** - Decode obfuscated puzzles for editing
-2. **`scripts/count-puzzle-solutions.mjs`** - Calculate solution metadata (count, shortest, longest)
+2. **`scripts/verify-goal-distribution.mjs`** - Check if rebalancing is needed
 3. **`scripts/rebalance-puzzle-goals.mjs`** - Fix goal distribution bias
-4. **`scripts/obfuscate-puzzles.mjs`** - Prepare for production (minify + obfuscate)
-5. **`scripts/verify-goal-distribution.mjs`** - Check if rebalancing is needed
+4. **`scripts/count-puzzle-solutions.mjs`** - Calculate solution metadata (count, shortest, longest)
+5. **`scripts/obfuscate-puzzles.mjs`** - Prepare for production (minify + obfuscate)
 6. **`scripts/validate-all-patterns.mjs`** - Verify pattern coverage
 
 ---
