@@ -785,12 +785,20 @@ export function isValidRestriction(expression) {
  * Evaluate a restriction expression and return indices of cards to flip
  * @param {Array} restriction - The restriction dice expression
  * @param {Array} cards - All cards
+ * @param {number} depth - Recursion depth (for safety)
  * @returns {Array} - Array of card indices that should be flipped (removed from universe)
  */
-export function evaluateRestriction(restriction, cards) {
+export function evaluateRestriction(restriction, cards, depth = 0) {
     if (!restriction || restriction.length === 0) return [];
     
-    console.log('=== EVALUATING RESTRICTION ===');
+    // Safety: Prevent infinite recursion (though depth > 1 is physically impossible with max 2 restriction cubes)
+    const MAX_DEPTH = 3;
+    if (depth > MAX_DEPTH) {
+        console.warn(`⚠️ Max recursion depth (${MAX_DEPTH}) reached in evaluateRestriction`);
+        return [];
+    }
+    
+    console.log('=== EVALUATING RESTRICTION (depth:', depth, ') ===');
     console.log('Restriction dice:', restriction.map(d => d.value).join(' '));
     
     // IMPORTANT: Detect groups first before splitting on restriction operators
@@ -858,7 +866,7 @@ export function evaluateRestriction(restriction, cards) {
     // If left side has a nested restriction, evaluate it and accumulate its flips
     let leftCards;
     if (leftHasRestrictionGroup) {
-        const leftFlips = evaluateRestriction(leftSide, cards);
+        const leftFlips = evaluateRestriction(leftSide, cards, depth + 1);
         console.log('Left side nested flips:', leftFlips);
         accumulatedFlips.push(...leftFlips);
         
@@ -877,7 +885,7 @@ export function evaluateRestriction(restriction, cards) {
     // If right side has a nested restriction, evaluate it and accumulate its flips
     let rightCards;
     if (rightHasRestrictionGroup) {
-        const rightFlips = evaluateRestriction(rightSide, cards);
+        const rightFlips = evaluateRestriction(rightSide, cards, depth + 1);
         console.log('Right side nested flips:', rightFlips);
         accumulatedFlips.push(...rightFlips);
         
