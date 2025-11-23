@@ -787,32 +787,26 @@ export const TUTORIAL_SCENARIOS = {
             { type: 'color', value: 'gold', name: 'YELLOW', id: 'tutorial-4-gold' }
         ],
         goal: 1,
-        // No expectedSolution - allow exploration with any solution using 2 AND operators
+        expectedSolution: ['red', '∩', 'blue', '∩', 'green'], // Must use all 5 dice!
         
         walkthrough: {
             enabled: true,
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome to Level 4! Time to learn something powerful...',
-                    highlight: null,
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'duplicate-operators',
-                    message: 'Look at your dice! You have <strong>TWO Intersection operators</strong> (the ones with overlapping circles). You can use the same operator multiple times!',
+                    message: 'Welcome to Level 4, where we are changing some rules. Now you can be dealt the same operator multiple times.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-double-intersect',
-                    message: 'We can chain operators: <strong>Red AND Blue AND Green</strong> means "cards with red AND blue AND green".',
+                    message: 'We can chain operators: <strong>Red AND Blue AND Green</strong> means "cards with red AND blue AND green dots."',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'build-with-double-and',
-                    message: 'Our goal is <strong>1 card</strong>. Try using <strong>both AND operators</strong> to find the card with all three colors! Hint: Red AND Blue AND Green.',
+                    message: 'Our goal is <strong>1 card</strong>. Try using <strong>both AND operators</strong> to find the card with all three colors!',
                     highlight: { goal: true, dice: [0, 1, 2, 3, 4] }, // Enable all dice except yellow
                     validation: (game) => {
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
@@ -831,8 +825,14 @@ export const TUTORIAL_SCENARIOS = {
                     nextTrigger: 'validation'
                 },
                 {
+                    id: 'explain-result',
+                    message: 'Perfect! You used <strong>5 cubes</strong> to find 1 very specific card. And you know, more cubes equals more points!',
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
                     id: 'submit',
-                    message: 'Perfect! Duplicate operators unlock complex solutions. More cubes = more points! Click <strong>GO!</strong>',
+                    message: 'Duplicate operators unlock complex solutions. Click <strong>GO!</strong>',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'submit'
@@ -857,147 +857,58 @@ export const TUTORIAL_SCENARIOS = {
             { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-5-green' }
         ],
         goal: 3,
-        expectedSolution: ['U', '−', 'red', '∪', 'blue'], // Must use these 5 cubes!
-        
+        // No expectedSolution - allow exploration with any UNIVERSE solution
+
         walkthrough: {
             enabled: true,
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome to Level 5! Two new cubes: <strong>universe</strong> and <strong>null</strong>.',
+                    message: 'Welcome to Level 5! We\'re introducing wo new cubes: <strong>universe</strong> and <strong>null</strong>. ',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-universe',
-                    message: '<strong>universe</strong> refers to ALL cards on the board. It\'s a reference to the entire set of cards.',
+                    message: '<strong>universe</strong> refers to ALL cards in the universe. It looks like a V with an underline.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-null',
-                    message: '<strong>Null (∅)</strong> is an empty set with NO cards. Useful for padding!',
+                    message: '<strong>Null (∅)</strong> is an empty set with NO cards. It looks like an upside down V with an underline. Both are useful for padding!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-padding',
-                    message: '<strong>Padding</strong> means using extra cubes that don\'t change the result. More cubes = MORE POINTS!',
+                    message: '<strong>Padding</strong> means using extra cubes that don\'t change the result. More cubes equals more points!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
-                    id: 'explain-grouping',
-                    message: '<strong>Important: Grouping!</strong> When cubes touch, they form a group that acts as one unit. This changes how expressions are evaluated!',
-                    highlight: null,
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'identify-goal',
-                    message: 'Our goal is <strong>3 cards</strong>. Let\'s build "universe minus (Red OR Blue)" = all cards with neither red nor blue.',
-                    highlight: { goal: true },
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'drag-universe',
-                    message: 'Start with <strong>UNIVERSE</strong> cube (U) - all 8 cards.',
-                    highlight: { dice: [0] },
+                    id: 'build-with-universe',
+                    message: 'Our goal is <strong>3 cards</strong>. Try building a solution using <strong>UNIVERSE</strong>. Remember: you can use grouping to create complex expressions!',
+                    highlight: { goal: true, dice: [0, 1, 2, 3, 4, 5, 6, 7] }, // Enable all dice
                     validation: (game) => {
-                        return game.solutions[0].some(die => die.value === 'U');
+                        const allDice = [...game.solutions[0], ...game.solutions[1]];
+                        const values = allDice.map(die => die.value);
+                        
+                        // Must use UNIVERSE (the new concept)
+                        const hasUniverse = values.includes('U');
+                        if (!hasUniverse) {
+                            return false;
+                        }
+                        
+                        // Must be a valid solution that matches the goal
+                        const result = game.validateSolution();
+                        return result.valid;
                     },
                     nextTrigger: 'validation'
-                },
-                {
-                    id: 'drag-diff',
-                    message: 'Add <strong>minus</strong> cube - we\'re subtracting something.',
-                    highlight: { dice: [1] },
-                    validation: (game) => {
-                        return game.solutions[0].some(die => die.value === '−');
-                    },
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'drag-red',
-                    message: 'Add <strong>RED</strong> cube to the right of the Difference cube.',
-                    highlight: { dice: [2] },
-                    validation: (game) => {
-                        return game.solutions[0].some(die => die.value === 'red');
-                    },
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'drag-union',
-                    message: 'Add <strong>OR</strong> cube - place it <strong>close to RED</strong> so they touch! This groups them.',
-                    highlight: { dice: [3] },
-                    validation: (game) => {
-                        // Check that union is in solution AND is close to red
-                        const solution = game.solutions[0];
-                        const hasUnion = solution.some(die => die.value === '∪');
-                        if (!hasUnion) return false;
-                        
-                        // Find red and union dice
-                        const redDie = solution.find(die => die.value === 'red');
-                        const unionDie = solution.find(die => die.value === '∪');
-                        
-                        if (!redDie || !unionDie) return false;
-                        
-                        // Check if they're touching (using same logic as grouping detection)
-                        const isMobile = window.innerWidth <= 768;
-                        const dieSize = isMobile ? 50 : 80;
-                        const touchThreshold = 15;
-                        
-                        const dx = Math.abs(redDie.x - unionDie.x);
-                        const dy = Math.abs(redDie.y - unionDie.y);
-                        
-                        return dx < dieSize + touchThreshold && dy < dieSize + touchThreshold;
-                    },
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'drag-blue',
-                    message: 'Add <strong>BLUE</strong> cube - place it <strong>close to UNION</strong> so all three are grouped together!',
-                    highlight: { dice: [4] },
-                    validation: (game) => {
-                        // Check that blue is in solution AND all three are close together
-                        const solution = game.solutions[0];
-                        const hasBlue = solution.some(die => die.value === 'blue');
-                        if (!hasBlue) return false;
-                        
-                        // Find all three cubes
-                        const redDie = solution.find(die => die.value === 'red');
-                        const unionDie = solution.find(die => die.value === '∪');
-                        const blueDie = solution.find(die => die.value === 'blue');
-                        
-                        if (!redDie || !unionDie || !blueDie) return false;
-                        
-                        // Helper to check if two dice are touching
-                        const areTouching = (die1, die2) => {
-                            const isMobile = window.innerWidth <= 768;
-                            const dieSize = isMobile ? 50 : 80;
-                            const touchThreshold = 15;
-                            const dx = Math.abs(die1.x - die2.x);
-                            const dy = Math.abs(die1.y - die2.y);
-                            return dx < dieSize + touchThreshold && dy < dieSize + touchThreshold;
-                        };
-                        
-                        // Check if all three form a connected group
-                        // Blue must touch union, and union must touch red (or blue touches red directly)
-                        const blueUnionTouch = areTouching(blueDie, unionDie);
-                        const unionRedTouch = areTouching(unionDie, redDie);
-                        
-                        return blueUnionTouch && unionRedTouch;
-                    },
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'explain-result',
-                    message: 'Perfect! The grouped cubes (Red OR Blue) act like a single unit. "universe minus (Red OR Blue)" = cards with neither! 5 cubes = MORE POINTS! ✓',
-                    highlight: null,
-                    nextTrigger: 'auto'
                 },
                 {
                     id: 'submit',
-                    message: 'universe and null let you use more cubes for higher scores! Click <strong>GO!</strong>',
+                    message: 'Perfect! Grouping, UNIVERSE, and NULL let you use more cubes for higher scores! Click <strong>GO!</strong>',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'submit'
