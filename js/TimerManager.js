@@ -165,6 +165,12 @@ export class TimerManager {
      * Get current timer data for saving to game state
      */
     getStateData() {
+        console.log(`⏱️ [TimerManager] getStateData() called:`, {
+            timeRemaining: this.timeRemaining,
+            timerDuration: this.timerDuration,
+            timerInterval: this.timerInterval ? 'ACTIVE' : 'null'
+        });
+        
         return {
             timeRemaining: this.timeRemaining,  // Save actual remaining time (not wall-clock)
             timerDuration: this.timerDuration   // Keep for reference
