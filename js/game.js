@@ -142,6 +142,13 @@ export class Game {
     
     resetRound() {
         this.generateNewRound();
+        
+        // Start fresh timer if this level needs one
+        if (this.timer) {
+            console.log('⏱️ [Game] Starting fresh timer for new round');
+            this.timer.startFresh();
+        }
+        
         this.saveState();
     }
     
