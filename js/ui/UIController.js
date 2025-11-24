@@ -835,7 +835,7 @@ export class UIController {
             if (config && config.timeLimit) {
                 this.timerDisplay.style.display = 'flex';
                 // If timer isn't running, show the initial time
-                if (this.game.timeRemaining === null) {
+                if (this.game.timer && this.game.timer.timeRemaining === null) {
                     this.timerValue.textContent = config.timeLimit;
                 }
             } else {
@@ -1011,8 +1011,9 @@ export class UIController {
         
         // Reset game state for clean tutorial experience
         this.game.score = 0;
-        this.game.stopTimer(); // Stop any running timer
-        this.game.timeRemaining = null; // Clear timer display
+        if (this.game.timer) {
+            this.game.timer.stop(false); // Pause timer (keep data for restoration)
+        }
         
         const { getTutorialScenario } = await import('../tutorialScenarios.js');
         const introScenario = getTutorialScenario('intro');
@@ -1074,14 +1075,9 @@ export class UIController {
             }
         } else {
             // User declined tutorial - start timer now
-            const { getLevelConfig } = await import('../levels.js');
-            const settings = this.game.storage.loadSettings();
-            const config = getLevelConfig(level, settings.testMode);
-            if (config.timeLimit) {
-                console.log('⏱️ Starting timer after interstitial (user skipped tutorial)');
-                this.game.startTimer(config.timeLimit);
-                this.game.saveState(); // Persist timer data immediately
-            }
+            // Start timer if this level has one
+            console.log('⏱️ Starting timer after interstitial (user skipped tutorial)');
+            this.game.timer.startFresh();
             
             // Mark as viewed so they don't see it again
             this.game.storage.markTutorialAsViewed(level);

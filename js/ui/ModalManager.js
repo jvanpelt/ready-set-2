@@ -133,9 +133,9 @@ export class ModalManager {
                 this.game.startNewLevel();
                 
                 // STOP timer immediately - we're showing tutorial/interstitial
-                if (this.game.timerInterval) {
+                if (this.game.timer) {
                     console.log('⏱️ Stopping timer for interstitial/tutorial');
-                    this.game.stopTimer();
+                    this.game.timer.stop(true); // Clear data - fresh timer will start after tutorial
                 }
                 
                 onHide();
