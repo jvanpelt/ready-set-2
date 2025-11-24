@@ -40,6 +40,10 @@ export class TutorialManager {
         this.isActive = true;
         this.entryPoint = entryPoint;
         
+        // Stop any active timer (will be restarted when tutorial completes)
+        console.log('⏱️ Stopping timer for tutorial');
+        this.game.timer.stop(true); // Clear timer data
+        
         // Set flag in Game to suppress timer timeout during tutorial
         this.game.isTutorialActive = true;
         console.log('⏰ Timer timeout suppressed during tutorial');

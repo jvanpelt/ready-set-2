@@ -223,6 +223,10 @@ export class UIController {
                 window.homeScreen.hide();
             }
             
+            // Stop any active timer (will be restarted after tutorial/interstitial)
+            console.log('⏱️ Stopping timer before jumping to level');
+            this.game.timer.stop(true); // Clear timer data
+            
             const targetLevel = parseInt(document.getElementById('level-selector').value);
             this.game.jumpToLevel(targetLevel);
             this.modals.hideMenu();
