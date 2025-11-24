@@ -345,6 +345,53 @@ export class UIController {
         }
     }
     
+    // ========== CENTRALIZED TIMER CONTROL ==========
+    // ONLY place in the codebase that starts timers
+    
+    startTimerIfNeeded() {
+        // Don't start timer in daily puzzle mode
+        if (this.game.mode === 'daily') {
+            return;
+        }
+        
+        const settings = this.game.storage.loadSettings();
+        const config = getLevelConfig(this.game.level, settings.testMode);
+        
+        if (config.timeLimit) {
+            console.log(`⏱️ [UIController] Starting timer (${config.timeLimit}s)`);
+            this.game.startTimer(config.timeLimit);
+            this.game.saveState();
+        }
+    }
+    
+    startRestoredTimer() {
+        // Start timer from saved state (after Continue)
+        if (this.game.timeRemaining !== null && this.game.timerInterval === null) {
+            console.log(`⏱️ [UIController] Starting restored timer (${this.game.timeRemaining}s)`);
+            this.game.startTimer(this.game.timeRemaining, true); // true = isRestoration
+            this.game.saveState();
+        }
+    }
+    
+    // Callbacks from other managers
+    handleContinueFromHome() {
+        this.startRestoredTimer();
+    }
+    
+    handleTutorialComplete() {
+        this.startTimerIfNeeded();
+    }
+    
+    handleLevelAdvanced() {
+        this.startTimerIfNeeded();
+    }
+    
+    handleNewRoundAfterSubmit() {
+        this.startTimerIfNeeded();
+    }
+    
+    // ========== END TIMER CONTROL ==========
+    
     handleReset() {
         // Clear solution area
         this.game.clearSolution();
@@ -442,18 +489,13 @@ export class UIController {
         // Small delay to ensure clean transition
         await new Promise(resolve => setTimeout(resolve, 50));
         
-        // Start timer if this level has one
-        const settings = this.game.storage.loadSettings();
-        const config = getLevelConfig(this.game.level, settings.testMode);
-        if (config.timeLimit && this.game.mode !== 'daily') {
-            console.log(`⏱️ Starting timer after correct Pass (${config.timeLimit}s)`);
-            this.game.startTimer(config.timeLimit);
-            this.game.saveState();
-        }
-        
-        // Then render new round with entrance animations
+        // Render new round with entrance animations
         this.render({ animate: true });
         this.clearSolutionHelper();
+        
+        // Start timer if needed (centralized)
+        this.startTimerIfNeeded();
+        
         // Modal is already shown by handlePass(), no need to show result modal
     }
     
@@ -468,18 +510,12 @@ export class UIController {
         // Small delay to ensure clean transition
         await new Promise(resolve => setTimeout(resolve, 50));
         
-        // Start timer if this level has one
-        const settings = this.game.storage.loadSettings();
-        const config = getLevelConfig(this.game.level, settings.testMode);
-        if (config.timeLimit && this.game.mode !== 'daily') {
-            console.log(`⏱️ Starting timer after Pass (${config.timeLimit}s)`);
-            this.game.startTimer(config.timeLimit);
-            this.game.saveState();
-        }
-        
-        // Then render new round with entrance animations
+        // Render new round with entrance animations
         this.render({ animate: true });
         this.clearSolutionHelper();
+        
+        // Start timer if needed (centralized)
+        this.startTimerIfNeeded();
     }
     
     // Next puzzle button removed - Go button now auto-loads next puzzle in test mode

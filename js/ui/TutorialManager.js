@@ -366,17 +366,8 @@ export class TutorialManager {
                 this.game.resetRound();
                 this.ui.render();
                 
-                // Start timer if this level has one
-                // (resetRound doesn't start it for levels with interstitials)
-                import('../levels.js').then(({ getLevelConfig }) => {
-                    const settings = this.game.storage.loadSettings();
-                    const config = getLevelConfig(this.game.level, settings.testMode);
-                    if (config.timeLimit) {
-                        console.log('⏱️ Starting timer after tutorial completion');
-                        this.game.startTimer(config.timeLimit);
-                        this.game.saveState(); // Persist timer data immediately
-                    }
-                });
+                // Notify UIController to handle timer
+                this.ui.handleTutorialComplete();
             });
         } else {
             // Entered from menu - restore saved game state or show home
