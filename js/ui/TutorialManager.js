@@ -374,6 +374,7 @@ export class TutorialManager {
                     if (config.timeLimit) {
                         console.log('⏱️ Starting timer after tutorial completion');
                         this.game.startTimer(config.timeLimit);
+                        this.game.saveState(); // Persist timer data immediately
                     }
                 });
             });

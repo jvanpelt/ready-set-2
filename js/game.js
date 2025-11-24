@@ -96,6 +96,11 @@ export class Game {
         console.log('  - Solutions:', this.solutions.length, 'rows');
         
         // Restore timer if it was running
+        console.log('  - Timer data in saved state:', {
+            timerStartTime: savedState.timerStartTime,
+            timerDuration: savedState.timerDuration
+        });
+        
         if (savedState.timerStartTime && savedState.timerDuration) {
             console.log('⏱️ Timer data found in saved state...');
             const elapsed = Math.floor((Date.now() - savedState.timerStartTime) / 1000);
@@ -182,6 +187,8 @@ export class Game {
             if (config.timeLimit && !hasInterstitial) {
                 console.log(`  → Starting timer immediately (${config.timeLimit}s)`);
                 this.startTimer(config.timeLimit);
+                // Save state immediately so timer data is persisted
+                this.saveState();
             } else if (!config.timeLimit) {
                 console.log(`  → Stopping timer (no time limit for this level)`);
                 this.stopTimer();
@@ -807,6 +814,8 @@ export class Game {
                 if (this.timeRemaining !== null && this.timerInterval === null && this.onTimerTick) {
                     console.log('⏱️ Starting timer after enterRegularMode:', this.timeRemaining, 'seconds');
                     this.startTimer(this.timeRemaining);
+                    // Save state immediately so timer data is persisted
+                    this.saveState();
                 }
             }
         } else {

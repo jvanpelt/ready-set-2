@@ -1054,6 +1054,7 @@ export class UIController {
             if (config.timeLimit) {
                 console.log('⏱️ Starting timer after interstitial (user skipped tutorial)');
                 this.game.startTimer(config.timeLimit);
+                this.game.saveState(); // Persist timer data immediately
             }
             
             // Mark as viewed so they don't see it again (COMMENTED OUT FOR TESTING)
