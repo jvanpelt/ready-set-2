@@ -993,13 +993,13 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-equals',
-                    message: `<strong>Equals</strong> ${getEqualsSVG(25,25)}: "Red Equals Blue" means cards with red must also have blue, and cards with blue must also have red.`,
+                    message: `<strong>Equals</strong> ${getEqualsSVG(25,25)}: "Red Equals Blue" means cards with red must contain blue, and cards with blue must also contain red.`,
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-important',
-                    message: 'Go ahead and try some restrictions! You can use Subset, Equals, or both in your solution.',
+                    message: 'Go ahead and try some restrictions, just to see what they do! You can use Subset, Equals, or both in your solution.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -1030,21 +1030,39 @@ export const TUTORIAL_SCENARIOS = {
                     nextTrigger: 'auto'
                 },
                 {
-                    id: 'drag-green',
-                    message: 'Now for the set name. Drag <strong>GREEN</strong> to the <strong>BOTTOM ROW</strong>.',
-                    highlight: { dice: [3] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'green'),
+                    id: 'explain-one-cube-setname',
+                    message: 'Hint: now that we are using restrictions, we can use single-cube set names!',
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'create-set-name',
+                    message: 'Now, if you haven\'t, add a set name to complete your solution! Any valid set name will work.',
+                    highlight: { dice: [0, 1, 2, 3, 6] }, // All non-restriction dice
+                    validation: (game) => {
+                        // Check if solution is valid AND contains a restriction
+                        const validationResult = game.validateSolution();
+                        if (!validationResult.valid) return false;
+                        
+                        // Ensure at least one row contains a restriction
+                        const topRow = game.solutions[0];
+                        const bottomRow = game.solutions[1];
+                        const hasRestriction = topRow.some(die => die.value === '=' || die.value === '⊆') ||
+                                              bottomRow.some(die => die.value === '=' || die.value === '⊆');
+                        
+                        return hasRestriction;
+                    },
                     nextTrigger: 'validation'
                 },
                 {
                     id: 'explain-result',
-                    message: 'Perfect! After removing red-only cards, we name the set "Green OR Yellow" = 5 cards. 6 cubes total = big points!',
+                    message: 'Lots to learn here! Solutions with Restrictions are powerful tools, but they require lots of practice to master.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'submit',
-                    message: 'Restrictions unlock massive scores by using more cubes! Click <strong>GO!</strong>',
+                    message: 'Restrictions can also unlock massive scores by using more cubes! Click <strong>GO</strong> to play!',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'submit'
@@ -1054,22 +1072,25 @@ export const TUTORIAL_SCENARIOS = {
     },
     
     7: {
-        // Level 7: Timer + Grouping matters (Green ∪ (Red ∩ Red))
-        // Cards: 1=yellow, 2=green, 4=blue, 5=blue+yellow, 8=red, 10=red+green, 12=red+blue, 14=red+blue+green
-        // Solution: Green ∪ (Red ∩ Red) = Green ∪ Red = 5 cards (2,8,10,12,14)
-        // Without grouping: (Green ∪ Red) ∩ Red = just Red = 4 cards (8,10,12,14) (WRONG!)
-        // Teaches: Grouping changes evaluation order + padding trick
+        // Level 7: Timer introduction (8 cubes)
+        // Simple lesson: Timer pressure, apply what you've learned
+        // Cards: 1=gold, 2=green, 4=blue, 5=blue+gold, 8=red, 10=red+green, 12=red+blue, 14=red+blue+green
+        // Example solutions:
+        //   - green ∪ gold = [1, 2, 5, 10, 14] = 5 cards
+        //   - red ∪ blue ∪ green = [2, 4, 5, 8, 10, 12, 14] = 7 cards (uses 5 cubes)
         cards: [1, 2, 4, 5, 8, 10, 12, 14],
         dice: [
             { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-7-green' },
             { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-7-union' },
-            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-7-red-1' },
+            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-7-red' },
             { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-7-intersect' },
-            { type: 'color', value: 'red', name: 'RED', id: 'tutorial-7-red-2' },
-            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-7-blue' }
+            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-7-blue' },
+            { type: 'color', value: 'gold', name: 'GOLD', id: 'tutorial-7-gold' },
+            { type: 'operator', value: '−', name: 'MINUS', id: 'tutorial-7-minus' },
+            { type: 'operator', value: '′', name: 'COMPLEMENT', id: 'tutorial-7-complement' }
         ],
         goal: 5,
-        expectedSolution: ['green', '∪', 'red', '∩', 'red'],
+        expectedSolution: null, // Multiple valid solutions
         
         walkthrough: {
             enabled: true,
@@ -1093,121 +1114,14 @@ export const TUTORIAL_SCENARIOS = {
                     nextTrigger: 'auto'
                 },
                 {
-                    id: 'explain-padding',
-                    message: 'But while we\'re here, a trick! <strong>Red AND Red = Red</strong> uses 2 extra cubes for the same result as a single <strong>Red</strong> cube.',
-                    highlight: null,
-                    nextTrigger: 'auto'
-                },
-                {
                     id: 'goal',
-                    message: 'Goal: <strong>5 cards</strong>. Let\'s build "Green OR Red AND Red" and see what happens.',
+                    message: 'Goal: <strong>5 cards</strong>. Use what you\'ve learned to find a solution. Beat the clock!',
                     highlight: { goal: true },
                     nextTrigger: 'auto'
                 },
                 {
-                    id: 'drag-green',
-                    message: 'Drag <strong>GREEN</strong> to the <strong>BOTTOM ROW</strong>. Keep it spaced out - don\'t group the cubes!',
-                    highlight: { dice: [0] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'green'),
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'drag-union',
-                    message: 'Drag <strong>OR</strong> next to it. Keep them spaced apart.',
-                    highlight: { dice: [1] },
-                    validation: (game) => game.solutions[1].some(die => die.value === '∪'),
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'drag-red-1',
-                    message: 'Drag the first <strong>RED</strong>. Keep spacing them out.',
-                    highlight: { dice: [2] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'red'),
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'drag-intersect',
-                    message: 'Drag <strong>AND</strong>. Still keeping them apart.',
-                    highlight: { dice: [3] },
-                    validation: (game) => game.solutions[1].some(die => die.value === '∩'),
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'drag-red-2',
-                    message: 'Drag the second <strong>RED</strong>. All 5 cubes, nicely spaced!',
-                    highlight: { dice: [4] },
-                    validation: (game) => game.solutions[1].filter(die => die.value === 'red').length >= 2,
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'check-helper',
-                    message: '<strong>Wait!</strong> Look at Solution Helper - it highlights 4 cards, not 5! Something\'s wrong...',
-                    highlight: null,
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'explain-problem-1',
-                    message: 'Without grouping, this evaluates as "Green OR Red" first, then "... AND Red".',
-                    highlight: null,
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'explain-problem-2',
-                    message: 'This means "All green or red cards that intersect with red cards" - which displays only red cards!',
-                    highlight: null,
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'explain-fix',
-                    message: 'We need to group "Red AND Red" together so it\'s treated as ONE unit: "Green OR (Red AND Red)".',
-                    highlight: null,
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'group-them',
-                    message: 'Move the <strong>Red-Intersect-Red cubes close together</strong> so they touch and form a group!',
-                    highlight: { dice: [2, 3, 4] },
-                    validation: (game) => {
-                        // Check that Red, Intersect, Red are all grouped together
-                        const solution = game.solutions[0];
-                        const redDice = solution.filter(die => die.value === 'red');
-                        const intersectDie = solution.find(die => die.value === '∩');
-                        
-                        if (redDice.length < 2 || !intersectDie) return false;
-                        
-                        // Helper to check if two dice are touching
-                        const areTouching = (die1, die2) => {
-                            const isMobile = window.innerWidth <= 768;
-                            const dieSize = isMobile ? 50 : 80;
-                            const touchThreshold = 15;
-                            const dx = Math.abs(die1.x - die2.x);
-                            const dy = Math.abs(die1.y - die2.y);
-                            return dx < dieSize + touchThreshold && dy < dieSize + touchThreshold;
-                        };
-                        
-                        // Check if all three form a connected group
-                        const red1TouchesIntersect = areTouching(redDice[0], intersectDie);
-                        const red2TouchesIntersect = areTouching(redDice[1], intersectDie);
-                        
-                        return red1TouchesIntersect && red2TouchesIntersect;
-                    },
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'success',
-                    message: 'Perfect! Now Solution Helper shows 5 cards! "Green OR (Red AND Red)" = Green OR Red = 5 cards!',
-                    highlight: null,
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'lesson',
-                    message: '<strong>Grouping changes order of operations!</strong> Use it to boost your score with padding.',
-                    highlight: null,
-                    nextTrigger: 'auto'
-                },
-                {
                     id: 'submit',
-                    message: 'This works at ANY level! Beat the clock! Click <strong>GO!</strong>',
+                    message: 'Build any valid solution and click <strong>GO!</strong>',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'submit'
