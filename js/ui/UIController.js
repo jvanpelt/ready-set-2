@@ -760,6 +760,12 @@ export class UIController {
             if (tutorialActive && window.tutorialManager) {
                 console.log('🎓 Ending tutorial due to timeout');
                 window.tutorialManager.cleanup();
+                
+                // Ensure tutorial UI is fully hidden
+                const tutorialInstruction = document.getElementById('tutorial-instruction');
+                if (tutorialInstruction) {
+                    tutorialInstruction.classList.add('hidden');
+                }
             }
             
             // Generate new round when user clicks OK

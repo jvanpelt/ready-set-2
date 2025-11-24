@@ -407,20 +407,12 @@ export class TutorialManager {
         if (this.passBtn) this.passBtn.disabled = false;
         if (this.resetBtn) this.resetBtn.disabled = false;
         
-        // Clear tutorial flag in Game and handle expired timer
+        // Clear tutorial flag in Game
         this.game.isTutorialActive = false;
         console.log('⏰ Timer timeout re-enabled');
         
         // Re-render to remove tutorial-disabled class from dice
         this.ui.render();
-        
-        // If timer expired during tutorial, start fresh round
-        if (this.game.timeRemaining !== null && this.game.timeRemaining <= 0) {
-            console.log('⏰ Timer expired during tutorial - starting fresh round');
-            this.game.stopTimer();
-            this.game.generateNewRound();
-            this.ui.render();
-        }
         
         // Restore user's Solution Helper preference
         if (this.savedSolutionHelperState !== null) {
