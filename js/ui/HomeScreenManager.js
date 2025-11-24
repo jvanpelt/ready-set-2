@@ -39,8 +39,10 @@ export class HomeScreenManager {
             if (window.uiController) {
                 window.uiController.render();
                 window.uiController.renderer.animateCardsIn();
-                
-                // Notify UIController to handle timer (if needed)
+            }
+            
+            // Restore timer if needed (AFTER rendering)
+            if (window.uiController) {
                 window.uiController.handleContinueFromHome();
             }
         });

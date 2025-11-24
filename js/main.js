@@ -8,7 +8,7 @@ import DailyPuzzleManager from './DailyPuzzleManager.js';
 import { TimerManager } from './TimerManager.js';
 
 // Display version (hardcoded for console, cache busting uses timestamps)
-const VERSION = 'v4.23.1';
+const VERSION = 'v4.23.2';
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 console.log('🎮 Ready, Set 2 - Version:', VERSION);
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -20,11 +20,13 @@ window.checkTimer = () => {
         return;
     }
     console.log('⏱️ ===== TIMER STATE CHECK =====');
-    console.log('game.timeRemaining:', window.game.timeRemaining);
-    console.log('game.timerInterval:', window.game.timerInterval);
-    console.log('game.timerStartTime:', window.game.timerStartTime);
-    console.log('game.timerDuration:', window.game.timerDuration);
-    console.log('game.onTimerTick exists:', !!window.game.onTimerTick);
+    console.log('game.timer exists:', !!window.game.timer);
+    if (window.game.timer) {
+        console.log('timer.timeRemaining:', window.game.timer.timeRemaining);
+        console.log('timer.timerInterval:', window.game.timer.timerInterval);
+        console.log('timer.timerStartTime:', window.game.timer.timerStartTime);
+        console.log('timer.timerDuration:', window.game.timer.timerDuration);
+    }
     console.log('game.level:', window.game.level);
     console.log('game.mode:', window.game.mode);
     
