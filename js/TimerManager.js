@@ -182,25 +182,38 @@ export class TimerManager {
     setupAutoSave() {
         // Use beforeunload to save synchronously before page closes
         window.addEventListener('beforeunload', (e) => {
-            if (this.timerInterval) {
+            // Only save if timer has been started (don't overwrite saved data with null)
+            if (this.timerStartTime !== null || this.timerInterval !== null) {
                 console.log('💾 [TimerManager] BEFOREUNLOAD - Saving timer synchronously');
                 // Call game.saveState() synchronously
                 if (this.game && this.game.saveState) {
                     this.game.saveState();
                 }
+            } else {
+                console.log('⏸️ [TimerManager] Skipping beforeunload save - timer never started');
             }
         });
         
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
-                console.log('💾 [TimerManager] Auto-save on tab hidden');
-                this.save();
+                // Only save if timer has been started (don't overwrite saved data with null)
+                if (this.timerStartTime !== null || this.timerInterval !== null) {
+                    console.log('💾 [TimerManager] Auto-save on tab hidden');
+                    this.save();
+                } else {
+                    console.log('⏸️ [TimerManager] Skipping auto-save - timer never started');
+                }
             }
         });
         
         window.addEventListener('blur', () => {
-            console.log('💾 [TimerManager] Auto-save on window blur');
-            this.save();
+            // Only save if timer has been started (don't overwrite saved data with null)
+            if (this.timerStartTime !== null || this.timerInterval !== null) {
+                console.log('💾 [TimerManager] Auto-save on window blur');
+                this.save();
+            } else {
+                console.log('⏸️ [TimerManager] Skipping auto-save - timer never started');
+            }
         });
     }
 }
