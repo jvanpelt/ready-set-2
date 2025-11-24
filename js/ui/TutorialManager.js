@@ -391,6 +391,7 @@ export class TutorialManager {
     }
     
     cleanup() {
+        console.log('🧹 TutorialManager.cleanup() called');
         this.isActive = false;
         
         if (this.validationInterval) {
@@ -399,6 +400,7 @@ export class TutorialManager {
         }
         
         this.clearHighlights();
+        console.log('🧹 Hiding instruction element');
         this.instructionEl.classList.add('hidden');
         document.body.classList.remove('tutorial-active');
         
@@ -410,9 +412,7 @@ export class TutorialManager {
         // Clear tutorial flag in Game
         this.game.isTutorialActive = false;
         console.log('⏰ Timer timeout re-enabled');
-        
-        // Re-render to remove tutorial-disabled class from dice
-        this.ui.render();
+        console.log('🧹 Cleanup complete - isActive:', this.isActive, 'instructionEl hidden:', this.instructionEl.classList.contains('hidden'));
         
         // Restore user's Solution Helper preference
         if (this.savedSolutionHelperState !== null) {
