@@ -7,7 +7,7 @@ import { HomeScreenManager } from './ui/HomeScreenManager.js';
 import DailyPuzzleManager from './DailyPuzzleManager.js';
 
 // Display version (hardcoded for console, cache busting uses timestamps)
-const VERSION = 'v4.22.21';
+const VERSION = 'v4.22.22';
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 console.log('🎮 Ready, Set 2 - Version:', VERSION);
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');

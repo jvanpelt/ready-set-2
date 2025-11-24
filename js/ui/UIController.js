@@ -751,13 +751,22 @@ export class UIController {
     handleTimeout() {
         console.log('⏰ Timeout handled in UI');
         
+        // Check if tutorial is active
+        const tutorialActive = this.game.isTutorialActive;
+        
         // Show timeout modal
         this.modals.showTimeout(() => {
+            // If tutorial was active, end it first
+            if (tutorialActive && window.tutorialManager) {
+                console.log('🎓 Ending tutorial due to timeout');
+                window.tutorialManager.cleanup();
+            }
+            
             // Generate new round when user clicks OK
             this.game.resetRound();
             this.render({ animate: true }); // Animate new round
             this.clearSolutionHelper();
-        });
+        }, tutorialActive); // Pass flag to modal for custom message
     }
     
     render(options = {}) {

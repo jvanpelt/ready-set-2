@@ -296,8 +296,16 @@ export class ModalManager {
     /**
      * Show timeout modal (Level 7+)
      */
-    showTimeout(onOk) {
+    showTimeout(onOk, isTutorial = false) {
         this.timeoutModal.classList.remove('hidden');
+        
+        // Update message if this is a tutorial timeout
+        const messageEl = this.timeoutModal.querySelector('p');
+        if (isTutorial) {
+            messageEl.textContent = "Time ran out during the lesson! Let's try the real thing...";
+        } else {
+            messageEl.textContent = "Time expired! Starting a new puzzle...";
+        }
         
         // Update the OK button
         this.timeoutOkBtn.onclick = () => {

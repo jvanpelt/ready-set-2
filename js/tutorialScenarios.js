@@ -1103,13 +1103,13 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-timer',
-                    message: 'From now on, you have a <strong>time limit</strong>! Watch the timer at the top of the screen.',
+                    message: 'From now on, you have a <strong>time limit</strong>! Watch the timer at the bottom of the screen.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-timeout',
-                    message: 'If time runs out, the round ends. No points, but you can try again!',
+                    message: 'If time runs out, the round ends. No points, but you can try again! It\'ll warn you with an orange border on the timer with 30 seconds left.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },

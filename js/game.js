@@ -295,9 +295,9 @@ export class Game {
     handleTimeout() {
         console.log('⏰ Time expired!');
         
-        // Suppress timeout during tutorials - let timer tick but don't end round
-        if (this.isTutorialActive) {
-            console.log('🎓 Tutorial active - suppressing timeout (timer will stay at 0:00)');
+        // Suppress timeout for all tutorials EXCEPT Level 7 (where timer is the lesson)
+        if (this.isTutorialActive && this.level !== 7) {
+            console.log('🎓 Tutorial active (non-Level 7) - suppressing timeout');
             return;
         }
         
