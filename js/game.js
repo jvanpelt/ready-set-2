@@ -24,9 +24,6 @@ export class Game {
         // Daily puzzle state (set when in daily mode)
         this.dailyPuzzle = null;
         
-        // Save state when page unloads or loses focus
-        this.setupAutoSaveListeners();
-        
         // Timer (Level 7+) - managed by TimerManager
         // Set in main.js after construction
         this.timer = null;
@@ -91,53 +88,11 @@ export class Game {
         
         console.log('  - Solutions:', this.solutions.length, 'rows');
         
-        // Restore timer if it was running
+        // Timer restoration is now handled by TimerManager in UIController
         console.log('  - Timer data in saved state:', {
             timerStartTime: savedState.timerStartTime,
             timerDuration: savedState.timerDuration
         });
-        
-        if (savedState.timerStartTime && savedState.timerDuration) {
-            console.log('⏱️ Timer data found in saved state...');
-            const elapsed = Math.floor((Date.now() - savedState.timerStartTime) / 1000);
-            const remaining = savedState.timerDuration - elapsed;
-            console.log('  - Elapsed:', elapsed, 'seconds');
-            console.log('  - Remaining:', remaining, 'seconds');
-            
-            if (remaining > 0) {
-                console.log('  - Timer still active - will restore after UI ready');
-                // Store timer state for UIController to restore
-                // (Can't start now - callbacks not set yet)
-                this.timerStartTime = savedState.timerStartTime;
-                this.timerDuration = savedState.timerDuration;
-                this.timeRemaining = remaining;
-                // UIController will call startTimer() after setting callbacks
-            } else {
-                console.log('  - Timer expired - generating new round');
-                // Timer expired while away - start new round
-                this.generateNewRound();
-            }
-        } else {
-            console.log('  - No timer to restore');
-            
-            // Check if this level normally has a timer and should start one
-            // When restoring from saved state, we're NOT showing an interstitial,
-            // so always start the timer if the level has one
-            if (this.mode !== 'daily') {
-                const settings = this.storage.loadSettings();
-                const config = getLevelConfig(this.level, settings.testMode);
-                
-                if (config.timeLimit) {
-                    console.log(`⏱️ Timer decision for restored Level ${this.level}:`);
-                    console.log(`  - config.timeLimit: ${config.timeLimit}`);
-                    console.log(`  → Will start timer after UI ready (${config.timeLimit}s)`);
-                    
-                    // Store for UIController to start after callbacks are set
-                    this.timeRemaining = config.timeLimit;
-                    // UIController will call startTimer() when ready
-                }
-            }
-        }
     }
     
     generateNewRound() {
@@ -259,108 +214,7 @@ export class Game {
         this.saveState();
     }
     
-    // Timer methods (Level 7+)
-    startTimer(seconds, isRestoration = false) {
-        // Clear any existing timer interval (but NOT the start time if restoring)
-        if (this.timerInterval) {
-            clearInterval(this.timerInterval);
-            this.timerInterval = null;
-        }
-        
-        this.timeRemaining = seconds;
-        
-        // Only set fresh start time if this is NOT a restoration
-        // When restoring, timerStartTime/timerDuration are already set from saved state
-        if (!isRestoration) {
-            this.timerStartTime = Date.now();
-            this.timerDuration = seconds;
-        }
-        
-        console.log(`⏱️ Timer started: ${seconds} seconds (restoration: ${isRestoration})`);
-        if (isRestoration && this.timerStartTime) {
-            const elapsed = Math.floor((Date.now() - this.timerStartTime) / 1000);
-            console.log(`  - Original start: ${new Date(this.timerStartTime).toLocaleTimeString()}`);
-            console.log(`  - Elapsed: ${elapsed}s, Remaining: ${seconds}s`);
-        }
-        
-        // Tick immediately
-        if (this.onTimerTick) {
-            this.onTimerTick(this.timeRemaining);
-        }
-        
-        // Then tick every second
-        this.timerInterval = setInterval(() => {
-            // Don't go below 0
-            if (this.timeRemaining > 0) {
-                this.timeRemaining--;
-            }
-            
-            if (this.onTimerTick) {
-                this.onTimerTick(this.timeRemaining);
-            }
-            
-            if (this.timeRemaining <= 0) {
-                this.handleTimeout();
-            }
-            
-            // Timer state will be saved on user interactions and page unload
-            // No need to save every second
-        }, 1000);
-    }
-    
-    stopTimer() {
-        if (this.timerInterval) {
-            clearInterval(this.timerInterval);
-            this.timerInterval = null;
-            this.timeRemaining = null;
-            this.timerStartTime = null;
-            this.timerDuration = null;
-            this.saveState(); // Clear timer from storage
-        } else {
-            // No active timer, just clear the properties without saving
-            this.timeRemaining = null;
-            this.timerStartTime = null;
-            this.timerDuration = null;
-        }
-    }
-    
-    setupAutoSaveListeners() {
-        // Save when page is about to unload (refresh, close, navigate away)
-        window.addEventListener('beforeunload', () => {
-            console.log('💾 Auto-save: page unload');
-            this.saveState();
-        });
-        
-        // Save when tab loses focus (switching tabs, minimizing)
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                console.log('💾 Auto-save: tab hidden');
-                this.saveState();
-            }
-        });
-        
-        // Save when window loses focus (clicking outside browser)
-        window.addEventListener('blur', () => {
-            console.log('💾 Auto-save: window blur');
-            this.saveState();
-        });
-    }
-    
-    handleTimeout() {
-        console.log('⏰ Time expired!');
-        
-        // Suppress timeout for all tutorials EXCEPT Level 7 (where timer is the lesson)
-        if (this.isTutorialActive && this.level !== 7) {
-            console.log('🎓 Tutorial active (non-Level 7) - suppressing timeout');
-            return;
-        }
-        
-        this.stopTimer();
-        
-        if (this.onTimeout) {
-            this.onTimeout();
-        }
-    }
+    // Timer methods removed - now handled by TimerManager
     
     toggleCardState(cardIndex) {
         const state = this.cardStates[cardIndex];
@@ -653,8 +507,10 @@ export class Game {
     }
     
     pass() {
-        // Stop current timer
-        this.stopTimer();
+        // Stop current timer (clear data - new round will start fresh)
+        if (this.timer) {
+            this.timer.stop(true);
+        }
         
         // Generate new puzzle
         this.resetRound();
@@ -663,15 +519,17 @@ export class Game {
     }
     
     correctPass() {
-        // Stop timer when passing
-        this.stopTimer();
+        // Stop timer when passing (clear data - new round will start fresh)
+        if (this.timer) {
+            this.timer.stop(true);
+        }
         // No points awarded for passing (even if correct)
         this.resetRound();
         return { 
             passed: true, 
             correct: true,
             points: 0,
-            message: "You're right! No solution exists." 
+            message: "You're right! No solution exists!" 
         };
     }
     
@@ -698,8 +556,7 @@ export class Game {
             solutions: this.solutions,
             cardStates: this.cardStates,
             tutorialShown: this.tutorialShown,
-            timerStartTime: this.timerStartTime,
-            timerDuration: this.timerDuration,
+            ...(this.timer ? this.timer.getStateData() : { timerStartTime: null, timerDuration: null }),
             dailyPuzzle: this.dailyPuzzle
         };
         
@@ -745,8 +602,7 @@ export class Game {
             hasNextLevel: hasNextLevel(this.level),
             // Daily puzzles always have both rows enabled, regular game enables at level 6+
             restrictionsEnabled: this.mode === 'daily' ? true : this.level >= 6,
-            timerStartTime: this.timerStartTime,
-            timerDuration: this.timerDuration,
+            ...(this.timer ? this.timer.getStateData() : { timerStartTime: null, timerDuration: null }),
             mode: this.mode // 'daily' or 'regular'
         };
     }
@@ -766,9 +622,9 @@ export class Game {
         this.dailyPuzzle = null;
         this.storage.clearDailyPuzzleState();
         
-        // Stop any timer (will restart if needed for Level 7+)
-        if (this.timerInterval) {
-            this.stopTimer();
+        // Pause timer if active (will be restored after Continue is clicked)
+        if (this.timer) {
+            this.timer.stop(false); // false = keep data for restoration
         }
         
         // Restore saved regular game state FIRST
@@ -797,11 +653,8 @@ export class Game {
                 console.log('✅ Valid regular game state, restoring');
                 this.restoreFromSavedState(savedState);
                 
-                // NOTE: Timer is started by HomeScreenManager after Continue is clicked
-                // Don't auto-start it here
-                if (this.timeRemaining !== null) {
-                    console.log('⏱️ Saved timer exists:', this.timeRemaining, 'seconds (will start when UI ready)');
-                }
+                // NOTE: Timer is restored by UIController after Continue is clicked
+                console.log('⏱️ Timer will be restored by TimerManager');
             }
         } else {
             console.log('⚠️ No saved state found, generating new round');
@@ -839,8 +692,8 @@ export class Game {
         };
         
         // Stop any timer (daily puzzles don't have timers)
-        if (this.timerInterval) {
-            this.stopTimer();
+        if (this.timer) {
+            this.timer.stop(false); // false = keep data for restoration when returning to regular mode
         }
         
         // Load puzzle data into game state
