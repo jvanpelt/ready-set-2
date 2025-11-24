@@ -177,6 +177,16 @@ export class TimerManager {
      * Get current timer data for saving to game state
      */
     getStateData() {
+        // Don't save timer state during tutorials
+        // Tutorials are temporary - timer should restart fresh after tutorial
+        if (this.game.isTutorialActive) {
+            console.log(`⏱️ [TimerManager] getStateData() - tutorial active, returning null`);
+            return {
+                timeRemaining: null,
+                timerDuration: null
+            };
+        }
+        
         console.log(`⏱️ [TimerManager] getStateData() called:`, {
             timeRemaining: this.timeRemaining,
             timerDuration: this.timerDuration,
