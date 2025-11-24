@@ -352,7 +352,9 @@ export class UIController {
                 timerDuration: savedState.timerDuration
             });
         } else {
-            console.log('⏱️ No saved timer data to restore');
+            console.log('⏱️ No saved timer data - starting fresh if needed');
+            // No saved timer, but level might need one (e.g., first time at Level 7)
+            this.game.timer.startFresh();
         }
     }
     
