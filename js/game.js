@@ -27,13 +27,9 @@ export class Game {
         // Save state when page unloads or loses focus
         this.setupAutoSaveListeners();
         
-        // Timer (Level 7+)
-        this.timeRemaining = null;
-        this.timerInterval = null;
-        this.timerStartTime = null; // Timestamp when timer started (for persistence)
-        this.timerDuration = null; // Original duration (for persistence)
-        this.onTimerTick = null; // Callback for UI updates
-        this.onTimeout = null; // Callback when time runs out
+        // Timer (Level 7+) - managed by TimerManager
+        // Set in main.js after construction
+        this.timer = null;
         
         this.init();
     }
