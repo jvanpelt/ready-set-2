@@ -359,12 +359,23 @@ export class TutorialManager {
         
         // Route based on entry point
         if (this.entryPoint === 'level-interstitial') {
-            // Entered from Level 1 interstitial - start a Level 1 puzzle
-            console.log('   → Returning to Level 1 gameplay');
+            // Entered from level interstitial - start the level
+            console.log('   → Returning to gameplay');
             this.ui.modals.showTutorialComplete(() => {
                 console.log('   → Tutorial complete modal closed, resetting round');
                 this.game.resetRound();
                 this.ui.render();
+                
+                // Start timer if this level has one
+                // (resetRound doesn't start it for levels with interstitials)
+                import('../levels.js').then(({ getLevelConfig }) => {
+                    const settings = this.game.storage.loadSettings();
+                    const config = getLevelConfig(this.game.level, settings.testMode);
+                    if (config.timeLimit) {
+                        console.log('⏱️ Starting timer after tutorial completion');
+                        this.game.startTimer(config.timeLimit);
+                    }
+                });
             });
         } else {
             // Entered from menu - restore saved game state or show home

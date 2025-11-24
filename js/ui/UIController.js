@@ -1040,13 +1040,22 @@ export class UIController {
             
             if (tutorialToShow) {
                 this.tutorialManager.start(tutorialToShow, 'level-interstitial');
+                // Timer will be started when tutorial completes (in TutorialManager.complete())
                 
                 // Mark tutorial as viewed (COMMENTED OUT FOR TESTING)
                 // TODO: Uncomment this after testing complete
                 // this.game.storage.markTutorialAsViewed(level);
             }
         } else {
-            // User declined tutorial
+            // User declined tutorial - start timer now
+            const { getLevelConfig } = await import('../levels.js');
+            const settings = this.game.storage.loadSettings();
+            const config = getLevelConfig(level, settings.testMode);
+            if (config.timeLimit) {
+                console.log('⏱️ Starting timer after interstitial (user skipped tutorial)');
+                this.game.startTimer(config.timeLimit);
+            }
+            
             // Mark as viewed so they don't see it again (COMMENTED OUT FOR TESTING)
             // TODO: Uncomment this after testing complete
             // this.game.storage.markTutorialAsViewed(level);

@@ -142,17 +142,26 @@ export class Game {
         }));
         
         // Start timer if level has time limit (Level 7+)
-        // Never start timer for daily puzzles
+        // Timer management:
+        // - Daily puzzles: never start timer
+        // - Levels with interstitials (7+): timer started AFTER interstitial/tutorial dismisses
+        // - Other levels: start timer immediately
         if (this.mode === 'daily') {
             this.stopTimer();
         } else {
             const settings = this.storage.loadSettings();
             const config = getLevelConfig(this.level, settings.testMode);
-            if (config.timeLimit) {
+            
+            // For levels >= 7, timer will be started after interstitial/tutorial
+            // This prevents timer from running during interstitial screen
+            const hasInterstitial = this.level >= 7 && !this.storage.isTutorialViewed(this.level);
+            
+            if (config.timeLimit && !hasInterstitial) {
                 this.startTimer(config.timeLimit);
-            } else {
+            } else if (!config.timeLimit) {
                 this.stopTimer();
             }
+            // If hasInterstitial, timer stays stopped until UI starts it
         }
     }
     
