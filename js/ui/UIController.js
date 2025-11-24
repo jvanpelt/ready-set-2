@@ -61,7 +61,7 @@ export class UIController {
         // If timer was paused (restored from saved state), start it now that callbacks are set
         if (this.game.timeRemaining !== null && this.game.timerInterval === null) {
             console.log('⏱️ Starting restored timer with', this.game.timeRemaining, 'seconds');
-            this.game.startTimer(this.game.timeRemaining);
+            this.game.startTimer(this.game.timeRemaining, true); // true = isRestoration
         }
     }
     

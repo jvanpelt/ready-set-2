@@ -285,17 +285,28 @@ export class Game {
     }
     
     // Timer methods (Level 7+)
-    startTimer(seconds) {
-        this.stopTimer(); // Clear any existing timer
+    startTimer(seconds, isRestoration = false) {
+        // Clear any existing timer interval (but NOT the start time if restoring)
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+            this.timerInterval = null;
+        }
+        
         this.timeRemaining = seconds;
         
-        // Save start time and duration for persistence (only if not restoring)
-        if (!this.timerStartTime) {
+        // Only set fresh start time if this is NOT a restoration
+        // When restoring, timerStartTime/timerDuration are already set from saved state
+        if (!isRestoration) {
             this.timerStartTime = Date.now();
             this.timerDuration = seconds;
         }
         
-        console.log(`⏱️ Timer started: ${seconds} seconds`);
+        console.log(`⏱️ Timer started: ${seconds} seconds (restoration: ${isRestoration})`);
+        if (isRestoration && this.timerStartTime) {
+            const elapsed = Math.floor((Date.now() - this.timerStartTime) / 1000);
+            console.log(`  - Original start: ${new Date(this.timerStartTime).toLocaleTimeString()}`);
+            console.log(`  - Elapsed: ${elapsed}s, Remaining: ${seconds}s`);
+        }
         
         // Tick immediately
         if (this.onTimerTick) {
@@ -813,7 +824,7 @@ export class Game {
                 // (UIController initialization only happens once on page load)
                 if (this.timeRemaining !== null && this.timerInterval === null && this.onTimerTick) {
                     console.log('⏱️ Starting timer after enterRegularMode:', this.timeRemaining, 'seconds');
-                    this.startTimer(this.timeRemaining);
+                    this.startTimer(this.timeRemaining, true); // true = isRestoration
                     // Save state immediately so timer data is persisted
                     this.saveState();
                 }
