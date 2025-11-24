@@ -753,14 +753,23 @@ export class UIController {
         
         // Check if tutorial is active
         const tutorialActive = this.game.isTutorialActive;
+        console.log('  - tutorialActive:', tutorialActive);
+        console.log('  - window.tutorialManager exists:', !!window.tutorialManager);
+        console.log('  - tutorialManager.isActive:', window.tutorialManager?.isActive);
         
         // Show timeout modal
         this.modals.showTimeout(() => {
+            console.log('⏰ Timeout modal OK clicked');
+            console.log('  - tutorialActive (captured):', tutorialActive);
+            console.log('  - window.tutorialManager exists:', !!window.tutorialManager);
+            
             // If tutorial was active, end it first
             if (tutorialActive && window.tutorialManager) {
                 console.log('🎓 Ending tutorial due to timeout');
                 window.tutorialManager.cleanup();
                 // cleanup() handles hiding tutorial UI
+            } else {
+                console.log('⚠️ Tutorial NOT active or tutorialManager missing');
             }
             
             // Generate new round when user clicks OK

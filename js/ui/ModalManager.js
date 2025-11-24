@@ -309,9 +309,13 @@ export class ModalManager {
         
         // Update the OK button
         this.timeoutOkBtn.onclick = () => {
+            console.log('🖱️ Timeout modal OK button clicked');
             this.hideTimeout();
+            console.log('🖱️ Modal hidden, calling callback...');
             if (onOk) {
                 onOk();
+            } else {
+                console.log('⚠️ No onOk callback provided to modal');
             }
         };
     }
