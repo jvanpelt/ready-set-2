@@ -1,10 +1,21 @@
 /**
- * TimerManager - Single source of truth for all timer logic
+ * TimerManager - Centralized timer logic
  * 
- * Responsibilities:
- * - Start/stop/restore timers
- * - Auto-save timer state
- * - Know when to start based on game context
+ * Architecture:
+ * - TimerManager handles all timer state and operations (start/stop/save/restore)
+ * - UIController orchestrates WHEN timers should start (knows game flow + UI state)
+ * - Game.js is timer-agnostic (no timer logic)
+ * 
+ * Timer Start Flow:
+ * 1. User action triggers game event (submit, pass, level up, tutorial complete)
+ * 2. UIController checkpoint method called (handleNewRoundAfterSubmit, etc.)
+ * 3. Checkpoint calls timer.startFresh() if appropriate
+ * 
+ * Timer Persistence:
+ * - Saves timeRemaining (not wall-clock) on blur/visibility/beforeunload
+ * - Restores from timeRemaining on Continue
+ * - Timer pauses when home screen visible (doesn't count that time)
+ * - Tutorial timer state is never saved (temporary)
  */
 
 import { getLevelConfig } from './levels.js';
@@ -13,78 +24,62 @@ export class TimerManager {
     constructor(game, storage, onTick, onTimeout) {
         this.game = game;
         this.storage = storage;
-        this.onTick = onTick;      // Callback to update UI
+        this.onTick = onTick;      // Callback to update UI display
         this.onTimeout = onTimeout; // Callback when timer expires
         
         // Timer state
         this.timeRemaining = null;
         this.timerInterval = null;
-        this.timerStartTime = null;  // Timestamp when timer started (for persistence)
-        this.timerDuration = null;   // Original duration (for persistence)
+        this.timerStartTime = null;  // For calculating fresh timeRemaining
+        this.timerDuration = null;   // Original duration for reference
         
-        // Setup auto-save on page unload
         this.setupAutoSave();
     }
     
     /**
-     * Start a fresh timer (e.g., new round, pass, submit)
+     * Start a fresh timer for a new round
      */
     startFresh() {
-        console.log('⏱️ [TimerManager] startFresh() called');
-        console.log('   Game mode:', this.game.mode);
-        console.log('   Current level:', this.game.level);
-        
-        // Don't start in daily mode
+        // Don't start timer in daily puzzle mode
         if (this.game.mode === 'daily') {
-            console.log('⏱️ [TimerManager] Skipping timer (daily mode)');
             return;
         }
         
         const config = getLevelConfig(this.game.level, this.storage.loadSettings().testMode);
-        console.log('   Level config:', config);
         
         if (!config.timeLimit) {
-            console.log('⏱️ [TimerManager] No time limit for this level');
-            return;
+            return; // This level doesn't have a timer
         }
         
-        console.log(`⏱️ [TimerManager] Starting fresh timer (${config.timeLimit}s)`);
         this._start(config.timeLimit, false);
-        console.log('⏱️ [TimerManager] Timer started, timeRemaining:', this.timeRemaining);
     }
     
     /**
-     * Restore timer from saved state (e.g., continue from home screen)
+     * Restore timer from saved state (used when continuing from home screen)
      */
     restoreFromSave(savedTimerData) {
         if (!savedTimerData || !savedTimerData.timeRemaining) {
-            console.log('⏱️ [TimerManager] No timer data to restore');
             return;
         }
         
         const remaining = savedTimerData.timeRemaining;
         
         if (remaining <= 0) {
-            console.log('⏱️ [TimerManager] Saved timer already expired');
-            // Timer expired while away - trigger timeout
+            // Timer expired while player was away
             if (this.onTimeout) {
                 this.onTimeout();
             }
             return;
         }
         
-        console.log(`⏱️ [TimerManager] Restoring timer with ${remaining}s remaining`);
-        
-        // Start a FRESH timer with the saved remaining time
-        // This ensures time spent on home screen doesn't count against the timer
-        this.timerDuration = savedTimerData.timerDuration || remaining; // Keep original duration for reference
-        
+        // Start timer with saved remaining time
+        this.timerDuration = savedTimerData.timerDuration || remaining;
         this._start(remaining, true);
     }
     
     /**
-     * Stop the timer (e.g., timeout, level change, mode switch)
-     * @param {boolean} clearData - If true, wipes timer data. If false, keeps it for restoration.
+     * Stop the timer
+     * @param {boolean} clearData - If true, clears timer data and saves. If false, pauses without saving.
      */
     stop(clearData = true) {
         if (this.timerInterval) {
@@ -93,48 +88,38 @@ export class TimerManager {
         }
         
         if (clearData) {
-            console.log('⏱️ [TimerManager] Stopping and clearing timer data');
             this.timeRemaining = null;
             this.timerStartTime = null;
             this.timerDuration = null;
-            this.save(); // Persist the cleared state
-        } else {
-            console.log('⏱️ [TimerManager] Pausing timer (NOT saving - will restore from saved data)');
-            // Don't clear data AND don't save
-            // Saved data is already in localStorage from last save
-            // If we saved here, we'd overwrite good data with null
+            this.save(); // Persist cleared state
         }
+        // If clearData is false, we're pausing for state restoration
+        // Don't save here - saved data is already in localStorage
     }
     
     /**
      * Internal: Start the timer interval
      */
     _start(seconds, isRestoration) {
-        console.log(`⏱️ [TimerManager] _start() called with ${seconds}s, isRestoration: ${isRestoration}`);
-        
         // Clear any existing interval
         if (this.timerInterval) {
-            console.log('   Clearing existing interval');
             clearInterval(this.timerInterval);
         }
         
         this.timeRemaining = seconds;
         
-        // Only set fresh start time if NOT restoring
+        // Set start time and duration (for calculating fresh timeRemaining on save)
         if (!isRestoration) {
             this.timerStartTime = Date.now();
             this.timerDuration = seconds;
-            console.log('   Set fresh start time and duration');
         }
         
-        // Tick immediately to update UI
+        // Update UI immediately
         if (this.onTick) {
-            console.log('   Calling onTick immediately');
             this.onTick(this.timeRemaining);
         }
         
         // Start ticking every second
-        console.log('   Setting up setInterval');
         this.timerInterval = setInterval(() => {
             if (this.timeRemaining > 0) {
                 this.timeRemaining--;
@@ -144,6 +129,7 @@ export class TimerManager {
                 this.onTick(this.timeRemaining);
             }
             
+            // Timer expired
             if (this.timeRemaining <= 0) {
                 this.stop(true);
                 if (this.onTimeout) {
@@ -152,7 +138,7 @@ export class TimerManager {
             }
         }, 1000);
         
-        // Save immediately with timer data
+        // Save immediately with new timer data
         this.save();
     }
     
@@ -160,84 +146,59 @@ export class TimerManager {
      * Save timer state to localStorage
      */
     save() {
-        // Trigger game.saveState() to persist timer data
-        console.log('⏱️ [TimerManager] Saving timer data:', {
-            timerStartTime: this.timerStartTime,
-            timerDuration: this.timerDuration,
-            timeRemaining: this.timeRemaining
-        });
-        
-        // Call game.saveState() which will call getStateData() to include timer
         if (this.game && this.game.saveState) {
             this.game.saveState();
         }
     }
     
     /**
-     * Get current timer data for saving to game state
+     * Get current timer data for saving
      */
     getStateData() {
-        // Don't save timer state during tutorials
-        // Tutorials are temporary - timer should restart fresh after tutorial
+        // Don't save tutorial timer state (tutorials are temporary)
         if (this.game.isTutorialActive) {
-            console.log(`⏱️ [TimerManager] getStateData() - tutorial active, returning null`);
             return {
                 timeRemaining: null,
                 timerDuration: null
             };
         }
         
-        console.log(`⏱️ [TimerManager] getStateData() called:`, {
-            timeRemaining: this.timeRemaining,
-            timerDuration: this.timerDuration,
-            timerInterval: this.timerInterval ? 'ACTIVE' : 'null'
-        });
-        
         return {
-            timeRemaining: this.timeRemaining,  // Save actual remaining time (not wall-clock)
-            timerDuration: this.timerDuration   // Keep for reference
+            timeRemaining: this.timeRemaining,
+            timerDuration: this.timerDuration
         };
     }
     
     /**
-     * Setup auto-save on page unload
+     * Check if timer has been started and should be saved
+     */
+    _shouldSave() {
+        return this.timeRemaining !== null || this.timerInterval !== null;
+    }
+    
+    /**
+     * Setup auto-save listeners for page unload/blur
      */
     setupAutoSave() {
-        // Use beforeunload to save synchronously before page closes
-        window.addEventListener('beforeunload', (e) => {
-            // Only save if timer has been started (don't overwrite saved data with null)
-            if (this.timeRemaining !== null || this.timerInterval !== null) {
-                console.log('💾 [TimerManager] BEFOREUNLOAD - Saving timer synchronously');
-                // Call game.saveState() synchronously
-                if (this.game && this.game.saveState) {
-                    this.game.saveState();
-                }
-            } else {
-                console.log('⏸️ [TimerManager] Skipping beforeunload save - timer never started');
+        // Save before page closes
+        window.addEventListener('beforeunload', () => {
+            if (this._shouldSave() && this.game && this.game.saveState) {
+                this.game.saveState();
             }
         });
         
+        // Save when tab becomes hidden
         document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                // Only save if timer has been started (don't overwrite saved data with null)
-                if (this.timeRemaining !== null || this.timerInterval !== null) {
-                    console.log('💾 [TimerManager] Auto-save on tab hidden');
-                    this.save();
-                } else {
-                    console.log('⏸️ [TimerManager] Skipping auto-save - timer never started');
-                }
+            if (document.hidden && this._shouldSave()) {
+                this.save();
             }
         });
         
+        // Save when window loses focus
         window.addEventListener('blur', () => {
-            // Only save if timer has been started (don't overwrite saved data with null)
-            if (this.timeRemaining !== null || this.timerInterval !== null) {
-                console.log('💾 [TimerManager] Auto-save on window blur');
+            if (this._shouldSave()) {
                 this.save();
-            } else {
-                console.log('⏸️ [TimerManager] Skipping auto-save - timer never started');
             }
         });
     }
 }
-

@@ -125,8 +125,6 @@ export class Game {
         // - pass() for Pass button  
         // - submitSolution() for Go button
         // - Level advancement for interstitial/tutorial flow
-        
-        console.log('✅ Generate new round complete (timer NOT auto-started)');
     }
     
     startNewLevel() {
@@ -142,13 +140,6 @@ export class Game {
     
     resetRound() {
         this.generateNewRound();
-        
-        // Start fresh timer if this level needs one
-        if (this.timer) {
-            console.log('⏱️ [Game] Starting fresh timer for new round');
-            this.timer.startFresh();
-        }
-        
         this.saveState();
     }
     
@@ -567,20 +558,10 @@ export class Game {
             dailyPuzzle: this.dailyPuzzle
         };
         
-        // DEBUG: Log what we're saving and where
-        console.log(`💾 saveState() - mode: ${this.mode}`);
-        console.log(`  - Level: ${this.level}, Dice: ${this.dice?.length}`);
-        console.log(`  - Timer data being saved:`, {
-            timeRemaining: stateData.timeRemaining,
-            timerDuration: stateData.timerDuration
-        });
-        
         // Save to appropriate storage location based on mode
         if (this.mode === 'daily') {
-            console.log(`  → Saving to DAILY PUZZLE storage`);
             this.storage.saveDailyPuzzleState(stateData);
         } else {
-            console.log(`  → Saving to REGULAR GAME storage`);
             this.storage.saveGameState(stateData);
         }
     }
@@ -664,7 +645,6 @@ export class Game {
                 this.restoreFromSavedState(savedState);
                 
                 // NOTE: Timer is restored by UIController after Continue is clicked
-                console.log('⏱️ Timer will be restored by TimerManager');
             }
         } else {
             console.log('⚠️ No saved state found, generating new round');
@@ -704,7 +684,6 @@ export class Game {
         // Stop any timer if it's actively running
         // (daily puzzles don't have timers)
         if (this.timer && this.timer.timerInterval) {
-            console.log('⏱️ Stopping active timer before entering daily mode');
             this.timer.stop(false); // false = keep data for restoration when returning to regular mode
         }
         

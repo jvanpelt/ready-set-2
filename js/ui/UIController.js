@@ -52,8 +52,7 @@ export class UIController {
             this.tutorialManager // Pass tutorial manager for drag restrictions
         );
         
-        // Timer callbacks are now wired up in main.js via TimerManager
-        console.log('⏱️ TimerManager handles all timer logic');
+        // Timer callbacks are wired up in main.js via TimerManager
     }
     
     initElements() {
@@ -224,8 +223,7 @@ export class UIController {
             }
             
             // Stop any active timer (will be restarted after tutorial/interstitial)
-            console.log('⏱️ Stopping timer before jumping to level');
-            this.game.timer.stop(true); // Clear timer data
+            this.game.timer.stop(true);
             
             const targetLevel = parseInt(document.getElementById('level-selector').value);
             this.game.jumpToLevel(targetLevel);
@@ -340,43 +338,16 @@ export class UIController {
     // ========== TIMER CONTROL (via TimerManager) ==========
     
     handleContinueFromHome() {
-        console.log('⏱️ [UIController] handleContinueFromHome called');
-        
-        // Restore timer from saved state
         const savedState = this.game.storage.loadGameState();
-        console.log('⏱️ Saved state timer data:', {
-            timeRemaining: savedState?.timeRemaining,
-            timerStartTime: savedState?.timerStartTime,
-            timerDuration: savedState?.timerDuration
-        });
         
-        // Handle both new format (timeRemaining) and old format (timerStartTime) for backward compatibility
         if (savedState && savedState.timeRemaining) {
-            // NEW FORMAT (v4.23.8+)
-            console.log('⏱️ Restoring timer from saved state (NEW FORMAT)');
+            // Restore timer from saved state
             this.game.timer.restoreFromSave({
                 timeRemaining: savedState.timeRemaining,
                 timerDuration: savedState.timerDuration
             });
-        } else if (savedState && savedState.timerStartTime && savedState.timerDuration) {
-            // OLD FORMAT (v4.23.7 and earlier) - migrate to new format
-            console.log('⏱️ Migrating old timer format to new format');
-            const elapsed = Math.floor((Date.now() - savedState.timerStartTime) / 1000);
-            const remaining = Math.max(0, savedState.timerDuration - elapsed);
-            console.log(`  - Elapsed: ${elapsed}s, Remaining: ${remaining}s`);
-            
-            if (remaining > 0) {
-                this.game.timer.restoreFromSave({
-                    timeRemaining: remaining,
-                    timerDuration: savedState.timerDuration
-                });
-            } else {
-                console.log('⏱️ Old timer already expired');
-                this.handleTimeout();
-            }
         } else {
-            console.log('⏱️ No saved timer data - starting fresh if needed');
-            // No saved timer, but level might need one (e.g., first time at Level 7)
+            // No saved timer - start fresh if level needs one
             this.game.timer.startFresh();
         }
     }
@@ -1110,10 +1081,7 @@ export class UIController {
             }
         } else {
             // User declined tutorial - start timer now
-            console.log('⏱️ User skipped tutorial - starting fresh timer');
-            console.log('   Current level:', this.game.level);
             this.game.timer.startFresh();
-            console.log('   Timer started');
             
             // Mark as viewed so they don't see it again
             this.game.storage.markTutorialAsViewed(level);
