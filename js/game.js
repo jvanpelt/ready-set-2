@@ -563,6 +563,10 @@ export class Game {
         // DEBUG: Log what we're saving and where
         console.log(`💾 saveState() - mode: ${this.mode}`);
         console.log(`  - Level: ${this.level}, Dice: ${this.dice?.length}`);
+        console.log(`  - Timer data being saved:`, {
+            timerStartTime: stateData.timerStartTime,
+            timerDuration: stateData.timerDuration
+        });
         
         // Save to appropriate storage location based on mode
         if (this.mode === 'daily') {

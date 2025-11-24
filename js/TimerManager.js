@@ -179,9 +179,15 @@ export class TimerManager {
      * Setup auto-save on page unload
      */
     setupAutoSave() {
-        window.addEventListener('beforeunload', () => {
-            console.log('💾 [TimerManager] Auto-save on page unload');
-            this.save();
+        // Use beforeunload to save synchronously before page closes
+        window.addEventListener('beforeunload', (e) => {
+            if (this.timerInterval) {
+                console.log('💾 [TimerManager] BEFOREUNLOAD - Saving timer synchronously');
+                // Call game.saveState() synchronously
+                if (this.game && this.game.saveState) {
+                    this.game.saveState();
+                }
+            }
         });
         
         document.addEventListener('visibilitychange', () => {
