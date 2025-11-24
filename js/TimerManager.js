@@ -30,6 +30,10 @@ export class TimerManager {
      * Start a fresh timer (e.g., new round, pass, submit)
      */
     startFresh() {
+        console.log('⏱️ [TimerManager] startFresh() called');
+        console.log('   Game mode:', this.game.mode);
+        console.log('   Current level:', this.game.level);
+        
         // Don't start in daily mode
         if (this.game.mode === 'daily') {
             console.log('⏱️ [TimerManager] Skipping timer (daily mode)');
@@ -37,6 +41,7 @@ export class TimerManager {
         }
         
         const config = getLevelConfig(this.game.level, this.storage.loadSettings().testMode);
+        console.log('   Level config:', config);
         
         if (!config.timeLimit) {
             console.log('⏱️ [TimerManager] No time limit for this level');
@@ -45,6 +50,7 @@ export class TimerManager {
         
         console.log(`⏱️ [TimerManager] Starting fresh timer (${config.timeLimit}s)`);
         this._start(config.timeLimit, false);
+        console.log('⏱️ [TimerManager] Timer started, timeRemaining:', this.timeRemaining);
     }
     
     /**
@@ -104,8 +110,11 @@ export class TimerManager {
      * Internal: Start the timer interval
      */
     _start(seconds, isRestoration) {
+        console.log(`⏱️ [TimerManager] _start() called with ${seconds}s, isRestoration: ${isRestoration}`);
+        
         // Clear any existing interval
         if (this.timerInterval) {
+            console.log('   Clearing existing interval');
             clearInterval(this.timerInterval);
         }
         
@@ -115,14 +124,17 @@ export class TimerManager {
         if (!isRestoration) {
             this.timerStartTime = Date.now();
             this.timerDuration = seconds;
+            console.log('   Set fresh start time and duration');
         }
         
         // Tick immediately to update UI
         if (this.onTick) {
+            console.log('   Calling onTick immediately');
             this.onTick(this.timeRemaining);
         }
         
         // Start ticking every second
+        console.log('   Setting up setInterval');
         this.timerInterval = setInterval(() => {
             if (this.timeRemaining > 0) {
                 this.timeRemaining--;

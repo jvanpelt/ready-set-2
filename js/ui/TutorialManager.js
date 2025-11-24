@@ -40,13 +40,19 @@ export class TutorialManager {
         this.isActive = true;
         this.entryPoint = entryPoint;
         
-        // Stop any active timer (will be restarted when tutorial completes)
-        console.log('⏱️ Stopping timer for tutorial');
-        this.game.timer.stop(true); // Clear timer data
-        
-        // Set flag in Game to suppress timer timeout during tutorial
-        this.game.isTutorialActive = true;
-        console.log('⏰ Timer timeout suppressed during tutorial');
+        // Timer behavior depends on the level
+        if (this.game.level === 7) {
+            // Level 7 tutorial: Timer should tick and can expire
+            console.log('⏱️ Starting fresh timer for Level 7 tutorial');
+            this.game.timer.startFresh();
+            this.game.isTutorialActive = true; // Allow timeout during Level 7 tutorial
+        } else {
+            // Other tutorials: Stop timer (will restart when tutorial completes)
+            console.log('⏱️ Stopping timer for tutorial');
+            this.game.timer.stop(true); // Clear timer data
+            this.game.isTutorialActive = true;
+            console.log('⏰ Timer timeout suppressed during tutorial');
+        }
         
         // Save user's Solution Helper preference and force it ON for tutorial
         this.savedSolutionHelperState = this.ui.settings.solutionHelper;

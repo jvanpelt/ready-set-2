@@ -1110,9 +1110,10 @@ export class UIController {
             }
         } else {
             // User declined tutorial - start timer now
-            // Start timer if this level has one
-            console.log('⏱️ Starting timer after interstitial (user skipped tutorial)');
+            console.log('⏱️ User skipped tutorial - starting fresh timer');
+            console.log('   Current level:', this.game.level);
             this.game.timer.startFresh();
+            console.log('   Timer started');
             
             // Mark as viewed so they don't see it again
             this.game.storage.markTutorialAsViewed(level);
