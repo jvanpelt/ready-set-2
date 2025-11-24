@@ -168,45 +168,14 @@ export class Game {
             flipped: false  // Level 6+: card removed from universe
         }));
         
-        // Start timer if level has time limit (Level 7+)
-        // Timer management:
-        // - Daily puzzles: never start timer
-        // - Levels with interstitials (7+): timer started AFTER interstitial/tutorial dismisses
-        // - Other levels: start timer immediately
-        if (this.mode === 'daily') {
-            console.log('⏱️ Daily puzzle mode - stopping timer');
-            this.stopTimer();
-        } else {
-            const settings = this.storage.loadSettings();
-            const config = getLevelConfig(this.level, settings.testMode);
-            
-            // For levels >= 7, timer will be started after interstitial/tutorial
-            // This prevents timer from running during interstitial screen
-            const tutorialViewed = this.storage.hasTutorialBeenViewed(this.level);
-            const hasInterstitial = this.level >= 7 && !tutorialViewed;
-            
-            console.log(`⏱️ Timer decision - Level ${this.level}:`);
-            console.log(`  - config.timeLimit: ${config.timeLimit}`);
-            console.log(`  - tutorialViewed: ${tutorialViewed}`);
-            console.log(`  - hasInterstitial: ${hasInterstitial}`);
-            console.log(`  - this.onTimerTick exists: ${!!this.onTimerTick}`);
-            
-            if (config.timeLimit && !hasInterstitial) {
-                console.log(`  → ✅ Starting timer immediately (${config.timeLimit}s)`);
-                this.startTimer(config.timeLimit);
-                console.log(`  → Timer interval active: ${!!this.timerInterval}`);
-                // Save state immediately so timer data is persisted
-                this.saveState();
-            } else if (!config.timeLimit) {
-                console.log(`  → ⛔ Stopping timer (no time limit for this level)`);
-                this.stopTimer();
-            } else {
-                console.log(`  → ⏸️ Timer will start after interstitial/tutorial`);
-            }
-            // If hasInterstitial, timer stays stopped until UI starts it
-        }
+        // NOTE: generateNewRound() does NOT start timers!
+        // Timer starting is handled explicitly by the caller:
+        // - enterRegularMode() for Continue button
+        // - pass() for Pass button  
+        // - submitSolution() for Go button
+        // - Level advancement for interstitial/tutorial flow
         
-        console.log('✅ Generate new round complete');
+        console.log('✅ Generate new round complete (timer NOT auto-started)');
     }
     
     startNewLevel() {
@@ -664,8 +633,8 @@ export class Game {
             console.log('📋 Validation result:', result.valid ? '✅ VALID' : '❌ INVALID', '-', result.message);
             
             if (result.valid) {
-                // Stop timer on successful submission
-                this.stopTimer();
+                // NOTE: Timer is stopped by UIController AFTER animations
+                // Don't stop it here or animations will be jarring
                 
                 // Apply restriction flips if present
                 if (result.cardsToFlip && result.cardsToFlip.length > 0) {
@@ -688,10 +657,12 @@ export class Game {
     }
     
     pass() {
-        // Stop timer when passing
+        // Stop current timer
         this.stopTimer();
-        // Generate new puzzle (small penalty could be added)
+        
+        // Generate new puzzle
         this.resetRound();
+        
         return { passed: true, message: 'New puzzle generated!' };
     }
     
@@ -830,13 +801,10 @@ export class Game {
                 console.log('✅ Valid regular game state, restoring');
                 this.restoreFromSavedState(savedState);
                 
-                // If restoreFromSavedState set timeRemaining, start the timer now
-                // (UIController initialization only happens once on page load)
-                if (this.timeRemaining !== null && this.timerInterval === null && this.onTimerTick) {
-                    console.log('⏱️ Starting timer after enterRegularMode:', this.timeRemaining, 'seconds');
-                    this.startTimer(this.timeRemaining, true); // true = isRestoration
-                    // Save state immediately so timer data is persisted
-                    this.saveState();
+                // NOTE: Timer is started by HomeScreenManager after Continue is clicked
+                // Don't auto-start it here
+                if (this.timeRemaining !== null) {
+                    console.log('⏱️ Saved timer exists:', this.timeRemaining, 'seconds (will start when UI ready)');
                 }
             }
         } else {

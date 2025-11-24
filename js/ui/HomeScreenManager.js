@@ -40,6 +40,13 @@ export class HomeScreenManager {
                 window.uiController.render();
                 window.uiController.renderer.animateCardsIn();
             }
+            
+            // Explicitly start timer if this level has one and it was saved
+            if (this.game.timeRemaining !== null && this.game.timerInterval === null) {
+                console.log('⏱️ Starting restored timer after Continue:', this.game.timeRemaining, 'seconds');
+                this.game.startTimer(this.game.timeRemaining, true); // true = isRestoration
+                this.game.saveState();
+            }
         });
         
         // Daily Puzzle button - start daily puzzle mode

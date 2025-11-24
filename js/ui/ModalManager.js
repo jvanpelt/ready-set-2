@@ -1,6 +1,7 @@
 // Modal management - tutorials, menus, results, pass confirmations
 
 import { getTutorialScenario } from '../tutorialScenarios.js';
+import { getLevelConfig } from '../levels.js';
 
 export class ModalManager {
     constructor(game) {
@@ -129,8 +130,15 @@ export class ModalManager {
                 // Show interstitial screen and wait for user choice
                 const wantsTutorial = await this.showInterstitialAsync(newLevel);
                 
-                // Start new level
+                // Start new level (this generates new round and starts timer)
                 this.game.startNewLevel();
+                
+                // STOP timer immediately - we're showing tutorial/interstitial
+                if (this.game.timerInterval) {
+                    console.log('⏱️ Stopping timer for interstitial/tutorial');
+                    this.game.stopTimer();
+                }
+                
                 onHide();
                 
                 // Start tutorial if requested
@@ -143,19 +151,48 @@ export class ModalManager {
                         
                         // Mark tutorial as viewed
                         this.game.storage.markTutorialAsViewed(newLevel);
+                        // Timer will be started when tutorial completes (in TutorialManager.complete())
                     }
                 } else {
-                    // User declined tutorial - mark as viewed so they don't see it again
+                    // User declined tutorial - start timer now
+                    const settings = this.game.storage.loadSettings();
+                    const config = getLevelConfig(newLevel, settings.testMode);
+                    if (config.timeLimit) {
+                        console.log('⏱️ User skipped tutorial - starting timer now');
+                        this.game.startTimer(config.timeLimit);
+                        this.game.saveState();
+                    }
+                    
+                    // Mark tutorial as viewed so they don't see it again
                     this.game.storage.markTutorialAsViewed(newLevel);
                 }
             } else {
                 // Tutorial already viewed, skip interstitial
                 this.game.startNewLevel();
                 onHide();
+                
+                // Explicitly start timer if this level has one
+                const settings = this.game.storage.loadSettings();
+                const config = getLevelConfig(newLevel, settings.testMode);
+                if (config.timeLimit) {
+                    console.log('⏱️ Starting timer for new level (tutorial already viewed)');
+                    this.game.startTimer(config.timeLimit);
+                    this.game.saveState();
+                }
             }
         } else {
-            // Generate new round
+            // Generate new round (same level, keep score)
             this.game.resetRound();
+            
+            // Explicitly start timer if this level has one
+            const settings = this.game.storage.loadSettings();
+            const config = getLevelConfig(this.game.level, settings.testMode);
+            if (config.timeLimit && this.game.mode !== 'daily') {
+                console.log(`⏱️ Starting timer after submit (${config.timeLimit}s)`);
+                this.game.startTimer(config.timeLimit);
+                this.game.saveState();
+            }
+            
             onHide();
         }
     }

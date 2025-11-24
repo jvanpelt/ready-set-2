@@ -58,10 +58,13 @@ export class UIController {
         };
         this.game.onTimeout = () => this.handleTimeout();
         
-        // If timer was paused (restored from saved state), start it now that callbacks are set
-        if (this.game.timeRemaining !== null && this.game.timerInterval === null) {
-            console.log('⏱️ Starting restored timer with', this.game.timeRemaining, 'seconds');
-            this.game.startTimer(this.game.timeRemaining, true); // true = isRestoration
+        // NOTE: Do NOT auto-start timer here on page load!
+        // Timer will be started when user clicks "Continue" from home screen
+        // (handled in game.enterRegularMode())
+        console.log('⏱️ Timer callbacks wired up');
+        if (this.game.timeRemaining !== null) {
+            console.log('  - Saved timer exists:', this.game.timeRemaining, 'seconds');
+            console.log('  - Will start when user clicks Continue');
         }
     }
     
@@ -438,6 +441,16 @@ export class UIController {
         ]);
         // Small delay to ensure clean transition
         await new Promise(resolve => setTimeout(resolve, 50));
+        
+        // Start timer if this level has one
+        const settings = this.game.storage.loadSettings();
+        const config = getLevelConfig(this.game.level, settings.testMode);
+        if (config.timeLimit && this.game.mode !== 'daily') {
+            console.log(`⏱️ Starting timer after correct Pass (${config.timeLimit}s)`);
+            this.game.startTimer(config.timeLimit);
+            this.game.saveState();
+        }
+        
         // Then render new round with entrance animations
         this.render({ animate: true });
         this.clearSolutionHelper();
@@ -454,6 +467,16 @@ export class UIController {
         ]);
         // Small delay to ensure clean transition
         await new Promise(resolve => setTimeout(resolve, 50));
+        
+        // Start timer if this level has one
+        const settings = this.game.storage.loadSettings();
+        const config = getLevelConfig(this.game.level, settings.testMode);
+        if (config.timeLimit && this.game.mode !== 'daily') {
+            console.log(`⏱️ Starting timer after Pass (${config.timeLimit}s)`);
+            this.game.startTimer(config.timeLimit);
+            this.game.saveState();
+        }
+        
         // Then render new round with entrance animations
         this.render({ animate: true });
         this.clearSolutionHelper();
