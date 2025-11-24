@@ -141,15 +141,12 @@ export class ModalManager {
                     if (tutorialScenario && window.uiController) {
                         window.uiController.tutorialManager.start(tutorialScenario, 'level-interstitial');
                         
-                        // Mark tutorial as viewed (COMMENTED OUT FOR TESTING)
-                        // TODO: Uncomment this after testing complete
-                        // this.game.storage.markTutorialAsViewed(newLevel);
+                        // Mark tutorial as viewed
+                        this.game.storage.markTutorialAsViewed(newLevel);
                     }
                 } else {
-                    // User declined tutorial - nothing more to do
-                    // Mark as viewed so they don't see it again (COMMENTED OUT FOR TESTING)
-                    // TODO: Uncomment this after testing complete
-                    // this.game.storage.markTutorialAsViewed(newLevel);
+                    // User declined tutorial - mark as viewed so they don't see it again
+                    this.game.storage.markTutorialAsViewed(newLevel);
                 }
             } else {
                 // Tutorial already viewed, skip interstitial

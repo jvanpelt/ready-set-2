@@ -1005,15 +1005,12 @@ export class UIController {
             if (tutorialScenario) {
                 this.tutorialManager.start(tutorialScenario, 'level-interstitial');
                 
-                // Mark tutorial as viewed (COMMENTED OUT FOR TESTING)
-                // TODO: Uncomment this after testing complete
-                // this.game.storage.markTutorialAsViewed(1);
+                // Mark tutorial as viewed
+                this.game.storage.markTutorialAsViewed(1);
             }
         } else {
-            // User declined tutorial
-            // Mark as viewed so they don't see it again (COMMENTED OUT FOR TESTING)
-            // TODO: Uncomment this after testing complete
-            // this.game.storage.markTutorialAsViewed(1);
+            // User declined tutorial - mark as viewed so they don't see it again
+            this.game.storage.markTutorialAsViewed(1);
         }
         // If they decline, just continue with normal gameplay (already rendered)
     }
@@ -1042,9 +1039,8 @@ export class UIController {
                 this.tutorialManager.start(tutorialToShow, 'level-interstitial');
                 // Timer will be started when tutorial completes (in TutorialManager.complete())
                 
-                // Mark tutorial as viewed (COMMENTED OUT FOR TESTING)
-                // TODO: Uncomment this after testing complete
-                // this.game.storage.markTutorialAsViewed(level);
+                // Mark tutorial as viewed
+                this.game.storage.markTutorialAsViewed(level);
             }
         } else {
             // User declined tutorial - start timer now
@@ -1057,9 +1053,8 @@ export class UIController {
                 this.game.saveState(); // Persist timer data immediately
             }
             
-            // Mark as viewed so they don't see it again (COMMENTED OUT FOR TESTING)
-            // TODO: Uncomment this after testing complete
-            // this.game.storage.markTutorialAsViewed(level);
+            // Mark as viewed so they don't see it again
+            this.game.storage.markTutorialAsViewed(level);
         }
     }
 }
