@@ -98,9 +98,10 @@ export class TimerManager {
             this.timerDuration = null;
             this.save(); // Persist the cleared state
         } else {
-            console.log('⏱️ [TimerManager] Pausing timer (keeping data for restoration)');
-            // Don't clear data - keeps timerStartTime/timerDuration for restoration
-            this.save();
+            console.log('⏱️ [TimerManager] Pausing timer (NOT saving - will restore from saved data)');
+            // Don't clear data AND don't save
+            // Saved data is already in localStorage from last save
+            // If we saved here, we'd overwrite good data with null
         }
     }
     

@@ -626,10 +626,9 @@ export class Game {
         this.dailyPuzzle = null;
         this.storage.clearDailyPuzzleState();
         
-        // Pause timer if active (will be restored after Continue is clicked)
-        if (this.timer) {
-            this.timer.stop(false); // false = keep data for restoration
-        }
+        // NOTE: Don't stop timer here!
+        // Timer was never started on this page load (we're just entering regular mode)
+        // It will be restored from localStorage when Continue is clicked
         
         // Restore saved regular game state FIRST
         const savedState = this.storage.loadGameState();
@@ -695,8 +694,10 @@ export class Game {
             startTime: Date.now()
         };
         
-        // Stop any timer (daily puzzles don't have timers)
-        if (this.timer) {
+        // Stop any timer if it's actively running
+        // (daily puzzles don't have timers)
+        if (this.timer && this.timer.timerInterval) {
+            console.log('⏱️ Stopping active timer before entering daily mode');
             this.timer.stop(false); // false = keep data for restoration when returning to regular mode
         }
         
