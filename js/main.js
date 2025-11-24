@@ -7,10 +7,36 @@ import { HomeScreenManager } from './ui/HomeScreenManager.js';
 import DailyPuzzleManager from './DailyPuzzleManager.js';
 
 // Display version (hardcoded for console, cache busting uses timestamps)
-const VERSION = 'v4.22.35';
+const VERSION = 'v4.22.36';
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 console.log('🎮 Ready, Set 2 - Version:', VERSION);
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+// Debug functions (expose after game is initialized)
+window.checkTimer = () => {
+    if (!window.game) {
+        console.log('❌ Game not initialized yet');
+        return;
+    }
+    console.log('⏱️ ===== TIMER STATE CHECK =====');
+    console.log('game.timeRemaining:', window.game.timeRemaining);
+    console.log('game.timerInterval:', window.game.timerInterval);
+    console.log('game.timerStartTime:', window.game.timerStartTime);
+    console.log('game.timerDuration:', window.game.timerDuration);
+    console.log('game.onTimerTick exists:', !!window.game.onTimerTick);
+    console.log('game.level:', window.game.level);
+    console.log('game.mode:', window.game.mode);
+    
+    const savedState = window.game.storage.loadGameState();
+    console.log('Saved timer data:', {
+        timerStartTime: savedState?.timerStartTime,
+        timerDuration: savedState?.timerDuration
+    });
+    
+    const tutorialViewed = window.game.storage.hasTutorialBeenViewed(7);
+    console.log('Tutorial viewed for Level 7:', tutorialViewed);
+    console.log('================================');
+};
 
 // Initialize the game when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {

@@ -145,6 +145,10 @@ export class Game {
     }
     
     generateNewRound() {
+        console.log('🎲 ===== GENERATE NEW ROUND =====');
+        console.log('  - Current mode:', this.mode);
+        console.log('  - Current level:', this.level);
+        
         this.cards = generateCardConfig(8);
         this.dice = generateDiceForLevel(this.level);
         
@@ -170,6 +174,7 @@ export class Game {
         // - Levels with interstitials (7+): timer started AFTER interstitial/tutorial dismisses
         // - Other levels: start timer immediately
         if (this.mode === 'daily') {
+            console.log('⏱️ Daily puzzle mode - stopping timer');
             this.stopTimer();
         } else {
             const settings = this.storage.loadSettings();
@@ -177,26 +182,31 @@ export class Game {
             
             // For levels >= 7, timer will be started after interstitial/tutorial
             // This prevents timer from running during interstitial screen
-            const hasInterstitial = this.level >= 7 && !this.storage.hasTutorialBeenViewed(this.level);
+            const tutorialViewed = this.storage.hasTutorialBeenViewed(this.level);
+            const hasInterstitial = this.level >= 7 && !tutorialViewed;
             
             console.log(`⏱️ Timer decision - Level ${this.level}:`);
             console.log(`  - config.timeLimit: ${config.timeLimit}`);
+            console.log(`  - tutorialViewed: ${tutorialViewed}`);
             console.log(`  - hasInterstitial: ${hasInterstitial}`);
-            console.log(`  - tutorialViewed: ${this.storage.hasTutorialBeenViewed(this.level)}`);
+            console.log(`  - this.onTimerTick exists: ${!!this.onTimerTick}`);
             
             if (config.timeLimit && !hasInterstitial) {
-                console.log(`  → Starting timer immediately (${config.timeLimit}s)`);
+                console.log(`  → ✅ Starting timer immediately (${config.timeLimit}s)`);
                 this.startTimer(config.timeLimit);
+                console.log(`  → Timer interval active: ${!!this.timerInterval}`);
                 // Save state immediately so timer data is persisted
                 this.saveState();
             } else if (!config.timeLimit) {
-                console.log(`  → Stopping timer (no time limit for this level)`);
+                console.log(`  → ⛔ Stopping timer (no time limit for this level)`);
                 this.stopTimer();
             } else {
-                console.log(`  → Timer will start after interstitial/tutorial`);
+                console.log(`  → ⏸️ Timer will start after interstitial/tutorial`);
             }
             // If hasInterstitial, timer stays stopped until UI starts it
         }
+        
+        console.log('✅ Generate new round complete');
     }
     
     startNewLevel() {
