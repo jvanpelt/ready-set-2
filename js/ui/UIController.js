@@ -342,15 +342,34 @@ export class UIController {
         const savedState = this.game.storage.loadGameState();
         console.log('⏱️ Saved state timer data:', {
             timeRemaining: savedState?.timeRemaining,
+            timerStartTime: savedState?.timerStartTime,
             timerDuration: savedState?.timerDuration
         });
         
+        // Handle both new format (timeRemaining) and old format (timerStartTime) for backward compatibility
         if (savedState && savedState.timeRemaining) {
-            console.log('⏱️ Restoring timer from saved state');
+            // NEW FORMAT (v4.23.8+)
+            console.log('⏱️ Restoring timer from saved state (NEW FORMAT)');
             this.game.timer.restoreFromSave({
                 timeRemaining: savedState.timeRemaining,
                 timerDuration: savedState.timerDuration
             });
+        } else if (savedState && savedState.timerStartTime && savedState.timerDuration) {
+            // OLD FORMAT (v4.23.7 and earlier) - migrate to new format
+            console.log('⏱️ Migrating old timer format to new format');
+            const elapsed = Math.floor((Date.now() - savedState.timerStartTime) / 1000);
+            const remaining = Math.max(0, savedState.timerDuration - elapsed);
+            console.log(`  - Elapsed: ${elapsed}s, Remaining: ${remaining}s`);
+            
+            if (remaining > 0) {
+                this.game.timer.restoreFromSave({
+                    timeRemaining: remaining,
+                    timerDuration: savedState.timerDuration
+                });
+            } else {
+                console.log('⏱️ Old timer already expired');
+                this.handleTimeout();
+            }
         } else {
             console.log('⏱️ No saved timer data - starting fresh if needed');
             // No saved timer, but level might need one (e.g., first time at Level 7)
