@@ -156,10 +156,19 @@ export class Game {
             // This prevents timer from running during interstitial screen
             const hasInterstitial = this.level >= 7 && !this.storage.isTutorialViewed(this.level);
             
+            console.log(`⏱️ Timer decision - Level ${this.level}:`);
+            console.log(`  - config.timeLimit: ${config.timeLimit}`);
+            console.log(`  - hasInterstitial: ${hasInterstitial}`);
+            console.log(`  - isTutorialViewed: ${this.storage.isTutorialViewed(this.level)}`);
+            
             if (config.timeLimit && !hasInterstitial) {
+                console.log(`  → Starting timer immediately (${config.timeLimit}s)`);
                 this.startTimer(config.timeLimit);
             } else if (!config.timeLimit) {
+                console.log(`  → Stopping timer (no time limit for this level)`);
                 this.stopTimer();
+            } else {
+                console.log(`  → Timer will start after interstitial/tutorial`);
             }
             // If hasInterstitial, timer stays stopped until UI starts it
         }
