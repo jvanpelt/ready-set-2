@@ -126,7 +126,7 @@ export class Game {
                 const config = getLevelConfig(this.level, settings.testMode);
                 
                 if (config.timeLimit) {
-                    const hasInterstitial = this.level >= 7 && !this.storage.isTutorialViewed(this.level);
+                    const hasInterstitial = this.level >= 7 && !this.storage.hasTutorialBeenViewed(this.level);
                     
                     console.log(`⏱️ Timer decision for restored Level ${this.level}:`);
                     console.log(`  - config.timeLimit: ${config.timeLimit}`);
@@ -178,12 +178,12 @@ export class Game {
             
             // For levels >= 7, timer will be started after interstitial/tutorial
             // This prevents timer from running during interstitial screen
-            const hasInterstitial = this.level >= 7 && !this.storage.isTutorialViewed(this.level);
+            const hasInterstitial = this.level >= 7 && !this.storage.hasTutorialBeenViewed(this.level);
             
             console.log(`⏱️ Timer decision - Level ${this.level}:`);
             console.log(`  - config.timeLimit: ${config.timeLimit}`);
             console.log(`  - hasInterstitial: ${hasInterstitial}`);
-            console.log(`  - isTutorialViewed: ${this.storage.isTutorialViewed(this.level)}`);
+            console.log(`  - tutorialViewed: ${this.storage.hasTutorialBeenViewed(this.level)}`);
             
             if (config.timeLimit && !hasInterstitial) {
                 console.log(`  → Starting timer immediately (${config.timeLimit}s)`);
