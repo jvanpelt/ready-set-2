@@ -801,6 +801,13 @@ export class Game {
             } else {
                 console.log('✅ Valid regular game state, restoring');
                 this.restoreFromSavedState(savedState);
+                
+                // If restoreFromSavedState set timeRemaining, start the timer now
+                // (UIController initialization only happens once on page load)
+                if (this.timeRemaining !== null && this.timerInterval === null && this.onTimerTick) {
+                    console.log('⏱️ Starting timer after enterRegularMode:', this.timeRemaining, 'seconds');
+                    this.startTimer(this.timeRemaining);
+                }
             }
         } else {
             console.log('⚠️ No saved state found, generating new round');
