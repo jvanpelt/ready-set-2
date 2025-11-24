@@ -56,7 +56,8 @@ export class GameStorage {
                 solutions: gameState.solutions,
                 cardStates: gameState.cardStates,
                 tutorialShown: gameState.tutorialShown,
-                timerStartTime: gameState.timerStartTime,
+                timeRemaining: gameState.timeRemaining,    // NEW FORMAT (v4.23.8+)
+                timerStartTime: gameState.timerStartTime,  // OLD FORMAT (backward compat)
                 timerDuration: gameState.timerDuration
             };
             
