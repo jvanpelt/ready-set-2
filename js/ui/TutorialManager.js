@@ -360,6 +360,10 @@ export class TutorialManager {
         // Reset to a fresh round after skipping tutorial
         this.game.resetRound();
         this.ui.render();
+        
+        // Start fresh timer if level needs one (e.g., Level 7+)
+        console.log('⏱️ Starting fresh timer after skipping tutorial');
+        this.ui.handleTutorialComplete();
     }
     
     complete() {
