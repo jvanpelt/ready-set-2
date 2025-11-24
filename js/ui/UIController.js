@@ -52,20 +52,8 @@ export class UIController {
             this.tutorialManager // Pass tutorial manager for drag restrictions
         );
         
-        // Wire up timer callbacks (Level 7+)
-        this.game.onTimerTick = (timeRemaining) => {
-            this.updateTimer(timeRemaining);
-        };
-        this.game.onTimeout = () => this.handleTimeout();
-        
-        // NOTE: Do NOT auto-start timer here on page load!
-        // Timer will be started when user clicks "Continue" from home screen
-        // (handled in game.enterRegularMode())
-        console.log('⏱️ Timer callbacks wired up');
-        if (this.game.timeRemaining !== null) {
-            console.log('  - Saved timer exists:', this.game.timeRemaining, 'seconds');
-            console.log('  - Will start when user clicks Continue');
-        }
+        // Timer callbacks are now wired up in main.js via TimerManager
+        console.log('⏱️ TimerManager handles all timer logic');
     }
     
     initElements() {
@@ -345,49 +333,32 @@ export class UIController {
         }
     }
     
-    // ========== CENTRALIZED TIMER CONTROL ==========
-    // ONLY place in the codebase that starts timers
+    // ========== TIMER CONTROL (via TimerManager) ==========
     
-    startTimerIfNeeded() {
-        // Don't start timer in daily puzzle mode
-        if (this.game.mode === 'daily') {
-            return;
-        }
-        
-        const settings = this.game.storage.loadSettings();
-        const config = getLevelConfig(this.game.level, settings.testMode);
-        
-        if (config.timeLimit) {
-            console.log(`⏱️ [UIController] Starting timer (${config.timeLimit}s)`);
-            this.game.startTimer(config.timeLimit);
-            this.game.saveState();
-        }
-    }
-    
-    startRestoredTimer() {
-        // Start timer from saved state (after Continue)
-        if (this.game.timeRemaining !== null && this.game.timerInterval === null) {
-            console.log(`⏱️ [UIController] Starting restored timer (${this.game.timeRemaining}s)`);
-            this.game.startTimer(this.game.timeRemaining, true); // true = isRestoration
-            this.game.saveState();
-        }
-    }
-    
-    // Callbacks from other managers
     handleContinueFromHome() {
-        this.startRestoredTimer();
+        // Restore timer from saved state
+        const savedState = this.game.storage.loadGameState();
+        if (savedState && savedState.timerStartTime && savedState.timerDuration) {
+            this.game.timer.restoreFromSave({
+                timerStartTime: savedState.timerStartTime,
+                timerDuration: savedState.timerDuration
+            });
+        }
     }
     
     handleTutorialComplete() {
-        this.startTimerIfNeeded();
+        // Start fresh timer after tutorial
+        this.game.timer.startFresh();
     }
     
     handleLevelAdvanced() {
-        this.startTimerIfNeeded();
+        // Start fresh timer after leveling up
+        this.game.timer.startFresh();
     }
     
     handleNewRoundAfterSubmit() {
-        this.startTimerIfNeeded();
+        // Start fresh timer after submitting
+        this.game.timer.startFresh();
     }
     
     // ========== END TIMER CONTROL ==========
@@ -493,8 +464,8 @@ export class UIController {
         this.render({ animate: true });
         this.clearSolutionHelper();
         
-        // Start timer if needed (centralized)
-        this.startTimerIfNeeded();
+        // Start fresh timer for new round
+        this.game.timer.startFresh();
         
         // Modal is already shown by handlePass(), no need to show result modal
     }
@@ -514,8 +485,8 @@ export class UIController {
         this.render({ animate: true });
         this.clearSolutionHelper();
         
-        // Start timer if needed (centralized)
-        this.startTimerIfNeeded();
+        // Start fresh timer for new round
+        this.game.timer.startFresh();
     }
     
     // Next puzzle button removed - Go button now auto-loads next puzzle in test mode

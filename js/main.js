@@ -5,9 +5,10 @@ import { UIController } from './ui/UIController.js';
 import { AppScaler } from './ui/AppScaler.js';
 import { HomeScreenManager } from './ui/HomeScreenManager.js';
 import DailyPuzzleManager from './DailyPuzzleManager.js';
+import { TimerManager } from './TimerManager.js';
 
 // Display version (hardcoded for console, cache busting uses timestamps)
-const VERSION = 'v4.22.39';
+const VERSION = 'v4.23.0';
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 console.log('🎮 Ready, Set 2 - Version:', VERSION);
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -54,6 +55,22 @@ document.addEventListener('DOMContentLoaded', () => {
             // Callback for updates if needed
         });
         console.log('✅ UIController instance created');
+        
+        // Create TimerManager instance (manages all timer logic)
+        console.log('⏱️ Creating TimerManager instance...');
+        game.timer = new TimerManager(
+            game,
+            game.storage,
+            (timeRemaining) => {
+                // Update timer display in UI
+                ui.updateTimer(timeRemaining);
+            },
+            () => {
+                // Handle timer expiration
+                ui.handleTimeout();
+            }
+        );
+        console.log('✅ TimerManager instance created');
         
         // Make UI controller globally accessible for modal callbacks
         window.uiController = ui;

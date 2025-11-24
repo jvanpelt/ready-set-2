@@ -164,7 +164,7 @@ Restrictions let you use ALL 8 cubes for MASSIVE points!`
         level: 7,
         goalScore: 5000,
         numDice: 8,
-        timeLimit: 30, // TEMPORARY: 30 seconds for debugging
+        timeLimit: 180, // 3 minutes
         operators: ['UNION', 'INTERSECTION', 'DIFFERENCE', 'COMPLEMENT', 'UNIVERSE', 'NULL', 'EQUALS', 'SUBSET'],
         tutorial: {
             title: 'Level 7: Beat the Clock!',
