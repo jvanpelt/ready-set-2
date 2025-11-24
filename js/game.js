@@ -24,6 +24,9 @@ export class Game {
         // Daily puzzle state (set when in daily mode)
         this.dailyPuzzle = null;
         
+        // Save state when page unloads or loses focus
+        this.setupAutoSaveListeners();
+        
         // Timer (Level 7+)
         this.timeRemaining = null;
         this.timerInterval = null;
@@ -271,8 +274,8 @@ export class Game {
                 this.handleTimeout();
             }
             
-            // Save state on each tick to persist timer
-            this.saveState();
+            // Timer state will be saved on user interactions and page unload
+            // No need to save every second
         }, 1000);
     }
     
@@ -290,6 +293,28 @@ export class Game {
             this.timerStartTime = null;
             this.timerDuration = null;
         }
+    }
+    
+    setupAutoSaveListeners() {
+        // Save when page is about to unload (refresh, close, navigate away)
+        window.addEventListener('beforeunload', () => {
+            console.log('💾 Auto-save: page unload');
+            this.saveState();
+        });
+        
+        // Save when tab loses focus (switching tabs, minimizing)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                console.log('💾 Auto-save: tab hidden');
+                this.saveState();
+            }
+        });
+        
+        // Save when window loses focus (clicking outside browser)
+        window.addEventListener('blur', () => {
+            console.log('💾 Auto-save: window blur');
+            this.saveState();
+        });
     }
     
     handleTimeout() {
