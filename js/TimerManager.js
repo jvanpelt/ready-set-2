@@ -152,13 +152,17 @@ export class TimerManager {
      * Save timer state to localStorage
      */
     save() {
-        // Timer manager doesn't save full game state - just timer data
-        // The game's saveState() will call this to get current timer data
-        console.log('⏱️ [TimerManager] Timer data:', {
+        // Trigger game.saveState() to persist timer data
+        console.log('⏱️ [TimerManager] Saving timer data:', {
             timerStartTime: this.timerStartTime,
             timerDuration: this.timerDuration,
             timeRemaining: this.timeRemaining
         });
+        
+        // Call game.saveState() which will call getStateData() to include timer
+        if (this.game && this.game.saveState) {
+            this.game.saveState();
+        }
     }
     
     /**

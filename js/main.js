@@ -8,7 +8,7 @@ import DailyPuzzleManager from './DailyPuzzleManager.js';
 import { TimerManager } from './TimerManager.js';
 
 // Display version (hardcoded for console, cache busting uses timestamps)
-const VERSION = 'v4.23.2';
+const VERSION = 'v4.23.3';
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 console.log('🎮 Ready, Set 2 - Version:', VERSION);
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
