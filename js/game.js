@@ -118,6 +118,30 @@ export class Game {
             }
         } else {
             console.log('  - No timer to restore');
+            
+            // Check if this level normally has a timer and should start one
+            // (same logic as resetRound)
+            if (this.mode !== 'daily') {
+                const settings = this.storage.loadSettings();
+                const config = getLevelConfig(this.level, settings.testMode);
+                
+                if (config.timeLimit) {
+                    const hasInterstitial = this.level >= 7 && !this.storage.isTutorialViewed(this.level);
+                    
+                    console.log(`⏱️ Timer decision for restored Level ${this.level}:`);
+                    console.log(`  - config.timeLimit: ${config.timeLimit}`);
+                    console.log(`  - hasInterstitial: ${hasInterstitial}`);
+                    
+                    if (!hasInterstitial) {
+                        console.log(`  → Will start timer after UI ready (${config.timeLimit}s)`);
+                        // Store for UIController to start after callbacks are set
+                        this.timeRemaining = config.timeLimit;
+                        // UIController will call startTimer() when ready
+                    } else {
+                        console.log(`  → Timer will start after interstitial/tutorial`);
+                    }
+                }
+            }
         }
     }
     
