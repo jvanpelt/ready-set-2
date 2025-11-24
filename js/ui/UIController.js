@@ -341,14 +341,14 @@ export class UIController {
         // Restore timer from saved state
         const savedState = this.game.storage.loadGameState();
         console.log('⏱️ Saved state timer data:', {
-            timerStartTime: savedState?.timerStartTime,
+            timeRemaining: savedState?.timeRemaining,
             timerDuration: savedState?.timerDuration
         });
         
-        if (savedState && savedState.timerStartTime && savedState.timerDuration) {
+        if (savedState && savedState.timeRemaining) {
             console.log('⏱️ Restoring timer from saved state');
             this.game.timer.restoreFromSave({
-                timerStartTime: savedState.timerStartTime,
+                timeRemaining: savedState.timeRemaining,
                 timerDuration: savedState.timerDuration
             });
         } else {

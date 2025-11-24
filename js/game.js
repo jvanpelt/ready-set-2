@@ -90,7 +90,7 @@ export class Game {
         
         // Timer restoration is now handled by TimerManager in UIController
         console.log('  - Timer data in saved state:', {
-            timerStartTime: savedState.timerStartTime,
+            timeRemaining: savedState.timeRemaining,
             timerDuration: savedState.timerDuration
         });
     }
@@ -564,7 +564,7 @@ export class Game {
         console.log(`💾 saveState() - mode: ${this.mode}`);
         console.log(`  - Level: ${this.level}, Dice: ${this.dice?.length}`);
         console.log(`  - Timer data being saved:`, {
-            timerStartTime: stateData.timerStartTime,
+            timeRemaining: stateData.timeRemaining,
             timerDuration: stateData.timerDuration
         });
         

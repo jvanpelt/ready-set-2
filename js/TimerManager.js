@@ -51,14 +51,12 @@ export class TimerManager {
      * Restore timer from saved state (e.g., continue from home screen)
      */
     restoreFromSave(savedTimerData) {
-        if (!savedTimerData || !savedTimerData.timerStartTime || !savedTimerData.timerDuration) {
+        if (!savedTimerData || !savedTimerData.timeRemaining) {
             console.log('⏱️ [TimerManager] No timer data to restore');
             return;
         }
         
-        // Calculate elapsed time
-        const elapsed = Math.floor((Date.now() - savedTimerData.timerStartTime) / 1000);
-        const remaining = savedTimerData.timerDuration - elapsed;
+        const remaining = savedTimerData.timeRemaining;
         
         if (remaining <= 0) {
             console.log('⏱️ [TimerManager] Saved timer already expired');
@@ -69,14 +67,11 @@ export class TimerManager {
             return;
         }
         
-        console.log(`⏱️ [TimerManager] Restoring timer:`);
-        console.log(`  - Original duration: ${savedTimerData.timerDuration}s`);
-        console.log(`  - Elapsed: ${elapsed}s`);
-        console.log(`  - Remaining: ${remaining}s`);
+        console.log(`⏱️ [TimerManager] Restoring timer with ${remaining}s remaining`);
         
-        // Restore original start time and duration (for future saves)
-        this.timerStartTime = savedTimerData.timerStartTime;
-        this.timerDuration = savedTimerData.timerDuration;
+        // Start a FRESH timer with the saved remaining time
+        // This ensures time spent on home screen doesn't count against the timer
+        this.timerDuration = savedTimerData.timerDuration || remaining; // Keep original duration for reference
         
         this._start(remaining, true);
     }
@@ -171,8 +166,8 @@ export class TimerManager {
      */
     getStateData() {
         return {
-            timerStartTime: this.timerStartTime,
-            timerDuration: this.timerDuration
+            timeRemaining: this.timeRemaining,  // Save actual remaining time (not wall-clock)
+            timerDuration: this.timerDuration   // Keep for reference
         };
     }
     
@@ -183,7 +178,7 @@ export class TimerManager {
         // Use beforeunload to save synchronously before page closes
         window.addEventListener('beforeunload', (e) => {
             // Only save if timer has been started (don't overwrite saved data with null)
-            if (this.timerStartTime !== null || this.timerInterval !== null) {
+            if (this.timeRemaining !== null || this.timerInterval !== null) {
                 console.log('💾 [TimerManager] BEFOREUNLOAD - Saving timer synchronously');
                 // Call game.saveState() synchronously
                 if (this.game && this.game.saveState) {
@@ -197,7 +192,7 @@ export class TimerManager {
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
                 // Only save if timer has been started (don't overwrite saved data with null)
-                if (this.timerStartTime !== null || this.timerInterval !== null) {
+                if (this.timeRemaining !== null || this.timerInterval !== null) {
                     console.log('💾 [TimerManager] Auto-save on tab hidden');
                     this.save();
                 } else {
@@ -208,7 +203,7 @@ export class TimerManager {
         
         window.addEventListener('blur', () => {
             // Only save if timer has been started (don't overwrite saved data with null)
-            if (this.timerStartTime !== null || this.timerInterval !== null) {
+            if (this.timeRemaining !== null || this.timerInterval !== null) {
                 console.log('💾 [TimerManager] Auto-save on window blur');
                 this.save();
             } else {
