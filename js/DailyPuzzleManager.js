@@ -259,6 +259,38 @@ class DailyPuzzleManager {
         localStorage.removeItem(`rs2_dp_${todayKey}`);
         console.log('✅ Today\'s daily puzzle cleared!');
     }
+    
+    /**
+     * Load a specific puzzle by ID (for testing/debugging)
+     * @param {number} id - Puzzle ID (1-based)
+     */
+    loadPuzzleById(id) {
+        if (!this.puzzleBank || this.puzzleBank.length === 0) {
+            console.error('❌ Puzzle bank not loaded yet');
+            return;
+        }
+        
+        const index = id - 1; // IDs are 1-based, array is 0-indexed
+        
+        if (index < 0 || index >= this.puzzleBank.length) {
+            console.error(`❌ Invalid puzzle ID: ${id} (valid range: 1-${this.puzzleBank.length})`);
+            return;
+        }
+        
+        const puzzle = this.puzzleBank[index];
+        const decoded = this.puzzleBankEncoded ? decodePuzzle(puzzle) : puzzle;
+        
+        this.currentPuzzle = decoded;
+        
+        // Enter daily mode with this puzzle (handles all state setup)
+        this.game.enterDailyMode(decoded);
+        
+        // Render the game
+        this.uiController.render({ animate: true });
+        
+        console.log(`🎲 Loaded puzzle #${id} (goal: ${decoded.goal} cards, ${decoded.dice.length} dice)`);
+        console.log(`   Dice: ${decoded.dice.map(d => d.value).join(' ')}`);
+    }
 }
 
 // Export for ES6 module

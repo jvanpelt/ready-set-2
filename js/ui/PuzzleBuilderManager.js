@@ -20,6 +20,10 @@ export class PuzzleBuilderManager {
             bonus: null
         };
         
+        // Track which specific die gets special flag
+        // Format: { type: 'color'|'operator', value: 'red'|'UNION'|etc, index: 0-based }
+        this.specialFlagTarget = null;
+        
         this.initializeUI();
         this.setupEventListeners();
     }
@@ -83,7 +87,7 @@ export class PuzzleBuilderManager {
             circle.className = `circle ${color}`;
             dieEl.appendChild(circle);
             
-            dieEl.addEventListener('click', () => this.toggleColor(color));
+            dieEl.addEventListener('click', (e) => this.toggleColor(color, e));
             selector.appendChild(dieEl);
         });
     }
@@ -113,7 +117,7 @@ export class PuzzleBuilderManager {
             dieEl.textContent = op.symbol;
             dieEl.title = op.name;
             
-            dieEl.addEventListener('click', () => this.toggleOperator(op.name));
+            dieEl.addEventListener('click', (e) => this.toggleOperator(op.name, e));
             selector.appendChild(dieEl);
         });
     }
@@ -142,6 +146,9 @@ export class PuzzleBuilderManager {
                     <input type="radio" name="special-flag" value="bonus">
                     <span>Bonus Cube (free 50pts)</span>
                 </label>
+                <p style="margin-top: 10px; font-size: 12px; opacity: 0.7; font-style: italic;">
+                    💡 Shift+Click a die to choose which cube gets the special flag
+                </p>
             </div>
         `;
     }
@@ -170,8 +177,33 @@ export class PuzzleBuilderManager {
     
     /**
      * Toggle color selection
+     * Shift+Click to mark as special flag target
      */
-    toggleColor(color) {
+    toggleColor(color, event) {
+        // Shift+Click: Mark this die for special flag
+        if (event && event.shiftKey) {
+            console.log(`🔍 Shift+Click detected on color: ${color}`);
+            const specialFlag = document.querySelector('input[name="special-flag"]:checked').value;
+            console.log(`   Current special flag: ${specialFlag}`);
+            if (specialFlag !== 'none') {
+                // Find the index of this color in selectedColors
+                const colorIndex = this.selectedColors.indexOf(color);
+                console.log(`   Color index in selectedColors: ${colorIndex}`);
+                if (colorIndex > -1) {
+                    this.specialFlagTarget = { type: 'color', value: color, index: colorIndex };
+                    console.log(`🎯 Special flag "${specialFlag}" will be applied to: ${color} (index ${colorIndex})`);
+                    console.log(`   specialFlagTarget:`, this.specialFlagTarget);
+                    this.updateColorUI();
+                    this.updateOperatorUI();
+                } else {
+                    alert('This color die is not selected. Add it first, then Shift+Click to mark as special.');
+                }
+                return;
+            } else {
+                alert('Please select a special flag type first (Required/Wild/Bonus), then Shift+Click a die.');
+            }
+        }
+        
         const colorCount = this.selectedColors.filter(c => c === color).length;
         
         if (colorCount === 0) {
@@ -193,6 +225,10 @@ export class PuzzleBuilderManager {
         } else {
             // Remove all of this color
             this.selectedColors = this.selectedColors.filter(c => c !== color);
+            // Clear special flag if this was the target
+            if (this.specialFlagTarget && this.specialFlagTarget.type === 'color' && this.specialFlagTarget.value === color) {
+                this.specialFlagTarget = null;
+            }
         }
         
         this.updateColorUI();
@@ -200,12 +236,41 @@ export class PuzzleBuilderManager {
     
     /**
      * Toggle operator selection
+     * Shift+Click to mark as special flag target
      */
-    toggleOperator(operator) {
+    toggleOperator(operator, event) {
+        // Shift+Click: Mark this die for special flag
+        if (event && event.shiftKey) {
+            console.log(`🔍 Shift+Click detected on operator: ${operator}`);
+            const specialFlag = document.querySelector('input[name="special-flag"]:checked').value;
+            console.log(`   Current special flag: ${specialFlag}`);
+            if (specialFlag !== 'none') {
+                // Find the index of this operator in selectedOperators
+                const opIndex = this.selectedOperators.indexOf(operator);
+                console.log(`   Operator index in selectedOperators: ${opIndex}`);
+                if (opIndex > -1) {
+                    this.specialFlagTarget = { type: 'operator', value: operator, index: opIndex };
+                    console.log(`🎯 Special flag "${specialFlag}" will be applied to: ${operator} (index ${opIndex})`);
+                    console.log(`   specialFlagTarget:`, this.specialFlagTarget);
+                    this.updateColorUI();
+                    this.updateOperatorUI();
+                } else {
+                    alert('This operator is not selected. Add it first, then Shift+Click to mark as special.');
+                }
+                return;
+            } else {
+                alert('Please select a special flag type first (Required/Wild/Bonus), then Shift+Click a die.');
+            }
+        }
+        
         const opIndex = this.selectedOperators.indexOf(operator);
         
         if (opIndex > -1) {
             this.selectedOperators.splice(opIndex, 1);
+            // Clear special flag if this was the target
+            if (this.specialFlagTarget && this.specialFlagTarget.type === 'operator' && this.specialFlagTarget.value === operator) {
+                this.specialFlagTarget = null;
+            }
         } else {
             this.selectedOperators.push(operator);
         }
@@ -239,6 +304,34 @@ export class PuzzleBuilderManager {
             
             dieEl.classList.toggle('selected', count > 0);
             
+            // Check if this die is the special flag target
+            const isSpecialTarget = this.specialFlagTarget && 
+                                   this.specialFlagTarget.type === 'color' && 
+                                   this.specialFlagTarget.value === color;
+            
+            // Add special flag visual indicator
+            let flagEmoji = dieEl.querySelector('.flag-emoji');
+            if (isSpecialTarget) {
+                dieEl.style.boxShadow = '0 0 15px 3px #4CAF50';
+                dieEl.style.border = '3px solid #4CAF50';
+                
+                // Add flag emoji if not already there
+                if (!flagEmoji) {
+                    flagEmoji = document.createElement('div');
+                    flagEmoji.className = 'flag-emoji';
+                    flagEmoji.textContent = '🚩';
+                    flagEmoji.style.cssText = 'position: absolute; top: -5px; right: -5px; font-size: 16px; pointer-events: none;';
+                    dieEl.style.position = 'relative';
+                    dieEl.appendChild(flagEmoji);
+                }
+            } else {
+                dieEl.style.boxShadow = '';
+                dieEl.style.border = '';
+                if (flagEmoji) {
+                    flagEmoji.remove();
+                }
+            }
+            
             // Show count if > 1
             let countLabel = dieEl.querySelector('.count-label');
             if (count > 1) {
@@ -266,6 +359,34 @@ export class PuzzleBuilderManager {
             const operator = dieEl.dataset.operator;
             const count = this.selectedOperators.filter(op => op === operator).length;
             dieEl.classList.toggle('selected', count > 0);
+            
+            // Check if this die is the special flag target
+            const isSpecialTarget = this.specialFlagTarget && 
+                                   this.specialFlagTarget.type === 'operator' && 
+                                   this.specialFlagTarget.value === operator;
+            
+            // Add special flag visual indicator
+            let flagEmoji = dieEl.querySelector('.flag-emoji');
+            if (isSpecialTarget) {
+                dieEl.style.boxShadow = '0 0 15px 3px #4CAF50';
+                dieEl.style.border = '3px solid #4CAF50';
+                
+                // Add flag emoji if not already there
+                if (!flagEmoji) {
+                    flagEmoji = document.createElement('div');
+                    flagEmoji.className = 'flag-emoji';
+                    flagEmoji.textContent = '🚩';
+                    flagEmoji.style.cssText = 'position: absolute; top: -5px; right: -5px; font-size: 16px; pointer-events: none;';
+                    dieEl.style.position = 'relative';
+                    dieEl.appendChild(flagEmoji);
+                }
+            } else {
+                dieEl.style.boxShadow = '';
+                dieEl.style.border = '';
+                if (flagEmoji) {
+                    flagEmoji.remove();
+                }
+            }
         });
     }
     
@@ -312,25 +433,79 @@ export class PuzzleBuilderManager {
             }
         });
         
-        // Apply special flag to first applicable die
+        // Apply special flag to targeted die (or first die if no target specified)
         const specialFlag = document.querySelector('input[name="special-flag"]:checked').value;
+        console.log(`   Special flag selected: ${specialFlag}`);
+        console.log(`   Special flag target:`, this.specialFlagTarget);
+        
         if (specialFlag !== 'none' && dice.length > 0) {
+            let targetDieIndex = -1;
+            
+            // If user Shift+Clicked a specific die, find it in the dice array
+            if (this.specialFlagTarget) {
+                console.log(`   🎯 Looking for special flag target in dice array...`);
+                const target = this.specialFlagTarget;
+                
+                if (target.type === 'color') {
+                    // Find the Nth occurrence of this color in the dice array
+                    let occurrenceCount = 0;
+                    for (let i = 0; i < dice.length; i++) {
+                        if (dice[i].type === 'color' && dice[i].value === target.value) {
+                            if (occurrenceCount === target.index) {
+                                targetDieIndex = i;
+                                break;
+                            }
+                            occurrenceCount++;
+                        }
+                    }
+                } else if (target.type === 'operator') {
+                    // target.index is the position in selectedOperators array
+                    // We need to find that same operator at that position in the dice array
+                    // Colors come first, then operators
+                    const colorCount = this.selectedColors.length;
+                    const operatorDiceStartIndex = colorCount;
+                    targetDieIndex = operatorDiceStartIndex + target.index;
+                    
+                    console.log(`   Color dice count: ${colorCount}`);
+                    console.log(`   Target operator index: ${target.index}`);
+                    console.log(`   Calculated dice array index: ${targetDieIndex}`);
+                    
+                    // Verify it's the right die
+                    if (targetDieIndex < dice.length && dice[targetDieIndex].name === target.value) {
+                        console.log(`   ✅ Found ${target.value} at dice[${targetDieIndex}]`);
+                    } else {
+                        console.warn(`   ⚠️ Expected ${target.value} at dice[${targetDieIndex}], found:`, dice[targetDieIndex]);
+                        targetDieIndex = -1; // Reset to use default
+                    }
+                }
+            }
+            
+            // If no target specified or not found, default to first die
+            if (targetDieIndex === -1) {
+                targetDieIndex = 0;
+            }
+            
+            // Apply the special flag
             if (specialFlag === 'required') {
-                dice[0].isRequired = true;
+                dice[targetDieIndex].isRequired = true;
+                console.log(`✅ Applied "required" flag to die #${targetDieIndex}: ${dice[targetDieIndex].value}`);
             } else if (specialFlag === 'wild') {
-                // Replace first operator with wild
-                const opIndex = dice.findIndex(d => d.type === 'operator');
-                if (opIndex > -1) {
-                    dice[opIndex] = {
+                // Replace target die with wild
+                if (dice[targetDieIndex].type === 'operator') {
+                    dice[targetDieIndex] = {
                         type: 'wild',
                         value: '?',
                         name: 'WILD',
                         selectedOperator: null,
                         id: `builder-wild`
                     };
+                    console.log(`✅ Replaced die #${targetDieIndex} with WILD`);
+                } else {
+                    console.warn('⚠️ Wild flag can only be applied to operator dice. Skipping.');
                 }
             } else if (specialFlag === 'bonus') {
-                dice[0].isBonus = true;
+                dice[targetDieIndex].isBonus = true;
+                console.log(`✅ Applied "bonus" flag to die #${targetDieIndex}: ${dice[targetDieIndex].value}`);
             }
         }
         

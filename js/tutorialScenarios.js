@@ -409,7 +409,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'cubes',
-                    message: 'Use <strong>CUBES</strong> to build a solution. Each cube has a color or operator symbol.',
+                    message: 'Use <strong>CUBES</strong> to build a solution. Each cube has a color or operator symbol, with more introduced in later levels.',
                     highlight: { dice: [0, 1, 2, 3] },
                     nextTrigger: 'auto',
                     onEnter: () => {
@@ -417,20 +417,23 @@ export const TUTORIAL_SCENARIOS = {
                     }
                 },
                 {
-                    id: 'solution-helper',
-                    message: 'When the "Solution Helper" is enabled, like during tutorials, it will highlight the cards that match your current solution.',
-                    highlight: null,
-                    nextTrigger: 'auto'
+                    id: 'operator',
+                    message: `You\'ll start off with two "operator" cubes: Union or <strong>"OR"</strong> ${getUnionSVG(35,35)} and Intersection or <strong>"AND"</strong> ${getIntersectionSVG(35,35)}.`,
+                    highlight: { dice: [0, 1, 2, 3] },
+                    nextTrigger: 'auto',
+                    onEnter: () => {
+                        setTimeout(() => IntroAnimations.animateCubes(), 100);
+                    }
                 },
                 {
                     id: 'set-name',
-                    message: 'Drag cubes to the <strong>SOLUTION AREA</strong> to create a "set name" - a formula that selects a set of cards. Your solution is read <strong>left-to-right</strong>, just like a math equation.',
+                    message: 'Drag cubes to the <strong>SOLUTION AREA</strong> to create a "set name" &ndash; a formula that selects a set of cards. Your solution is read <strong>left-to-right</strong>, just like a math equation.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'build-red-or-blue',
-                    message: 'Try it! Add <strong>"red OR blue"</strong> to the solution area. You can drag the cubes in any order and rearrange them however you like!',
+                    message: 'Try it! Add <strong>"Red OR Blue"</strong> to the solution area. In this case, "Blue Or Red" will give you the same result!',
                     highlight: { dice: [0, 1, 2] }, // Highlight red, blue, and OR
                     validation: (game) => {
                         // Check if solution contains EXACTLY red, OR, blue (in any row, any order)
@@ -447,13 +450,13 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'or-result',
-                    message: '<strong>RED ∪ BLUE</strong> (read left-to-right) selects cards with red dots OR blue dots. That\'s 5 cards - still too many!',
+                    message: '<strong>Red Or Blue</strong> selects cards with red dots OR blue dots. That\'s 5 cards, which doesn\'t match the goal.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'swap-and',
-                    message: 'Now try a solution of <strong>"red AND blue"</strong>. Tip: Double-tap cubes to easily remove them from your solution.',
+                    message: 'Now try a solution of <strong>"Red AND Blue"</strong>. Tip: Double-tap cubes to easily remove them from your solution.',
                     highlight: { dice: [0, 1, 3] }, // Highlight red, blue, and AND
                     validation: (game) => {
                         // Check if solution contains EXACTLY red, AND, blue (in any row, any order)
@@ -473,7 +476,25 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'and-success',
-                    message: 'Perfect! <strong>RED AND BLUE</strong> finds only cards with BOTH colors. That\'s exactly 3 cards! ✓',
+                    message: 'Perfect! "<strong>Red And Blue</strong>" finds only cards with BOTH colors. That\'s exactly 3 cards! ✓',
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'solution-helper',
+                    message: 'A few quick tips: The "Solution Helper" feature highlights cards that match your current solution.',
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'solution-helper-setting',
+                    message: 'Solution Helper is enabled by default, and during all tutorials. It can be disabled in the Settings menu when you\'re ready for <strong>hard mode</strong>!',
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'pass-button',
+                    message: 'Lastly, in game play, cards and cubes are randomly generated, so some puzzles will have <strong>NO</strong> solution! Use <strong>Pass</strong> when you need to.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -1132,150 +1153,68 @@ export const TUTORIAL_SCENARIOS = {
     
     8: {
         // Level 8: Required cubes - Complement is required!
-        // Cards: [4, 8, 0, 9, 3, 1, 10, 13] = blue, red, blank, red+yellow, green+yellow, yellow, red+green, red+blue+yellow
-        // Progression teaches required cube + order of operations + grouping:
-        // 1. Yellow ∪ Blue (ungrouped) = 5 → Error (no required)
-        // 2. Yellow ∪ Blue ∪ ′ (ungrouped) = 3 → Wrong count
-        // 3. Yellow ∪ (Blue′) (grouped) = 7 → Wrong count
-        // 4. (Yellow′) ∪ Blue (grouped) = 5 → Success!
-        cards: [4, 8, 0, 9, 3, 1, 10, 13],
+        // Cards: [5, 7, 11, 10, 6, 4, 12, 1] = blue+green, blue+green+gold, red+green+gold, red+green, blue+green, blue, red+blue, gold
+        // Only 2 valid solutions (both use required Prime):
+        // 1. red ′ ∩ gold = 3 cards
+        // 2. ∅ ′ ∩ red = 3 cards
+        // Tutorial teaches that Prime must be used and grouped properly with intersection
+        cards: [5, 7, 11, 10, 6, 4, 12, 1],
         dice: [
-            { type: 'color', value: 'gold', name: 'YELLOW', id: 'tutorial-8-yellow' },
-            { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-8-union' },
-            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-8-blue' },
-            { type: 'operator', value: '′', name: 'COMPLEMENT', id: 'tutorial-8-prime', isRequired: true },
             { type: 'color', value: 'red', name: 'RED', id: 'tutorial-8-red' },
-            { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-8-green' }
+            { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-8-green-1' },
+            { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-8-green-2' },
+            { type: 'color', value: 'gold', name: 'GOLD', id: 'tutorial-8-gold' },
+            { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-8-intersection' },
+            { type: 'operator', value: '′', name: 'COMPLEMENT', id: 'tutorial-8-prime', isRequired: true },
+            { type: 'set-constant', value: 'U', name: 'UNIVERSE', id: 'tutorial-8-universe' },
+            { type: 'set-constant', value: '∅', name: 'NULL', id: 'tutorial-8-null' }
         ],
-        goal: 5,
-        expectedSolution: ['gold', '′', '∪', 'blue'],
+        goal: 3,
+        //expectedSolution: ['red', '′', '∩', 'gold'],
         
         walkthrough: {
             enabled: true,
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome to Level 8! <strong>Required Cubes</strong> - worth big points, but mandatory!',
+                    message: 'Welcome to Level 8 where we introduce <strong>Required Cubes</strong>, marked with a green glow. They are worth <strong>50 bonus points</strong>, and they\'re <strong>mandatory</strong>!',
                     highlight: null,
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'explain-required',
-                    message: '<strong>Required cubes</strong> have a green border and glow, and are worth  <strong>50 bonus points</strong>.',
-                    highlight: { dice: [3] },
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'goal',
-                    message: 'Goal: <strong>5 cards</strong>. Let\'s try building a solution. Start with "Yellow OR Blue".',
-                    highlight: { goal: true },
+                    message: 'Goal: <strong>3 cards</strong>. Let\'s try building a solution. This one might be tricky, but give it a try before you hit Next.',
+                    highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
-                    id: 'drag-yellow',
-                    message: 'Drag <strong>YELLOW</strong> to the <strong>BOTTOM ROW</strong>. Keep cubes spaced apart.',
+                    id: 'hint-one',
+                    message: 'There are only two valid solutions, and they both use And, Red, and the required Prime cube.',
                     highlight: { dice: [0] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'gold'),
-                    nextTrigger: 'validation'
+                    nextTrigger: 'auto'
                 },
                 {
-                    id: 'drag-union-1',
-                    message: 'Drag <strong>OR</strong>.',
+                    id: 'hint-two',
+                    message: 'You could play "Red Prime And Yellow" to name a set of 3 cards, but there\'s another option worth more points...',
                     highlight: { dice: [1] },
-                    validation: (game) => game.solutions[1].some(die => die.value === '∪'),
-                    nextTrigger: 'validation'
+                    nextTrigger: 'auto'
                 },
                 {
-                    id: 'drag-blue-1',
-                    message: 'Drag <strong>BLUE</strong>. This should match our goal, 5 cards!',
-                    highlight: { dice: [2] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'blue'),
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'check-helper-1',
-                    message: 'Perfect! Solution Helper shows 5 cards. But wait... we forgot the required cube!',
+                    id: 'hint-three',
+                    message: '"Null Prime And Red" is the better option, since Null is worth more points than Yellow.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
-                    id: 'add-prime-1',
-                    message: 'Add the <strong>prime</strong> cube at the end (keep it spaced out).',
-                    highlight: { dice: [3] },
-                    validation: (game) => game.solutions[1].some(die => die.value === '′'),
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'check-helper-2',
-                    message: 'Hmm... now it only matches 3 cards! "Yellow OR Blue prime" evaluated left-to-right doesn\'t work.',
-                    highlight: null,
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'group-blue-prime',
-                    message: 'Try grouping Complement with BLUE. Move them close together so they touch!',
-                    highlight: { dice: [2, 3] },
-                    validation: (game) => {
-                        const solution = game.solutions[1];
-                        const blueDie = solution.find(die => die.value === 'blue');
-                        const primeDie = solution.find(die => die.value === '′');
-                        
-                        if (!blueDie || !primeDie) return false;
-                        
-                        const isMobile = window.innerWidth <= 768;
-                        const dieSize = isMobile ? 50 : 80;
-                        const touchThreshold = 15;
-                        const dx = Math.abs(blueDie.x - primeDie.x);
-                        const dy = Math.abs(blueDie.y - primeDie.y);
-                        
-                        return dx < dieSize + touchThreshold && dy < dieSize + touchThreshold;
-                    },
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'check-helper-3',
-                    message: 'Now "Yellow OR (Blue prime)" matches 7 cards! Too many. The grouping changes everything!',
-                    highlight: null,
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'group-yellow-prime',
-                    message: 'Try grouping Complement with YELLOW instead. Move them close together!',
-                    highlight: { dice: [0, 3] },
-                    validation: (game) => {
-                        const solution = game.solutions[1];
-                        const yellowDie = solution.find(die => die.value === 'gold');
-                        const primeDie = solution.find(die => die.value === '′');
-                        
-                        if (!yellowDie || !primeDie) return false;
-                        
-                        const isMobile = window.innerWidth <= 768;
-                        const dieSize = isMobile ? 50 : 80;
-                        const touchThreshold = 15;
-                        const dx = Math.abs(yellowDie.x - primeDie.x);
-                        const dy = Math.abs(yellowDie.y - primeDie.y);
-                        
-                        return dx < dieSize + touchThreshold && dy < dieSize + touchThreshold;
-                    },
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'success',
-                    message: 'Perfect! "(Yellow prime) OR Blue" = 5 cards! Grouping with Yellow was the key!',
-                    highlight: null,
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'lesson',
-                    message: 'Required cubes force creative solutions. Position and grouping matter! 50 bonus points await!',
+                    id: 'hint-four',
+                    message: 'Remember, "Null Prime" is the same as "Universe", and "Universe And Red" is the same as "Red". So, "Null Prime And Red" is the same as plain old "Red".',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'submit',
-                    message: 'Watch for that green glow in real play! Click <strong>GO!</strong>',
+                    message: 'Watch for that glowing green cube in real play! Click <strong>GO!</strong> to play now!',
                     highlight: { goButton: true },
-                    validation: (game) => false,
                     nextTrigger: 'submit'
                 }
             ]

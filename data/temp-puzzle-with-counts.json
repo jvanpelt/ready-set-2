@@ -1,0 +1,110 @@
+{
+  "version": "test-with-counts",
+  "count": 1,
+  "puzzles": [
+    {
+      "id": 1,
+      "cards": [
+        {
+          "colors": [
+            "blue",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "blue",
+            "green",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "green",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "green"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "blue"
+          ]
+        },
+        {
+          "colors": [
+            "blue"
+          ]
+        },
+        {
+          "colors": [
+            "red",
+            "blue",
+            "gold"
+          ]
+        },
+        {
+          "colors": [
+            "blue",
+            "red"
+          ]
+        }
+      ],
+      "dice": [
+        {
+          "type": "color",
+          "value": "red",
+          "name": "RED"
+        },
+        {
+          "type": "color",
+          "value": "green",
+          "name": "GREEN"
+        },
+        {
+          "type": "color",
+          "value": "green",
+          "name": "GREEN"
+        },
+        {
+          "type": "color",
+          "value": "gold",
+          "name": "GOLD"
+        },
+        {
+          "type": "operator",
+          "value": "∩",
+          "name": "INTERSECTION"
+        },
+        {
+          "type": "operator",
+          "value": "′",
+          "name": "COMPLEMENT",
+          "isRequired": true
+        },
+        {
+          "type": "set-constant",
+          "value": "U",
+          "name": "UNIVERSE"
+        },
+        {
+          "type": "set-constant",
+          "value": "∅",
+          "name": "NULL"
+        }
+      ],
+      "goal": 3,
+      "solutionCount": 15,
+      "shortestSolution": 2,
+      "longestSolution": 4
+    }
+  ],
+  "solutionCountsGeneratedAt": "2025-11-25T04:00:25.865Z",
+  "description": " (with solution counts)"
+}
