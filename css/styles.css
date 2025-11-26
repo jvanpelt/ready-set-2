@@ -201,6 +201,7 @@ body {
 .die.tutorial-disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    transition: opacity 0.4s ease;
 }
 
 .die.operator {

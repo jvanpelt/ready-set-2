@@ -192,6 +192,16 @@ export class DragDropHandler {
         const handleSolutionDragStart = (e) => {
             const solutionDie = e.target.closest('.solution-die');
             if (solutionDie && (e.button === 0 || e.type === 'touchstart')) {
+                // Check if dragging is disabled by tutorial
+                if (this.tutorialManager?.isActive) {
+                    const currentStep = this.tutorialManager.scenario?.walkthrough?.steps[this.tutorialManager.currentStep];
+                    if (currentStep?.disableDragging) {
+                        console.log('🚫 Solution dragging disabled during tutorial');
+                        e.preventDefault();
+                        return;
+                    }
+                }
+                
                 if (e.type === 'touchstart') {
                     e.preventDefault();
                 }

@@ -1376,7 +1376,48 @@ export const TUTORIAL_SCENARIOS = {
                         game.addDieToSolution(game.dice[6], 1, 330, 10); // −
                         game.addDieToSolution(game.dice[3], 1, 430, 10); // green
                         
+                        // Capture source positions BEFORE render (while dice are still in dice area)
+                        const diceContainer = document.querySelector('.dice-container');
+                        const sourcePositions = {};
+                        game.solutions.flat().forEach(die => {
+                            const sourceDie = diceContainer.querySelector(`[data-id="${die.id}"]`);
+                            if (sourceDie) {
+                                sourcePositions[die.id] = sourceDie.getBoundingClientRect();
+                            }
+                        });
+                        
                         ui.render();
+                        
+                        // Animate solution dice from captured source positions
+                        requestAnimationFrame(() => {
+                            const solutionDice = document.querySelectorAll('.solution-die');
+                            
+                            solutionDice.forEach((solutionDie, index) => {
+                                const dieId = solutionDie.dataset.id;
+                                const sourceRect = sourcePositions[dieId];
+                                
+                                if (sourceRect) {
+                                    // Get solution position
+                                    const solutionRect = solutionDie.getBoundingClientRect();
+                                    
+                                    // Calculate offset from source to target
+                                    const deltaX = sourceRect.left - solutionRect.left;
+                                    const deltaY = sourceRect.top - solutionRect.top;
+
+                                    // Get the die's final position from inline styles
+                                    const finalLeft = parseInt(solutionDie.style.left) || 0;
+                                    const finalTop = parseInt(solutionDie.style.top) || 0;
+                                    
+                                    // Calculate starting position (final position + offset to source)
+                                    const startLeft = finalLeft + deltaX;
+                                    const startTop = finalTop + deltaY;
+                                    
+                                    // Animate from source position to final position
+                                    // Note: Using left/top (not x/y) to match UIRenderer's positioning method
+                                    gsap.fromTo(solutionDie, { left: startLeft, top: startTop, opacity: 0 }, { left: finalLeft, top: finalTop, opacity: 1, duration: 0.6, delay: Math.random() * 0.2, ease: 'power2.out' } );
+                                }
+                            });
+                        });
                         
                         // Trigger solution helper evaluation
                         setTimeout(() => ui.evaluateSolutionHelper(), 50);
@@ -1425,7 +1466,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'dim-cards-without-gold',
-                    message: 'Now dim all the cards that don\'t have gold (yellow).',
+                    message: 'Now dim all the cards that don\'t have yellow.',
                     highlight: null,
                     validation: (game) => {
                         const redAndGreenIndices = [5, 6, 7]; // From previous step
