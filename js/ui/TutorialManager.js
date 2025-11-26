@@ -51,12 +51,21 @@ export class TutorialManager {
             this.game.isTutorialActive = true;
         }
         
-        // Save user's Solution Helper preference and force it ON for tutorial
+        // Save user's Solution Helper preference
         this.savedSolutionHelperState = this.ui.settings.solutionHelper;
         console.log('💡 Solution Helper: Saved user preference:', this.savedSolutionHelperState);
-        this.ui.settings.solutionHelper = true;
-        this.ui.solutionHelperToggle.checked = true;
-        console.log('💡 Solution Helper: Forced ON for tutorial');
+        
+        // Level 10 tutorial: Force solution helper OFF to teach manual card manipulation
+        // All other tutorials: Force solution helper ON
+        if (this.game.level === 10) {
+            this.ui.settings.solutionHelper = false;
+            this.ui.solutionHelperToggle.checked = false;
+            console.log('💡 Solution Helper: Forced OFF for Level 10 tutorial');
+        } else {
+            this.ui.settings.solutionHelper = true;
+            this.ui.solutionHelperToggle.checked = true;
+            console.log('💡 Solution Helper: Forced ON for tutorial');
+        }
         
         // Load the tutorial scenario
         this.scenarioManager.loadScenario(scenarioData);

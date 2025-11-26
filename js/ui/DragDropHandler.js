@@ -41,9 +41,16 @@ export class DragDropHandler {
         // === DICE AREA DRAG START (source dice) ===
         const handleDiceStart = (e) => {
             const die = e.target.closest('.die');
+            
+            // Check if die is actually draggable FIRST (tutorial restrictions, etc.)
+            if (die && die.draggable === false) {
+                console.log('🚫 Die is not draggable, ignoring drag attempt');
+                e.preventDefault();
+                e.stopPropagation();
+                return;
+            }
+            
             if (die && !die.classList.contains('disabled')) {
-                // Note: Tutorial restrictions are now handled by draggable attribute in UIRenderer
-                // Non-draggable cubes won't trigger this event
                 
                 if (e.type === 'touchstart') {
                     e.preventDefault();

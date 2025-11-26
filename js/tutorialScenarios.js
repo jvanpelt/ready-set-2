@@ -1246,104 +1246,38 @@ export const TUTORIAL_SCENARIOS = {
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome to Level 9! Meet the <strong>Wild Cube</strong> - your flexible friend!',
+                    message: 'Welcome to Level 9! Meet the <strong>Wild Cube</strong>! I bet you can guess which cube it is.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-wild',
-                    message: '<strong>Wild cubes</strong> have a red border with a question mark. They can be ANY operator!',
+                    message: 'We\'re deep into the game, so let\'s keep this simple. The Wild cube can be changed to <strong>ANY</strong> operator...',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-selection',
-                    message: 'When you drop a wild cube, a menu appears. Pick which operator it should be. Change it anytime by clicking it!',
+                    message: 'When you drop a wild cube, a menu appears, allowing you to choose which operator it should be. Change it anytime by clicking it again.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-value',
-                    message: 'Wild cubes are worth <strong>25 bonus points</strong>! Great for creative solutions.',
+                    message: 'If you haven\'t tried it yet, go ahead. A suggestion: add "Red Wild Green", then change Wild to different operators to see what happens.',
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'wild-bonus',
+                    message: 'The bonus cube is not required, but as a reward we\'ll give you 50 bonus points for using it. Nothing wild about that!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'goal',
-                    message: 'Goal: <strong>1 card</strong>. Let\'s use the wild cube to build a solution!',
+                    message: 'That\'s pretty much it. Once you have a solution, press <strong>GO!</strong> to get back to the game!',
                     highlight: { goal: true },
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'drag-red',
-                    message: 'Drag <strong>RED</strong> to the <strong>BOTTOM ROW</strong>.',
-                    highlight: { dice: [0] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'red'),
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'drag-wild',
-                    message: 'Drag the <strong>WILD CUBE</strong> (the one with the ?). A menu will pop up!',
-                    highlight: { dice: [1] },
-                    validation: (game) => game.solutions[1].some(die => die.type === 'wild'),
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'select-difference',
-                    message: 'In the menu, select <strong>minus</strong>.',
-                    highlight: null,
-                    validation: (game) => {
-                        const wildDie = game.solutions[1].find(die => die.type === 'wild');
-                        return wildDie && wildDie.selectedOperator === '−';
-                    },
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'drag-green',
-                    message: 'Drag <strong>GREEN</strong> to complete the solution.',
-                    highlight: { dice: [2] },
-                    validation: (game) => game.solutions[1].some(die => die.value === 'green'),
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'check-wrong',
-                    message: 'Hmm... "Red minus Green" doesn\'t match our goal. Let\'s try a different operator!',
-                    highlight: null,
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'explain-change',
-                    message: '<strong>Click the wild cube</strong> to change which operator it represents!',
-                    highlight: null,
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'select-intersect',
-                    message: 'Select <strong>AND</strong> from the menu.',
-                    highlight: null,
-                    validation: (game) => {
-                        const wildDie = game.solutions[1].find(die => die.type === 'wild');
-                        return wildDie && wildDie.selectedOperator === '∩';
-                    },
-                    nextTrigger: 'validation'
-                },
-                {
-                    id: 'check-correct',
-                    message: 'Perfect! "Red AND Green" matches our goal! Different operator, different result!',
-                    highlight: null,
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'lesson',
-                    message: 'Wild cubes give you flexibility to experiment. Click them anytime to change! 25 bonus points!',
-                    highlight: null,
-                    nextTrigger: 'auto'
-                },
-                {
-                    id: 'submit',
-                    message: 'Click the wild cube to change operators anytime! Click <strong>GO!</strong>',
-                    highlight: { goButton: true },
-                    validation: (game) => false,
                     nextTrigger: 'submit'
                 }
             ]
@@ -1351,84 +1285,266 @@ export const TUTORIAL_SCENARIOS = {
     },
     
     10: {
-        // Level 10: Bonus cubes
-        cards: [1, 2, 3, 4, 5, 8, 9, 10],
+        // Level 10: Bonus cubes - 8-cube solution demonstration
+        // From Daily Puzzle #6 (5+3 pattern) - modified to replace blue+green with blue+green+gold
+        // Solution: "red ∩ green = gold" (top) + "green − ∅" (bottom) = 2 cards
+        // Bitwise cards: 5=blue+gold, 9=red+gold, 7=blue+green+gold, 12=red+blue, 8=red, 14=red+blue+green, 15=all, 11=red+green+gold
+        cards: [5, 9, 7, 12, 8, 14, 15, 11],
         dice: [
             { type: 'color', value: 'red', name: 'RED', id: 'tutorial-10-red' },
-            { type: 'operator', value: '∪', name: 'UNION', id: 'tutorial-10-union' },
-            { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-10-blue' },
             { type: 'operator', value: '∩', name: 'INTERSECTION', id: 'tutorial-10-intersect' },
-            { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-10-green' },
-            { type: 'operator', value: '−', name: 'DIFFERENCE', id: 'tutorial-10-diff' }
+            { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-10-green-1' },
+            { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-10-green-2' },
+            { type: 'restriction', value: '=', name: 'EQUALS', id: 'tutorial-10-equals' },
+            { type: 'color', value: 'gold', name: 'GOLD', id: 'tutorial-10-gold' },
+            { type: 'operator', value: '−', name: 'MINUS', id: 'tutorial-10-minus' },
+            { type: 'set-constant', value: '∅', name: 'NULL', id: 'tutorial-10-null', isBonus: true }
         ],
-        goal: 5,
+        goal: 2,
         
         walkthrough: {
             enabled: true,
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome to Level 10! You made it to the final level! Here\'s your reward...',
+                    message: 'Welcome to Level 10! You made it to the final level! And we know that goal score is pretty steap. But here\'s your reward...',
                     highlight: null,
-                    nextTrigger: 'auto'
+                    nextTrigger: 'auto',
+                    disableDragging: true,
+                    disableDraggingQuiet: true
                 },
                 {
                     id: 'explain-bonus',
                     message: '<strong>Bonus cubes</strong> look like regular cubes but with a special glow. Free points!',
                     highlight: null,
+                    disableDragging: true,
+                    disableDraggingQuiet: true,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-value',
                     message: 'Bonus cubes are worth <strong>50 bonus points</strong> - same as required cubes, but no restrictions!',
                     highlight: null,
-                    nextTrigger: 'auto'
+                    nextTrigger: 'auto',
+                    disableDragging: true,
+                    disableDraggingQuiet: true
                 },
                 {
                     id: 'explain-rarity',
                     message: 'Bonus cubes are rare. When you get one, use it! Easy points.',
                     highlight: null,
-                    nextTrigger: 'auto'
+                    nextTrigger: 'auto',
+                    disableDragging: true,
+                    disableDraggingQuiet: true
                 },
                 {
-                    id: 'congrats',
-                    message: 'You\'ve mastered all 10 levels! Now go for those high scores!',
+                    id: 'preview-solution',
+                    message: 'Before we wrap up we wanted to show you something, so we\'re going to move some cubes around.',
                     highlight: null,
+                    nextTrigger: 'auto',
+                    disableDragging: true,
+                    disableDraggingQuiet: true
+                },
+                {
+                    id: 'show-solution',
+                    message: 'This is a solution that uses all cubes. But you can\'t <strong>SEE</strong> the solution in the universe of cards. Because Solution Helper is OFF',
+                    highlight: null,
+                    disableDragging: true,
+                    disableDraggingQuiet: true,
+                    onEnter: () => {
+                        // Auto-build the 8-cube solution to demonstrate
+                        // Top row (5 cubes): red ∩ green = ∅
+                        // Bottom row (3 cubes): gold − green
+                        const game = window.game;
+                        const ui = window.uiController;
+                        
+                        game.solutions = [[], []];
+                        
+                        // Position with natural spacing (100px apart for looser feel)
+                        // Top row: 5 cubes starting at 180px
+                        // Bottom row: 3 cubes starting at 230px (more centered)
+                        
+                        // Top row (restriction): red ∩ green = ∅
+                        game.addDieToSolution(game.dice[0], 0, 180, 10); // red
+                        game.addDieToSolution(game.dice[1], 0, 280, 10); // ∩
+                        game.addDieToSolution(game.dice[2], 0, 380, 10); // green
+                        game.addDieToSolution(game.dice[4], 0, 480, 10); // =
+                        game.addDieToSolution(game.dice[7], 0, 580, 10); // ∅ (bonus)
+                        
+                        // Bottom row (set name): gold − green
+                        game.addDieToSolution(game.dice[5], 1, 230, 10); // gold
+                        game.addDieToSolution(game.dice[6], 1, 330, 10); // −
+                        game.addDieToSolution(game.dice[3], 1, 430, 10); // green
+                        
+                        ui.render();
+                        
+                        // Trigger solution helper evaluation
+                        setTimeout(() => ui.evaluateSolutionHelper(), 50);
+                    },
                     nextTrigger: 'auto'
                 },
                 {
-                    id: 'practice',
-                    message: 'One last practice. Goal: <strong>5 cards</strong>. Build "Red Union Blue".',
-                    highlight: { goal: true },
-                    nextTrigger: 'auto'
+                    id: 'manual-verification',
+                    message: 'So let\'s learn to interpret solutions manually.',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    disableDragging: true
                 },
                 {
-                    id: 'drag-red',
-                    message: 'Drag <strong>RED</strong>.',
-                    highlight: { dice: [0] },
-                    validation: (game) => game.solutions[0].some(die => die.value === 'red'),
+                    id: 'explain-restriction',
+                    message: 'The top row is a restriction: "Red AND Green EQUALS Null" means "red and green is the same as nothing". Depressing.',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    disableDragging: true
+                },
+                {
+                    id: 'double-tap-to-flip',
+                    message: 'Double-tap the cards that have both red and green <strong>on the same card</strong> to flip them over and show they\'re out of play.',
+                    highlight: null,
+                    disableDragging: true,
+                    validation: (game) => {
+                        // Cards with both red AND green: indices 5, 6, 7
+                        // 14 (red+blue+green), 15 (all), 11 (red+green+gold)
+                        const redAndGreenIndices = [5, 6, 7];
+                        
+                        // Check if EXACTLY the three correct cards are flipped (no more, no less)
+                        const allCorrectlyFlipped = redAndGreenIndices.every(i => 
+                            game.cardStates[i] && game.cardStates[i].flipped
+                        );
+                        
+                        const noExtrasFlipped = game.cardStates.every((state, i) => {
+                            // If this card should be flipped, skip check
+                            if (redAndGreenIndices.includes(i)) return true;
+                            // Otherwise, it should NOT be flipped
+                            return !state.flipped;
+                        });
+                        
+                        return allCorrectlyFlipped && noExtrasFlipped;
+                    },
                     nextTrigger: 'validation'
                 },
                 {
-                    id: 'drag-union',
-                    message: 'Drag <strong>OR</strong>.',
-                    highlight: { dice: [1] },
-                    validation: (game) => game.solutions[0].some(die => die.value === '∪'),
-                    nextTrigger: 'validation'
+                    id: 'dim-cards-without-gold',
+                    message: 'Now dim all the cards that don\'t have gold (yellow).',
+                    highlight: null,
+                    validation: (game) => {
+                        const redAndGreenIndices = [5, 6, 7]; // From previous step
+                        
+                        // Check 1: Cards from restriction should still be flipped (not dimmed)
+                        const restrictionCardsStillFlipped = redAndGreenIndices.every(i =>
+                            game.cardStates[i] && game.cardStates[i].flipped && !game.cardStates[i].dimmed
+                        );
+                        
+                        // Check 2: Cards without gold should be dimmed
+                        const cardsWithoutGoldDimmed = game.cardStates.every((state, i) => {
+                            // Skip restriction cards (already checked)
+                            if (redAndGreenIndices.includes(i)) return true;
+                            
+                            const card = game.cards[i];
+                            if (!card.gold) {
+                                return state.dimmed && !state.flipped;
+                            }
+                            return true; // Cards with gold checked separately
+                        });
+                        
+                        // Check 3: Cards with gold but NO green (final answer) should be visible
+                        const finalAnswerCardsVisible = game.cardStates.every((state, i) => {
+                            // Skip restriction cards
+                            if (redAndGreenIndices.includes(i)) return true;
+                            
+                            const card = game.cards[i];
+                            if (card.gold && !card.green) {
+                                return !state.dimmed && !state.flipped; // Must be visible
+                            }
+                            return true; // Other cards checked separately
+                        });
+                        
+                        // Check 4: Cards with gold AND green can be visible or dimmed (allows working ahead)
+                        const cardsWithGoldAndGreenOk = game.cardStates.every((state, i) => {
+                            // Skip restriction cards
+                            if (redAndGreenIndices.includes(i)) return true;
+                            
+                            const card = game.cards[i];
+                            if (card.gold && card.green) {
+                                return !state.flipped; // Can be dimmed or visible, just not flipped
+                            }
+                            return true; // Other cards already checked
+                        });
+                        
+                        return restrictionCardsStillFlipped && cardsWithoutGoldDimmed && 
+                               finalAnswerCardsVisible && cardsWithGoldAndGreenOk;
+                    },
+                    nextTrigger: 'validation',
+                    disableDragging: true
                 },
                 {
-                    id: 'drag-blue',
-                    message: 'Drag <strong>BLUE</strong>.',
-                    highlight: { dice: [2] },
-                    validation: (game) => game.solutions[0].some(die => die.value === 'blue'),
-                    nextTrigger: 'validation'
+                    id: 'dim-cards-with-green',
+                    message: 'Now dim any cards with green to subtract them from the universe.',
+                    highlight: null,
+                    validation: (game) => {
+                        const redAndGreenIndices = [5, 6, 7]; // From step 1
+                        
+                        // Check 1: Cards from restriction should still be flipped (not dimmed)
+                        const restrictionCardsStillFlipped = redAndGreenIndices.every(i =>
+                            game.cardStates[i] && game.cardStates[i].flipped && !game.cardStates[i].dimmed
+                        );
+                        
+                        // Check 2: Cards without gold should still be dimmed (from previous step)
+                        const cardsWithoutGoldStillDimmed = game.cardStates.every((state, i) => {
+                            // Skip restriction cards
+                            if (redAndGreenIndices.includes(i)) return true;
+                            
+                            const card = game.cards[i];
+                            if (!card.gold) {
+                                return state.dimmed && !state.flipped;
+                            }
+                            return true; // Cards with gold checked separately
+                        });
+                        
+                        // Check 3: Cards with gold AND green should NOW be dimmed
+                        const cardsWithGoldAndGreenDimmed = game.cardStates.every((state, i) => {
+                            // Skip restriction cards
+                            if (redAndGreenIndices.includes(i)) return true;
+                            
+                            const card = game.cards[i];
+                            if (card.gold && card.green) {
+                                return state.dimmed && !state.flipped;
+                            }
+                            return true; // Other cards checked separately
+                        });
+                        
+                        // Check 4: Cards with gold but NO green should be visible
+                        const finalCardsVisible = game.cardStates.every((state, i) => {
+                            // Skip restriction cards
+                            if (redAndGreenIndices.includes(i)) return true;
+                            
+                            const card = game.cards[i];
+                            if (card.gold && !card.green) {
+                                return !state.dimmed && !state.flipped;
+                            }
+                            return true; // Other cards checked separately
+                        });
+                        
+                        return restrictionCardsStillFlipped && cardsWithoutGoldStillDimmed && 
+                               cardsWithGoldAndGreenDimmed && finalCardsVisible;
+                    },
+                    nextTrigger: 'validation',
+                    disableDragging: true
+                },
+                {
+                    id: 'final-message',
+                    message: 'Perfect! Manual verification is key to mastering hard mode! And there\'s a rumor that daily puzzles all have 8 cube solutions...',
+                    highlight: null,
+                    nextTrigger: 'auto',
+                    disableDragging: true
                 },
                 {
                     id: 'submit',
-                    message: 'You\'re a set theory master! Click <strong>GO!</strong>',
+                    message: 'You\'re a set theory master! Click <strong>GO!</strong> to conquer Level 10!',
                     highlight: { goButton: true },
                     validation: (game) => false,
-                    nextTrigger: 'submit'
+                    nextTrigger: 'submit',
+                    disableDragging: true
                 }
             ]
         }

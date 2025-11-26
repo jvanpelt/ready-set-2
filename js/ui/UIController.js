@@ -17,14 +17,14 @@ export class UIController {
         this.onUpdate = onUpdate;
         
         // Initialize sub-components
-        this.renderer = new UIRenderer(game);
+        this.tutorialManager = new TutorialManager(game, this);
+        this.renderer = new UIRenderer(game, this.tutorialManager);
         this.modals = new ModalManager(game);
         this.wildCubeManager = new WildCubeManager(game, () => {
             this.evaluateSolutionHelper(); // Update game state before render
             this.render();
         });
         this.builderManager = new PuzzleBuilderManager(game, this);
-        this.tutorialManager = new TutorialManager(game, this);
         
         // Load settings
         this.settings = this.game.storage.loadSettings();

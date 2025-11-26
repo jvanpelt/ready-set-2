@@ -4,8 +4,9 @@ import { getSVGForOperator, getOperatorClass } from '../svgSymbols.js';
 import { isSolutionSyntaxValid } from '../utils/validation.js';
 
 export class UIRenderer {
-    constructor(game) {
+    constructor(game, tutorialManager = null) {
         this.game = game;
+        this.tutorialManager = tutorialManager;
         this.shouldAnimate = false; // Don't animate on initial load
     }
     
@@ -139,6 +140,8 @@ export class UIRenderer {
      * Render dice in the dice area
      */
     renderDice(diceContainer, dice, solutions) {
+        console.log('🎲 renderDice called:', { diceCount: dice?.length, tutorialActive: this.tutorialManager?.isActive });
+        
         // Preserve existing dice rotations before clearing
         const existingRotations = {};
         const existingDice = diceContainer.querySelectorAll('.die');
@@ -195,9 +198,28 @@ export class UIRenderer {
             
             // Check if tutorial restricts this die
             // Tutorial highlights certain dice - others get dimmed and made non-draggable
-            if (window.tutorialManager?.isActive) {
-                const currentStep = window.tutorialManager.scenario?.walkthrough?.steps[window.tutorialManager.currentStep];
-                if (currentStep?.highlight?.dice) {
+            if (this.tutorialManager?.isActive) {
+                const currentStep = this.tutorialManager.scenario?.walkthrough?.steps[this.tutorialManager.currentStep];
+                
+                if (index === 0) {
+                    console.log('🎲 Tutorial drag check:', {
+                        isActive: this.tutorialManager.isActive,
+                        currentStep: this.tutorialManager.currentStep,
+                        stepId: currentStep?.id,
+                        disableDragging: currentStep?.disableDragging
+                    });
+                }
+                
+                // If step explicitly disables all dragging
+                if (currentStep?.disableDragging) {
+                    // Only add visual dimming if not "quiet" mode
+                    if (!currentStep.disableDraggingQuiet) {
+                        dieEl.classList.add('tutorial-disabled');
+                    }
+                    isDraggable = false;
+                    if (index === 0) console.log('🚫 Dragging disabled for all dice');
+                } else if (currentStep?.highlight?.dice) {
+                    // Otherwise check if this specific die is allowed
                     const allowedIndices = currentStep.highlight.dice;
                     if (!allowedIndices.includes(index)) {
                         dieEl.classList.add('tutorial-disabled');
