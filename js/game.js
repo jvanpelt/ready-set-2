@@ -545,6 +545,12 @@ export class Game {
     }
     
     saveState() {
+        // Don't save state during tutorials - tutorial data is temporary
+        if (this.isTutorialActive) {
+            console.log('⏸️ Skipping save - tutorial is active');
+            return;
+        }
+        
         const stateData = {
             level: this.level,
             score: this.score,

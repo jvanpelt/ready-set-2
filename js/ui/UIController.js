@@ -144,8 +144,8 @@ export class UIController {
         });
         document.getElementById('tutorial-btn').addEventListener('click', () => {
             this.modals.hideMenu();
-            // Show intro tutorial for "How to Play"
-            this.showIntroTutorial();
+            // Show intro tutorial for "How to Play" from menu during gameplay
+            this.showIntroTutorial('menu-during-gameplay');
         });
         document.getElementById('menu-home-btn').addEventListener('click', () => {
             // Cleanup tutorial if active
@@ -850,7 +850,10 @@ export class UIController {
         }
         
         // Show puzzle ID for daily puzzles (helps with testing/screenshots)
-        if (this.game.mode === 'daily' && this.game.dailyPuzzle && this.game.dailyPuzzle.puzzleId) {
+        // Hide during tutorials regardless of mode
+        if (this.tutorialManager.isActive) {
+            this.puzzleIdDisplay.style.display = 'none';
+        } else if (this.game.mode === 'daily' && this.game.dailyPuzzle && this.game.dailyPuzzle.puzzleId) {
             this.puzzleIdDisplay.style.display = 'flex';
             this.puzzleIdValue.textContent = `#${this.game.dailyPuzzle.puzzleId}`;
         } else {
@@ -1011,7 +1014,7 @@ export class UIController {
         });
     }
     
-    async showIntroTutorial() {
+    async showIntroTutorial(entryPoint = 'home-screen') {
         // Load and start the intro tutorial
         console.log('📚 Starting intro tutorial'); // KEEP: Important action
         
@@ -1025,7 +1028,7 @@ export class UIController {
         const introScenario = getTutorialScenario('intro');
         
         if (introScenario) {
-            this.tutorialManager.start(introScenario, 'menu');
+            this.tutorialManager.start(introScenario, entryPoint);
         } else {
             console.error('❌ Intro tutorial scenario not found!');
         }

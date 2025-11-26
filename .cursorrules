@@ -72,6 +72,13 @@
 - UIRenderer handles pure rendering
 - UIController orchestrates UI and handles events
 
+### Version Management
+- **ALWAYS update `js/version.js`** when making changes that need cache busting
+- This is the ONLY place to update the version number
+- Version format: `v[MAJOR].[MINOR].[PATCH]` (e.g., `v4.24.1`)
+- Increment PATCH for bug fixes, MINOR for features, MAJOR for breaking changes
+- `main.js` and `index.html` import version from `version.js`
+
 ## Testing
 - Test on both desktop and mobile when possible
 - Cache bust with version numbers in script tags

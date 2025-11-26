@@ -500,7 +500,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'press-go',
-                    message: 'When you have a solution, press <strong>GO</strong> to check it. Ready to try Level 1?',
+                    message: 'When you have a solution, press <strong>GO</strong> to check it. Ready to play??',
                     highlight: { goButton: true },
                     nextTrigger: 'submit'
                 }
@@ -1234,7 +1234,9 @@ export const TUTORIAL_SCENARIOS = {
             { type: 'color', value: 'green', name: 'GREEN', id: 'tutorial-9-green' },
             { type: 'color', value: 'blue', name: 'BLUE', id: 'tutorial-9-blue' },
             { type: 'color', value: 'gold', name: 'YELLOW', id: 'tutorial-9-yellow' },
-            { type: 'operator', value: '′', name: 'COMPLEMENT', id: 'tutorial-9-prime' }
+            { type: 'operator', value: '′', name: 'COMPLEMENT', id: 'tutorial-9-prime' },
+            { type: 'operator', value: '⊆', name: 'SUBSET', id: 'tutorial-9-subset' },
+            { type: 'set-constant', value: '∅', name: 'NULL', id: 'tutorial-9-null' }
         ],
         goal: 1, // Red ∩ Green = 1 card (card 10: red+green)
         expectedSolution: ['red', '∩', 'green'], // Wild cube set to Intersection

@@ -74,6 +74,9 @@ export class TutorialManager {
         
         // Start first step
         this.showStep(0);
+        
+        // Note: Puzzle ID display is now controlled by UIController.render()
+        // based on tutorialManager.isActive state
     }
     
     showStep(stepIndex) {
@@ -369,34 +372,67 @@ export class TutorialManager {
         
         // Route based on entry point
         if (this.entryPoint === 'level-interstitial') {
-            // Entered from level interstitial - start the level
-            console.log('   → Returning to gameplay');
+            // Entered from level interstitial - start the level with new puzzle
+            console.log('   → Returning to gameplay (new puzzle)');
             this.ui.modals.showTutorialComplete(() => {
                 console.log('   → Tutorial complete modal closed, resetting round');
+                
+                // Clear solution areas in DOM before resetting
+                this.ui.dragDropHandler.clearAllSolutions();
+                
                 this.game.resetRound();
                 this.ui.render();
                 
                 // Notify UIController to handle timer
                 this.ui.handleTutorialComplete();
             });
-        } else {
-            // Entered from menu - restore saved game state or show home
+        } else if (this.entryPoint === 'home-screen') {
+            // Entered from home screen - return to home screen
+            console.log('   → Returning to home screen');
+            this.ui.modals.showTutorialComplete(() => {
+                console.log('   → Tutorial complete modal closed, showing home screen');
+                
+                // Clear solution areas in DOM before showing home
+                this.ui.dragDropHandler.clearAllSolutions();
+                
+                window.homeScreen.show();
+            });
+        } else if (this.entryPoint === 'menu-during-gameplay') {
+            // Entered from menu during regular gameplay - restore saved game
             const savedState = this.game.storage.loadGameState();
             
             if (savedState && savedState.cards && savedState.cards.length > 0) {
-                // Has saved game - restore it
                 console.log('   → Restoring saved game state');
                 this.ui.modals.showTutorialComplete(() => {
                     console.log('   → Tutorial complete modal closed, restoring state');
+                    
+                    // Clear solution areas in DOM before restoring
+                    this.ui.dragDropHandler.clearAllSolutions();
+                    
                     this.game.restoreFromSavedState(savedState);
                     this.ui.render();
                     console.log('✅ Game state restored');
                 });
             } else {
-                // No saved state - return to home screen
-                console.log('   → Returning to home screen (no saved game)');
+                // Fallback: no saved state, go to home
+                console.log('   → No saved state, returning to home screen');
                 this.ui.modals.showTutorialComplete(() => {
-                    console.log('   → Tutorial complete modal closed, showing home screen');
+                    window.homeScreen.show();
+                });
+            }
+        } else {
+            // Legacy fallback: 'menu' - treat as menu during gameplay
+            console.log('   → Legacy menu entry point, restoring saved state');
+            const savedState = this.game.storage.loadGameState();
+            
+            if (savedState && savedState.cards && savedState.cards.length > 0) {
+                this.ui.modals.showTutorialComplete(() => {
+                    this.ui.dragDropHandler.clearAllSolutions();
+                    this.game.restoreFromSavedState(savedState);
+                    this.ui.render();
+                });
+            } else {
+                this.ui.modals.showTutorialComplete(() => {
                     window.homeScreen.show();
                 });
             }

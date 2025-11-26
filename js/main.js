@@ -6,9 +6,8 @@ import { AppScaler } from './ui/AppScaler.js';
 import { HomeScreenManager } from './ui/HomeScreenManager.js';
 import DailyPuzzleManager from './DailyPuzzleManager.js';
 import { TimerManager } from './TimerManager.js';
+import { VERSION } from './version.js';
 
-// Display version (hardcoded for console, cache busting uses timestamps)
-const VERSION = 'v4.24.0';
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 console.log('🎮 Ready, Set 2 - Version:', VERSION);
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');

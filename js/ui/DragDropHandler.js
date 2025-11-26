@@ -752,4 +752,22 @@ export class DragDropHandler {
             y: (screenY - appRect.top) / appScale
         };
     }
+    
+    /**
+     * Clear all dice from solution areas (both rows) in the DOM
+     * Used when transitioning out of tutorials
+     * Note: Only clears DOM - game state should be cleared separately by game logic
+     */
+    clearAllSolutions() {
+        console.log('🧹 Clearing solution areas (DOM only)');
+        
+        // Clear both solution rows in the DOM
+        const solutionRows = this.solutionArea.querySelectorAll('.solution-row');
+        solutionRows.forEach(row => {
+            const dice = row.querySelectorAll('.die');
+            dice.forEach(die => die.remove());
+        });
+        
+        console.log('✅ Solution areas cleared (DOM)');
+    }
 }
