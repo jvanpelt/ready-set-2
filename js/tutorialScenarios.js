@@ -1370,7 +1370,7 @@ export const TUTORIAL_SCENARIOS = {
                         const topRowDiceWidth = topRowCount * dieSize;
                         const topRowAvailableSpace = rowWidth - topRowDiceWidth;
                         const calculatedSpacing = topRowAvailableSpace / (topRowCount + 1); // Equal spacing including margins
-                        const spacing = Math.min(calculatedSpacing, 20); // Cap at 20px for tighter layout
+                        const spacing = Math.min(calculatedSpacing, 15); // Cap at 15px for tighter layout
                         
                         // Calculate positions for top row (centered with even spacing)
                         const topRowTotalWidth = topRowDiceWidth + (spacing * (topRowCount - 1));
