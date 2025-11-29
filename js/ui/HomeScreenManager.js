@@ -15,7 +15,7 @@ export class HomeScreenManager {
     }
     
     setupEventListeners() {
-        // Continue button - resume current level
+        // Continue button - resume current level via interstitial
         this.continueBtn.addEventListener('click', async () => {
             console.log('🏠 Continue button clicked');
             
@@ -35,15 +35,13 @@ export class HomeScreenManager {
             
             this.hide();
             
-            // Render with animation
+            // Render without animation (interstitial will handle animation on dismiss)
             if (window.uiController) {
                 window.uiController.render();
-                window.uiController.renderer.animateCardsIn();
-            }
-            
-            // Restore timer if needed (AFTER rendering)
-            if (window.uiController) {
-                window.uiController.handleContinueFromHome();
+                window.uiController.clearSolutionHelper();
+                
+                // Show interstitial for current level (gives tutorial option)
+                await window.uiController.showTutorialForLevel(this.game.level);
             }
         });
         

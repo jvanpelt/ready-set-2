@@ -222,6 +222,11 @@ export class UIController {
                 window.homeScreen.hide();
             }
             
+            // Exit daily mode if active (ensures proper mode state)
+            if (this.game.mode === 'daily') {
+                this.game.enterRegularMode();
+            }
+            
             // Stop any active timer (will be restarted after tutorial/interstitial)
             this.game.timer.stop(true);
             
