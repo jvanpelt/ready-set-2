@@ -16,8 +16,8 @@ export class ModalManager {
         this.resultMessage = document.getElementById('result-message');
         this.resultScore = document.getElementById('result-score');
         
-        // Daily Puzzle Result
-        this.dailyPuzzleResultModal = document.getElementById('daily-puzzle-result-modal');
+        // Daily Puzzle Result (now an interstitial screen)
+        this.dailyPuzzleResultScreen = document.getElementById('daily-puzzle-result-screen');
         this.dailyPuzzleNumber = document.getElementById('daily-puzzle-number');
         this.dailyPuzzleScore = document.getElementById('daily-puzzle-score');
         this.dailyPuzzleCubeCount = document.getElementById('daily-puzzle-cube-count');
@@ -25,6 +25,17 @@ export class ModalManager {
         this.dailyPuzzleShareBtn = document.getElementById('daily-puzzle-share-btn');
         this.dailyPuzzleDoneBtn = document.getElementById('daily-puzzle-done-btn');
         this.shareToast = document.getElementById('share-toast');
+        
+        // Daily Puzzle Interstitial
+        this.dailyInterstitialScreen = document.getElementById('daily-puzzle-interstitial-screen');
+        this.dailyInterstitialNumber = document.getElementById('daily-interstitial-puzzle-number');
+        this.dailyInterstitialShortest = document.getElementById('daily-shortest');
+        this.dailyInterstitialLongest = document.getElementById('daily-longest');
+        this.dailyInterstitialSolutionCount = document.getElementById('daily-solution-count');
+        this.dailyInterstitialDifficulty = document.getElementById('daily-difficulty');
+        this.dailyInterstitialDescription = document.getElementById('daily-interstitial-description');
+        this.dailyPuzzleStartBtn = document.getElementById('daily-puzzle-start-btn');
+        this.dailyInterstitialMenuBtn = document.getElementById('daily-interstitial-menu-btn');
         
         // Menu
         this.menuModal = document.getElementById('menu-modal');
@@ -435,14 +446,14 @@ export class ModalManager {
     }
     
     /**
-     * Show daily puzzle result modal
+     * Show daily puzzle result interstitial screen
      * @param {Object} result - Result object with puzzleId, score, cubes, solution
      * @param {Function} onDone - Callback when user clicks Done
      */
     showDailyPuzzleResult(result, onDone) {
         console.log('🎉 Showing daily puzzle result:', result);
         
-        // Populate modal
+        // Populate interstitial
         this.dailyPuzzleNumber.textContent = result.puzzleId;
         this.dailyPuzzleScore.textContent = result.score;
         this.dailyPuzzleCubeCount.textContent = result.cubes;
@@ -451,8 +462,8 @@ export class ModalManager {
         // Store result for sharing
         this.currentDailyResult = result;
         
-        // Show modal
-        this.dailyPuzzleResultModal.classList.remove('hidden');
+        // Show interstitial screen
+        this.dailyPuzzleResultScreen.classList.remove('hidden');
         
         // Handle Share button
         this.dailyPuzzleShareBtn.onclick = () => this.shareDailyPuzzleResult();
@@ -465,11 +476,81 @@ export class ModalManager {
     }
     
     /**
-     * Hide daily puzzle result modal
+     * Hide daily puzzle result interstitial screen
      */
     hideDailyPuzzleResult() {
-        this.dailyPuzzleResultModal.classList.add('hidden');
-        this.currentDailyResult = null;
+        console.log('🎯 Hiding daily puzzle result with fade');
+        // First fade out
+        this.dailyPuzzleResultScreen.classList.add('fade-out');
+        
+        // Then hide after transition completes
+        setTimeout(() => {
+            this.dailyPuzzleResultScreen.classList.add('hidden');
+            this.dailyPuzzleResultScreen.classList.remove('fade-out');
+            this.currentDailyResult = null;
+        }, 400); // Match CSS transition duration
+    }
+    
+    /**
+     * Show daily puzzle interstitial screen
+     * @param {Object} puzzleData - Puzzle data including puzzleId, shortestSolution, longestSolution, solutionCount
+     * @returns {Promise} Resolves when user clicks Start
+     */
+    async showDailyPuzzleInterstitial(puzzleData) {
+        return new Promise((resolve) => {
+            const { puzzleId, shortestSolution, longestSolution, solutionCount } = puzzleData;
+            
+            // Populate content
+            this.dailyInterstitialNumber.textContent = puzzleId;
+            this.dailyInterstitialShortest.textContent = shortestSolution || 2;
+            this.dailyInterstitialLongest.textContent = longestSolution || 8;
+            this.dailyInterstitialSolutionCount.textContent = solutionCount || '?';
+            
+            // Calculate difficulty based on shortest solution
+            let difficulty = 'Easy';
+            if (shortestSolution >= 5) difficulty = 'Medium';
+            if (shortestSolution >= 7) difficulty = 'Hard';
+            this.dailyInterstitialDifficulty.textContent = difficulty;
+            
+            // Update description
+            this.dailyInterstitialDescription.textContent = 
+                `Today's puzzle has ${solutionCount || 'many'} possible solutions. The shortest uses ${shortestSolution || 2} cubes. Good luck!`;
+            
+            // Handle Start button
+            const handleStart = () => {
+                this.hideDailyPuzzleInterstitial();
+                resolve();
+            };
+            
+            // Handle Menu button
+            const handleMenu = () => {
+                this.hideDailyPuzzleInterstitial();
+                if (window.uiController) {
+                    window.uiController.modals.showMenu();
+                }
+            };
+            
+            this.dailyPuzzleStartBtn.onclick = handleStart;
+            this.dailyInterstitialMenuBtn.onclick = handleMenu;
+            
+            // Show interstitial
+            this.dailyInterstitialScreen.classList.remove('hidden');
+        });
+    }
+    
+    /**
+     * Hide daily puzzle interstitial screen
+     */
+    hideDailyPuzzleInterstitial() {
+        console.log('🎯 Hiding daily puzzle interstitial with fade');
+        // First fade out
+        this.dailyInterstitialScreen.classList.add('fade-out');
+        
+        // Then hide after transition completes
+        setTimeout(() => {
+            this.dailyInterstitialScreen.classList.add('hidden');
+            this.dailyInterstitialScreen.classList.remove('fade-out');
+        }, 400); // Match CSS transition duration
     }
     
     /**

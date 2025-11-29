@@ -100,20 +100,35 @@
         </div>
     </div>
 
-    <!-- Daily Puzzle Result Modal -->
-    <div id="daily-puzzle-result-modal" class="modal hidden">
-        <div class="modal-content">
-            <h2>🎉 Puzzle Complete!</h2>
-            <div id="daily-puzzle-result-info" class="daily-puzzle-result">
-                <div class="puzzle-number">Daily Puzzle #<span id="daily-puzzle-number">1</span></div>
-                <div class="puzzle-score">Score: <span id="daily-puzzle-score">0</span></div>
-                <div class="puzzle-cubes"><span id="daily-puzzle-cube-count">0</span> cubes used</div>
-                <div id="daily-puzzle-emoji" class="puzzle-emoji"></div>
+    <!-- Daily Puzzle Result Interstitial -->
+    <div id="daily-puzzle-result-screen" class="interstitial-screen hidden">
+        <div class="interstitial-container">
+            <div class="interstitial-badge">
+                <div class="badge-circle daily-badge">
+                    <span class="badge-icon">🎉</span>
+                </div>
+                <div class="badge-label">COMPLETE!</div>
             </div>
-            <div class="daily-puzzle-actions">
-                <button id="daily-puzzle-share-btn" class="btn btn-primary">📤 Share Result</button>
-                <button id="daily-puzzle-done-btn" class="btn btn-success">Done</button>
+            
+            <h1 class="interstitial-title">Puzzle Complete!</h1>
+            
+            <div class="interstitial-content">
+                <div id="daily-puzzle-result-info" class="daily-puzzle-result">
+                    <div class="puzzle-number">Daily Puzzle #<span id="daily-puzzle-number">1</span></div>
+                    <div class="puzzle-score">Score: <span id="daily-puzzle-score">0</span></div>
+                    <div class="puzzle-cubes"><span id="daily-puzzle-cube-count">0</span> cubes used</div>
+                    <div id="daily-puzzle-emoji" class="puzzle-emoji"></div>
+                </div>
             </div>
+            
+            <div class="interstitial-actions">
+                <button id="daily-puzzle-share-btn" class="btn btn-primary btn-large">
+                    <span class="btn-icon">⬆️</span>
+                    Share Result
+                </button>
+                <button id="daily-puzzle-done-btn" class="btn btn-secondary btn-large">Done</button>
+            </div>
+            
             <div id="share-toast" class="share-toast hidden">✓ Copied to clipboard!</div>
         </div>
     </div>
@@ -365,6 +380,52 @@
                 </button>
                 <button id="tutorial-decline-btn" class="btn btn-secondary btn-large">
                     I'll Figure It Out
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Daily Puzzle Interstitial Screen -->
+    <div id="daily-puzzle-interstitial-screen" class="interstitial-screen hidden">
+        <button id="daily-interstitial-menu-btn" class="btn btn-primary overlay-menu-btn">Menu</button>
+        <div class="interstitial-container">
+            <div class="interstitial-badge">
+                <div class="badge-circle daily-badge">
+                    <span class="badge-icon">🎲</span>
+                </div>
+                <div class="badge-label">DAILY PUZZLE</div>
+            </div>
+            
+            <h1 id="daily-interstitial-title" class="interstitial-title">Daily Puzzle #<span id="daily-interstitial-puzzle-number">123</span></h1>
+            
+            <div class="interstitial-content">
+                <div class="daily-puzzle-stats">
+                    <div class="stat-item">
+                        <div class="stat-label">Difficulty</div>
+                        <div class="stat-value" id="daily-difficulty">Medium</div>
+                        <div class="stat-detail"><span id="daily-shortest">3</span> cube minimum</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Solutions</div>
+                        <div class="stat-value" id="daily-solution-count">250</div>
+                        <div class="stat-detail">possible ways</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Max Cubes</div>
+                        <div class="stat-value" id="daily-longest">8</div>
+                        <div class="stat-detail">longest solution</div>
+                    </div>
+                </div>
+                
+                <p id="daily-interstitial-description" class="description-text">
+                    Today's puzzle is ready! Can you find the solution?
+                </p>
+            </div>
+            
+            <div class="interstitial-actions">
+                <button id="daily-puzzle-start-btn" class="btn btn-success btn-large">
+                    <span class="btn-icon">▶</span>
+                    Start Puzzle
                 </button>
             </div>
         </div>

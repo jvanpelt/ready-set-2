@@ -129,7 +129,12 @@ class DailyPuzzleManager {
             const completion = this.getTodayCompletion();
             console.log('✅ Today\'s puzzle already completed!');
             
-            // Show the result modal again (so they can re-share)
+            // Hide home screen first
+            if (window.homeScreen) {
+                window.homeScreen.hide();
+            }
+            
+            // Show the result interstitial again (so they can re-share)
             this.uiController.modals.showDailyPuzzleResult({
                 puzzleId: completion.puzzleId,
                 score: completion.score,
@@ -152,15 +157,23 @@ class DailyPuzzleManager {
         // Log for debugging
         this.generator.logPuzzle(puzzle);
         
-        // Enter daily mode (handles all state setup)
-        this.game.enterDailyMode(puzzle);
-        
-        // Hide home screen and show game
+        // Hide home screen first
         if (window.homeScreen) {
             window.homeScreen.hide();
         }
         
-        // Render the game
+        // Show daily puzzle interstitial
+        await this.uiController.modals.showDailyPuzzleInterstitial({
+            puzzleId: puzzle.id,
+            shortestSolution: puzzle.shortestSolution,
+            longestSolution: puzzle.longestSolution,
+            solutionCount: puzzle.solutionCount
+        });
+        
+        // Enter daily mode (handles all state setup)
+        this.game.enterDailyMode(puzzle);
+        
+        // Render the game with animation
         this.uiController.render({ animate: true });
         
         console.log('✅ Daily Puzzle loaded!');
