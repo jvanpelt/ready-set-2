@@ -1360,21 +1360,49 @@ export const TUTORIAL_SCENARIOS = {
                         
                         game.solutions = [[], []];
                         
-                        // Position with natural spacing (100px apart for looser feel)
-                        // Top row: 5 cubes starting at 180px
-                        // Bottom row: 3 cubes starting at 230px (more centered)
+                        // Calculate dynamic positioning based on screen size
+                        const solutionRow = document.querySelector('.solution-row');
+                        const rowWidth = solutionRow ? solutionRow.offsetWidth : 640;
+                        const dieSize = window.LAYOUT ? window.LAYOUT.getDieSize() : (window.innerWidth < 768 ? 70 : 100);
+                        
+                        // Top row has 5 cubes
+                        const topRowCount = 5;
+                        const topRowDiceWidth = topRowCount * dieSize;
+                        const topRowAvailableSpace = rowWidth - topRowDiceWidth;
+                        const calculatedSpacing = topRowAvailableSpace / (topRowCount + 1); // Equal spacing including margins
+                        const spacing = Math.min(calculatedSpacing, 20); // Cap at 20px for tighter layout
+                        
+                        // Calculate positions for top row (centered with even spacing)
+                        const topRowTotalWidth = topRowDiceWidth + (spacing * (topRowCount - 1));
+                        const topRowStartX = (rowWidth - topRowTotalWidth) / 2;
+                        
+                        const topRowPositions = [];
+                        for (let i = 0; i < topRowCount; i++) {
+                            topRowPositions.push(topRowStartX + (i * (dieSize + spacing)));
+                        }
+                        
+                        // Bottom row has 3 cubes - use same spacing, but centered
+                        const bottomRowCount = 3;
+                        const bottomRowDiceWidth = bottomRowCount * dieSize;
+                        const bottomRowTotalWidth = bottomRowDiceWidth + (spacing * (bottomRowCount - 1));
+                        const bottomRowStartX = (rowWidth - bottomRowTotalWidth) / 2;
+                        
+                        const bottomRowPositions = [];
+                        for (let i = 0; i < bottomRowCount; i++) {
+                            bottomRowPositions.push(bottomRowStartX + (i * (dieSize + spacing)));
+                        }
                         
                         // Top row (restriction): red ∩ green = ∅
-                        game.addDieToSolution(game.dice[0], 0, 180, 10); // red
-                        game.addDieToSolution(game.dice[1], 0, 280, 10); // ∩
-                        game.addDieToSolution(game.dice[2], 0, 380, 10); // green
-                        game.addDieToSolution(game.dice[4], 0, 480, 10); // =
-                        game.addDieToSolution(game.dice[7], 0, 580, 10); // ∅ (bonus)
+                        game.addDieToSolution(game.dice[0], 0, topRowPositions[0], 10); // red
+                        game.addDieToSolution(game.dice[1], 0, topRowPositions[1], 10); // ∩
+                        game.addDieToSolution(game.dice[2], 0, topRowPositions[2], 10); // green
+                        game.addDieToSolution(game.dice[4], 0, topRowPositions[3], 10); // =
+                        game.addDieToSolution(game.dice[7], 0, topRowPositions[4], 10); // ∅ (bonus)
                         
                         // Bottom row (set name): gold − green
-                        game.addDieToSolution(game.dice[5], 1, 230, 10); // gold
-                        game.addDieToSolution(game.dice[6], 1, 330, 10); // −
-                        game.addDieToSolution(game.dice[3], 1, 430, 10); // green
+                        game.addDieToSolution(game.dice[5], 1, bottomRowPositions[0], 10); // gold
+                        game.addDieToSolution(game.dice[6], 1, bottomRowPositions[1], 10); // −
+                        game.addDieToSolution(game.dice[3], 1, bottomRowPositions[2], 10); // green
                         
                         // Capture source positions BEFORE render (while dice are still in dice area)
                         const diceContainer = document.querySelector('.dice-container');
