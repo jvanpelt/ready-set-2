@@ -100,6 +100,23 @@ export class UIController {
         this.jumpToLevelBtn = document.getElementById('jump-to-level-btn');
     }
     
+    /**
+     * Clean up any active overlays/screens before transitioning to a new view
+     * This centralizes the logic for hiding interstitials, tutorials, etc.
+     */
+    cleanupActiveScreens() {
+        // Hide level interstitial if visible
+        const interstitialScreen = document.getElementById('level-interstitial-screen');
+        if (interstitialScreen && !interstitialScreen.classList.contains('hidden')) {
+            this.modals.hideInterstitial();
+        }
+        
+        // Cleanup tutorial if active
+        if (this.tutorialManager.isActive) {
+            this.tutorialManager.cleanup();
+        }
+    }
+    
     initEventListeners() {
         // Card clicks (for note-taking)
         this.cardsContainer.addEventListener('click', (e) => {
@@ -143,17 +160,12 @@ export class UIController {
             window.location.reload();
         });
         document.getElementById('tutorial-btn').addEventListener('click', () => {
+            this.cleanupActiveScreens();
             this.modals.hideMenu();
-            // Show intro tutorial for "How to Play" from menu during gameplay
             this.showIntroTutorial('menu-during-gameplay');
         });
         document.getElementById('menu-home-btn').addEventListener('click', () => {
-            // Cleanup tutorial if active
-            if (this.tutorialManager.isActive) {
-                // DEBUG: console.log('🧹 Cleaning up tutorial before going home');
-                this.tutorialManager.cleanup();
-            }
-            
+            this.cleanupActiveScreens();
             this.modals.hideMenu();
             if (window.homeScreen) {
                 window.homeScreen.show();
@@ -165,7 +177,10 @@ export class UIController {
         document.getElementById('settings-back-btn').addEventListener('click', () => this.modals.hideSettings());
         
         // Puzzle Builder
-        document.getElementById('puzzle-builder-btn').addEventListener('click', () => this.modals.showBuilder());
+        document.getElementById('puzzle-builder-btn').addEventListener('click', () => {
+            this.cleanupActiveScreens();
+            this.modals.showBuilder();
+        });
         document.getElementById('builder-back-btn').addEventListener('click', () => this.modals.hideBuilder());
         
         this.solutionHelperToggle.addEventListener('change', (e) => {
@@ -210,11 +225,7 @@ export class UIController {
         
         // Test mode: Jump to level
         this.jumpToLevelBtn.addEventListener('click', async () => {
-            // Cleanup tutorial if active
-            if (this.tutorialManager.isActive) {
-                // DEBUG: console.log('🧹 Cleaning up tutorial before jumping to level');
-                this.tutorialManager.cleanup();
-            }
+            this.cleanupActiveScreens();
             
             // Hide home screen if visible
             if (window.homeScreen && !document.getElementById('home-screen').classList.contains('hidden')) {
