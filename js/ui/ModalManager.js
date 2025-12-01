@@ -2,6 +2,7 @@
 
 import { getTutorialScenario } from '../tutorialScenarios.js';
 import { UI_VIEWS, GAMEPLAY_MODES, MODALS } from '../constants.js';
+import { getSVGForOperator } from '../svgSymbols.js';
 
 export class ModalManager {
     constructor(game) {
@@ -42,6 +43,7 @@ export class ModalManager {
         this.menuModal = document.getElementById('menu-modal');
         this.menuMainView = document.getElementById('menu-main-view');
         this.menuSettingsView = document.getElementById('menu-settings-view');
+        this.menuScoringView = document.getElementById('menu-scoring-view');
         this.menuBuilderView = document.getElementById('menu-builder-view');
         
         // Pass confirmation
@@ -279,6 +281,7 @@ export class ModalManager {
         this.menuModal.classList.add('hidden');
         this.menuMainView.classList.remove('hidden');
         this.menuSettingsView.classList.add('hidden');
+        this.menuScoringView.classList.add('hidden');
         this.menuBuilderView.classList.add('hidden');
         
         // Remove overlay from state manager
@@ -293,17 +296,42 @@ export class ModalManager {
     showSettings() {
         this.menuMainView.classList.add('hidden');
         this.menuSettingsView.classList.remove('hidden');
+        this.menuScoringView.classList.add('hidden');
         this.menuBuilderView.classList.add('hidden');
         // Update level selector to current level
         this.levelSelector.value = this.game.level.toString();
     }
     
     /**
-     * Hide settings view, return to main menu
+     * Show scoring guide view within menu
+     */
+    showScoring() {
+        this.menuMainView.classList.add('hidden');
+        this.menuSettingsView.classList.add('hidden');
+        this.menuScoringView.classList.remove('hidden');
+        this.menuBuilderView.classList.add('hidden');
+        
+        // Inject SVGs into operator dice (only once)
+        if (!this.scoringSVGsInjected) {
+            const operatorDice = this.menuScoringView.querySelectorAll('.scoring-die[data-operator]');
+            operatorDice.forEach(die => {
+                const operator = die.dataset.operator;
+                const svg = getSVGForOperator(operator);
+                if (svg) {
+                    die.innerHTML = svg;
+                }
+            });
+            this.scoringSVGsInjected = true;
+        }
+    }
+    
+    /**
+     * Hide settings/scoring/builder views, return to main menu
      */
     hideSettings() {
         this.menuMainView.classList.remove('hidden');
         this.menuSettingsView.classList.add('hidden');
+        this.menuScoringView.classList.add('hidden');
         this.menuBuilderView.classList.add('hidden');
     }
     
@@ -313,6 +341,7 @@ export class ModalManager {
     showBuilder() {
         this.menuMainView.classList.add('hidden');
         this.menuSettingsView.classList.add('hidden');
+        this.menuScoringView.classList.add('hidden');
         this.menuBuilderView.classList.remove('hidden');
     }
     

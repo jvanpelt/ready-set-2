@@ -173,6 +173,10 @@ export class UIController {
         document.getElementById('settings-btn').addEventListener('click', () => this.modals.showSettings());
         document.getElementById('settings-back-btn').addEventListener('click', () => this.modals.hideSettings());
         
+        // Scoring Guide (part of menu modal, not a separate modal)
+        document.getElementById('scoring-btn').addEventListener('click', () => this.modals.showScoring());
+        document.getElementById('scoring-back-btn').addEventListener('click', () => this.modals.hideSettings());
+        
         // Puzzle Builder (part of menu modal, not a separate modal)
         document.getElementById('puzzle-builder-btn').addEventListener('click', () => {
             this.modals.showBuilder();
