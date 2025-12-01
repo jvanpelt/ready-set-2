@@ -44,6 +44,7 @@ export class ModalManager {
         this.menuMainView = document.getElementById('menu-main-view');
         this.menuSettingsView = document.getElementById('menu-settings-view');
         this.menuScoringView = document.getElementById('menu-scoring-view');
+        this.menuAboutView = document.getElementById('menu-about-view');
         this.menuBuilderView = document.getElementById('menu-builder-view');
         
         // Pass confirmation
@@ -282,6 +283,7 @@ export class ModalManager {
         this.menuMainView.classList.remove('hidden');
         this.menuSettingsView.classList.add('hidden');
         this.menuScoringView.classList.add('hidden');
+        this.menuAboutView.classList.add('hidden');
         this.menuBuilderView.classList.add('hidden');
         
         // Remove overlay from state manager
@@ -297,6 +299,7 @@ export class ModalManager {
         this.menuMainView.classList.add('hidden');
         this.menuSettingsView.classList.remove('hidden');
         this.menuScoringView.classList.add('hidden');
+        this.menuAboutView.classList.add('hidden');
         this.menuBuilderView.classList.add('hidden');
         // Update level selector to current level
         this.levelSelector.value = this.game.level.toString();
@@ -309,6 +312,7 @@ export class ModalManager {
         this.menuMainView.classList.add('hidden');
         this.menuSettingsView.classList.add('hidden');
         this.menuScoringView.classList.remove('hidden');
+        this.menuAboutView.classList.add('hidden');
         this.menuBuilderView.classList.add('hidden');
         
         // Inject SVGs into operator dice (only once)
@@ -326,12 +330,24 @@ export class ModalManager {
     }
     
     /**
-     * Hide settings/scoring/builder views, return to main menu
+     * Show about view within menu
+     */
+    showAbout() {
+        this.menuMainView.classList.add('hidden');
+        this.menuSettingsView.classList.add('hidden');
+        this.menuScoringView.classList.add('hidden');
+        this.menuAboutView.classList.remove('hidden');
+        this.menuBuilderView.classList.add('hidden');
+    }
+    
+    /**
+     * Hide settings/scoring/about/builder views, return to main menu
      */
     hideSettings() {
         this.menuMainView.classList.remove('hidden');
         this.menuSettingsView.classList.add('hidden');
         this.menuScoringView.classList.add('hidden');
+        this.menuAboutView.classList.add('hidden');
         this.menuBuilderView.classList.add('hidden');
     }
     
@@ -342,6 +358,7 @@ export class ModalManager {
         this.menuMainView.classList.add('hidden');
         this.menuSettingsView.classList.add('hidden');
         this.menuScoringView.classList.add('hidden');
+        this.menuAboutView.classList.add('hidden');
         this.menuBuilderView.classList.remove('hidden');
     }
     
