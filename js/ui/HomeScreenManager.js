@@ -1,5 +1,7 @@
 // Home Screen management
 
+import { UI_VIEWS, GAMEPLAY_MODES, MODALS } from '../constants.js';
+
 export class HomeScreenManager {
     constructor(game) {
         this.game = game;
@@ -33,14 +35,18 @@ export class HomeScreenManager {
             // Enter regular game mode (handles all state restoration)
             this.game.enterRegularMode();
             
-            this.hide();
-            
-            // Render without animation (interstitial will handle animation on dismiss)
             if (window.uiController) {
+                // Transition to level interstitial state
+                window.uiController.stateManager.setState({
+                    view: UI_VIEWS.LEVEL_INTERSTITIAL,
+                    data: { level: this.game.level }
+                });
+                
+                // Render and show interstitial for current level
                 window.uiController.render();
                 window.uiController.clearSolutionHelper();
                 
-                // Show interstitial for current level (gives tutorial option)
+                // Show interstitial (this will hide home screen with proper z-index layering)
                 await window.uiController.showTutorialForLevel(this.game.level);
             }
         });
@@ -64,19 +70,18 @@ export class HomeScreenManager {
         });
         
         // New Game button - start from Level 1
-        this.newGameBtn.addEventListener('click', () => {
+        this.newGameBtn.addEventListener('click', async () => {
             // DEBUG: console.log('🏠 New Game button clicked');
             
-            // Cleanup tutorial if active
-            if (window.uiController && window.uiController.tutorialManager.isActive) {
-                // DEBUG: console.log('🧹 Cleaning up tutorial before starting new game');
-                window.uiController.tutorialManager.cleanup();
-            }
-            
-            this.hide();
             this.game.newGame();
             
             if (window.uiController) {
+                // Transition to level interstitial
+                window.uiController.stateManager.setState({
+                    view: UI_VIEWS.LEVEL_INTERSTITIAL,
+                    data: { level: 1 }
+                });
+                
                 window.uiController.render(); // Render WITHOUT animation first
                 window.uiController.clearSolutionHelper();
                 window.uiController.showFirstTimeInterstitial(); // Shows interstitial, will animate on dismiss
@@ -84,26 +89,38 @@ export class HomeScreenManager {
         });
         
         // How to Play button - show intro tutorial
-        this.howToPlayBtn.addEventListener('click', () => {
+        this.howToPlayBtn.addEventListener('click', async () => {
             // DEBUG: console.log('🏠 How to Play clicked - showing intro tutorial');
-            this.hide(800); // Slower fade for intro tutorial
             
             if (window.uiController) {
-                window.uiController.showIntroTutorial();
+                // Transition to tutorial mode
+                window.uiController.stateManager.setState({
+                    view: UI_VIEWS.GAMEPLAY,
+                    mode: GAMEPLAY_MODES.TUTORIAL
+                });
+                
+                window.uiController.showIntroTutorial('home-screen');
             }
         });
         
         // Menu button
         this.menuBtn.addEventListener('click', () => {
             // DEBUG: console.log('🏠 Menu button clicked from home screen');
-            if (window.uiController && window.uiController.modals) {
-                window.uiController.modals.showMenu();
+            if (window.uiController && window.uiController.stateManager) {
+                window.uiController.stateManager.openModal(MODALS.MENU);
             }
         });
     }
     
     show() {
         // DEBUG: console.log('🏠 Showing home screen');
+        
+        // Notify state manager if available
+        if (window.uiController && window.uiController.stateManager) {
+            window.uiController.stateManager.setState({
+                view: UI_VIEWS.HOME
+            });
+        }
         
         // Update level display
         this.currentLevelSpan.textContent = this.game.level;

@@ -10,6 +10,7 @@
 
 import DailyPuzzleGenerator from './DailyPuzzleGenerator.js';
 import { decodePuzzle } from './puzzleCodec.js';
+import { UI_VIEWS, GAMEPLAY_MODES } from './constants.js';
 
 class DailyPuzzleManager {
     constructor(game, uiController, settings = {}) {
@@ -129,10 +130,11 @@ class DailyPuzzleManager {
             const completion = this.getTodayCompletion();
             console.log('✅ Today\'s puzzle already completed!');
             
-            // Hide home screen first
-            if (window.homeScreen) {
-                window.homeScreen.hide();
-            }
+            // Transition to result screen
+            this.uiController.stateManager.setState({
+                view: UI_VIEWS.DAILY_RESULT,
+                data: { completion }
+            });
             
             // Show the result interstitial again (so they can re-share)
             this.uiController.modals.showDailyPuzzleResult({
@@ -141,28 +143,43 @@ class DailyPuzzleManager {
                 cubes: completion.cubes,
                 solution: completion.solution
             }, () => {
-                // Return to home (will let user choose what to do next)
-                if (window.homeScreen) {
-                    window.homeScreen.show();
-                }
+                // Return to home
+                this.uiController.stateManager.setState({ view: UI_VIEWS.HOME });
             });
             
             return; // Don't load the puzzle
         }
         
-        // Generate/load puzzle
-        const puzzle = this.getTodaysPuzzle();
-        this.currentPuzzle = puzzle;
+        // Check if puzzle is already loaded (resume vs new load)
+        // NOTE: Only resume if we're ACTUALLY in daily mode (not just have leftover state)
+        const isResuming = this.game.mode === 'daily' && this.currentPuzzle;
         
-        // Log for debugging
-        this.generator.logPuzzle(puzzle);
-        
-        // Hide home screen first
-        if (window.homeScreen) {
-            window.homeScreen.hide();
+        // Clear currentPuzzle if we're not actually resuming (coming from different mode)
+        if (!isResuming && this.currentPuzzle) {
+            console.log('🧹 Clearing stale puzzle reference (was in different mode)');
+            this.currentPuzzle = null;
         }
         
-        // Show daily puzzle interstitial
+        // Generate/load puzzle if not already loaded
+        let puzzle;
+        if (isResuming) {
+            console.log('🎯 Resuming existing daily puzzle');
+            puzzle = this.currentPuzzle;
+        } else {
+            puzzle = this.getTodaysPuzzle();
+            this.currentPuzzle = puzzle;
+            
+            // Log for debugging
+            this.generator.logPuzzle(puzzle);
+        }
+        
+        // Transition to daily intro interstitial (always show it)
+        this.uiController.stateManager.setState({
+            view: UI_VIEWS.DAILY_INTRO,
+            data: { puzzle }
+        });
+        
+        // Show daily puzzle interstitial (always show stats)
         await this.uiController.modals.showDailyPuzzleInterstitial({
             puzzleId: puzzle.id,
             shortestSolution: puzzle.shortestSolution,
@@ -170,13 +187,24 @@ class DailyPuzzleManager {
             solutionCount: puzzle.solutionCount
         });
         
-        // Enter daily mode (handles all state setup)
-        this.game.enterDailyMode(puzzle);
+        // Transition to gameplay in daily mode
+        this.uiController.stateManager.setState({
+            view: UI_VIEWS.GAMEPLAY,
+            mode: GAMEPLAY_MODES.DAILY
+        });
         
-        // Render the game with animation
-        this.uiController.render({ animate: true });
-        
-        console.log('✅ Daily Puzzle loaded!');
+        // Only enter daily mode and re-render if NOT resuming
+        if (!isResuming) {
+            // Enter daily mode (handles all state setup)
+            this.game.enterDailyMode(puzzle);
+            
+            // Render the game with animation
+            this.uiController.render({ animate: true });
+            
+            console.log('✅ Daily Puzzle loaded!');
+        } else {
+            console.log('✅ Daily Puzzle resumed!');
+        }
     }
     
     /**

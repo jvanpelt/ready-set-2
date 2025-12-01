@@ -57,6 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         console.log('✅ UIController instance created');
         
+        // Connect state manager to game
+        game.stateManager = ui.stateManager;
+        console.log('🔗 State manager connected to game');
+        
         // Create TimerManager instance (manages all timer logic)
         console.log('⏱️ Creating TimerManager instance...');
         game.timer = new TimerManager(

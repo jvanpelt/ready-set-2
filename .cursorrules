@@ -1,93 +1,62 @@
 # Cursor Rules for Ready, Set 2
 
-- Don't refer to "the user" in chat. My name is "jason" or nickname "jvp". This includes when speaking between agents.  
+## ⚠️ First Time Here?
+**Read `CLAUDE.md` first** - It contains complete game mechanics, architecture, and implementation details. These rules are workflow standards only.
 
-## Workflow & Git Rules
+## User Preferences
+- My name is "jason" or "jvp" (never "the user")
+- Be proactive but not presumptuous
+- Use natural language (don't refer to tool names)
 
-### Branching Strategy
-- **ALWAYS create a new branch** for any feature, bugfix, or change
-- Branch naming: `feature/`, `bugfix/`, or `fix/` prefix
-- **NEVER work directly on `main`** except for emergencies
+## Git Workflow
 
-### Bug Fixes
-- If bug is related to a recent merge/branch: Get back on that branch to fix it
-- If bug is unrelated to any existing branch: Create a new `fix/bug-name` branch
+### Branching
+- **ALWAYS create a new branch** (`feature/`, `bugfix/`, `fix/`)
+- **NEVER work directly on `main`**
+- Bug on recent branch? Fix it there. Otherwise create `fix/bug-name`
 
-### Merging to Main
-- **NEVER merge to main without explicit user approval**
-- Always ask "Ready to merge to main?" before merging
-- User must explicitly say "merge to main" or "yes, merge"
-- After making changes, commit and push to the feature branch first
-- Wait for user testing and approval before merging
+### Merging
+- **NEVER merge without explicit approval**
+- Ask "Ready to merge to main?" and wait for confirmation
+- Commit and push to branch first, then merge after testing
 
-### Committing
-- Write clear, descriptive commit messages
-- Include context about PROBLEM, ROOT CAUSE, and SOLUTION for bug fixes
+### Commits
+- Clear, descriptive messages (PROBLEM → ROOT CAUSE → SOLUTION for bugs)
 - Commit related changes together
-- Don't commit unless user explicitly asks or it's part of a clear workflow
+- Only commit when explicitly asked or as part of clear workflow
 
-## Code Style & Practices
+## Code Standards
 
-### Console Logging
-- Keep critical warnings and errors
-- Comment out or remove noisy debug logs after debugging is complete
-- Use prefixed emojis for log categories (🎬 animations, 🎲 dice, 🎯 solution, etc.)
+### Version Management
+- **ALWAYS update `js/version.js`** when making changes
+- ONLY place to update version number
+- Format: `v[MAJOR].[MINOR].[PATCH]`
+- Increment: PATCH (bugs), MINOR (features), MAJOR (breaking)
 
-### Code Comments
-- Add in-depth comments for complex logic
-- Explain WHY, not just WHAT
-- Document dual systems (e.g., card encoding systems)
-- Comment bitwise operations thoroughly
+### State Management
+- Use `AppStateManager` for all UI state changes
+- `game.mode` and `game.isTutorialActive` are **getters only** (never set directly)
+- Always clear `mode: null` when transitioning to non-gameplay views
+- Clear `game.dailyPuzzle` when exiting daily mode
 
-### Animations (GSAP)
-- Disable CSS transitions during GSAP animations to prevent interference
-- Use `requestAnimationFrame` for proper timing with DOM updates
-- Return Promises from animation methods for flow control
-- Clean up inline styles after animations complete
-
-### Solution Helper
-- Update `game.cardStates` when modifying card visual states
-- Evaluate solution helper BEFORE rendering to prevent flashing
-- Keep game state and DOM in sync
-
-## Project-Specific
-
-### Dual Card Encoding Systems
-- **System 1 (levels.js)**: Human-readable color arrays `{ colors: ['red', 'blue'] }`
-- **System 2 (scenarioManager.js)**: Bitwise integers (e.g., `5` for red + green)
-- Document both systems clearly when working with cards
-
-### Vocabulary (for player-facing text)
-- Union → OR
-- Intersection → AND  
-- Difference → MINUS
-- Complement → NOT (instructions), PRIME (referring to cubes)
-- Universe → UNIVERSE
-- Null → NULL
-- Use "Set Theory" not "Set Logic"
+### Code Quality
+- Add comments explaining WHY, not just WHAT
+- Keep critical logs, remove noisy debug logs when done
+- Use emoji prefixes for log categories (🎬 🎲 🎯 etc.)
+- Check for linter errors after changes
 
 ### File Organization
 - UI components in `js/ui/`
-- Keep rendering logic separate from game logic
-- UIRenderer handles pure rendering
-- UIController orchestrates UI and handles events
-
-### Version Management
-- **ALWAYS update `js/version.js`** when making changes that need cache busting
-- This is the ONLY place to update the version number
-- Version format: `v[MAJOR].[MINOR].[PATCH]` (e.g., `v4.24.1`)
-- Increment PATCH for bug fixes, MINOR for features, MAJOR for breaking changes
-- `main.js` and `index.html` import version from `version.js`
+- Separate rendering (UIRenderer) from orchestration (UIController)
+- State logic in AppStateManager
 
 ## Testing
-- Test on both desktop and mobile when possible
-- Cache bust with version numbers in script tags
+- Test on desktop AND mobile
+- Run critical test flows (see CLAUDE.md)
 - Use Safari Web Inspector for iOS debugging
-- Check for linter errors after making changes
 
-## Communication
-- Don't refer to tool names when speaking to user
-- Use natural language to describe what you're doing
-- Be proactive but not presumptuous
-- If intent is unclear, infer the most likely action and proceed
-
+## Documentation
+- **Before working on game logic:** Read CLAUDE.md (game mechanics, algorithms, edge cases)
+- **Before making architectural changes:** Read CLAUDE.md Architecture section
+- **After architectural changes:** Update CLAUDE.md
+- For quick questions about "how does X work?": Check CLAUDE.md first

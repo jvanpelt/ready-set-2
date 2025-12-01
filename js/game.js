@@ -8,8 +8,8 @@ export class Game {
     constructor() {
         this.storage = new GameStorage();
         
-        // Mode management - ALWAYS one of: 'regular' | 'daily'
-        this.mode = 'regular'; // Default to regular game mode
+        // State manager reference (set by main.js)
+        this.stateManager = null;
         
         // Regular game state
         this.level = 1;
@@ -19,7 +19,6 @@ export class Game {
         this.solutions = [[], []]; // Always 2 rows: [restriction row, set name row]
         this.goalCards = 3;
         this.tutorialShown = false;
-        this.isTutorialActive = false; // Set by TutorialManager to suppress timer timeout
         
         // Daily puzzle state (set when in daily mode)
         this.dailyPuzzle = null;
@@ -29,6 +28,34 @@ export class Game {
         this.timer = null;
         
         this.init();
+    }
+    
+    /**
+     * Get current game mode from state manager
+     * @returns {'regular'|'tutorial'|'daily'}
+     */
+    get mode() {
+        if (!this.stateManager) {
+            return 'regular'; // Fallback during initialization
+        }
+        const state = this.stateManager.getState();
+        // If we're in gameplay view, use the mode from state
+        if (state.view === 'gameplay' && state.mode) {
+            return state.mode;
+        }
+        // Otherwise check if we have a daily puzzle active
+        if (this.dailyPuzzle) {
+            return 'daily';
+        }
+        return 'regular';
+    }
+    
+    /**
+     * Check if tutorial is currently active
+     * @returns {boolean}
+     */
+    get isTutorialActive() {
+        return this.mode === 'tutorial';
     }
     
     init() {
@@ -657,10 +684,11 @@ export class Game {
             this.generateNewRound();
         }
         
-        // NOW set mode to 'regular' - data is correct
-        this.mode = 'regular';
+        // Clear daily puzzle reference when entering regular mode
+        this.dailyPuzzle = null;
         
         console.log('✅ Regular game mode active');
+        // NOTE: Mode is now managed by state manager
     }
     
     /**
@@ -673,9 +701,7 @@ export class Game {
         
         // NOTE: Regular game state is saved by DailyPuzzleManager BEFORE calling this
         // This ensures we save clean data before any daily puzzle loading
-        
-        // Set mode explicitly
-        this.mode = 'daily';
+        // NOTE: Mode is now managed by state manager
         
         // Store daily puzzle data (enhanced with metadata)
         this.dailyPuzzle = {

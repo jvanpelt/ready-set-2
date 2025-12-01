@@ -1844,7 +1844,7 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
     }
     
     .daily-puzzle-stats {
-        flex-direction: column;
+        /* flex-direction: column; */
         gap: 15px;
     }
     

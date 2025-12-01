@@ -1,6 +1,7 @@
 // Modal management - tutorials, menus, results, pass confirmations
 
 import { getTutorialScenario } from '../tutorialScenarios.js';
+import { UI_VIEWS, GAMEPLAY_MODES, MODALS } from '../constants.js';
 
 export class ModalManager {
     constructor(game) {
@@ -97,6 +98,11 @@ export class ModalManager {
         this.resultScore.textContent = `+${points} points!`;
         this.resultScore.style.display = 'block';
         this.resultModal.classList.remove('hidden');
+        
+        // Track overlay
+        if (window.uiController && window.uiController.stateManager) {
+            window.uiController.stateManager.openModal(MODALS.RESULT);
+        }
     }
     
     /**
@@ -108,10 +114,21 @@ export class ModalManager {
         this.resultScore.style.display = 'none'; // Hide points for tutorial
         this.resultModal.classList.remove('hidden');
         
+        // Track overlay (uses same result modal as showResult)
+        if (window.uiController && window.uiController.stateManager) {
+            window.uiController.stateManager.openModal(MODALS.RESULT);
+        }
+        
         // Override the continue button to call onContinue callback
         const continueBtn = document.getElementById('result-continue');
         const handler = () => {
             this.resultModal.classList.add('hidden');
+            
+            // Remove overlay
+            if (window.uiController && window.uiController.stateManager) {
+                window.uiController.stateManager.closeModal();
+            }
+            
             continueBtn.removeEventListener('click', handler);
             onContinue();
         };
@@ -123,6 +140,11 @@ export class ModalManager {
      */
     async hideResult(onHide) {
         this.resultModal.classList.add('hidden');
+        
+        // Remove overlay
+        if (window.uiController && window.uiController.stateManager) {
+            window.uiController.stateManager.removeOverlay('result');
+        }
         
         // Check if can advance to next level
         if (this.game.canAdvanceLevel() && this.game.getState().hasNextLevel) {
@@ -137,6 +159,14 @@ export class ModalManager {
             const shouldShowInterstitial = true; // tutorialViewed ? false : true;
             
             if (shouldShowInterstitial) {
+                // Transition to level interstitial
+                if (window.uiController) {
+                    window.uiController.stateManager.setState({
+                        view: UI_VIEWS.LEVEL_INTERSTITIAL,
+                        data: { level: newLevel }
+                    });
+                }
+                
                 // Show interstitial screen and wait for user choice
                 const wantsTutorial = await this.showInterstitialAsync(newLevel);
                 
@@ -153,6 +183,14 @@ export class ModalManager {
                 
                 // Start tutorial if requested
                 if (wantsTutorial) {
+                    // Transition to tutorial mode
+                    if (window.uiController) {
+                        window.uiController.stateManager.setState({
+                            view: UI_VIEWS.GAMEPLAY,
+                            mode: GAMEPLAY_MODES.TUTORIAL
+                        });
+                    }
+                    
                     // Level 1 uses the intro tutorial, other levels use their own
                     const scenarioKey = newLevel === 1 ? 'intro' : newLevel;
                     const tutorialScenario = getTutorialScenario(scenarioKey);
@@ -164,7 +202,14 @@ export class ModalManager {
                         // Timer will be started when tutorial completes (in TutorialManager.complete())
                     }
                 } else {
-                    // User declined tutorial
+                    // User declined tutorial - transition to regular gameplay
+                    if (window.uiController) {
+                        window.uiController.stateManager.setState({
+                            view: UI_VIEWS.GAMEPLAY,
+                            mode: GAMEPLAY_MODES.REGULAR
+                        });
+                    }
+                    
                     // Mark tutorial as viewed so they don't see it again
                     this.game.storage.markTutorialAsViewed(newLevel);
                     
@@ -174,9 +219,17 @@ export class ModalManager {
                     }
                 }
             } else {
-                // Tutorial already viewed, skip interstitial
+                // Tutorial already viewed, skip interstitial - go straight to gameplay
                 this.game.startNewLevel();
                 onHide();
+                
+                // Transition to regular gameplay
+                if (window.uiController) {
+                    window.uiController.stateManager.setState({
+                        view: UI_VIEWS.GAMEPLAY,
+                        mode: GAMEPLAY_MODES.REGULAR
+                    });
+                }
                 
                 // Notify UIController to handle timer
                 if (window.uiController) {
@@ -187,6 +240,9 @@ export class ModalManager {
             // Generate new round (same level, keep score)
             this.game.resetRound();
             onHide();
+            
+            // Stay in gameplay mode (already there, just new round)
+            // State manager already knows we're in 'gameplay' mode 'regular'
             
             // Notify UIController to handle timer
             if (window.uiController) {
@@ -209,6 +265,11 @@ export class ModalManager {
         if (menuLevelEl) {
             menuLevelEl.textContent = this.game.level;
         }
+        
+        // Track overlay in state manager
+        if (window.uiController && window.uiController.stateManager) {
+            window.uiController.stateManager.openModal(MODALS.MENU);
+        }
     }
     
     /**
@@ -219,6 +280,11 @@ export class ModalManager {
         this.menuMainView.classList.remove('hidden');
         this.menuSettingsView.classList.add('hidden');
         this.menuBuilderView.classList.add('hidden');
+        
+        // Remove overlay from state manager
+        if (window.uiController && window.uiController.stateManager) {
+            window.uiController.stateManager.closeModal();
+        }
     }
     
     /**
@@ -271,6 +337,11 @@ export class ModalManager {
         this.passContinueBtn.style.display = 'none';
         this.passCancelBtn.style.display = 'none';
         this.passModal.classList.remove('hidden');
+        
+        // Track overlay
+        if (window.uiController && window.uiController.stateManager) {
+            window.uiController.stateManager.openModal(MODALS.PASS);
+        }
     }
     
     /**
@@ -315,6 +386,11 @@ export class ModalManager {
     hidePassModal() {
         this.passModal.classList.add('hidden');
         
+        // Remove overlay
+        if (window.uiController && window.uiController.stateManager) {
+            window.uiController.stateManager.closeModal();
+        }
+        
         // Call cancel callback if provided
         if (this.passOnCancel) {
             this.passOnCancel();
@@ -330,6 +406,11 @@ export class ModalManager {
      */
     showTimeout(onOk, isTutorial = false) {
         this.timeoutModal.classList.remove('hidden');
+        
+        // Track overlay
+        if (window.uiController && window.uiController.stateManager) {
+            window.uiController.stateManager.openModal(MODALS.TIMEOUT);
+        }
         
         // Update message if this is a tutorial timeout
         const messageEl = this.timeoutModal.querySelector('p');
@@ -357,6 +438,12 @@ export class ModalManager {
      */
     hideTimeout() {
         this.timeoutModal.classList.add('hidden');
+        
+        // Remove overlay
+        if (window.uiController && window.uiController.stateManager) {
+            window.uiController.stateManager.closeModal();
+        }
+        
         // Clear the onclick handler
         this.timeoutOkBtn.onclick = null;
     }

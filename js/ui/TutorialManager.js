@@ -1,4 +1,5 @@
 import { ScenarioManager } from '../scenarioManager.js';
+import { UI_VIEWS, GAMEPLAY_MODES } from '../constants.js';
 
 export class TutorialManager {
     constructor(game, uiController) {
@@ -41,14 +42,13 @@ export class TutorialManager {
         this.entryPoint = entryPoint;
         
         // Timer behavior depends on the level
+        // NOTE: Tutorial mode is now managed by state manager (game.isTutorialActive is a getter)
         if (this.game.level === 7) {
             // Level 7 tutorial: Timer should tick and can expire
             this.game.timer.startFresh();
-            this.game.isTutorialActive = true;
         } else {
             // Other tutorials: Stop timer (will restart when tutorial completes)
             this.game.timer.stop(true);
-            this.game.isTutorialActive = true;
         }
         
         // Save user's Solution Helper preference
@@ -374,7 +374,7 @@ export class TutorialManager {
         this.ui.handleTutorialComplete();
     }
     
-    complete() {
+    async complete() {
         console.log('✅ Tutorial complete!');
         console.log('   Entry point was:', this.entryPoint);
         this.cleanup();
@@ -383,8 +383,14 @@ export class TutorialManager {
         if (this.entryPoint === 'level-interstitial') {
             // Entered from level interstitial - start the level with new puzzle
             console.log('   → Returning to gameplay (new puzzle)');
-            this.ui.modals.showTutorialComplete(() => {
+            this.ui.modals.showTutorialComplete(async () => {
                 console.log('   → Tutorial complete modal closed, resetting round');
+                
+                // Transition to regular gameplay
+                this.ui.stateManager.setState({
+                    view: UI_VIEWS.GAMEPLAY,
+                    mode: GAMEPLAY_MODES.REGULAR
+                });
                 
                 // Clear solution areas in DOM before resetting
                 this.ui.dragDropHandler.clearAllSolutions();
@@ -398,13 +404,17 @@ export class TutorialManager {
         } else if (this.entryPoint === 'home-screen') {
             // Entered from home screen - return to home screen
             console.log('   → Returning to home screen');
-            this.ui.modals.showTutorialComplete(() => {
+            this.ui.modals.showTutorialComplete(async () => {
                 console.log('   → Tutorial complete modal closed, showing home screen');
                 
                 // Clear solution areas in DOM before showing home
                 this.ui.dragDropHandler.clearAllSolutions();
                 
-                window.homeScreen.show();
+                // Transition to home (clear mode since we're leaving gameplay)
+                this.ui.stateManager.setState({ 
+                    view: UI_VIEWS.HOME,
+                    mode: null 
+                });
             });
         } else if (this.entryPoint === 'menu-during-gameplay') {
             // Entered from menu during regular gameplay - restore saved game
@@ -412,8 +422,14 @@ export class TutorialManager {
             
             if (savedState && savedState.cards && savedState.cards.length > 0) {
                 console.log('   → Restoring saved game state');
-                this.ui.modals.showTutorialComplete(() => {
+                this.ui.modals.showTutorialComplete(async () => {
                     console.log('   → Tutorial complete modal closed, restoring state');
+                    
+                    // Transition to regular gameplay
+                    this.ui.stateManager.setState({
+                        view: UI_VIEWS.GAMEPLAY,
+                        mode: GAMEPLAY_MODES.REGULAR
+                    });
                     
                     // Clear solution areas in DOM before restoring
                     this.ui.dragDropHandler.clearAllSolutions();
@@ -425,8 +441,11 @@ export class TutorialManager {
             } else {
                 // Fallback: no saved state, go to home
                 console.log('   → No saved state, returning to home screen');
-                this.ui.modals.showTutorialComplete(() => {
-                    window.homeScreen.show();
+                this.ui.modals.showTutorialComplete(async () => {
+                    this.ui.stateManager.setState({ 
+                        view: UI_VIEWS.HOME,
+                        mode: null
+                    });
                 });
             }
         } else {
@@ -435,14 +454,22 @@ export class TutorialManager {
             const savedState = this.game.storage.loadGameState();
             
             if (savedState && savedState.cards && savedState.cards.length > 0) {
-                this.ui.modals.showTutorialComplete(() => {
+                this.ui.modals.showTutorialComplete(async () => {
+                    this.ui.stateManager.setState({
+                        view: UI_VIEWS.GAMEPLAY,
+                        mode: GAMEPLAY_MODES.REGULAR
+                    });
+                    
                     this.ui.dragDropHandler.clearAllSolutions();
                     this.game.restoreFromSavedState(savedState);
                     this.ui.render();
                 });
             } else {
-                this.ui.modals.showTutorialComplete(() => {
-                    window.homeScreen.show();
+                this.ui.modals.showTutorialComplete(async () => {
+                    this.ui.stateManager.setState({ 
+                        view: UI_VIEWS.HOME,
+                        mode: null
+                    });
                 });
             }
         }
@@ -467,8 +494,7 @@ export class TutorialManager {
         if (this.passBtn) this.passBtn.disabled = false;
         if (this.resetBtn) this.resetBtn.disabled = false;
         
-        // Clear tutorial flag in Game
-        this.game.isTutorialActive = false;
+        // NOTE: Tutorial mode is now managed by state manager (game.isTutorialActive is a getter)
         
         // Restore user's Solution Helper preference
         if (this.savedSolutionHelperState !== null) {
