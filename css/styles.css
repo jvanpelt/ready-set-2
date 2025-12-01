@@ -1844,12 +1844,47 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
     }
     
     .daily-puzzle-stats {
-        /* flex-direction: column; */
-        gap: 15px;
+        gap: 10px;
+        margin: 20px 0;
     }
     
     .daily-puzzle-stats .stat-item {
         max-width: none;
+        padding: 12px 16px;
+    }
+    
+    .daily-puzzle-stats .stat-value {
+        font-size: 28px;
+    }
+    
+    .daily-puzzle-stats .stat-label,
+    .daily-puzzle-stats .stat-detail {
+        font-size: 12px;
+    }
+    
+    .description-text {
+        font-size: 16px;
+        line-height: 1.5;
+    }
+    
+    .interstitial-title {
+        font-size: 28px;
+    }
+    
+    .interstitial-badge {
+        width: 80px;
+        height: 80px;
+        font-size: 40px;
+    }
+    
+    .interstitial-actions {
+        margin: 30px 0 20px;
+        gap: 12px;
+    }
+    
+    .btn-large {
+        font-size: 18px;
+        padding: 14px 24px;
     }
     
     .feature-description {
