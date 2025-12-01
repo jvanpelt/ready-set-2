@@ -264,7 +264,7 @@ export class Game {
     
     /**
      * Calculate current score for daily puzzle (dynamic, updates as cubes are placed)
-     * Uses same scoring logic as calculateScore but for all solution cubes combined
+     * Uses unified calculateScore() function for consistency
      */
     getCurrentDailyScore() {
         if (this.mode !== 'daily') return 0;
@@ -274,31 +274,8 @@ export class Game {
         
         if (allCubes.length === 0) return 0;
         
-        let totalPoints = 0;
-        
-        allCubes.forEach(die => {
-            if (die.type === 'color') {
-                totalPoints += 5; // Base points for colors
-            } else if (die.type === 'wild') {
-                totalPoints += 25; // Wild cubes (Level 9+)
-            } else if (die.type === 'operator') {
-                // Operator points (union=10, intersection=15, etc)
-                const operatorPoints = {
-                    '∪': 10,  // Union
-                    '∩': 15,  // Intersection
-                    '−': 20,  // Difference
-                    '′': 25   // Prime
-                };
-                totalPoints += operatorPoints[die.value] || 0;
-            } else if (die.type === 'set-constant') {
-                totalPoints += 30; // Universe/Null
-            } else if (die.type === 'restriction') {
-                totalPoints += 30; // Equals/Subset
-            }
-        });
-        
-        // Multiply by cube count for complexity bonus
-        return totalPoints * allCubes.length;
+        // Use the same scoring logic as regular gameplay
+        return calculateScore(allCubes);
     }
     
     // Flip cards based on restriction (called during evaluation)
@@ -465,31 +442,8 @@ export class Game {
         }
         
         // Calculate score (all dice from both rows)
+        // Special cube bonuses are now included in calculateScore()
         let points = calculateScore(allDice);
-        
-        // Add bonus for using special cubes
-        // Required cube: 50 points (Level 8+)
-        if (requiredDie) {
-            const usedRequiredCube = allDice.some(die => die.id === requiredDie.id);
-            if (usedRequiredCube) {
-                points += 50;
-                console.log('✅ Required cube bonus: +50 points');
-            }
-        }
-        
-        // Wild cube: 25 points (Level 9+)
-        const wildCubesUsed = allDice.filter(die => die.type === 'wild');
-        if (wildCubesUsed.length > 0) {
-            points += wildCubesUsed.length * 25;
-            console.log(`✅ Wild cube bonus: +${wildCubesUsed.length * 25} points (${wildCubesUsed.length} wild cubes)`);
-        }
-        
-        // Bonus cube: 50 points (Level 10)
-        const bonusCubesUsed = allDice.filter(die => die.isBonus);
-        if (bonusCubesUsed.length > 0) {
-            points += bonusCubesUsed.length * 50;
-            console.log(`✅ Bonus cube bonus: +${bonusCubesUsed.length * 50} points (${bonusCubesUsed.length} bonus cubes)`);
-        }
         
         return {
             valid: true,

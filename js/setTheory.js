@@ -506,6 +506,13 @@ function complement(set, cards) {
 
 /**
  * Calculate score based on expression complexity
+ * Matches original game scoring logic:
+ * 1. Sum base points for all cubes (including special cubes)
+ * 2. Multiply by cube count
+ * 
+ * Special cube rules (from original game):
+ * - ANY cube can be Required (25 points) or Bonus (50 points)
+ * - Wild cubes are always 25 points (can't be required/bonus)
  */
 export function calculateScore(expression) {
     if (!expression || expression.length === 0) return 0;
@@ -513,16 +520,25 @@ export function calculateScore(expression) {
     let totalPoints = 0;
     
     expression.forEach(die => {
-        if (die.type === 'color') {
-            totalPoints += 5; // Base points for colors
+        // Special cubes override base points
+        if (die.isBonus) {
+            totalPoints += 50; // Bonus cubes are always 50 points
+        } else if (die.isRequired) {
+            totalPoints += 25; // Required cubes are always 25 points
         } else if (die.type === 'wild') {
-            totalPoints += 25; // Wild cubes are worth 25 points (Level 9+)
+            totalPoints += 25; // Wild cubes are 25 points
+        } else if (die.type === 'color') {
+            totalPoints += 5; // Colors: 5 points base
         } else if (die.type === 'operator') {
-            // Find operator points
+            // Find operator points from OPERATORS constant
             const operator = Object.values(OPERATORS).find(op => op.symbol === die.value);
             if (operator) {
-                totalPoints += operator.points;
+                totalPoints += operator.points; // Union/Intersection/Difference: 10, Prime: 15
             }
+        } else if (die.type === 'set-constant') {
+            totalPoints += 15; // Universe/Null: 15 points base
+        } else if (die.type === 'restriction') {
+            totalPoints += 20; // Equals/Subset: 20 points base
         }
     });
     
@@ -646,6 +662,14 @@ const RESTRICTION_PATTERNS = [
     "setName,prime,restriction,color,operator,color",
     "setName,restriction,color,operator,color,prime",
     "setName,restriction,color,prime,operator,color",
+    // 6 cubes with TWO restrictions + prime (3 patterns added for daily puzzle fix)
+    // Matches the 6+2 double-restriction template from DailyPuzzleGenerator
+    // Physical constraint: 2 restrictions + 1 prime + 3 colors = 6 dice (uses all 2 special cube slots for restrictions)
+    // Cannot include setName as that would exceed the 2-special-cube limit (restr + setName combined)
+    // Valid syntactic positions based on similar patterns in 5-cube restrictions:
+    "color,prime,restriction,color,restriction,color",      // prime on first color (A′ = B = C)
+    "color,restriction,color,prime,restriction,color",      // prime in middle (A = B′ = C)
+    "color,restriction,color,restriction,color,prime",      // prime on last color (A = B = C′)
     // 7 cubes (15 patterns)
     "color,operator,color,operator,color,restriction,color",
     "color,operator,color,operator,color,restriction,setName",
