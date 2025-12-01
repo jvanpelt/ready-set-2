@@ -6,6 +6,8 @@ import { ModalManager } from './ModalManager.js';
 import { WildCubeManager } from './WildCubeManager.js';
 import { PuzzleBuilderManager } from './PuzzleBuilderManager.js';
 import { TutorialManager } from './TutorialManager.js';
+import { AppStateManager } from './AppStateManager.js';
+import { UI_VIEWS, GAMEPLAY_MODES, MODALS } from '../constants.js';
 import { evaluateExpression, hasRestriction, evaluateRestriction } from '../setTheory.js';
 import { hasPossibleSolution } from '../solutionFinder.js';
 import { getLevelConfig } from '../levels.js';
@@ -15,6 +17,12 @@ export class UIController {
     constructor(game, onUpdate) {
         this.game = game;
         this.onUpdate = onUpdate;
+        
+        // Initialize state manager first
+        this.stateManager = new AppStateManager();
+        
+        // Listen to state changes
+        this.stateManager.on('stateChanged', this.handleStateChange.bind(this));
         
         // Initialize sub-components
         this.tutorialManager = new TutorialManager(game, this);
@@ -104,19 +112,6 @@ export class UIController {
      * Clean up any active overlays/screens before transitioning to a new view
      * This centralizes the logic for hiding interstitials, tutorials, etc.
      */
-    cleanupActiveScreens() {
-        // Hide level interstitial if visible
-        const interstitialScreen = document.getElementById('level-interstitial-screen');
-        if (interstitialScreen && !interstitialScreen.classList.contains('hidden')) {
-            this.modals.hideInterstitial();
-        }
-        
-        // Cleanup tutorial if active
-        if (this.tutorialManager.isActive) {
-            this.tutorialManager.cleanup();
-        }
-    }
-    
     initEventListeners() {
         // Card clicks (for note-taking)
         this.cardsContainer.addEventListener('click', (e) => {
@@ -140,8 +135,7 @@ export class UIController {
         this.passBtn.addEventListener('click', () => this.handlePass());
         
         this.menuBtn.addEventListener('click', () => {
-            // DEBUG: console.log('📋 MENU button clicked');
-            this.modals.showMenu();
+            this.stateManager.openModal(MODALS.MENU);
         });
         // DEBUG: this.menuBtn.addEventListener('mouseup', () => console.log('🖱️ MENU mouseup'));
         // DEBUG: this.menuBtn.addEventListener('touchend', () => console.log('👆 MENU touchend'));
@@ -155,30 +149,32 @@ export class UIController {
         });
         
         // Menu buttons
-        document.getElementById('menu-close-btn').addEventListener('click', () => this.modals.hideMenu());
+        document.getElementById('menu-close-btn').addEventListener('click', () => this.stateManager.closeModal());
         document.getElementById('refresh-btn').addEventListener('click', () => {
             window.location.reload();
         });
         document.getElementById('tutorial-btn').addEventListener('click', () => {
-            this.cleanupActiveScreens();
-            this.modals.hideMenu();
+            this.stateManager.setState({ 
+                view: UI_VIEWS.GAMEPLAY, 
+                mode: GAMEPLAY_MODES.TUTORIAL,
+                modal: null 
+            });
             this.showIntroTutorial('menu-during-gameplay');
         });
         document.getElementById('menu-home-btn').addEventListener('click', () => {
-            this.cleanupActiveScreens();
-            this.modals.hideMenu();
-            if (window.homeScreen) {
-                window.homeScreen.show();
-            }
+            this.stateManager.setState({ 
+                view: UI_VIEWS.HOME,
+                mode: null,  // Clear gameplay mode when returning to home
+                modal: null 
+            });
         });
         
-        // Settings
+        // Settings (part of menu modal, not a separate modal)
         document.getElementById('settings-btn').addEventListener('click', () => this.modals.showSettings());
         document.getElementById('settings-back-btn').addEventListener('click', () => this.modals.hideSettings());
         
-        // Puzzle Builder
+        // Puzzle Builder (part of menu modal, not a separate modal)
         document.getElementById('puzzle-builder-btn').addEventListener('click', () => {
-            this.cleanupActiveScreens();
             this.modals.showBuilder();
         });
         document.getElementById('builder-back-btn').addEventListener('click', () => this.modals.hideBuilder());
@@ -225,14 +221,6 @@ export class UIController {
         
         // Test mode: Jump to level
         this.jumpToLevelBtn.addEventListener('click', async () => {
-            this.cleanupActiveScreens();
-            
-            // Hide home screen if visible
-            if (window.homeScreen && !document.getElementById('home-screen').classList.contains('hidden')) {
-                // DEBUG: console.log('🏠 Hiding home screen before jumping to level');
-                window.homeScreen.hide();
-            }
-            
             // Exit daily mode if active (ensures proper mode state)
             if (this.game.mode === 'daily') {
                 this.game.enterRegularMode();
@@ -243,7 +231,14 @@ export class UIController {
             
             const targetLevel = parseInt(document.getElementById('level-selector').value);
             this.game.jumpToLevel(targetLevel);
-            this.modals.hideMenu();
+            
+            // Transition to level interstitial
+            this.stateManager.setState({ 
+                view: UI_VIEWS.LEVEL_INTERSTITIAL,
+                modal: null,
+                data: { level: targetLevel }
+            });
+            
             this.render({ animate: true }); // Animate new level
             this.clearSolutionHelper();
             
@@ -275,6 +270,195 @@ export class UIController {
         
         // Pass confirmation modal
         document.getElementById('pass-cancel').addEventListener('click', () => this.modals.hidePassModal());
+    }
+    
+    /**
+     * Handle state changes - orchestrate UI transitions
+     * This is called whenever app state changes via AppStateManager
+     */
+    handleStateChange({ from, to }) {
+        console.log('🎭 UIController handling state change:', { from, to });
+        
+        // Determine what changed
+        const viewChanged = from.view !== to.view;
+        const modeChanged = from.mode !== to.mode;
+        const modalChanged = from.modal !== to.modal;
+        
+        // Only exit/enter primary view if view or mode changed
+        if (viewChanged || modeChanged) {
+            this.exitState(from);
+            this.enterState(to);
+        }
+        
+        // Handle modal changes separately (they overlay, don't replace views)
+        if (modalChanged) {
+            // Close old modal if there was one
+            if (from.modal) {
+                this.closeModalByName(from.modal);
+            }
+            
+            // Open new modal if there is one
+            if (to.modal) {
+                this.openModalByName(to.modal);
+            }
+        }
+    }
+    
+    /**
+     * Exit a state - cleanup logic
+     */
+    exitState(state) {
+        const { view, mode, modal } = state;
+        
+        console.log(`🚪 Exiting state: view=${view}, mode=${mode}, modal=${modal}`);
+        
+        // Cleanup based on view
+        switch (view) {
+            case UI_VIEWS.HOME:
+                if (window.homeScreen) {
+                    window.homeScreen.hide();
+                }
+                break;
+                
+            case UI_VIEWS.LEVEL_INTERSTITIAL:
+                this.modals.hideInterstitial();
+                break;
+                
+            case UI_VIEWS.DAILY_INTRO:
+                this.modals.hideDailyPuzzleInterstitial();
+                break;
+                
+            case UI_VIEWS.DAILY_RESULT:
+                this.modals.hideDailyPuzzleResult();
+                break;
+                
+            case UI_VIEWS.GAMEPLAY:
+                // Cleanup tutorials if active
+                if (this.tutorialManager.isActive) {
+                    this.tutorialManager.cleanup();
+                }
+                // If exiting gameplay with tutorial or daily mode, restore regular game state
+                if (mode === GAMEPLAY_MODES.TUTORIAL || mode === GAMEPLAY_MODES.DAILY) {
+                    console.log(`🧹 Exiting ${mode} mode - will restore regular game on next gameplay entry`);
+                    // Clear daily puzzle reference if exiting daily mode
+                    if (mode === GAMEPLAY_MODES.DAILY) {
+                        this.game.dailyPuzzle = null;
+                    }
+                }
+                break;
+        }
+        
+        // Cleanup modals
+        if (modal) {
+            switch (modal) {
+                case MODALS.MENU:
+                    this.modals.hideMenu();
+                    break;
+                case MODALS.SETTINGS:
+                    this.modals.hideSettings();
+                    break;
+                case MODALS.PASS:
+                    this.modals.hidePassModal();
+                    break;
+                case MODALS.RESULT:
+                    this.modals.hideResult();
+                    break;
+                case MODALS.TIMEOUT:
+                    this.modals.hideTimeout();
+                    break;
+                case MODALS.PUZZLE_BUILDER:
+                    this.modals.hideBuilder();
+                    break;
+            }
+        }
+    }
+    
+    /**
+     * Enter a state - setup logic
+     */
+    enterState(state) {
+        const { view, mode, modal, data } = state;
+        
+        console.log(`🚪 Entering state: view=${view}, mode=${mode}, modal=${modal}`, data);
+        
+        // Setup based on view
+        switch (view) {
+            case UI_VIEWS.HOME:
+                if (window.homeScreen) {
+                    window.homeScreen.show();
+                }
+                break;
+                
+            case UI_VIEWS.LEVEL_INTERSTITIAL:
+                // Interstitial showing is handled by showTutorialForLevel()
+                // (which populates content and displays it)
+                break;
+                
+            case UI_VIEWS.DAILY_INTRO:
+                // Daily intro showing is handled by DailyPuzzleManager
+                break;
+                
+            case UI_VIEWS.DAILY_RESULT:
+                // Daily result showing is handled by DailyPuzzleManager
+                break;
+                
+            case UI_VIEWS.GAMEPLAY:
+                // Mode-specific setup
+                if (mode === GAMEPLAY_MODES.REGULAR) {
+                    this.game.enterRegularMode();
+                    this.render({ animate: true });
+                    this.game.timer.startFresh();
+                } else if (mode === GAMEPLAY_MODES.TUTORIAL) {
+                    // Tutorial setup is handled by TutorialManager
+                } else if (mode === GAMEPLAY_MODES.DAILY) {
+                    // Daily setup is handled by DailyPuzzleManager
+                }
+                break;
+        }
+    }
+    
+    /**
+     * Open a modal by name (helper for state manager)
+     */
+    openModalByName(modalName) {
+        console.log(`🪟 Opening modal: ${modalName}`);
+        
+        switch (modalName) {
+            case MODALS.MENU:
+                this.modals.showMenu();
+                break;
+            case MODALS.PASS:
+                this.modals.showPassModal();
+                break;
+            case MODALS.RESULT:
+                // Result modal is shown by game logic, not directly
+                break;
+            case MODALS.TIMEOUT:
+                // Timeout modal is shown by timer, not directly
+                break;
+        }
+    }
+    
+    /**
+     * Close a modal by name (helper for state manager)
+     */
+    closeModalByName(modalName) {
+        console.log(`🪟 Closing modal: ${modalName}`);
+        
+        switch (modalName) {
+            case MODALS.MENU:
+                this.modals.hideMenu();
+                break;
+            case MODALS.PASS:
+                this.modals.hidePassModal();
+                break;
+            case MODALS.RESULT:
+                this.modals.hideResult();
+                break;
+            case MODALS.TIMEOUT:
+                this.modals.hideTimeout();
+                break;
+        }
     }
     
     async handleGo() {
@@ -1081,12 +1265,18 @@ export class UIController {
             return;
         }
         
-        console.log(`🎓 Showing tutorial for Level ${level}`);
+        console.log(`🎓 Showing level ${level} interstitial`);
         
         // Show interstitial and wait for user choice
         const wantsTutorial = await this.modals.showInterstitialAsync(level);
         
         if (wantsTutorial) {
+            // Transition to tutorial mode
+            this.stateManager.setState({
+                view: UI_VIEWS.GAMEPLAY,
+                mode: GAMEPLAY_MODES.TUTORIAL
+            });
+            
             // Level 1 uses the intro tutorial, other levels use their own
             const scenarioKey = level === 1 ? 'intro' : level;
             const tutorialToShow = getTutorialScenario(scenarioKey);
@@ -1099,7 +1289,13 @@ export class UIController {
                 this.game.storage.markTutorialAsViewed(level);
             }
         } else {
-            // User declined tutorial - start timer now
+            // User declined tutorial - transition to regular gameplay
+            this.stateManager.setState({
+                view: UI_VIEWS.GAMEPLAY,
+                mode: GAMEPLAY_MODES.REGULAR
+            });
+            
+            // Start timer now
             this.game.timer.startFresh();
             
             // Mark as viewed so they don't see it again

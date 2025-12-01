@@ -1,16 +1,15 @@
 # Ready, Set 2 - TODO List
 
-## 🔄 Current Status (Nov 26, 2025)
-**Branch**: `main`  
-**Version**: `4.28.4` (Level 10 tutorial complete)
-**Status**: All tutorials complete! Ready for production features 🎉
+## 🔄 Current Status (Nov 30, 2025)
+**Branch**: `feature/ui-state-management`  
+**Version**: `4.37.1` (State management refactor complete)
+**Status**: UI state management centralized! Daily puzzles working ✅
 
 ---
 
 ## 🎯 Active Priorities
 
 ### High Priority
-- [ ] **Fix daily puzzle scoring** - Reported issue with scoring calculation
 - [ ] **Full playthrough testing (Level 1-10)**
   - Verify all special cube mechanics work correctly
   - Test timer behavior (Level 7+)
@@ -18,8 +17,25 @@
   - Test wild cubes (Level 9+)
   - Test bonus cubes (Level 10)
   - Verify scoring calculations are accurate
+- [ ] **Comprehensive state management testing**
+  - All critical test flows (see CLAUDE.md Testing section)
+  - Mode transitions (regular ↔ tutorial ↔ daily)
+  - Modal behavior (doesn't hide underlying screens)
+  - Daily puzzle data persistence
+
+### Medium Priority
+- [ ] **State-driven timer improvements** (Est: 15-20 min)
+  - Pause timer when modals open (menu, pass, settings)
+  - Resume timer when modals close
+  - Improves UX during gameplay
+  - LOW RISK - Easy event-driven implementation
 
 ### Low Priority
+- [ ] **Event-driven auto-save** (Est: 30-45 min)
+  - Auto-save when leaving gameplay view
+  - Reduces manual saveState() calls
+  - MEDIUM RISK - Need to avoid save conflicts
+  - Consider for future refactor
 - [ ] **Pre-launch: Disable unearned levels in Jump to Level**
   - Keep Jump to Level feature in Settings
   - Only show levels that have been unlocked through gameplay
@@ -157,6 +173,18 @@
 ---
 
 ## 📊 Recent Accomplishments
+
+### November 30, 2025 - State Management Refactor Complete 🎭
+- ✅ Centralized UI state management with AppStateManager
+- ✅ Event-based architecture (observer pattern)
+- ✅ Hierarchical state model (view/mode/modal)
+- ✅ `game.mode` and `game.isTutorialActive` converted to getters
+- ✅ Fixed mode transition bugs (tutorial → daily puzzle)
+- ✅ Modal behavior fixed (overlays don't hide underlying screens)
+- ✅ Settings and Puzzle Builder properly scoped as menu views
+- ✅ Comprehensive state cleanup on mode transitions
+- ✅ Updated CLAUDE.md with state management documentation
+- ✅ Streamlined .cursorrules for workflow standards
 
 ### November 2025 - Tutorial System Complete 🎓
 - ✅ Level 10 tutorial with animated cube placement

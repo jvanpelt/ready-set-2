@@ -1,20 +1,47 @@
 # Ready, Set 2 - AI Context Guide
 
-**Last Updated:** October 9, 2025  
-**Version:** 3.4.2  
-**Purpose:** This document provides comprehensive context for AI assistants working on this codebase.
+**Last Updated:** November 30, 2025  
+**Version:** 4.36.3  
+**Purpose:** This document provides comprehensive context for AI assistants and developers working on this codebase.
 
 ---
 
 ## Table of Contents
-1. [Game Overview](#game-overview)
-2. [Set Theory Mechanics](#set-theory-mechanics)
-3. [Level Progression](#level-progression)
-4. [Code Architecture](#code-architecture)
-5. [Key Algorithms](#key-algorithms)
-6. [Design Decisions](#design-decisions)
-7. [Common Tasks](#common-tasks)
-8. [Edge Cases & Gotchas](#edge-cases--gotchas)
+1. [Quick Start for New Contributors](#quick-start-for-new-contributors)
+2. [Game Overview](#game-overview)
+3. [Set Theory Mechanics](#set-theory-mechanics)
+4. [Level Progression](#level-progression)
+5. [Code Architecture](#code-architecture)
+6. [State Management](#state-management)
+7. [Version Management](#version-management)
+8. [Key Algorithms](#key-algorithms)
+9. [Design Decisions](#design-decisions)
+10. [Common Tasks](#common-tasks)
+11. [Edge Cases & Gotchas](#edge-cases--gotchas)
+12. [Testing & Deployment](#testing--deployment)
+
+---
+
+## Quick Start for New Contributors
+
+### First Steps
+1. Read this entire document (30 min)
+2. Review `.cursorrules` for coding standards
+3. Check current version in `js/version.js`
+4. Always test on both desktop AND mobile
+5. NEVER commit without updating version number
+
+### Before Making Changes
+- Create a feature branch (`feature/`, `bugfix/`, `fix/`)
+- NEVER work directly on `main`
+- Check TODO.md for current priorities
+- Look for similar patterns in existing code
+
+### Key Principles
+- **State Management:** Use AppStateManager for UI state
+- **Mode Management:** `game.mode` and `game.isTutorialActive` are getters (read-only)
+- **Version Control:** Update `js/version.js` only (cache busting happens automatically)
+- **Testing:** Test critical flows (see Testing & Deployment section)
 
 ---
 
@@ -231,16 +258,23 @@ Each level requires reaching a **goal score** to advance. Score resets on new le
 │   ├── svgSymbols.js      # SVG generation for operators
 │   ├── constants.js       # Centralized layout/game constants
 │   ├── scenarioManager.js # Custom puzzle scenarios (tutorial system)
+│   ├── DailyPuzzleManager.js # Daily puzzle logic & generation
+│   ├── DailyPuzzleGenerator.js # Daily puzzle generation algorithms
+│   ├── TimerManager.js    # Timer state & persistence
+│   ├── tutorialScenarios.js # Tutorial content & walkthroughs
+│   ├── puzzleCodec.js     # Puzzle encoding/decoding
+│   ├── version.js         # Centralized version management
 │   └── ui/
-│       ├── UIController.js       # Main UI orchestrator
-│       ├── UIRenderer.js         # Rendering logic
-│       ├── DragDropHandler.js    # Drag & drop + touch events
-│       ├── ModalManager.js       # Tutorial, menu, result modals
-│       ├── AppScaler.js          # Dynamic scaling for tutorials
-│       ├── WildCubeManager.js    # Wild cube operator selection
+│       ├── UIController.js         # Main UI orchestrator
+│       ├── UIRenderer.js           # Rendering logic
+│       ├── AppStateManager.js      # Centralized UI state tracking
+│       ├── DragDropHandler.js      # Drag & drop + touch events
+│       ├── ModalManager.js         # Modals & interstitials
+│       ├── HomeScreenManager.js    # Home screen logic
+│       ├── AppScaler.js            # Dynamic scaling for tutorials
+│       ├── WildCubeManager.js      # Wild cube operator selection
 │       ├── PuzzleBuilderManager.js # Debug puzzle builder
-│       ├── TutorialManager.js    # Interactive tutorial system
-│       └── ScenarioManager.js    # Tutorial scenario loader
+│       └── TutorialManager.js      # Interactive tutorial system
 └── old game files/        # Reference files from original game
 ```
 
@@ -284,6 +318,7 @@ Each level requires reaching a **goal score** to advance. Score resets on new le
 - `LAYOUT` constants (breakpoints, sizes, thresholds)
 - `GAME` constants (points, timers, dice generation rules)
 - `COLORS` and `OPERATORS` enums
+- `UI_VIEWS`, `GAMEPLAY_MODES`, `MODALS` enums for state management
 - Helper functions: `getDieSize()`, `isMobile()`
 
 **`scenarioManager.js`**
@@ -291,11 +326,34 @@ Each level requires reaching a **goal score** to advance. Score resets on new le
 - Bitwise card encoding/decoding
 - `getAllPossibleCards()` and `cardsFromIndices()`
 
+**`DailyPuzzleManager.js`**
+- Daily puzzle mode orchestration
+- Puzzle loading and persistence
+- Completion tracking
+- State transitions for daily puzzles
+
+**`TimerManager.js`**
+- Timer state management
+- Persistence across page refreshes
+- Timeout handling
+- Level 7+ timer logic
+
+**`version.js`**
+- Single source of truth for version number
+- Used for cache busting across the app
+
 **`ui/UIController.js`**
 - Coordinates all UI modules
 - Event handling
 - Solution Helper (auto-dim/flip preview)
 - Pass system flow
+- Integrates with AppStateManager
+
+**`ui/AppStateManager.js`**
+- Centralized UI state tracking
+- Event-based state change notifications
+- Hierarchical state model (view/mode/modal)
+- State transition orchestration
 
 **`ui/UIRenderer.js`**
 - Renders cards, dice, solutions
@@ -310,26 +368,64 @@ Each level requires reaching a **goal score** to advance. Score resets on new le
 - Position tracking
 
 **`ui/ModalManager.js`**
-- Tutorial modal
 - Menu/settings modal
-- Result modal (success/error)
+- Interstitial screens (level, daily puzzle)
+- Result modals (success/error)
 - Pass modal (checking/warning)
 - Timeout modal (Level 7+)
 
+**`ui/HomeScreenManager.js`**
+- Home screen display and navigation
+- Level continuation
+- Daily puzzle entry
+- Tutorial access
+
+**`ui/TutorialManager.js`**
+- Interactive tutorial system
+- Step-by-step walkthroughs
+- Tutorial scenario loading
+- Completion routing based on entry point
+
 ### Data Flow
 
+**User Action → State Change:**
 ```
 User Action
     ↓
 UIController (handles event)
     ↓
-Game (updates state)
+AppStateManager.setState()
+    ↓
+Fires 'stateChanged' event
+    ↓
+UIController.handleStateChange()
+    ↓
+  - exitState(old) - cleanup
+  - enterState(new) - setup
+    ↓
+Game (updates state if needed)
     ↓
 GameStorage (persists to localStorage)
     ↓
 UIController.render()
     ↓
 UIRenderer (updates DOM)
+```
+
+**Modal Flow:**
+```
+User clicks Menu
+    ↓
+stateManager.openModal('menu')
+    ↓
+UIController.handleStateChange()
+    ↓
+  - Only modal changed (view stays same)
+  - Call openModalByName('menu')
+    ↓
+ModalManager.showMenu()
+    ↓
+Menu appears OVER current view
 ```
 
 **For Solution Submission:**
@@ -352,6 +448,93 @@ UIController shows result modal
 Game.generateNewRound() (if score < goal)
 OR Game.startNewLevel() (if score >= goal)
 ```
+
+---
+
+## State Management
+
+### State Management Architecture (v4.36+)
+
+**AppStateManager** (`ui/AppStateManager.js`)
+- Centralized UI state tracking
+- Event-based architecture (observer pattern)
+- Hierarchical state model:
+  ```javascript
+  {
+    view: 'home' | 'level-interstitial' | 'daily-intro' | 'daily-result' | 'gameplay',
+    mode: null | 'regular' | 'tutorial' | 'daily',  // Only when view='gameplay'
+    modal: null | 'menu' | 'pass' | 'result' | 'timeout',  // Overlay state
+    data: {}  // Contextual data (level number, puzzle info, etc.)
+  }
+  ```
+
+**Key Concepts:**
+- **Views** are mutually exclusive (you're either on Home OR Gameplay)
+- **Modes** are sub-states of gameplay view
+- **Modals** are overlays that don't change the underlying view
+- State changes fire `stateChanged` events
+- UIController listens and orchestrates transitions
+
+**Game Mode & Tutorial State:**
+- `game.mode` is now a **getter** (reads from AppStateManager)
+- `game.isTutorialActive` is now a **getter** (returns `mode === 'tutorial'`)
+- NEVER set these directly - they're computed from state
+- To change mode: `stateManager.setState({ view: 'gameplay', mode: 'daily' })`
+
+**Critical Rules:**
+1. Always clear `mode` when transitioning to non-gameplay views
+2. Clear `game.dailyPuzzle` when exiting daily mode
+3. Modals don't hide the view underneath them
+4. State transitions must be explicit (no implicit state changes)
+
+**Example State Transitions:**
+```javascript
+// Going to home from tutorial
+stateManager.setState({ 
+    view: 'home',
+    mode: null  // MUST clear mode!
+});
+
+// Opening menu (doesn't change view)
+stateManager.openModal('menu');
+
+// Starting daily puzzle
+stateManager.setState({
+    view: 'gameplay',
+    mode: 'daily'
+});
+```
+
+---
+
+## Version Management
+
+### Centralized Versioning (v4.24+)
+
+**Single Source of Truth:** `js/version.js`
+```javascript
+export const VERSION = 'v4.36.3';
+```
+
+**Automatic Cache Busting:**
+- `main.js` imports and uses VERSION for script tags
+- `index.html` uses `?v=${VERSION}` query params
+- CSS files loaded with version parameter
+
+**Version Format:** `vMAJOR.MINOR.PATCH`
+- **MAJOR:** Breaking changes, major refactors
+- **MINOR:** New features, significant updates
+- **PATCH:** Bug fixes, small improvements
+
+**When to Increment:**
+- ALWAYS increment when making ANY code changes
+- Update ONLY in `js/version.js` (nowhere else)
+- Commit version bump with your changes
+
+**Why This Matters:**
+- Prevents cached old code from breaking new features
+- Users always get latest version on refresh
+- Clear deployment history
 
 ---
 
@@ -908,22 +1091,122 @@ id: `die-${index}-${Date.now()}`
 
 **When to revisit:** If we remove scaling or find a better approach for handling scaled drag images.
 
+### 12. State Must Be Fully Cleared on Mode Transitions
+
+**Problem:** Leftover state from tutorial/daily modes can cause wrong behavior.
+
+**Example Bug:**
+- Tutorial completes → Goes to home
+- State becomes `{view: 'home', mode: 'tutorial'}` (invalid!)
+- Daily puzzle checks `game.mode` → Still sees tutorial data
+- Thinks it's resuming → Skips loading new puzzle
+
+**Solution:** Always clear mode when leaving gameplay:
+```javascript
+setState({ 
+    view: 'home',
+    mode: null  // MUST clear mode
+})
+```
+
+**Where to check:**
+- Menu → Home button
+- Tutorial completion paths
+- Daily puzzle exit
+- Any transition from gameplay to non-gameplay view
+
+### 13. Daily Puzzle Reference Must Be Cleared
+
+**Problem:** `game.dailyPuzzle` persists across sessions.
+
+**Impact:** `game.mode` getter uses it to determine mode, causing false "daily" mode.
+
+**Solution:**
+- Clear in `game.enterRegularMode()`
+- Clear when exiting daily gameplay view
+- Check `game.dailyPuzzle = null` in state transitions
+
+**Where to check:**
+- `UIController.exitState()` when leaving daily mode
+- `game.enterRegularMode()`
+- Any transition from daily to regular/tutorial modes
+
 ---
 
-## Testing Checklist
+## Testing & Deployment
 
-### Before Committing Major Changes
+### Critical Test Flows
 
-- [ ] Test on desktop (Chrome, Safari)
-- [ ] Test on mobile (touch events, responsive layout)
+**1. Home & Navigation**
+- [ ] Home → Continue Level → Interstitial → Gameplay
+- [ ] Home → Daily Puzzle → Interstitial → Gameplay
+- [ ] Home → How to Play → Tutorial → Home
+- [ ] Menu opens/closes without hiding screen underneath
+- [ ] Settings view opens from menu
+- [ ] Puzzle Builder opens from menu
+
+**2. Mode Transitions**
+- [ ] Tutorial → Menu → Home → Daily Puzzle (displays correct puzzle)
+- [ ] Daily Puzzle → Menu → Home → Continue Level (displays correct level)
+- [ ] Regular game → Tutorial → Return to saved game
+- [ ] Daily puzzle number shows during daily mode
+- [ ] Daily puzzle number hidden during tutorial
+
+**3. State Verification** (Use browser console)
+```javascript
+// Check current state
+window.uiController.stateManager.getState()
+
+// Verify mode getter
+window.game.mode  // Should match state.mode (or 'regular' if view != 'gameplay')
+
+// Check tutorial flag  
+window.game.isTutorialActive  // Should be true only if mode='tutorial'
+
+// Check daily puzzle reference
+window.game.dailyPuzzle  // Should be null unless in daily mode
+```
+
+**4. Daily Puzzle**
+- [ ] Shows puzzle number during gameplay
+- [ ] Interstitial shows correct stats (shortest/longest solution, count)
+- [ ] Completes correctly
+- [ ] Result screen shows with score and emoji solution
+- [ ] Can share solution
+- [ ] Refreshing after complete shows result (not re-dealing)
+- [ ] Second visit to daily puzzle loads fresh (not tutorial data)
+
+**5. Timer (Level 7+)**
+- [ ] Starts on new round
+- [ ] Persists across refresh
+- [ ] Timeout modal shows correctly
+- [ ] Tutorial pauses timer appropriately (except Level 7 tutorial)
+
+**6. Tutorial System**
+- [ ] All 10 levels have working tutorials
+- [ ] Tutorial from home returns to home
+- [ ] Tutorial from level interstitial starts new puzzle after
+- [ ] Tutorial from menu during gameplay restores game state
+- [ ] Solution helper forced off for Level 10 tutorial
+- [ ] Cubes disabled for Level 10 tutorial card manipulation
+
+### Testing Checklist
+
+### Deployment Checklist
+
+- [ ] All critical test flows pass on desktop
+- [ ] All critical test flows pass on mobile
 - [ ] Test solution validation with restrictions
 - [ ] Test timer persistence (refresh mid-game)
 - [ ] Test pass system (solution exists vs doesn't)
 - [ ] Test required cube enforcement
 - [ ] Test level advancement
 - [ ] Test localStorage save/load
-- [ ] Check console for errors
-- [ ] Increment cache version in `index.html`
+- [ ] No console errors
+- [ ] Version number incremented in `js/version.js`
+- [ ] Changes documented in commit message
+- [ ] Branch merged to main (if applicable)
+- [ ] Tested on GitHub Pages after deploy
 
 ### Common Test Scenarios
 
@@ -1006,16 +1289,18 @@ id: `die-${index}-${Date.now()}`
 
 **Original Developer:** Jason Van Pelt  
 **AI Development Partner:** Claude (Anthropic)  
-**Development Period:** October 2025  
+**Development Period:** October 2025 - Present  
 **GitHub:** https://github.com/jvanpelt/ready-set-2  
 **Hosted:** GitHub Pages (https://jvanpelt.github.io/ready-set-2)
 
-**For AI Assistants:**
-- Read this file first before making changes
+**For AI Assistants & New Contributors:**
+- Read this file AND `.cursorrules` before making changes
 - Consult `old game files/` for original game reference
 - Test thoroughly, especially cross-browser and mobile
 - Update this file when making architectural changes
-- Increment cache version in `index.html` for each deployment
+- ALWAYS increment version in `js/version.js` for each change
+- Use AppStateManager for all UI state changes
+- Never set `game.mode` or `game.isTutorialActive` directly (they're getters)
 
 ---
 

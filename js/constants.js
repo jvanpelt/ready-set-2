@@ -60,3 +60,26 @@ export function isMobile() {
     return window.innerWidth <= LAYOUT.MOBILE_BREAKPOINT;
 }
 
+// UI State Constants
+export const UI_VIEWS = {
+    HOME: 'home',
+    LEVEL_INTERSTITIAL: 'level-interstitial',
+    DAILY_INTRO: 'daily-intro',
+    DAILY_RESULT: 'daily-result',
+    GAMEPLAY: 'gameplay',
+};
+
+export const GAMEPLAY_MODES = {
+    REGULAR: 'regular',
+    TUTORIAL: 'tutorial',
+    DAILY: 'daily',
+};
+
+export const MODALS = {
+    NONE: null,
+    MENU: 'menu',
+    PASS: 'pass',
+    RESULT: 'result',
+    TIMEOUT: 'timeout',
+};
+
