@@ -1873,8 +1873,6 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
     }
     
     .interstitial-badge {
-        width: 80px;
-        height: 80px;
         font-size: 40px;
         margin-bottom: 15px;
     }
