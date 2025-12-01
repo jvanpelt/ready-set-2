@@ -506,6 +506,9 @@ function complement(set, cards) {
 
 /**
  * Calculate score based on expression complexity
+ * Matches original game scoring logic:
+ * 1. Sum base points for all cubes (including special cubes)
+ * 2. Multiply by cube count
  */
 export function calculateScore(expression) {
     if (!expression || expression.length === 0) return 0;
@@ -514,15 +517,35 @@ export function calculateScore(expression) {
     
     expression.forEach(die => {
         if (die.type === 'color') {
-            totalPoints += 5; // Base points for colors
+            // Colors: 5 points base
+            // Bonus cubes add +45 more (50 total)
+            totalPoints += die.isBonus ? 50 : 5;
         } else if (die.type === 'wild') {
-            totalPoints += 25; // Wild cubes are worth 25 points (Level 9+)
+            // Wild cubes: 25 points base
+            totalPoints += 25;
         } else if (die.type === 'operator') {
-            // Find operator points
+            // Find operator points from OPERATORS constant
             const operator = Object.values(OPERATORS).find(op => op.symbol === die.value);
             if (operator) {
-                totalPoints += operator.points;
+                // Required cubes add +15 more (25 total for regular ops, 30 for prime)
+                totalPoints += die.isRequired ? operator.points + 15 : operator.points;
             }
+        } else if (die.type === 'set-constant') {
+            // Universe/Null: 15 points base
+            // Bonus cubes add +35 more (50 total)
+            // Required cubes add +10 more (25 total)
+            let points = 15;
+            if (die.isBonus) points = 50;
+            else if (die.isRequired) points = 25;
+            totalPoints += points;
+        } else if (die.type === 'restriction') {
+            // Equals/Subset: 20 points base
+            // Bonus cubes add +30 more (50 total)
+            // Required cubes add +5 more (25 total)
+            let points = 20;
+            if (die.isBonus) points = 50;
+            else if (die.isRequired) points = 25;
+            totalPoints += points;
         }
     });
     
