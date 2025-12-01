@@ -646,6 +646,14 @@ const RESTRICTION_PATTERNS = [
     "setName,prime,restriction,color,operator,color",
     "setName,restriction,color,operator,color,prime",
     "setName,restriction,color,prime,operator,color",
+    // 6 cubes with TWO restrictions + prime (3 patterns added for daily puzzle fix)
+    // Matches the 6+2 double-restriction template from DailyPuzzleGenerator
+    // Physical constraint: 2 restrictions + 1 prime + 3 colors = 6 dice (uses all 2 special cube slots for restrictions)
+    // Cannot include setName as that would exceed the 2-special-cube limit (restr + setName combined)
+    // Valid syntactic positions based on similar patterns in 5-cube restrictions:
+    "color,prime,restriction,color,restriction,color",      // prime on first color (A′ = B = C)
+    "color,restriction,color,prime,restriction,color",      // prime in middle (A = B′ = C)
+    "color,restriction,color,restriction,color,prime",      // prime on last color (A = B = C′)
     // 7 cubes (15 patterns)
     "color,operator,color,operator,color,restriction,color",
     "color,operator,color,operator,color,restriction,setName",
