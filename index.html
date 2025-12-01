@@ -143,10 +143,101 @@
                 <ul class="menu-list">
                     <li><button id="menu-home-btn" class="btn btn-secondary">🏠 Home</button></li>
                     <li><button id="tutorial-btn" class="btn btn-secondary">How to Play</button></li>
+                    <li><button id="scoring-btn" class="btn btn-secondary">📊 Scoring</button></li>
                     <li><button id="settings-btn" class="btn btn-primary">Settings</button></li>
                     <li><button id="puzzle-builder-btn" class="btn btn-primary">🛠️ Puzzle Builder</button></li>
                     <li><button id="refresh-btn" class="btn btn-primary">🔄 Refresh</button></li>
                 </ul>
+            </div>
+            <div id="menu-scoring-view" class="hidden">
+                <h2>Scoring Guide</h2>
+                <button id="scoring-back-btn" class="btn btn-secondary" style="margin-bottom: 20px;">← Back</button>
+                
+                <div class="scoring-explanation">
+                    <h3>How Scoring Works</h3>
+                    <p>Your score is calculated in two steps:</p>
+                    <ol>
+                        <li><strong>Add up</strong> the base points for each cube in your solution</li>
+                        <li><strong>Multiply</strong> that total by the number of cubes used</li>
+                    </ol>
+                    <p class="scoring-example"><strong>Example:</strong> Using 5 cubes worth 35 base points = 35 × 5 = <strong>175 points</strong></p>
+                </div>
+
+                <div class="scoring-table-container">
+                    <h3>Cube Values</h3>
+                    <table class="scoring-table">
+                        <thead>
+                            <tr>
+                                <th>Cube Type</th>
+                                <th>Example</th>
+                                <th>Base Points</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Color</td>
+                                <td><div class="scoring-die color-red"></div></td>
+                                <td>5</td>
+                            </tr>
+                            <tr>
+                                <td>Union (∪)</td>
+                                <td><div class="scoring-die operator-union">∪</div></td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>Intersection (∩)</td>
+                                <td><div class="scoring-die operator-intersection">∩</div></td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>Difference (−)</td>
+                                <td><div class="scoring-die operator-difference">−</div></td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>Prime (′)</td>
+                                <td><div class="scoring-die operator-prime">′</div></td>
+                                <td>15</td>
+                            </tr>
+                            <tr>
+                                <td>Universe (U)</td>
+                                <td><div class="scoring-die set-constant-universe">U</div></td>
+                                <td>15</td>
+                            </tr>
+                            <tr>
+                                <td>Null (∅)</td>
+                                <td><div class="scoring-die set-constant-null">∅</div></td>
+                                <td>15</td>
+                            </tr>
+                            <tr>
+                                <td>Equals (=)</td>
+                                <td><div class="scoring-die restriction-equals">=</div></td>
+                                <td>20</td>
+                            </tr>
+                            <tr>
+                                <td>Subset (⊆)</td>
+                                <td><div class="scoring-die restriction-subset">⊆</div></td>
+                                <td>20</td>
+                            </tr>
+                            <tr class="special-row">
+                                <td>Wild (?)</td>
+                                <td><div class="scoring-die wild-cube">?</div></td>
+                                <td>25</td>
+                            </tr>
+                            <tr class="special-row">
+                                <td>Required</td>
+                                <td><div class="scoring-die color-red required-cube"></div></td>
+                                <td>25</td>
+                            </tr>
+                            <tr class="special-row">
+                                <td>Bonus</td>
+                                <td><div class="scoring-die color-gold bonus-cube"></div></td>
+                                <td>50</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="scoring-note"><em>Special cubes (Required/Bonus) override the base value of any cube type</em></p>
+                </div>
             </div>
             <div id="menu-settings-view" class="hidden">
                 <h2>Settings</h2>

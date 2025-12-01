@@ -42,6 +42,7 @@ export class ModalManager {
         this.menuModal = document.getElementById('menu-modal');
         this.menuMainView = document.getElementById('menu-main-view');
         this.menuSettingsView = document.getElementById('menu-settings-view');
+        this.menuScoringView = document.getElementById('menu-scoring-view');
         this.menuBuilderView = document.getElementById('menu-builder-view');
         
         // Pass confirmation
@@ -293,17 +294,29 @@ export class ModalManager {
     showSettings() {
         this.menuMainView.classList.add('hidden');
         this.menuSettingsView.classList.remove('hidden');
+        this.menuScoringView.classList.add('hidden');
         this.menuBuilderView.classList.add('hidden');
         // Update level selector to current level
         this.levelSelector.value = this.game.level.toString();
     }
     
     /**
-     * Hide settings view, return to main menu
+     * Show scoring guide view within menu
+     */
+    showScoring() {
+        this.menuMainView.classList.add('hidden');
+        this.menuSettingsView.classList.add('hidden');
+        this.menuScoringView.classList.remove('hidden');
+        this.menuBuilderView.classList.add('hidden');
+    }
+    
+    /**
+     * Hide settings/scoring/builder views, return to main menu
      */
     hideSettings() {
         this.menuMainView.classList.remove('hidden');
         this.menuSettingsView.classList.add('hidden');
+        this.menuScoringView.classList.add('hidden');
         this.menuBuilderView.classList.add('hidden');
     }
     
@@ -313,6 +326,7 @@ export class ModalManager {
     showBuilder() {
         this.menuMainView.classList.add('hidden');
         this.menuSettingsView.classList.add('hidden');
+        this.menuScoringView.classList.add('hidden');
         this.menuBuilderView.classList.remove('hidden');
     }
     
