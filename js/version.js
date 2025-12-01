@@ -8,7 +8,7 @@
  * - Build tracking
  */
 
-export const VERSION = 'v4.47.2';
+export const VERSION = 'v4.47.3';
 
 // Convert version to a cache-busting number
 // Format: MAJOR.MINOR.PATCH -> numeric timestamp-like value
