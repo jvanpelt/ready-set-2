@@ -1306,14 +1306,26 @@ class DailyPuzzleGenerator {
             console.warn('Final tokens:', finalTokens);
             console.warn('Token counts:', tokenCounts);
             
-            // Fill to 8 with colors (respects physical constraints)
+            // Fill to 8 respecting physical constraints
             while (dice.length < 8) {
                 // Count current dice by type
                 const colorCount = dice.filter(d => d.type === 'color').length;
                 const operatorCount = dice.filter(d => d.type === 'operator').length;
+                const restrictionCount = dice.filter(d => d.type === 'restriction').length;
+                const setConstantCount = dice.filter(d => d.type === 'set-constant').length;
+                const specialCount = restrictionCount + setConstantCount;
                 
-                // Add a color if under the 4-color max
-                if (colorCount < 4) {
+                // Priority 1: Add setName if under 2-special max and don't have one yet
+                if (specialCount < 2 && setConstantCount === 0) {
+                    const setName = Math.random() < 0.5 ? 'U' : '∅';
+                    dice.push({ 
+                        value: setName, 
+                        type: 'set-constant',
+                        id: `die-filler-${Date.now()}-${Math.random()}`
+                    });
+                }
+                // Priority 2: Add color if under 4-color max
+                else if (colorCount < 4) {
                     // Find which colors are already used
                     const usedColors = new Set(dice.filter(d => d.type === 'color').map(d => d.value));
                     const availableColors = ['red', 'blue', 'green', 'gold'].filter(c => !usedColors.has(c));
@@ -1329,7 +1341,7 @@ class DailyPuzzleGenerator {
                         id: `die-filler-${Date.now()}-${Math.random()}`
                     });
                 } else {
-                    console.error(`❌ Cannot add 8th die - already at 4 color max and template only has ${dice.length} cubes!`);
+                    console.error(`❌ Cannot add 8th die - at max for all types! (${dice.length} dice)`);
                     break;
                 }
             }
