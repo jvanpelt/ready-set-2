@@ -36,6 +36,12 @@ global.evaluateRestriction = evaluateRestriction;
 global.isValidSyntax = isValidSyntax;
 global.isValidRestriction = isValidRestriction;
 
+// Suppress verbose setTheory.js console logs during counting
+const originalLog = console.log;
+const originalWarn = console.warn;
+console.log = () => {}; // Suppress all logs initially
+console.warn = () => {}; // Suppress warnings too
+
 // Get input file from command line args
 const inputFile = process.argv[2] || 'data/daily-puzzles-test.json';
 const inputPath = path.resolve(projectRoot, inputFile);
@@ -52,8 +58,16 @@ if (!fs.existsSync(inputPath)) {
 const puzzleData = JSON.parse(fs.readFileSync(inputPath, 'utf8'));
 const puzzles = puzzleData.puzzles;
 
+// Restore console for progress output
+console.log = originalLog;
+console.warn = originalWarn;
+
 console.log(`Loaded ${puzzles.length} puzzles\n`);
 console.log('This may take several minutes...\n');
+
+// Suppress again for counting
+console.log = () => {};
+console.warn = () => {};
 
 // Track statistics
 let totalSolutionsFound = 0;
@@ -69,10 +83,12 @@ puzzles.forEach((puzzle, index) => {
     
     // Show progress every 10 puzzles or on first/last
     if (puzzleNum === 1 || puzzleNum === puzzles.length || puzzleNum % 10 === 0) {
+        console.log = originalLog; // Restore temporarily
         const elapsed = Date.now() - startTime;
         const avgTime = elapsed / puzzleNum;
         const remaining = Math.ceil((puzzles.length - puzzleNum) * avgTime / 1000);
-        console.log(`[${progressPercent}%] Processing puzzle ${puzzleNum}/${puzzles.length} (${remaining}s remaining)`);
+        console.log(`[${progressPercent}%] Processing puzzle ${puzzleNum}/${puzzles.length} (~${remaining}s remaining)`);
+        console.log = () => {}; // Suppress again
     }
     
     // Count all solutions (cards are already in correct format)
@@ -98,6 +114,10 @@ puzzles.forEach((puzzle, index) => {
 });
 
 const totalElapsed = Date.now() - startTime;
+
+// Restore console for final output
+console.log = originalLog;
+console.warn = originalWarn;
 
 console.log('\n✅ COUNTING COMPLETE!\n');
 console.log('Statistics:');

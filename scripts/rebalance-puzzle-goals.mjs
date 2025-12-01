@@ -46,6 +46,85 @@ global.generateDiceForLevel = generateDiceForLevel;
 // Produces bell curve: 14%, 19%, 19%, 19%, 14%, 10%, 5%
 const WEIGHTED_GOALS = [1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7];
 
+/**
+ * Apply special cube logic to a puzzle
+ * 25% chance for each: required, wild, bonus, none
+ * Special cubes are always selected from dice used in the solution
+ */
+function applySpecialCube(dice, solution) {
+    // Roll for special cube type (0-3: 25% each)
+    const roll = Math.floor(Math.random() * 4);
+    
+    if (roll === 3) {
+        // 25% chance: No special cube
+        return dice;
+    }
+    
+    // Parse solution to identify which dice indices are used
+    const solutionDiceIndices = [];
+    const solutionString = `${solution.topRow || ''} ${solution.bottomRow || ''}`.trim();
+    
+    // Remove parentheses and split into tokens
+    const tokens = solutionString.replace(/[()]/g, '').split(/\s+/);
+    
+    // Track which dice indices we've already consumed
+    const usedIndices = new Set();
+    
+    // For each token, find matching dice (consume each die only once)
+    tokens.forEach(token => {
+        // Handle tokens with prime attached (e.g., "blue′" → ["blue", "′"])
+        if (token.includes('′')) {
+            const parts = token.split('′');
+            parts.forEach((part, i) => {
+                if (part) {
+                    // Find first unused die matching this value
+                    const dieIndex = dice.findIndex((d, idx) => d.value === part && !usedIndices.has(idx));
+                    if (dieIndex >= 0) {
+                        usedIndices.add(dieIndex);
+                        solutionDiceIndices.push(dieIndex);
+                    }
+                }
+                if (i < parts.length - 1) {
+                    // Add prime operator
+                    const primeIndex = dice.findIndex((d, idx) => d.value === '′' && !usedIndices.has(idx));
+                    if (primeIndex >= 0) {
+                        usedIndices.add(primeIndex);
+                        solutionDiceIndices.push(primeIndex);
+                    }
+                }
+            });
+        } else if (token) {
+            // Find first unused die matching this value
+            const dieIndex = dice.findIndex((d, idx) => d.value === token && !usedIndices.has(idx));
+            if (dieIndex >= 0) {
+                usedIndices.add(dieIndex);
+                solutionDiceIndices.push(dieIndex);
+            }
+        }
+    });
+    
+    if (solutionDiceIndices.length === 0) {
+        console.warn('⚠️  No solution dice found, skipping special cube');
+        return dice;
+    }
+    
+    // Pick random die index from solution
+    const selectedIndex = solutionDiceIndices[Math.floor(Math.random() * solutionDiceIndices.length)];
+    
+    // Apply special cube property based on roll
+    const specialType = ['required', 'wild', 'bonus'][roll];
+    const propertyName = specialType === 'required' ? 'isRequired' : 
+                        specialType === 'wild' ? 'isWild' : 'isBonus';
+    
+    // Mark ONLY the selected die
+    return dice.map((die, idx) => {
+        if (idx === selectedIndex) {
+            return { ...die, [propertyName]: true };
+        }
+        return die;
+    });
+}
+
 console.log('\n🎯 REBALANCING PUZZLE GOAL DISTRIBUTION\n');
 console.log('Target: Weighted bell curve from regular game mode\n');
 console.log('='.repeat(60));
@@ -158,7 +237,11 @@ Object.entries(toAdd).forEach(([goal, count]) => {
         if (actualGoal !== targetGoal) continue;
         
         // Success!
-        const dice = generator.generateDiceFromSolution(solution);
+        let dice = generator.generateDiceFromSolution(solution);
+        
+        // Apply special cube logic (25% required, 25% wild, 25% bonus, 25% none)
+        dice = applySpecialCube(dice, solution);
+        
         newPuzzles.push({
             id: null, // Will be assigned later
             templateIndex: templates.indexOf(template),
