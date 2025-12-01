@@ -47,6 +47,85 @@ function pickWeightedGoal() {
 }
 
 /**
+ * Apply special cube logic to a puzzle
+ * 25% chance for each: required, wild, bonus, none
+ * Special cubes are always selected from dice used in the solution
+ */
+function applySpecialCube(dice, solution) {
+    // Roll for special cube type (0-3: 25% each)
+    const roll = Math.floor(Math.random() * 4);
+    
+    if (roll === 3) {
+        // 25% chance: No special cube
+        return dice;
+    }
+    
+    // Parse solution to identify which dice indices are used
+    const solutionDiceIndices = [];
+    const solutionString = `${solution.topRow || ''} ${solution.bottomRow || ''}`.trim();
+    
+    // Remove parentheses and split into tokens
+    const tokens = solutionString.replace(/[()]/g, '').split(/\s+/);
+    
+    // Track which dice indices we've already consumed
+    const usedIndices = new Set();
+    
+    // For each token, find matching dice (consume each die only once)
+    tokens.forEach(token => {
+        // Handle tokens with prime attached (e.g., "blue′" → ["blue", "′"])
+        if (token.includes('′')) {
+            const parts = token.split('′');
+            parts.forEach((part, i) => {
+                if (part) {
+                    // Find first unused die matching this value
+                    const dieIndex = dice.findIndex((d, idx) => d.value === part && !usedIndices.has(idx));
+                    if (dieIndex >= 0) {
+                        usedIndices.add(dieIndex);
+                        solutionDiceIndices.push(dieIndex);
+                    }
+                }
+                if (i < parts.length - 1) {
+                    // Add prime operator
+                    const primeIndex = dice.findIndex((d, idx) => d.value === '′' && !usedIndices.has(idx));
+                    if (primeIndex >= 0) {
+                        usedIndices.add(primeIndex);
+                        solutionDiceIndices.push(primeIndex);
+                    }
+                }
+            });
+        } else if (token) {
+            // Find first unused die matching this value
+            const dieIndex = dice.findIndex((d, idx) => d.value === token && !usedIndices.has(idx));
+            if (dieIndex >= 0) {
+                usedIndices.add(dieIndex);
+                solutionDiceIndices.push(dieIndex);
+            }
+        }
+    });
+    
+    if (solutionDiceIndices.length === 0) {
+        console.warn('⚠️  No solution dice found, skipping special cube');
+        return dice;
+    }
+    
+    // Pick random die index from solution
+    const selectedIndex = solutionDiceIndices[Math.floor(Math.random() * solutionDiceIndices.length)];
+    
+    // Apply special cube property based on roll
+    const specialType = ['required', 'wild', 'bonus'][roll];
+    const propertyName = specialType === 'required' ? 'isRequired' : 
+                        specialType === 'wild' ? 'isWild' : 'isBonus';
+    
+    // Mark ONLY the selected die
+    return dice.map((die, idx) => {
+        if (idx === selectedIndex) {
+            return { ...die, [propertyName]: true };
+        }
+        return die;
+    });
+}
+
+/**
  * Generate production puzzles with weighted goals
  */
 function generateProductionPuzzles(targetCount) {
@@ -58,6 +137,7 @@ function generateProductionPuzzles(targetCount) {
     const templates = generator.TEMPLATES;
     const puzzles = [];
     const goalCounts = {};
+    const specialCubeCounts = { required: 0, wild: 0, bonus: 0, none: 0 };
     const startTime = Date.now();
     
     let attempts = 0;
@@ -107,7 +187,19 @@ function generateProductionPuzzles(targetCount) {
         }
         
         // Generate dice array from solution
-        const dice = generator.generateDiceFromSolution(solution);
+        let dice = generator.generateDiceFromSolution(solution);
+        
+        // Apply special cube logic (25% required, 25% wild, 25% bonus, 25% none)
+        dice = applySpecialCube(dice, solution);
+        
+        // Track special cube type
+        const hasRequired = dice.some(d => d.isRequired);
+        const hasWild = dice.some(d => d.isWild);
+        const hasBonus = dice.some(d => d.isBonus);
+        if (hasRequired) specialCubeCounts.required++;
+        else if (hasWild) specialCubeCounts.wild++;
+        else if (hasBonus) specialCubeCounts.bonus++;
+        else specialCubeCounts.none++;
         
         // Success! Add puzzle
         puzzles.push({
@@ -139,6 +231,15 @@ function generateProductionPuzzles(targetCount) {
         const percent = ((count / puzzles.length) * 100).toFixed(1);
         const bar = '█'.repeat(Math.round(count / 10));
         console.log(`  Goal ${goal}: ${count.toString().padStart(4)} (${percent.padStart(5)}%) ${bar}`);
+    });
+    
+    // Show special cube distribution
+    console.log('\nSpecial Cube Distribution:');
+    Object.entries(specialCubeCounts).forEach(([type, count]) => {
+        const percent = ((count / puzzles.length) * 100).toFixed(1);
+        const bar = '█'.repeat(Math.round(count / 10));
+        const label = type.charAt(0).toUpperCase() + type.slice(1);
+        console.log(`  ${label.padEnd(10)}: ${count.toString().padStart(4)} (${percent.padStart(5)}%) ${bar}`);
     });
     
     if (puzzles.length < targetCount) {
