@@ -2049,8 +2049,8 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
 
 /* Restriction cubes - SVGs will be injected */
 .scoring-die.operator-restriction {
-    background: #3498db;
-    color: white;
+    background: white;
+    color: #3498db;
 }
 
 /* Wild cube */
