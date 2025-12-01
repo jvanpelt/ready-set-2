@@ -1299,21 +1299,41 @@ class DailyPuzzleGenerator {
             }
         }
         
-        // Validate we have exactly 8 dice (our templates should ensure this)
+        // Validate we have exactly 8 dice
         if (dice.length !== 8) {
             console.warn(`⚠️ Generated ${dice.length} dice, expected 8!`);
             console.warn('Expression:', expr);
             console.warn('Final tokens:', finalTokens);
             console.warn('Token counts:', tokenCounts);
             
-            // Fill or trim to 8
+            // Fill to 8 with colors (respects physical constraints)
             while (dice.length < 8) {
-                dice.push({ 
-                    value: '∪', 
-                    type: 'operator',
-                    id: `die-filler-${Date.now()}-${Math.random()}`
-                });
+                // Count current dice by type
+                const colorCount = dice.filter(d => d.type === 'color').length;
+                const operatorCount = dice.filter(d => d.type === 'operator').length;
+                
+                // Add a color if under the 4-color max
+                if (colorCount < 4) {
+                    // Find which colors are already used
+                    const usedColors = new Set(dice.filter(d => d.type === 'color').map(d => d.value));
+                    const availableColors = ['red', 'blue', 'green', 'gold'].filter(c => !usedColors.has(c));
+                    
+                    // Pick a random unused color, or duplicate if all 4 colors used
+                    const color = availableColors.length > 0 
+                        ? availableColors[Math.floor(Math.random() * availableColors.length)]
+                        : ['red', 'blue', 'green', 'gold'][Math.floor(Math.random() * 4)];
+                    
+                    dice.push({ 
+                        value: color, 
+                        type: 'color',
+                        id: `die-filler-${Date.now()}-${Math.random()}`
+                    });
+                } else {
+                    console.error(`❌ Cannot add 8th die - already at 4 color max and template only has ${dice.length} cubes!`);
+                    break;
+                }
             }
+            
             if (dice.length > 8) {
                 dice.length = 8;
             }
