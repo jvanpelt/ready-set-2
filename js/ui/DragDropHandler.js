@@ -75,6 +75,7 @@ export class DragDropHandler {
                     id: die.dataset.id,
                     rotation: rotation, // Preserve rotation from entrance animation
                     isRequired: die.dataset.isRequired === 'true', // Preserve required status
+                    isBonus: die.dataset.isBonus === 'true', // Preserve bonus status
                     selectedOperator: die.dataset.selectedOperator || null // Preserve wild cube selection
                 };
                 this.draggedFromSolution = false;
