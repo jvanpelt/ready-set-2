@@ -509,6 +509,10 @@ function complement(set, cards) {
  * Matches original game scoring logic:
  * 1. Sum base points for all cubes (including special cubes)
  * 2. Multiply by cube count
+ * 
+ * Special cube rules (from original game):
+ * - ANY cube can be Required (25 points) or Bonus (50 points)
+ * - Wild cubes are always 25 points (can't be required/bonus)
  */
 export function calculateScore(expression) {
     if (!expression || expression.length === 0) return 0;
@@ -516,36 +520,25 @@ export function calculateScore(expression) {
     let totalPoints = 0;
     
     expression.forEach(die => {
-        if (die.type === 'color') {
-            // Colors: 5 points base
-            // Bonus cubes add +45 more (50 total)
-            totalPoints += die.isBonus ? 50 : 5;
+        // Special cubes override base points
+        if (die.isBonus) {
+            totalPoints += 50; // Bonus cubes are always 50 points
+        } else if (die.isRequired) {
+            totalPoints += 25; // Required cubes are always 25 points
         } else if (die.type === 'wild') {
-            // Wild cubes: 25 points base
-            totalPoints += 25;
+            totalPoints += 25; // Wild cubes are 25 points
+        } else if (die.type === 'color') {
+            totalPoints += 5; // Colors: 5 points base
         } else if (die.type === 'operator') {
             // Find operator points from OPERATORS constant
             const operator = Object.values(OPERATORS).find(op => op.symbol === die.value);
             if (operator) {
-                // Required cubes add +15 more (25 total for regular ops, 30 for prime)
-                totalPoints += die.isRequired ? operator.points + 15 : operator.points;
+                totalPoints += operator.points; // Union/Intersection/Difference: 10, Prime: 15
             }
         } else if (die.type === 'set-constant') {
-            // Universe/Null: 15 points base
-            // Bonus cubes add +35 more (50 total)
-            // Required cubes add +10 more (25 total)
-            let points = 15;
-            if (die.isBonus) points = 50;
-            else if (die.isRequired) points = 25;
-            totalPoints += points;
+            totalPoints += 15; // Universe/Null: 15 points base
         } else if (die.type === 'restriction') {
-            // Equals/Subset: 20 points base
-            // Bonus cubes add +30 more (50 total)
-            // Required cubes add +5 more (25 total)
-            let points = 20;
-            if (die.isBonus) points = 50;
-            else if (die.isRequired) points = 25;
-            totalPoints += points;
+            totalPoints += 20; // Equals/Subset: 20 points base
         }
     });
     
