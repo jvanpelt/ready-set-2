@@ -47,6 +47,38 @@ global.generateDiceForLevel = generateDiceForLevel;
 const WEIGHTED_GOALS = [1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7];
 
 /**
+ * Pick a weighted random template
+ * Favors 8-cube templates to ensure higher-scoring daily puzzles
+ * Target: ~75% 8-cube, ~25% 7-cube (vs natural 71.6% / 28.4%)
+ */
+function pickWeightedTemplate(templates, generator) {
+    // Separate templates by cube count
+    const sevenCubeTemplates = [];
+    const eightCubeTemplates = [];
+    
+    templates.forEach(t => {
+        const count = generator.countTokens(t);
+        if (count === 7) {
+            sevenCubeTemplates.push(t);
+        } else if (count === 8) {
+            eightCubeTemplates.push(t);
+        }
+    });
+    
+    // 25% chance for 7-cube template, 75% for 8-cube
+    const use7Cube = Math.random() < 0.25;
+    
+    if (use7Cube && sevenCubeTemplates.length > 0) {
+        return sevenCubeTemplates[Math.floor(Math.random() * sevenCubeTemplates.length)];
+    } else if (eightCubeTemplates.length > 0) {
+        return eightCubeTemplates[Math.floor(Math.random() * eightCubeTemplates.length)];
+    }
+    
+    // Fallback to any template
+    return templates[Math.floor(Math.random() * templates.length)];
+}
+
+/**
  * Apply special cube logic to a puzzle
  * 25% chance for each: required, wild, bonus, none
  * Special cubes are always selected from dice used in the solution
@@ -221,8 +253,8 @@ Object.entries(toAdd).forEach(([goal, count]) => {
             console.log(`  [${generated}/${count}] ${attempts} attempts, ${elapsed}s elapsed (${rate.toFixed(1)} attempts/s)`);
         }
         
-        // Pick random template
-        const template = templates[Math.floor(Math.random() * templates.length)];
+        // Pick weighted template (75% 8-cube, 25% 7-cube)
+        const template = pickWeightedTemplate(templates, generator);
         
         // Generate dice and cards
         const generatedDice = generateDiceForLevel(6);
