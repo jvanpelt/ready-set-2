@@ -43,7 +43,7 @@ node scripts/rebalance-puzzle-goals.mjs data/daily-puzzles-production.json
 - Removes excess puzzles from overrepresented goals (1, 2)
 - Does NOT count solutions (will be done in Step 3)
 - Shuffles and re-IDs all puzzles
-- Achieves perfect bell curve: 5%, 20%, 30%, 30%, 10%, 4%, 1%
+- Achieves perfect bell curve: 14.3%, 19%, 19%, 19%, 14.3%, 9.5%, 4.8%
 
 **Output:** `data/daily-puzzles-production-rebalanced.json` (~2.4MB)
 

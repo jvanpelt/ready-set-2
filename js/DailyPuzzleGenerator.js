@@ -308,15 +308,309 @@ class DailyPuzzleGenerator {
             });
         });
         
+        // ===== CATEGORY 7: 4+3 and 3+4 Templates with Prime (7-cube max solutions) =====
+        // These allow proper use of prime operator while staying within physical constraints
+        // 1 restriction + 1 prime + 1 regular operator + 4 colors OR 3 colors + 1 setName
+        // Total: 7 cubes (but puzzle still has 8 dice with 1 unused)
+        
+        ops.forEach(op => {
+            ['=', '⊆'].forEach(restr => {
+                // Pattern A1: 4+3 with prime before restriction, 4 colors
+                // color prime restriction color + color operator color (7 tokens)
+                const patternA1 = { topRow: `color′ ${restr} color`, bottomRow: `color ${op} color` };
+                const topVarsA1 = this.generateGroupingVariations(patternA1.topRow);
+                const bottomVarsA1 = this.generateGroupingVariations(patternA1.bottomRow);
+                topVarsA1.forEach((topVar, tIdx) => {
+                    bottomVarsA1.forEach((bottomVar, bIdx) => {
+                        templates.push({
+                            topRow: topVar,
+                            bottomRow: bottomVar,
+                            pattern: `4+3-A1-${restr}-${op}-t${tIdx}b${bIdx}`
+                        });
+                    });
+                });
+                
+                // Pattern A2: 4+3 with prime after first color, 4 colors
+                // color restriction color prime + color operator color (7 tokens)
+                const patternA2 = { topRow: `color ${restr} color′`, bottomRow: `color ${op} color` };
+                const topVarsA2 = this.generateGroupingVariations(patternA2.topRow);
+                const bottomVarsA2 = this.generateGroupingVariations(patternA2.bottomRow);
+                topVarsA2.forEach((topVar, tIdx) => {
+                    bottomVarsA2.forEach((bottomVar, bIdx) => {
+                        templates.push({
+                            topRow: topVar,
+                            bottomRow: bottomVar,
+                            pattern: `4+3-A2-${restr}-${op}-t${tIdx}b${bIdx}`
+                        });
+                    });
+                });
+                
+                // Pattern A3: 4+3 with prime before restriction, 3 colors + 1 setName in bottom row
+                // color prime restriction color + color operator setName (7 tokens)
+                const baseA3_1 = { topRow: `color′ ${restr} color`, bottomRow: `color ${op} setName` };
+                const topVarsA3_1 = this.generateGroupingVariations(baseA3_1.topRow);
+                const bottomVarsA3_1 = this.generateGroupingVariations(baseA3_1.bottomRow);
+                topVarsA3_1.forEach((topVar, tIdx) => {
+                    bottomVarsA3_1.forEach((bottomVar, bIdx) => {
+                        templates.push({
+                            topRow: topVar,
+                            bottomRow: bottomVar,
+                            pattern: `4+3-A3.1-${restr}-${op}-t${tIdx}b${bIdx}`
+                        });
+                    });
+                });
+                
+                const baseA3_2 = { topRow: `color′ ${restr} color`, bottomRow: `setName ${op} color` };
+                const topVarsA3_2 = this.generateGroupingVariations(baseA3_2.topRow);
+                const bottomVarsA3_2 = this.generateGroupingVariations(baseA3_2.bottomRow);
+                topVarsA3_2.forEach((topVar, tIdx) => {
+                    bottomVarsA3_2.forEach((bottomVar, bIdx) => {
+                        templates.push({
+                            topRow: topVar,
+                            bottomRow: bottomVar,
+                            pattern: `4+3-A3.2-${restr}-${op}-t${tIdx}b${bIdx}`
+                        });
+                    });
+                });
+                
+                // Pattern A4: 4+3 with prime after first color, 3 colors + 1 setName in bottom row
+                // color restriction color prime + color operator setName (7 tokens)
+                const baseA4_1 = { topRow: `color ${restr} color′`, bottomRow: `color ${op} setName` };
+                const topVarsA4_1 = this.generateGroupingVariations(baseA4_1.topRow);
+                const bottomVarsA4_1 = this.generateGroupingVariations(baseA4_1.bottomRow);
+                topVarsA4_1.forEach((topVar, tIdx) => {
+                    bottomVarsA4_1.forEach((bottomVar, bIdx) => {
+                        templates.push({
+                            topRow: topVar,
+                            bottomRow: bottomVar,
+                            pattern: `4+3-A4.1-${restr}-${op}-t${tIdx}b${bIdx}`
+                        });
+                    });
+                });
+                
+                const baseA4_2 = { topRow: `color ${restr} color′`, bottomRow: `setName ${op} color` };
+                const topVarsA4_2 = this.generateGroupingVariations(baseA4_2.topRow);
+                const bottomVarsA4_2 = this.generateGroupingVariations(baseA4_2.bottomRow);
+                topVarsA4_2.forEach((topVar, tIdx) => {
+                    bottomVarsA4_2.forEach((bottomVar, bIdx) => {
+                        templates.push({
+                            topRow: topVar,
+                            bottomRow: bottomVar,
+                            pattern: `4+3-A4.2-${restr}-${op}-t${tIdx}b${bIdx}`
+                        });
+                    });
+                });
+                
+                // Pattern A5: 4+3 with setName in top row (various positions)
+                // color prime restriction setName + color operator color (7 tokens)
+                const baseA5 = { topRow: `color′ ${restr} setName`, bottomRow: `color ${op} color` };
+                const topVarsA5 = this.generateGroupingVariations(baseA5.topRow);
+                const bottomVarsA5 = this.generateGroupingVariations(baseA5.bottomRow);
+                topVarsA5.forEach((topVar, tIdx) => {
+                    bottomVarsA5.forEach((bottomVar, bIdx) => {
+                        templates.push({
+                            topRow: topVar,
+                            bottomRow: bottomVar,
+                            pattern: `4+3-A5-${restr}-${op}-t${tIdx}b${bIdx}`
+                        });
+                    });
+                });
+                
+                // setName prime restriction color + color operator color (7 tokens)
+                const baseA6 = { topRow: `setName′ ${restr} color`, bottomRow: `color ${op} color` };
+                const topVarsA6 = this.generateGroupingVariations(baseA6.topRow);
+                const bottomVarsA6 = this.generateGroupingVariations(baseA6.bottomRow);
+                topVarsA6.forEach((topVar, tIdx) => {
+                    bottomVarsA6.forEach((bottomVar, bIdx) => {
+                        templates.push({
+                            topRow: topVar,
+                            bottomRow: bottomVar,
+                            pattern: `4+3-A6-${restr}-${op}-t${tIdx}b${bIdx}`
+                        });
+                    });
+                });
+                
+                // color restriction setName prime + color operator color (7 tokens)
+                const baseA7 = { topRow: `color ${restr} setName′`, bottomRow: `color ${op} color` };
+                const topVarsA7 = this.generateGroupingVariations(baseA7.topRow);
+                const bottomVarsA7 = this.generateGroupingVariations(baseA7.bottomRow);
+                topVarsA7.forEach((topVar, tIdx) => {
+                    bottomVarsA7.forEach((bottomVar, bIdx) => {
+                        templates.push({
+                            topRow: topVar,
+                            bottomRow: bottomVar,
+                            pattern: `4+3-A7-${restr}-${op}-t${tIdx}b${bIdx}`
+                        });
+                    });
+                });
+                
+                // setName restriction color prime + color operator color (7 tokens)
+                const baseA8 = { topRow: `setName ${restr} color′`, bottomRow: `color ${op} color` };
+                const topVarsA8 = this.generateGroupingVariations(baseA8.topRow);
+                const bottomVarsA8 = this.generateGroupingVariations(baseA8.bottomRow);
+                topVarsA8.forEach((topVar, tIdx) => {
+                    bottomVarsA8.forEach((bottomVar, bIdx) => {
+                        templates.push({
+                            topRow: topVar,
+                            bottomRow: bottomVar,
+                            pattern: `4+3-A8-${restr}-${op}-t${tIdx}b${bIdx}`
+                        });
+                    });
+                });
+                
+                // Pattern B1: 3+4 with prime before operator, 4 colors
+                // color restriction color + color prime operator color (7 tokens)
+                const patternB1 = { topRow: `color ${restr} color`, bottomRow: `color′ ${op} color` };
+                const topVarsB1 = this.generateGroupingVariations(patternB1.topRow);
+                const bottomVarsB1 = this.generateGroupingVariations(patternB1.bottomRow);
+                topVarsB1.forEach((topVar, tIdx) => {
+                    bottomVarsB1.forEach((bottomVar, bIdx) => {
+                        templates.push({
+                            topRow: topVar,
+                            bottomRow: bottomVar,
+                            pattern: `3+4-B1-${restr}-${op}-t${tIdx}b${bIdx}`
+                        });
+                    });
+                });
+                
+                // Pattern B2: 3+4 with prime after operator, 4 colors
+                // color restriction color + color operator color prime (7 tokens)
+                const patternB2 = { topRow: `color ${restr} color`, bottomRow: `color ${op} color′` };
+                const topVarsB2 = this.generateGroupingVariations(patternB2.topRow);
+                const bottomVarsB2 = this.generateGroupingVariations(patternB2.bottomRow);
+                topVarsB2.forEach((topVar, tIdx) => {
+                    bottomVarsB2.forEach((bottomVar, bIdx) => {
+                        templates.push({
+                            topRow: topVar,
+                            bottomRow: bottomVar,
+                            pattern: `3+4-B2-${restr}-${op}-t${tIdx}b${bIdx}`
+                        });
+                    });
+                });
+                
+                // Pattern B3: 3+4 with setName in bottom row, various prime positions
+                // color restriction color + color prime operator setName (7 tokens)
+                const baseB3_1 = { topRow: `color ${restr} color`, bottomRow: `color′ ${op} setName` };
+                const topVarsB3_1 = this.generateGroupingVariations(baseB3_1.topRow);
+                const bottomVarsB3_1 = this.generateGroupingVariations(baseB3_1.bottomRow);
+                topVarsB3_1.forEach((topVar, tIdx) => {
+                    bottomVarsB3_1.forEach((bottomVar, bIdx) => {
+                        templates.push({
+                            topRow: topVar,
+                            bottomRow: bottomVar,
+                            pattern: `3+4-B3.1-${restr}-${op}-t${tIdx}b${bIdx}`
+                        });
+                    });
+                });
+                
+                const baseB3_2 = { topRow: `color ${restr} color`, bottomRow: `setName′ ${op} color` };
+                const topVarsB3_2 = this.generateGroupingVariations(baseB3_2.topRow);
+                const bottomVarsB3_2 = this.generateGroupingVariations(baseB3_2.bottomRow);
+                topVarsB3_2.forEach((topVar, tIdx) => {
+                    bottomVarsB3_2.forEach((bottomVar, bIdx) => {
+                        templates.push({
+                            topRow: topVar,
+                            bottomRow: bottomVar,
+                            pattern: `3+4-B3.2-${restr}-${op}-t${tIdx}b${bIdx}`
+                        });
+                    });
+                });
+                
+                const baseB3_3 = { topRow: `color ${restr} color`, bottomRow: `color ${op} setName′` };
+                const topVarsB3_3 = this.generateGroupingVariations(baseB3_3.topRow);
+                const bottomVarsB3_3 = this.generateGroupingVariations(baseB3_3.bottomRow);
+                topVarsB3_3.forEach((topVar, tIdx) => {
+                    bottomVarsB3_3.forEach((bottomVar, bIdx) => {
+                        templates.push({
+                            topRow: topVar,
+                            bottomRow: bottomVar,
+                            pattern: `3+4-B3.3-${restr}-${op}-t${tIdx}b${bIdx}`
+                        });
+                    });
+                });
+                
+                const baseB3_4 = { topRow: `color ${restr} color`, bottomRow: `setName ${op} color′` };
+                const topVarsB3_4 = this.generateGroupingVariations(baseB3_4.topRow);
+                const bottomVarsB3_4 = this.generateGroupingVariations(baseB3_4.bottomRow);
+                topVarsB3_4.forEach((topVar, tIdx) => {
+                    bottomVarsB3_4.forEach((bottomVar, bIdx) => {
+                        templates.push({
+                            topRow: topVar,
+                            bottomRow: bottomVar,
+                            pattern: `3+4-B3.4-${restr}-${op}-t${tIdx}b${bIdx}`
+                        });
+                    });
+                });
+                
+                // Pattern B4: 3+4 with setName in top row
+                // color restriction setName + color prime operator color (7 tokens)
+                const baseB4_1 = { topRow: `color ${restr} setName`, bottomRow: `color′ ${op} color` };
+                const topVarsB4_1 = this.generateGroupingVariations(baseB4_1.topRow);
+                const bottomVarsB4_1 = this.generateGroupingVariations(baseB4_1.bottomRow);
+                topVarsB4_1.forEach((topVar, tIdx) => {
+                    bottomVarsB4_1.forEach((bottomVar, bIdx) => {
+                        templates.push({
+                            topRow: topVar,
+                            bottomRow: bottomVar,
+                            pattern: `3+4-B4.1-${restr}-${op}-t${tIdx}b${bIdx}`
+                        });
+                    });
+                });
+                
+                const baseB4_2 = { topRow: `color ${restr} setName`, bottomRow: `color ${op} color′` };
+                const topVarsB4_2 = this.generateGroupingVariations(baseB4_2.topRow);
+                const bottomVarsB4_2 = this.generateGroupingVariations(baseB4_2.bottomRow);
+                topVarsB4_2.forEach((topVar, tIdx) => {
+                    bottomVarsB4_2.forEach((bottomVar, bIdx) => {
+                        templates.push({
+                            topRow: topVar,
+                            bottomRow: bottomVar,
+                            pattern: `3+4-B4.2-${restr}-${op}-t${tIdx}b${bIdx}`
+                        });
+                    });
+                });
+                
+                // setName restriction color + color prime operator color (7 tokens)
+                const baseB5_1 = { topRow: `setName ${restr} color`, bottomRow: `color′ ${op} color` };
+                const topVarsB5_1 = this.generateGroupingVariations(baseB5_1.topRow);
+                const bottomVarsB5_1 = this.generateGroupingVariations(baseB5_1.bottomRow);
+                topVarsB5_1.forEach((topVar, tIdx) => {
+                    bottomVarsB5_1.forEach((bottomVar, bIdx) => {
+                        templates.push({
+                            topRow: topVar,
+                            bottomRow: bottomVar,
+                            pattern: `3+4-B5.1-${restr}-${op}-t${tIdx}b${bIdx}`
+                        });
+                    });
+                });
+                
+                const baseB5_2 = { topRow: `setName ${restr} color`, bottomRow: `color ${op} color′` };
+                const topVarsB5_2 = this.generateGroupingVariations(baseB5_2.topRow);
+                const bottomVarsB5_2 = this.generateGroupingVariations(baseB5_2.bottomRow);
+                topVarsB5_2.forEach((topVar, tIdx) => {
+                    bottomVarsB5_2.forEach((bottomVar, bIdx) => {
+                        templates.push({
+                            topRow: topVar,
+                            bottomRow: bottomVar,
+                            pattern: `3+4-B5.2-${restr}-${op}-t${tIdx}b${bIdx}`
+                        });
+                    });
+                });
+            });
+        });
+        
         // Validate all templates
         templates.forEach(t => {
             const count = this.countTokens(t);
-            if (count !== 8) {
-                console.error(`❌ Template has ${count} tokens, expected 8:`, t);
+            // 7-cube templates are valid (for prime usage), 8-cube templates are the standard
+            if (count !== 7 && count !== 8) {
+                console.error(`❌ Template has ${count} tokens, expected 7 or 8:`, t);
             }
         });
         
-        console.log(`✅ Created ${templates.length} validated templates (2-operator max enforced)`);
+        const count7 = templates.filter(t => this.countTokens(t) === 7).length;
+        const count8 = templates.filter(t => this.countTokens(t) === 8).length;
+        console.log(`✅ Created ${templates.length} validated templates (${count8} 8-cube, ${count7} 7-cube)`);
         
         return templates;
     }
