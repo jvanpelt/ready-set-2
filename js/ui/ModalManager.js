@@ -2,6 +2,7 @@
 
 import { getTutorialScenario } from '../tutorialScenarios.js';
 import { UI_VIEWS, GAMEPLAY_MODES, MODALS } from '../constants.js';
+import { getSVGForOperator } from '../svgSymbols.js';
 
 export class ModalManager {
     constructor(game) {
@@ -308,6 +309,19 @@ export class ModalManager {
         this.menuSettingsView.classList.add('hidden');
         this.menuScoringView.classList.remove('hidden');
         this.menuBuilderView.classList.add('hidden');
+        
+        // Inject SVGs into operator dice (only once)
+        if (!this.scoringSVGsInjected) {
+            const operatorDice = this.menuScoringView.querySelectorAll('.scoring-die[data-operator]');
+            operatorDice.forEach(die => {
+                const operator = die.dataset.operator;
+                const svg = getSVGForOperator(operator);
+                if (svg) {
+                    die.innerHTML = svg;
+                }
+            });
+            this.scoringSVGsInjected = true;
+        }
     }
     
     /**
