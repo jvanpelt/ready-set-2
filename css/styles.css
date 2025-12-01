@@ -2122,6 +2122,93 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
 }
 
 /* ============================================================================
+   ABOUT SECTION
+   ============================================================================ */
+
+.about-content {
+    line-height: 1.7;
+}
+
+.about-content h3 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: rgb(255, 255, 255);
+    font-size: 20px;
+}
+
+.about-content h3:first-of-type {
+    margin-top: 0;
+}
+
+.about-content p {
+    margin: 15px 0;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.about-content strong {
+    color: rgb(255, 255, 255);
+}
+
+.about-content em {
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.about-links {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 25px 0;
+}
+
+.about-links p {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.about-links ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.about-links li {
+    margin: 8px 0;
+}
+
+.about-links a {
+    color: #3498db;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.about-links a:hover {
+    color: #5dade2;
+    text-decoration: underline;
+}
+
+.about-footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .about-content h3 {
+        font-size: 18px;
+    }
+    
+    .about-links {
+        padding: 15px;
+    }
+}
+
+/* ============================================================================
    UTILITY CLASSES
    ============================================================================ */
 
