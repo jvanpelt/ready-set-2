@@ -281,6 +281,7 @@ export class ModalManager {
         this.menuModal.classList.add('hidden');
         this.menuMainView.classList.remove('hidden');
         this.menuSettingsView.classList.add('hidden');
+        this.menuScoringView.classList.add('hidden');
         this.menuBuilderView.classList.add('hidden');
         
         // Remove overlay from state manager

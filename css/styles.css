@@ -1979,7 +1979,7 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
 }
 
 .scoring-table td {
-    padding: 12px;
+    padding: 6px 12px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
