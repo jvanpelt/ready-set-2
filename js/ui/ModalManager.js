@@ -157,18 +157,6 @@ export class ModalManager {
             window.uiController.stateManager.closeModal();
         }
         
-        // Check if game is complete (level 10 beaten)
-        if (this.game.canAdvanceLevel() && this.game.level === 10) {
-            console.log('🏆 Player completed Level 10! Showing end-game screen');
-            
-            // Calculate total score (for now, just current score)
-            const totalScore = this.game.score;
-            
-            // Show end-game celebration screen
-            this.showEndGameScreen(totalScore);
-            return;
-        }
-        
         // Check if can advance to next level
         if (this.game.canAdvanceLevel() && this.game.getState().hasNextLevel) {
             const newLevel = this.game.level + 1;
@@ -634,6 +622,12 @@ export class ModalManager {
      */
     showEndGameScreen(totalScore) {
         console.log('🏆 Showing end-game celebration screen');
+        
+        // Stop timer if running
+        if (this.game.timer) {
+            console.log('⏱️ Stopping timer for end-game screen');
+            this.game.timer.stop(true);
+        }
         
         // Populate total score
         this.endGameTotalScore.textContent = totalScore.toLocaleString();

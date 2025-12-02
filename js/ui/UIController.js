@@ -528,14 +528,38 @@ export class UIController {
                 return;
             }
             
-            // Normal game mode: show result modal and wait for user
-            this.modals.showResult('Success!', result.message, result.points);
-            await Promise.all([
-                this.renderer.animateCardsOut(),
-                this.renderer.animateDiceOut(),
-                this.renderer.animateSolutionDiceOut()
-            ]);
-            // Don't render here - wait for user to click Continue
+            // Check if this completes level 10 (end game)
+            const completesGame = this.game.level === 10 && this.game.canAdvanceLevel();
+            
+            if (completesGame) {
+                console.log('🏆 Level 10 completed! Skipping result modal, going to end-game screen');
+                
+                // Stop timer immediately
+                if (this.game.timer) {
+                    console.log('⏱️ Stopping timer for end-game screen');
+                    this.game.timer.stop(true);
+                }
+                
+                // Animate everything out
+                await Promise.all([
+                    this.renderer.animateCardsOut(),
+                    this.renderer.animateDiceOut(),
+                    this.renderer.animateSolutionDiceOut()
+                ]);
+                
+                // Show end-game screen directly
+                const totalScore = this.game.score;
+                this.modals.showEndGameScreen(totalScore);
+            } else {
+                // Normal game mode: show result modal and wait for user
+                this.modals.showResult('Success!', result.message, result.points);
+                await Promise.all([
+                    this.renderer.animateCardsOut(),
+                    this.renderer.animateDiceOut(),
+                    this.renderer.animateSolutionDiceOut()
+                ]);
+                // Don't render here - wait for user to click Continue
+            }
         } else {
             this.playErrorAnimation();
             this.playBonkSound();
