@@ -623,6 +623,9 @@ export class ModalManager {
     showEndGameScreen(totalScore) {
         console.log('🏆 Showing end-game celebration screen');
         
+        // Mark game as completed in localStorage
+        this.game.storage.markGameCompleted();
+        
         // Stop timer if running
         if (this.game.timer) {
             console.log('⏱️ Stopping timer for end-game screen');

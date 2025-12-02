@@ -136,7 +136,14 @@ export class HomeScreenManager {
         //     cardsCount: savedState?.cards?.length || 0
         // });
         
-        if (hasSavedGame) {
+        // Check if player has beaten the game (completed level 10)
+        const hasBeatenGame = this.game.storage.hasGameBeenCompleted();
+        
+        if (hasBeatenGame) {
+            // Game is complete - hide continue button
+            console.log('🏆 Game completed! Hiding Continue button');
+            this.continueBtn.classList.add('hidden');
+        } else if (hasSavedGame) {
             // DEBUG: console.log(`🏠 ✅ Showing Continue button for Level ${this.game.level}`);
             this.continueBtn.classList.remove('hidden');
         } else {
