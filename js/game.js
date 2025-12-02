@@ -768,6 +768,8 @@ export class Game {
      * - Always uses Level 10 config
      * - Tracks separate cumulative stats
      * - Doesn't affect regular game progress
+     * - Doesn't save puzzle state (intentional - each session starts fresh)
+     * - No timer (relaxed endless mode)
      */
     enterFreePlayMode() {
         console.log('🎮 ===== ENTERING FREE PLAY MODE =====');
@@ -786,6 +788,10 @@ export class Game {
         // Start fresh puzzle
         this.score = 0;
         this.generateNewRound();
+        
+        // NOTE: We intentionally don't call saveState() here
+        // Free Play doesn't persist puzzle state - each session starts fresh
+        // Only freePlayScore and freePlayPuzzlesSolved are persisted
         
         console.log(`✅ Free Play mode active`);
         console.log(`  - Level: 10 (max difficulty)`);

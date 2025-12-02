@@ -1072,8 +1072,8 @@ export class UIController {
         }
         
         // Show/hide timer display based on level config (Level 7+)
-        // Never show timer for daily puzzles
-        if (this.game.mode === 'daily') {
+        // Never show timer for daily puzzles or Free Play
+        if (this.game.mode === 'daily' || this.game.mode === 'freeplay') {
             this.timerDisplay.style.display = 'none';
         } else {
             const config = getLevelConfig(this.game.level, this.settings.testMode);
