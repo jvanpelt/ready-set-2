@@ -39,6 +39,14 @@ export class ModalManager {
         this.dailyPuzzleStartBtn = document.getElementById('daily-puzzle-start-btn');
         this.dailyInterstitialMenuBtn = document.getElementById('daily-interstitial-menu-btn');
         
+        // End Game Screen
+        this.endGameScreen = document.getElementById('end-game-screen');
+        this.endGameTotalScore = document.getElementById('victory-total-score');
+        this.endGameHomeBtn = document.getElementById('end-game-home-btn');
+        this.endGameDailyBtn = document.getElementById('end-game-daily-btn');
+        this.endGameMenuBtn = document.getElementById('end-game-menu-btn');
+        this.confettiContainer = document.getElementById('confetti-container');
+        
         // Menu
         this.menuModal = document.getElementById('menu-modal');
         this.menuMainView = document.getElementById('menu-main-view');
@@ -96,8 +104,17 @@ export class ModalManager {
      * Show result modal (success or correct pass)
      */
     showResult(title, message, points) {
+        const isFreePlay = this.game.mode === 'freeplay';
+        
         this.resultTitle.textContent = title;
-        this.resultMessage.textContent = message;
+        
+        // For Free Play, show cumulative stats
+        if (isFreePlay) {
+            this.resultMessage.textContent = `${message}\n\nTotal Score: ${this.game.freePlayScore.toLocaleString()}\nPuzzles Solved: ${this.game.freePlayPuzzlesSolved}`;
+        } else {
+            this.resultMessage.textContent = message;
+        }
+        
         this.resultScore.textContent = `+${points} points!`;
         this.resultScore.style.display = 'block';
         this.resultModal.classList.remove('hidden');
@@ -144,9 +161,19 @@ export class ModalManager {
     async hideResult(onHide) {
         this.resultModal.classList.add('hidden');
         
-        // Remove overlay
+        // Close modal in state manager
         if (window.uiController && window.uiController.stateManager) {
-            window.uiController.stateManager.removeOverlay('result');
+            window.uiController.stateManager.closeModal();
+        }
+        
+        // Free Play mode: always generate new Level 10 puzzle
+        if (this.game.mode === 'freeplay') {
+            this.game.generateNewRound(); // Generate fresh Level 10 puzzle
+            onHide();
+            
+            // Stay in Free Play gameplay mode
+            // State manager already knows we're in 'freeplay' mode
+            return;
         }
         
         // Check if can advance to next level
@@ -606,6 +633,103 @@ export class ModalManager {
             this.hideDailyPuzzleResult();
             if (onDone) onDone();
         };
+    }
+    
+    /**
+     * Show end-game celebration screen
+     */
+    showEndGameScreen() {
+        console.log('🏆 Showing end-game celebration screen');
+        
+        // Mark game as completed in localStorage
+        this.game.storage.markGameCompleted();
+        
+        // Stop timer if running
+        if (this.game.timer) {
+            console.log('⏱️ Stopping timer for end-game screen');
+            this.game.timer.stop(true);
+        }
+        
+        // Populate stats
+        document.getElementById('victory-level-score').textContent = this.game.score.toLocaleString();
+        document.getElementById('victory-total-score').textContent = this.game.cumulativeScore.toLocaleString();
+        document.getElementById('victory-puzzles-solved').textContent = this.game.totalPuzzlesSolved;
+        
+        // Show screen
+        this.endGameScreen.classList.remove('hidden');
+        
+        // Create confetti
+        this.createConfetti();
+        
+        // Handle buttons
+        this.endGameHomeBtn.onclick = () => {
+            this.hideEndGameScreen();
+            if (window.uiController && window.uiController.stateManager) {
+                window.uiController.stateManager.setState({ 
+                    view: UI_VIEWS.HOME,
+                    mode: null 
+                });
+            }
+        };
+        
+        this.endGameDailyBtn.onclick = () => {
+            this.hideEndGameScreen();
+            if (window.dailyPuzzleManager) {
+                window.dailyPuzzleManager.startDailyPuzzle();
+            }
+        };
+        
+        this.endGameMenuBtn.onclick = () => {
+            if (window.uiController) {
+                window.uiController.modals.showMenu();
+            }
+        };
+    }
+    
+    /**
+     * Hide end-game screen
+     */
+    hideEndGameScreen() {
+        console.log('🎯 Hiding end-game screen');
+        this.endGameScreen.classList.add('hidden');
+        this.clearConfetti();
+    }
+    
+    /**
+     * Create performant confetti effect using CSS animations
+     */
+    createConfetti() {
+        const colors = ['red', 'blue', 'green', 'gold'];
+        const types = ['die', 'card', '', '']; // More square confetti than special shapes
+        const confettiCount = 50; // Balanced for performance
+        
+        for (let i = 0; i < confettiCount; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = `confetti ${colors[Math.floor(Math.random() * colors.length)]} ${types[Math.floor(Math.random() * types.length)]}`.trim();
+            
+            // Random horizontal position
+            confetti.style.left = `${Math.random() * 100}%`;
+            
+            // Random animation duration (3-6 seconds)
+            confetti.style.animationDuration = `${3 + Math.random() * 3}s`;
+            
+            // Random delay for staggered effect
+            confetti.style.animationDelay = `${Math.random() * 2}s`;
+            
+            // Random starting rotation
+            confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+            
+            this.confettiContainer.appendChild(confetti);
+        }
+    }
+    
+    /**
+     * Clear confetti elements
+     */
+    clearConfetti() {
+        if (this.confettiContainer) {
+            this.confettiContainer.innerHTML = '';
+        }
     }
     
     /**

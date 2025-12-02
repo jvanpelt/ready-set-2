@@ -20,6 +20,14 @@ export class Game {
         this.goalCards = 3;
         this.tutorialShown = false;
         
+        // Cumulative stats (across all levels)
+        this.totalPuzzlesSolved = 0;
+        this.cumulativeScore = 0;
+        
+        // Free Play stats (cumulative, never resets except manually)
+        this.freePlayScore = 0;
+        this.freePlayPuzzlesSolved = 0;
+        
         // Daily puzzle state (set when in daily mode)
         this.dailyPuzzle = null;
         
@@ -32,7 +40,7 @@ export class Game {
     
     /**
      * Get current game mode from state manager
-     * @returns {'regular'|'tutorial'|'daily'}
+     * @returns {'regular'|'tutorial'|'daily'|'freeplay'}
      */
     get mode() {
         if (!this.stateManager) {
@@ -105,6 +113,14 @@ export class Game {
         this.cardStates = savedState.cardStates;
         this.tutorialShown = savedState.tutorialShown;
         
+        // Restore cumulative stats (default to 0 if not in saved state)
+        this.totalPuzzlesSolved = savedState.totalPuzzlesSolved || 0;
+        this.cumulativeScore = savedState.cumulativeScore || 0;
+        
+        // Restore Free Play stats (default to 0 if not in saved state)
+        this.freePlayScore = savedState.freePlayScore || 0;
+        this.freePlayPuzzlesSolved = savedState.freePlayPuzzlesSolved || 0;
+        
         // Migrate old saved state to new 2-row format
         if (savedState.solutions.length === 1) {
             console.log('  - Migrating old 1-row format to 2-row format');
@@ -174,6 +190,11 @@ export class Game {
         this.level = 1;
         this.score = 0;
         this.tutorialShown = false;
+        
+        // Reset cumulative stats
+        this.totalPuzzlesSolved = 0;
+        this.cumulativeScore = 0;
+        
         this.storage.clear(); // Clear saved game
         this.generateNewRound();
         const settings = this.storage.loadSettings();
@@ -471,6 +492,21 @@ export class Game {
                 }
                 
                 this.score += result.points;
+                
+                // Track cumulative stats (only for regular mode, not tutorial/daily/freeplay)
+                if (this.mode === 'regular') {
+                    this.totalPuzzlesSolved++;
+                    this.cumulativeScore += result.points;
+                    console.log(`📊 Stats: ${this.totalPuzzlesSolved} puzzles solved, ${this.cumulativeScore} total points`);
+                }
+                
+                // Track Free Play stats (separate from regular game)
+                if (this.mode === 'freeplay') {
+                    this.freePlayPuzzlesSolved++;
+                    this.freePlayScore += result.points;
+                    console.log(`🎮 Free Play Stats: ${this.freePlayPuzzlesSolved} puzzles solved, ${this.freePlayScore} total points`);
+                }
+                
                 this.saveState();
             }
             
@@ -582,7 +618,13 @@ export class Game {
             // Daily puzzles always have both rows enabled, regular game enables at level 6+
             restrictionsEnabled: this.mode === 'daily' ? true : this.level >= 6,
             ...(this.timer ? this.timer.getStateData() : { timerStartTime: null, timerDuration: null }),
-            mode: this.mode // 'daily' or 'regular'
+            mode: this.mode, // 'daily', 'regular', or 'freeplay'
+            // Cumulative stats
+            totalPuzzlesSolved: this.totalPuzzlesSolved,
+            cumulativeScore: this.cumulativeScore,
+            // Free Play stats
+            freePlayScore: this.freePlayScore,
+            freePlayPuzzlesSolved: this.freePlayPuzzlesSolved
         };
     }
     
@@ -718,6 +760,53 @@ export class Game {
         console.log(`  - Goal: ${puzzle.goal} cards`);
         console.log(`  - Cards: ${this.cards.length}`);
         console.log(`  - Dice: ${this.dice.length}`);
+    }
+    
+    /**
+     * Enter Free Play mode (Level 10 difficulty, cumulative scoring)
+     * Similar to regular mode but:
+     * - Always uses Level 10 config
+     * - Tracks separate cumulative stats
+     * - Doesn't affect regular game progress
+     * - Doesn't save puzzle state (intentional - each session starts fresh)
+     * - No timer (relaxed endless mode)
+     */
+    enterFreePlayMode() {
+        console.log('🎮 ===== ENTERING FREE PLAY MODE =====');
+        
+        // Clear daily puzzle data (shouldn't exist, but be safe)
+        this.dailyPuzzle = null;
+        this.storage.clearDailyPuzzleState();
+        
+        // Generate a Level 10 puzzle
+        this.level = 10;
+        const settings = this.storage.loadSettings();
+        const config = getLevelConfig(10, settings.testMode);
+        this.goalScore = config.goalScore;
+        this.goalCards = config.goalCards;
+        
+        // Start fresh puzzle
+        this.score = 0;
+        this.generateNewRound();
+        
+        // NOTE: We intentionally don't call saveState() here
+        // Free Play doesn't persist puzzle state - each session starts fresh
+        // Only freePlayScore and freePlayPuzzlesSolved are persisted
+        
+        console.log(`✅ Free Play mode active`);
+        console.log(`  - Level: 10 (max difficulty)`);
+        console.log(`  - Cumulative Score: ${this.freePlayScore}`);
+        console.log(`  - Puzzles Solved: ${this.freePlayPuzzlesSolved}`);
+    }
+    
+    /**
+     * Reset Free Play statistics
+     */
+    resetFreePlayStats() {
+        console.log('🔄 Resetting Free Play stats');
+        this.freePlayScore = 0;
+        this.freePlayPuzzlesSolved = 0;
+        this.saveState();
     }
 }
 

@@ -332,6 +332,13 @@
                         </span>
                     </label>
                     <button id="clear-daily-puzzle-btn" class="btn btn-secondary" style="margin-top: 10px; width: 100%;">Clear Today's Puzzle</button>
+                    <label class="setting-item" style="margin-top: 15px;">
+                        <span class="setting-label">
+                            <strong>🎮 Reset Free Play Score</strong>
+                            <small>Clear your cumulative Free Play score and puzzle count</small>
+                        </span>
+                    </label>
+                    <button id="reset-free-play-btn" class="btn btn-secondary" style="margin-top: 10px; width: 100%;">Reset Free Play Stats</button>
                 </div>
                 <div class="settings-group" style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 15px; margin-top: 15px;">
                     <label class="setting-item">
@@ -499,6 +506,53 @@
         </div>
     </div>
 
+    <!-- End Game Celebration Screen -->
+    <div id="end-game-screen" class="interstitial-screen hidden">
+        <div class="confetti-container" id="confetti-container"></div>
+        <button id="end-game-menu-btn" class="btn btn-primary overlay-menu-btn">Menu</button>
+        <div class="interstitial-container">
+            <div class="interstitial-badge">
+                <div class="badge-circle victory-badge">
+                    <span class="badge-icon">🏆</span>
+                </div>
+                <div class="badge-label">VICTORY!</div>
+            </div>
+            
+            <h1 class="interstitial-title victory-title">You Beat the Game!</h1>
+            
+            <div class="interstitial-content">
+                <p class="description-text victory-message">
+                    Congratulations! You've mastered all 10 levels of set theory puzzles. 
+                    You're officially a set theory champion! 🎉
+                </p>
+                
+                <div class="victory-stats-stack">
+                    <div class="stat-row">
+                        <div class="stat-label">Level 10 Final Score</div>
+                        <div class="stat-value" id="victory-level-score">0</div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-label">Total Score (All Levels)</div>
+                        <div class="stat-value" id="victory-total-score">0</div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-label">Puzzles Solved</div>
+                        <div class="stat-value" id="victory-puzzles-solved">0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="interstitial-actions">
+                <button id="end-game-home-btn" class="btn btn-success btn-large">
+                    🏠 Back to Home
+                </button>
+                <button id="end-game-daily-btn" class="btn btn-primary btn-large">
+                    🎲 Daily Puzzle
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Daily Puzzle Interstitial Screen -->
     <div id="daily-puzzle-interstitial-screen" class="interstitial-screen hidden">
         <button id="daily-interstitial-menu-btn" class="btn btn-primary overlay-menu-btn">Menu</button>
@@ -557,11 +611,14 @@
                 <button id="home-continue-btn" class="btn btn-primary btn-large hidden">
                     Continue Level <span id="home-current-level">1</span>
                 </button>
+                <button id="home-new-game-btn" class="btn btn-primary btn-large">
+                    New Career
+                </button>
+                <button id="home-free-play-btn" class="btn btn-primary btn-large hidden">
+                    <span class="btn-icon">🎮</span> Free Play
+                </button>
                 <button id="home-daily-puzzle-btn" class="btn btn-success btn-large">
                     <span class="btn-icon">🎲</span> Daily Puzzle
-                </button>
-                <button id="home-new-game-btn" class="btn btn-primary btn-large">
-                    New Game
                 </button>
                 <button id="home-how-to-play-btn" class="btn btn-secondary btn-large">
                     How to Play

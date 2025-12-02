@@ -8,6 +8,7 @@ export class HomeScreenManager {
         this.homeScreen = document.getElementById('home-screen');
         this.continueBtn = document.getElementById('home-continue-btn');
         this.dailyPuzzleBtn = document.getElementById('home-daily-puzzle-btn');
+        this.freePlayBtn = document.getElementById('home-free-play-btn');
         this.newGameBtn = document.getElementById('home-new-game-btn');
         this.howToPlayBtn = document.getElementById('home-how-to-play-btn');
         this.menuBtn = document.getElementById('home-menu-btn');
@@ -66,6 +67,49 @@ export class HomeScreenManager {
                 window.dailyPuzzleManager.startDailyPuzzle();
             } else {
                 console.error('❌ DailyPuzzleManager not initialized!');
+            }
+        });
+        
+        // Free Play button - start Free Play mode (Level 10 difficulty, cumulative scoring)
+        this.freePlayBtn.addEventListener('click', async () => {
+            console.log('🎮 Free Play button clicked');
+            
+            // Cleanup tutorial if active
+            if (window.uiController && window.uiController.tutorialManager.isActive) {
+                console.log('🧹 Cleaning up tutorial before starting Free Play');
+                window.uiController.tutorialManager.cleanup();
+            }
+            
+            // If coming from daily puzzle, animate out old content first
+            if (this.game.mode === 'daily') {
+                console.log('🎬 Animating out daily puzzle content...');
+                if (window.uiController) {
+                    await Promise.all([
+                        window.uiController.renderer.animateCardsOut(),
+                        window.uiController.renderer.animateDiceOut()
+                    ]);
+                }
+            }
+            
+            // Enter Free Play mode
+            this.game.enterFreePlayMode();
+            
+            if (window.uiController) {
+                // Transition to gameplay state
+                window.uiController.stateManager.setState({
+                    view: UI_VIEWS.GAMEPLAY,
+                    mode: GAMEPLAY_MODES.FREEPLAY
+                });
+                
+                // Render and animate in
+                window.uiController.render();
+                window.uiController.clearSolutionHelper();
+                
+                // Animate in cards and dice
+                await Promise.all([
+                    window.uiController.renderer.animateCardsIn(),
+                    window.uiController.renderer.animateDiceIn()
+                ]);
             }
         });
         
@@ -136,12 +180,32 @@ export class HomeScreenManager {
         //     cardsCount: savedState?.cards?.length || 0
         // });
         
-        if (hasSavedGame) {
-            // DEBUG: console.log(`🏠 ✅ Showing Continue button for Level ${this.game.level}`);
-            this.continueBtn.classList.remove('hidden');
-        } else {
-            // DEBUG: console.log('🏠 ❌ Hiding Continue button (no saved game)');
+        // Check if player has beaten the game (completed level 10)
+        const hasBeatenGame = this.game.storage.hasGameBeenCompleted();
+        
+        if (hasBeatenGame) {
+            // Game is complete - hide continue button, show Free Play
+            console.log('🏆 Game completed! Hiding Continue button, showing Free Play');
             this.continueBtn.classList.add('hidden');
+            this.freePlayBtn.classList.remove('hidden');
+        } else {
+            // Hide Free Play button if game not completed
+            this.freePlayBtn.classList.add('hidden');
+            
+            if (hasSavedGame) {
+                // DEBUG: console.log(`🏠 ✅ Showing Continue button for Level ${this.game.level}`);
+                this.continueBtn.classList.remove('hidden');
+            } else {
+                // DEBUG: console.log('🏠 ❌ Hiding Continue button (no saved game)');
+                this.continueBtn.classList.add('hidden');
+            }
+        }
+        
+        // Update New Game button text based on whether player has started
+        if (hasSavedGame || hasBeatenGame) {
+            this.newGameBtn.textContent = 'New Career';
+        } else {
+            this.newGameBtn.textContent = 'Start Career';
         }
         
         this.homeScreen.classList.remove('hidden');

@@ -73,6 +73,7 @@ export const GAMEPLAY_MODES = {
     REGULAR: 'regular',
     TUTORIAL: 'tutorial',
     DAILY: 'daily',
+    FREEPLAY: 'freeplay',
 };
 
 export const MODALS = {

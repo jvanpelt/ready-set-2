@@ -264,6 +264,14 @@ export class UIController {
             }
         });
         
+        // Reset Free Play stats
+        document.getElementById('reset-free-play-btn').addEventListener('click', () => {
+            if (confirm('⚠️ Are you sure you want to reset your Free Play stats?\n\nThis will:\n• Reset your Free Play score to 0\n• Reset your Free Play puzzles solved to 0\n\nThis action cannot be undone!')) {
+                this.game.resetFreePlayStats();
+                alert('✅ Free Play stats have been reset!');
+            }
+        });
+        
         // Clear game data
         document.getElementById('clear-data-btn').addEventListener('click', () => {
             if (confirm('⚠️ Are you sure you want to clear all game data?\n\nThis will:\n• Reset your level to 1\n• Reset your score to 0\n• Clear all tutorial progress\n• Clear all settings\n\nThis action cannot be undone!')) {
@@ -528,14 +536,37 @@ export class UIController {
                 return;
             }
             
-            // Normal game mode: show result modal and wait for user
-            this.modals.showResult('Success!', result.message, result.points);
-            await Promise.all([
-                this.renderer.animateCardsOut(),
-                this.renderer.animateDiceOut(),
-                this.renderer.animateSolutionDiceOut()
-            ]);
-            // Don't render here - wait for user to click Continue
+            // Check if this completes level 10 (end game)
+            const completesGame = this.game.level === 10 && this.game.canAdvanceLevel();
+            
+            if (completesGame) {
+                console.log('🏆 Level 10 completed! Skipping result modal, going to end-game screen');
+                
+                // Stop timer immediately
+                if (this.game.timer) {
+                    console.log('⏱️ Stopping timer for end-game screen');
+                    this.game.timer.stop(true);
+                }
+                
+                // Animate everything out
+                await Promise.all([
+                    this.renderer.animateCardsOut(),
+                    this.renderer.animateDiceOut(),
+                    this.renderer.animateSolutionDiceOut()
+                ]);
+                
+                // Show end-game screen directly
+                this.modals.showEndGameScreen();
+            } else {
+                // Normal game mode: show result modal and wait for user
+                this.modals.showResult('Success!', result.message, result.points);
+                await Promise.all([
+                    this.renderer.animateCardsOut(),
+                    this.renderer.animateDiceOut(),
+                    this.renderer.animateSolutionDiceOut()
+                ]);
+                // Don't render here - wait for user to click Continue
+            }
         } else {
             this.playErrorAnimation();
             this.playBonkSound();
@@ -1041,8 +1072,8 @@ export class UIController {
         }
         
         // Show/hide timer display based on level config (Level 7+)
-        // Never show timer for daily puzzles
-        if (this.game.mode === 'daily') {
+        // Never show timer for daily puzzles or Free Play
+        if (this.game.mode === 'daily' || this.game.mode === 'freeplay') {
             this.timerDisplay.style.display = 'none';
         } else {
             const config = getLevelConfig(this.game.level, this.settings.testMode);

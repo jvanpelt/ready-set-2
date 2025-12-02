@@ -341,5 +341,32 @@ export class GameStorage {
         localStorage.removeItem(this.keys.tutorialsViewed);
         console.log('🗑️ Cleared all tutorial viewed statuses');
     }
+    
+    /**
+     * Mark game as completed (player beat level 10)
+     */
+    markGameCompleted() {
+        try {
+            localStorage.setItem('gameCompleted', 'true');
+            console.log('🏆 Game marked as completed');
+            return true;
+        } catch (e) {
+            console.error('Failed to mark game as completed:', e);
+            return false;
+        }
+    }
+    
+    /**
+     * Check if game has been completed
+     * @returns {boolean} - True if player has beaten level 10
+     */
+    hasGameBeenCompleted() {
+        try {
+            return localStorage.getItem('gameCompleted') === 'true';
+        } catch (e) {
+            console.error('Failed to check game completion status:', e);
+            return false;
+        }
+    }
 }
 

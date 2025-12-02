@@ -40,8 +40,8 @@ export class TimerManager {
      * Start a fresh timer for a new round
      */
     startFresh() {
-        // Don't start timer in daily puzzle mode
-        if (this.game.mode === 'daily') {
+        // Don't start timer in daily puzzle or Free Play mode
+        if (this.game.mode === 'daily' || this.game.mode === 'freeplay') {
             return;
         }
         
