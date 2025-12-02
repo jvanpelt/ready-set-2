@@ -152,9 +152,9 @@ export class ModalManager {
     async hideResult(onHide) {
         this.resultModal.classList.add('hidden');
         
-        // Remove overlay
+        // Close modal in state manager
         if (window.uiController && window.uiController.stateManager) {
-            window.uiController.stateManager.removeOverlay('result');
+            window.uiController.stateManager.closeModal();
         }
         
         // Check if game is complete (level 10 beaten)
