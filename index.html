@@ -499,6 +499,60 @@
         </div>
     </div>
 
+    <!-- End Game Celebration Screen -->
+    <div id="end-game-screen" class="interstitial-screen hidden">
+        <div class="confetti-container" id="confetti-container"></div>
+        <button id="end-game-menu-btn" class="btn btn-primary overlay-menu-btn">Menu</button>
+        <div class="interstitial-container">
+            <div class="interstitial-badge">
+                <div class="badge-circle victory-badge">
+                    <span class="badge-icon">🏆</span>
+                </div>
+                <div class="badge-label">VICTORY!</div>
+            </div>
+            
+            <h1 class="interstitial-title victory-title">You Beat the Game!</h1>
+            
+            <div class="interstitial-content">
+                <p class="description-text victory-message">
+                    Congratulations! You've mastered all 10 levels of set theory puzzles. 
+                    You're officially a set theory champion! 🎉
+                </p>
+                
+                <div class="victory-stats">
+                    <div class="stat-item">
+                        <div class="stat-label">Final Level</div>
+                        <div class="stat-value">10</div>
+                        <div class="stat-detail">Bonus Cubes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Total Score</div>
+                        <div class="stat-value" id="victory-total-score">0</div>
+                        <div class="stat-detail">across all levels</div>
+                    </div>
+                </div>
+                
+                <div class="victory-options">
+                    <h3>What's Next?</h3>
+                    <ul class="victory-list">
+                        <li>🎲 <strong>Daily Puzzle:</strong> Try today's challenge</li>
+                        <li>🔁 <strong>Replay Levels:</strong> Beat your high scores</li>
+                        <li>🛠️ <strong>Puzzle Builder:</strong> Create custom puzzles</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="interstitial-actions">
+                <button id="end-game-home-btn" class="btn btn-success btn-large">
+                    🏠 Back to Home
+                </button>
+                <button id="end-game-daily-btn" class="btn btn-primary btn-large">
+                    🎲 Daily Puzzle
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Daily Puzzle Interstitial Screen -->
     <div id="daily-puzzle-interstitial-screen" class="interstitial-screen hidden">
         <button id="daily-interstitial-menu-btn" class="btn btn-primary overlay-menu-btn">Menu</button>

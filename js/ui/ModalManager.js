@@ -39,6 +39,14 @@ export class ModalManager {
         this.dailyPuzzleStartBtn = document.getElementById('daily-puzzle-start-btn');
         this.dailyInterstitialMenuBtn = document.getElementById('daily-interstitial-menu-btn');
         
+        // End Game Screen
+        this.endGameScreen = document.getElementById('end-game-screen');
+        this.endGameTotalScore = document.getElementById('victory-total-score');
+        this.endGameHomeBtn = document.getElementById('end-game-home-btn');
+        this.endGameDailyBtn = document.getElementById('end-game-daily-btn');
+        this.endGameMenuBtn = document.getElementById('end-game-menu-btn');
+        this.confettiContainer = document.getElementById('confetti-container');
+        
         // Menu
         this.menuModal = document.getElementById('menu-modal');
         this.menuMainView = document.getElementById('menu-main-view');
@@ -147,6 +155,18 @@ export class ModalManager {
         // Remove overlay
         if (window.uiController && window.uiController.stateManager) {
             window.uiController.stateManager.removeOverlay('result');
+        }
+        
+        // Check if game is complete (level 10 beaten)
+        if (this.game.canAdvanceLevel() && this.game.level === 10) {
+            console.log('🏆 Player completed Level 10! Showing end-game screen');
+            
+            // Calculate total score (for now, just current score)
+            const totalScore = this.game.score;
+            
+            // Show end-game celebration screen
+            this.showEndGameScreen(totalScore);
+            return;
         }
         
         // Check if can advance to next level
@@ -606,6 +626,93 @@ export class ModalManager {
             this.hideDailyPuzzleResult();
             if (onDone) onDone();
         };
+    }
+    
+    /**
+     * Show end-game celebration screen
+     * @param {number} totalScore - Player's total score across all levels
+     */
+    showEndGameScreen(totalScore) {
+        console.log('🏆 Showing end-game celebration screen');
+        
+        // Populate total score
+        this.endGameTotalScore.textContent = totalScore.toLocaleString();
+        
+        // Show screen
+        this.endGameScreen.classList.remove('hidden');
+        
+        // Create confetti
+        this.createConfetti();
+        
+        // Handle buttons
+        this.endGameHomeBtn.onclick = () => {
+            this.hideEndGameScreen();
+            if (window.uiController && window.uiController.stateManager) {
+                window.uiController.stateManager.setState({ 
+                    view: UI_VIEWS.HOME,
+                    mode: null 
+                });
+            }
+        };
+        
+        this.endGameDailyBtn.onclick = () => {
+            this.hideEndGameScreen();
+            if (window.dailyPuzzleManager) {
+                window.dailyPuzzleManager.startDailyPuzzle();
+            }
+        };
+        
+        this.endGameMenuBtn.onclick = () => {
+            if (window.uiController) {
+                window.uiController.modals.showMenu();
+            }
+        };
+    }
+    
+    /**
+     * Hide end-game screen
+     */
+    hideEndGameScreen() {
+        console.log('🎯 Hiding end-game screen');
+        this.endGameScreen.classList.add('hidden');
+        this.clearConfetti();
+    }
+    
+    /**
+     * Create performant confetti effect using CSS animations
+     */
+    createConfetti() {
+        const colors = ['red', 'blue', 'green', 'gold'];
+        const types = ['die', 'card', '', '']; // More square confetti than special shapes
+        const confettiCount = 50; // Balanced for performance
+        
+        for (let i = 0; i < confettiCount; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = `confetti ${colors[Math.floor(Math.random() * colors.length)]} ${types[Math.floor(Math.random() * types.length)]}`.trim();
+            
+            // Random horizontal position
+            confetti.style.left = `${Math.random() * 100}%`;
+            
+            // Random animation duration (3-6 seconds)
+            confetti.style.animationDuration = `${3 + Math.random() * 3}s`;
+            
+            // Random delay for staggered effect
+            confetti.style.animationDelay = `${Math.random() * 2}s`;
+            
+            // Random starting rotation
+            confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+            
+            this.confettiContainer.appendChild(confetti);
+        }
+    }
+    
+    /**
+     * Clear confetti elements
+     */
+    clearConfetti() {
+        if (this.confettiContainer) {
+            this.confettiContainer.innerHTML = '';
+        }
     }
     
     /**

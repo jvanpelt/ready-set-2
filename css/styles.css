@@ -2171,6 +2171,161 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
 }
 
 /* ============================================================================
+   END GAME CELEBRATION SCREEN
+   ============================================================================ */
+
+.victory-badge {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    animation: victoryPulse 2s ease-in-out infinite;
+}
+
+@keyframes victoryPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.victory-title {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #f59e0b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.victory-message {
+    font-size: 20px;
+    margin: 30px 0;
+}
+
+.victory-stats {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    margin: 30px 0;
+}
+
+.victory-stats .stat-item {
+    background: var(--overlay-white-10);
+    border: 2px solid var(--overlay-white-20);
+    border-radius: 12px;
+    padding: 20px 30px;
+    text-align: center;
+    flex: 1;
+    max-width: 200px;
+}
+
+.victory-options {
+    background: var(--overlay-white-10);
+    border-radius: 12px;
+    padding: 25px;
+    margin: 30px 0;
+    text-align: left;
+}
+
+.victory-options h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: rgb(255, 255, 255);
+    text-align: center;
+}
+
+.victory-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.victory-list li {
+    padding: 12px 0;
+    font-size: 18px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    border-bottom: 1px solid var(--overlay-white-10);
+}
+
+.victory-list li:last-child {
+    border-bottom: none;
+}
+
+/* Confetti Effect - Performant CSS Animation */
+.confetti-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    opacity: 0.8;
+    will-change: transform;
+    animation: confettiFall linear forwards;
+}
+
+.confetti.die {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.confetti.card {
+    width: 8px;
+    height: 12px;
+    border-radius: 1px;
+}
+
+/* Confetti colors matching game cubes */
+.confetti.red { background: #e74c3c; }
+.confetti.blue { background: #3498db; }
+.confetti.green { background: #2ecc71; }
+.confetti.gold { background: linear-gradient(135deg, #f4d03f 0%, #d4af37 100%); }
+
+@keyframes confettiFall {
+    to {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .victory-message {
+        font-size: 16px;
+    }
+    
+    .victory-stats {
+        gap: 10px;
+        margin: 20px 0;
+    }
+    
+    .victory-stats .stat-item {
+        padding: 12px 16px;
+    }
+    
+    .victory-options {
+        padding: 20px;
+    }
+    
+    .victory-list li {
+        font-size: 16px;
+    }
+}
+
+/* ============================================================================
    ABOUT SECTION
    ============================================================================ */
 
