@@ -1891,6 +1891,10 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
         margin-top: 10px;
     }
     
+    .victory-badge .badge-icon {
+        font-size: 48px;
+    }
+    
     .interstitial-actions {
         margin: 30px 0 20px;
         gap: 12px;
@@ -2175,8 +2179,12 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
    ============================================================================ */
 
 .victory-badge {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    background: linear-gradient(135deg, #f4d03f 0%, #d4af37 100%);
     animation: victoryPulse 2s ease-in-out infinite;
+}
+
+.victory-badge .badge-icon {
+    font-size: 64px;
 }
 
 @keyframes victoryPulse {
@@ -2185,7 +2193,8 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
 }
 
 .victory-title {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #f59e0b 100%);
+    background: linear-gradient(135deg, #f4d03f 0%, #d4af37 50%, #f4d03f 100%);
+    background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -2233,7 +2242,7 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
 .stat-row .stat-value {
     font-size: 36px;
     font-weight: bold;
-    color: #f59e0b;
+    color: #f4d03f;
     text-align: right;
 }
 
