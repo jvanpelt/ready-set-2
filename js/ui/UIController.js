@@ -264,6 +264,14 @@ export class UIController {
             }
         });
         
+        // Reset Free Play stats
+        document.getElementById('reset-free-play-btn').addEventListener('click', () => {
+            if (confirm('⚠️ Are you sure you want to reset your Free Play stats?\n\nThis will:\n• Reset your Free Play score to 0\n• Reset your Free Play puzzles solved to 0\n\nThis action cannot be undone!')) {
+                this.game.resetFreePlayStats();
+                alert('✅ Free Play stats have been reset!');
+            }
+        });
+        
         // Clear game data
         document.getElementById('clear-data-btn').addEventListener('click', () => {
             if (confirm('⚠️ Are you sure you want to clear all game data?\n\nThis will:\n• Reset your level to 1\n• Reset your score to 0\n• Clear all tutorial progress\n• Clear all settings\n\nThis action cannot be undone!')) {

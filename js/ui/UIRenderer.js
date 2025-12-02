@@ -698,8 +698,16 @@ export class UIRenderer {
      * Update status bar elements
      */
     updateStatusBar(currentScoreEl, goalScoreEl, goalCardsEl, state) {
-        // Daily puzzle mode: show calculated score, no goal
-        if (state.mode === 'daily') {
+        // Free Play mode: show cumulative score, no goal
+        if (state.mode === 'freeplay') {
+            currentScoreEl.textContent = state.freePlayScore;
+            // Hide the " / " divider and goal score for free play
+            const divider = currentScoreEl.nextElementSibling; // The " / " span
+            if (divider) divider.style.display = 'none';
+            goalScoreEl.style.display = 'none';
+            goalCardsEl.textContent = state.goalCards;
+        } else if (state.mode === 'daily') {
+            // Daily puzzle mode: show calculated score, no goal
             const currentScore = this.game.getCurrentDailyScore();
             currentScoreEl.textContent = currentScore;
             // Hide the " / " divider and goal score for daily puzzles

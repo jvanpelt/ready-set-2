@@ -104,8 +104,17 @@ export class ModalManager {
      * Show result modal (success or correct pass)
      */
     showResult(title, message, points) {
+        const isFreePlay = this.game.mode === 'freeplay';
+        
         this.resultTitle.textContent = title;
-        this.resultMessage.textContent = message;
+        
+        // For Free Play, show cumulative stats
+        if (isFreePlay) {
+            this.resultMessage.textContent = `${message}\n\nTotal Score: ${this.game.freePlayScore.toLocaleString()}\nPuzzles Solved: ${this.game.freePlayPuzzlesSolved}`;
+        } else {
+            this.resultMessage.textContent = message;
+        }
+        
         this.resultScore.textContent = `+${points} points!`;
         this.resultScore.style.display = 'block';
         this.resultModal.classList.remove('hidden');
@@ -155,6 +164,16 @@ export class ModalManager {
         // Close modal in state manager
         if (window.uiController && window.uiController.stateManager) {
             window.uiController.stateManager.closeModal();
+        }
+        
+        // Free Play mode: always generate new Level 10 puzzle
+        if (this.game.mode === 'freeplay') {
+            this.game.generateNewRound(); // Generate fresh Level 10 puzzle
+            onHide();
+            
+            // Stay in Free Play gameplay mode
+            // State manager already knows we're in 'freeplay' mode
+            return;
         }
         
         // Check if can advance to next level
