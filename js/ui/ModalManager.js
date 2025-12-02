@@ -618,9 +618,8 @@ export class ModalManager {
     
     /**
      * Show end-game celebration screen
-     * @param {number} totalScore - Player's total score across all levels
      */
-    showEndGameScreen(totalScore) {
+    showEndGameScreen() {
         console.log('🏆 Showing end-game celebration screen');
         
         // Mark game as completed in localStorage
@@ -632,8 +631,10 @@ export class ModalManager {
             this.game.timer.stop(true);
         }
         
-        // Populate total score
-        this.endGameTotalScore.textContent = totalScore.toLocaleString();
+        // Populate stats
+        document.getElementById('victory-level-score').textContent = this.game.score.toLocaleString();
+        document.getElementById('victory-total-score').textContent = this.game.cumulativeScore.toLocaleString();
+        document.getElementById('victory-puzzles-solved').textContent = this.game.totalPuzzlesSolved;
         
         // Show screen
         this.endGameScreen.classList.remove('hidden');

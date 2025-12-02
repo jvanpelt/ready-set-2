@@ -20,6 +20,10 @@ export class Game {
         this.goalCards = 3;
         this.tutorialShown = false;
         
+        // Cumulative stats (across all levels)
+        this.totalPuzzlesSolved = 0;
+        this.cumulativeScore = 0;
+        
         // Daily puzzle state (set when in daily mode)
         this.dailyPuzzle = null;
         
@@ -105,6 +109,10 @@ export class Game {
         this.cardStates = savedState.cardStates;
         this.tutorialShown = savedState.tutorialShown;
         
+        // Restore cumulative stats (default to 0 if not in saved state)
+        this.totalPuzzlesSolved = savedState.totalPuzzlesSolved || 0;
+        this.cumulativeScore = savedState.cumulativeScore || 0;
+        
         // Migrate old saved state to new 2-row format
         if (savedState.solutions.length === 1) {
             console.log('  - Migrating old 1-row format to 2-row format');
@@ -174,6 +182,11 @@ export class Game {
         this.level = 1;
         this.score = 0;
         this.tutorialShown = false;
+        
+        // Reset cumulative stats
+        this.totalPuzzlesSolved = 0;
+        this.cumulativeScore = 0;
+        
         this.storage.clear(); // Clear saved game
         this.generateNewRound();
         const settings = this.storage.loadSettings();
@@ -471,6 +484,14 @@ export class Game {
                 }
                 
                 this.score += result.points;
+                
+                // Track cumulative stats (only for regular mode, not tutorial/daily)
+                if (this.mode === 'regular') {
+                    this.totalPuzzlesSolved++;
+                    this.cumulativeScore += result.points;
+                    console.log(`📊 Stats: ${this.totalPuzzlesSolved} puzzles solved, ${this.cumulativeScore} total points`);
+                }
+                
                 this.saveState();
             }
             
@@ -582,7 +603,10 @@ export class Game {
             // Daily puzzles always have both rows enabled, regular game enables at level 6+
             restrictionsEnabled: this.mode === 'daily' ? true : this.level >= 6,
             ...(this.timer ? this.timer.getStateData() : { timerStartTime: null, timerDuration: null }),
-            mode: this.mode // 'daily' or 'regular'
+            mode: this.mode, // 'daily' or 'regular'
+            // Cumulative stats
+            totalPuzzlesSolved: this.totalPuzzlesSolved,
+            cumulativeScore: this.cumulativeScore
         };
     }
     

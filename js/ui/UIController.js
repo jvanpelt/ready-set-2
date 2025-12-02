@@ -548,8 +548,7 @@ export class UIController {
                 ]);
                 
                 // Show end-game screen directly
-                const totalScore = this.game.score;
-                this.modals.showEndGameScreen(totalScore);
+                this.modals.showEndGameScreen();
             } else {
                 // Normal game mode: show result modal and wait for user
                 this.modals.showResult('Success!', result.message, result.points);
