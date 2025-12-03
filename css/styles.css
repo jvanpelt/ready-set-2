@@ -354,6 +354,8 @@ body {
 
 .solution-die.dragging {
     opacity: 0.5;
+    /* Disable transitions during drag to prevent CSS fighting with JS positioning */
+    transition: none !important;
 }
 
 .solution-die.color-circle {

@@ -93,6 +93,10 @@ export class DragDropHandler {
                 
                 // Create visual clone for touch dragging
                 if (e.type === 'touchstart') {
+                    // Clean up any orphaned clones first (defensive cleanup)
+                    const orphanedClones = document.querySelectorAll('.touch-drag-clone');
+                    orphanedClones.forEach(clone => clone.remove());
+                    
                     const coords = getEventCoords(e);
                     const appScale = this.getAppScale();
                     
@@ -100,6 +104,9 @@ export class DragDropHandler {
                     const dieRect = die.getBoundingClientRect();
                     const visualWidth = dieRect.width;
                     const visualHeight = dieRect.height;
+                    
+                    // Cache element references for use during drag (avoid repeated DOM queries)
+                    this.cachedDiceAreaElement = document.querySelector('.dice-area');
                     
                     console.log('🎲 Creating drag clone:');
                     console.log('  App scale:', appScale);
@@ -151,11 +158,10 @@ export class DragDropHandler {
                 const halfWidth = this.touchDragClone.offsetWidth / 2;
                 const halfHeight = this.touchDragClone.offsetHeight / 2;
                 
-                // Get bounds for vertical constraints
-                const diceAreaElement = document.querySelector('.dice-area');
-                const solutionAreaElement = this.solutionArea;
+                // Get bounds for vertical constraints (use cached element if available)
+                const diceAreaElement = this.cachedDiceAreaElement || document.querySelector('.dice-area');
                 const diceAreaRect = diceAreaElement.getBoundingClientRect();
-                const solutionAreaRect = solutionAreaElement.getBoundingClientRect();
+                const solutionAreaRect = this.solutionArea.getBoundingClientRect();
                 
                 // Calculate position
                 let left = coords.clientX - halfWidth;
@@ -206,6 +212,9 @@ export class DragDropHandler {
                 if (e.type === 'touchstart') {
                     e.preventDefault();
                 }
+                
+                // Cache element references for use during drag (avoid repeated DOM queries)
+                this.cachedDiceAreaElement = document.querySelector('.dice-area');
                 
                 const coords = getEventCoords(e);
                 const row = solutionDie.closest('.solution-row');
@@ -271,8 +280,8 @@ export class DragDropHandler {
                     const rowRect = row.getBoundingClientRect();
                     const appScale = this.getAppScale();
                     
-                    // Get bounds for vertical constraints and highlighting
-                    const diceAreaElement = document.querySelector('.dice-area');
+                    // Get bounds for vertical constraints and highlighting (use cached element)
+                    const diceAreaElement = this.cachedDiceAreaElement || document.querySelector('.dice-area');
                     const diceAreaRect = diceAreaElement ? diceAreaElement.getBoundingClientRect() : null;
                     const solutionAreaRect = this.solutionArea.getBoundingClientRect();
                     
@@ -821,6 +830,7 @@ export class DragDropHandler {
         this.dragStartPos = { x: 0, y: 0 };
         this.dragOffset = { x: 0, y: 0 };
         this.originalDiePosition = null;
+        this.cachedDiceAreaElement = null;
         
         // Clean up any DOM elements
         if (this.currentDragElement) {
