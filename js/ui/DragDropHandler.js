@@ -151,6 +151,7 @@ export class DragDropHandler {
         // Update clone position during touch drag
         document.addEventListener('touchmove', (e) => {
             if (this.touchDragClone) {
+                const moveStart = performance.now();
                 e.preventDefault();
                 const coords = getEventCoords(e);
                 
@@ -174,6 +175,11 @@ export class DragDropHandler {
                 
                 this.touchDragClone.style.left = left + 'px';
                 this.touchDragClone.style.top = top + 'px';
+                
+                const moveEnd = performance.now();
+                if (moveEnd - moveStart > 5) {
+                    console.warn(`⚠️ Slow touchmove (dice area): ${(moveEnd - moveStart).toFixed(1)}ms`);
+                }
             }
         }, { passive: false });
         
@@ -259,6 +265,7 @@ export class DragDropHandler {
         
         const handleSolutionDragMove = (e) => {
             if (this.isDragging && this.currentDragElement) {
+                const moveStart = performance.now();
                 const coords = getEventCoords(e);
                 
                 const dx = Math.abs(coords.clientX - this.dragStartPos.x);
@@ -326,6 +333,11 @@ export class DragDropHandler {
                         targetRow.classList.add('drag-over');
                     } else if (diceArea && diceAreaElement) {
                         diceAreaElement.classList.add('drag-over');
+                    }
+                    
+                    const moveEnd = performance.now();
+                    if (moveEnd - moveStart > 5) {
+                        console.warn(`⚠️ Slow touchmove (solution): ${(moveEnd - moveStart).toFixed(1)}ms`);
                     }
                 }
             }
