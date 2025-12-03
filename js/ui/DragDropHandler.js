@@ -129,9 +129,13 @@ export class DragDropHandler {
                     
                     console.log('  Clone style.width set to:', this.touchDragClone.style.width);
                     
-                    // Position in viewport, centered on finger
-                    this.touchDragClone.style.left = (coords.clientX - visualWidth / 2) + 'px';
-                    this.touchDragClone.style.top = (coords.clientY - visualHeight / 2) + 'px';
+                    // Position at 0,0 initially, use transform for actual positioning (GPU accelerated)
+                    this.touchDragClone.style.left = '0px';
+                    this.touchDragClone.style.top = '0px';
+                    this.touchDragClone.style.willChange = 'transform'; // Hint to browser for GPU acceleration
+                    const initialX = coords.clientX - visualWidth / 2;
+                    const initialY = coords.clientY - visualHeight / 2;
+                    this.touchDragClone.style.transform = `translate(${initialX}px, ${initialY}px)`;
                     this.touchDragClone.style.opacity = '0.8';
                     
                     document.body.appendChild(this.touchDragClone);
@@ -165,16 +169,16 @@ export class DragDropHandler {
                 const solutionAreaRect = this.solutionArea.getBoundingClientRect();
                 
                 // Calculate position
-                let left = coords.clientX - halfWidth;
-                let top = coords.clientY - halfHeight;
+                let x = coords.clientX - halfWidth;
+                let y = coords.clientY - halfHeight;
                 
                 // Constrain Y to stay within game bounds (top of .dice-area to bottom of solution area)
-                const minTop = diceAreaRect.top;
-                const maxTop = solutionAreaRect.bottom - this.touchDragClone.offsetHeight;
-                top = Math.max(minTop, Math.min(top, maxTop));
+                const minY = diceAreaRect.top;
+                const maxY = solutionAreaRect.bottom - this.touchDragClone.offsetHeight;
+                y = Math.max(minY, Math.min(y, maxY));
                 
-                this.touchDragClone.style.left = left + 'px';
-                this.touchDragClone.style.top = top + 'px';
+                // Use transform for GPU-accelerated positioning (no layout thrashing)
+                this.touchDragClone.style.transform = `translate(${x}px, ${y}px)`;
                 
                 const moveEnd = performance.now();
                 if (moveEnd - moveStart > 5) {

@@ -193,6 +193,17 @@ body {
     cursor: grabbing;
 }
 
+/* Touch drag clone - GPU accelerated for smooth dragging */
+.touch-drag-clone {
+    will-change: transform;
+    transform-origin: center center;
+    /* Ensure no transitions interfere with JavaScript positioning */
+    transition: none !important;
+    /* Force GPU layer */
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
 .die.disabled {
     opacity: 0.3;
     cursor: not-allowed;
