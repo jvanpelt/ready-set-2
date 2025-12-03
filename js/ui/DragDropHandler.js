@@ -346,10 +346,18 @@ export class DragDropHandler {
                     const sourceRowIndex = this.draggedRowIndex;
                     const sourceRow = this.currentDragElement.closest('.solution-row');
                     
+                    // Guard: Make sure we have valid source row data
+                    if (sourceRowIndex === null || sourceRowIndex === undefined || !this.game.solutions[sourceRowIndex]) {
+                        console.warn('⚠️ Invalid drag state - resetting');
+                        this.resetDragState();
+                        return;
+                    }
+                    
                     // Find die by ID in source row
                     const dieIndex = this.game.solutions[sourceRowIndex].findIndex(d => d.id === this.draggedDieId);
                     if (dieIndex === -1) {
-                        console.error('❌ Could not find die with ID:', this.draggedDieId);
+                        console.warn('⚠️ Could not find die with ID:', this.draggedDieId, '- resetting drag state');
+                        this.resetDragState();
                         return;
                     }
                     
@@ -590,6 +598,10 @@ export class DragDropHandler {
                 // Find die by ID
                 const dieIndex = this.game.solutions[rowIndex].findIndex(d => d.id === dieId);
                 if (dieIndex !== -1) {
+                    // Reset ALL drag state before removing die
+                    // This prevents state from getting stuck after double-tap removal
+                    this.resetDragState();
+                    
                     this.game.removeDieFromSolution(rowIndex, dieIndex);
                     this.onDrop();
                 }
@@ -729,6 +741,8 @@ export class DragDropHandler {
                 transformOrigin: 'center center',
                 ease: 'power2.out',
                 onComplete: () => {
+                    // Reset drag state before removing to prevent stuck state
+                    this.resetDragState();
                     this.game.removeDieFromSolution(rowIndex, dieIndex);
                     this.onDrop();
                 }
@@ -787,5 +801,50 @@ export class DragDropHandler {
         });
         
         console.log('✅ Solution areas cleared (DOM)');
+    }
+    
+    /**
+     * Reset all drag state to prevent stuck state after operations like double-tap removal
+     * This ensures subsequent drag operations work correctly
+     */
+    resetDragState() {
+        console.log('🔄 Resetting drag state');
+        
+        // Reset all drag-related flags
+        this.draggedDie = null;
+        this.draggedFromSolution = false;
+        this.draggedRowIndex = null;
+        this.draggedDieIndex = null;
+        this.draggedDieId = null;
+        this.isDragging = false;
+        this.hasMoved = false;
+        this.dragStartPos = { x: 0, y: 0 };
+        this.dragOffset = { x: 0, y: 0 };
+        this.originalDiePosition = null;
+        
+        // Clean up any DOM elements
+        if (this.currentDragElement) {
+            this.currentDragElement.classList.remove('dragging');
+            this.currentDragElement.style.zIndex = '';
+            this.currentDragElement = null;
+        }
+        
+        if (this.sourceDieElement) {
+            this.sourceDieElement.classList.remove('dragging');
+            this.sourceDieElement = null;
+        }
+        
+        if (this.touchDragClone) {
+            this.touchDragClone.remove();
+            this.touchDragClone = null;
+        }
+        
+        // Clear all drag-over highlights
+        document.querySelectorAll('.solution-row.drag-over').forEach(r => r.classList.remove('drag-over'));
+        const diceAreaElement = document.querySelector('.dice-area');
+        if (diceAreaElement) diceAreaElement.classList.remove('drag-over');
+        
+        // Reset row overflow
+        document.querySelectorAll('.solution-row').forEach(r => r.style.overflow = '');
     }
 }

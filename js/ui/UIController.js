@@ -1155,6 +1155,18 @@ export class UIController {
                 e.preventDefault(); // Prevent any default behavior
                 e.stopPropagation(); // Stop event from bubbling
                 
+                // If there was an active drag that moved, reset it and ignore this click
+                // This prevents interference between drag and click handling
+                if (this.dragDropHandler && this.dragDropHandler.isDragging) {
+                    const wasDragging = this.dragDropHandler.hasMoved;
+                    console.log('🔄 Resetting drag state from wild cube click handler (wasDragging:', wasDragging, ')');
+                    this.dragDropHandler.resetDragState();
+                    // If hasMoved was true, this was a real drag - don't treat as click
+                    if (wasDragging) {
+                        return;
+                    }
+                }
+                
                 const currentTime = Date.now();
                 
                 // Prevent processing duplicate events (touch + click) for same interaction
