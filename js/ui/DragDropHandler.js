@@ -420,11 +420,23 @@ export class DragDropHandler {
                         let y = ((coords.clientY - rowRect.top) / appScale) - this.dragOffset.y;
                         
                         const tempDie = this.game.solutions[sourceRowIndex][dieIndex];
+                        console.log('📍 REPOSITION - Before:', {
+                            id: tempDie.id,
+                            oldX: tempDie.x,
+                            oldY: tempDie.y,
+                            newX: x,
+                            newY: y
+                        });
                         tempDie.x = x;
                         tempDie.y = y;
                         
                         const snappedPos = this.smartSnapPosition(tempDie, sourceRowIndex, rowRect, appScale);
+                        console.log('📍 REPOSITION - Snapped:', snappedPos);
                         this.game.updateDiePosition(sourceRowIndex, dieIndex, snappedPos.x, snappedPos.y);
+                        console.log('📍 REPOSITION - After update:', {
+                            x: this.game.solutions[sourceRowIndex][dieIndex].x,
+                            y: this.game.solutions[sourceRowIndex][dieIndex].y
+                        });
                         
                         this.currentDragElement.classList.remove('dragging');
                         this.onDrop(); // Trigger re-render

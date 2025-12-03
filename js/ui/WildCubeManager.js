@@ -140,10 +140,19 @@ export class WildCubeManager {
         if (this.currentRowIndex !== null && this.currentDieIndex !== null) {
             // Update the die in the game state
             const die = this.game.solutions[this.currentRowIndex][this.currentDieIndex];
-            // DEBUG: console.log('   Before:', die.selectedOperator);
+            console.log('🎲 Wild cube BEFORE selection:', {
+                id: die.id,
+                x: die.x,
+                y: die.y,
+                selectedOperator: die.selectedOperator
+            });
             die.selectedOperator = operator;
-            // DEBUG: console.log('   After:', die.selectedOperator);
-            // DEBUG: console.log('   Full die:', die);
+            console.log('🎲 Wild cube AFTER selection:', {
+                id: die.id,
+                x: die.x,
+                y: die.y,
+                selectedOperator: die.selectedOperator
+            });
             
             // Save state
             this.game.saveState();
@@ -153,7 +162,6 @@ export class WildCubeManager {
             
             // Trigger re-render
             if (this.onSelectionChange) {
-                // DEBUG: console.log('   Triggering re-render...');
                 this.onSelectionChange();
             }
         }
