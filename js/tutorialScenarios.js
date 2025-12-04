@@ -409,7 +409,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'cubes',
-                    message: 'Use <strong>CUBES</strong> to build a solution. Each cube has a color or operator symbol, with more introduced in later levels.',
+                    message: 'Use <strong>CUBES</strong> to build a solution. Each cube has a <strong>color</strong> or <strong>operator</strong> symbol, with more introduced in later levels.',
                     highlight: { dice: [0, 1, 2, 3] },
                     nextTrigger: 'auto',
                     onEnter: () => {
@@ -418,7 +418,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'operator',
-                    message: `You\'ll start off with two "operator" cubes: Union or <strong>"OR"</strong> ${getUnionSVG(35,35)} and Intersection or <strong>"AND"</strong> ${getIntersectionSVG(35,35)}.`,
+                    message: `You\'ll start off with two operator cubes: Union or <strong>"OR"</strong> ${getUnionSVG(35,35)} and Intersection or <strong>"AND"</strong> ${getIntersectionSVG(35,35)}.`,
                     highlight: { dice: [0, 1, 2, 3] },
                     nextTrigger: 'auto',
                     onEnter: () => {
@@ -433,13 +433,13 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'left-to-right',
-                    message: 'Your solution is read <strong>left-to-right</strong>, like a math equation. Just as "three plus two" is written as "3 + 2", not "3 2 +"',
+                    message: 'Your solution is read <strong>left-to-right</strong>, like a math equation. Just as "three plus two" is written as "3 + 2", not "3 2 +". The order matters.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'build-red-or-blue',
-                    message: 'Try it! Add the "Red" cube, "OR" cube, and "Blue" cube to the solution area.',
+                    message: 'Try it! Add the "Red" cube, "OR" cube, and "Blue" cube to the top row in the solution area.',
                     highlight: { solutionArea: true, shake: true },
                     validation: (game) => {
                         // Check if solution contains EXACTLY red, OR, blue (in any row, any order)

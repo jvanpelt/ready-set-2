@@ -115,14 +115,14 @@ export class TutorialManager {
         this.stepBadgeEl.textContent = `Step ${stepIndex + 1}/${this.scenario.walkthrough.steps.length}`;
         this.instructionTextEl.innerHTML = step.message;
         
-        // Apply new highlights
-        if (step.highlight) {
-            this.applyHighlights(step.highlight);
-        }
-        
         // Re-render to update dice draggable attributes based on new step
         // This ensures tutorial-disabled cubes are properly updated
         this.ui.render();
+        
+        // Apply highlights AFTER render (so they don't get wiped out)
+        if (step.highlight) {
+            this.applyHighlights(step.highlight);
+        }
         
         // Show instruction (now always top-right, draggable)
         this.instructionEl.classList.remove('hidden');
