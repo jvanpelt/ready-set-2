@@ -391,7 +391,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'universe',
-                    message: 'The 8 cards up top are called the <strong>UNIVERSE</strong>. Each card has a unique combination of colored dots.',
+                    message: 'The 8 <strong>CARDS</strong> up top are called the <strong>UNIVERSE</strong>. Each card has a unique combination of colored dots.',
                     highlight: null,
                     nextTrigger: 'auto',
                     onEnter: () => {
@@ -427,14 +427,20 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'set-name',
-                    message: 'Drag cubes to the <strong>SOLUTION AREA</strong> to create a "set name" &ndash; a formula that selects a set of cards. Your solution is read <strong>left-to-right</strong>, just like a math equation.',
+                    message: 'You\'ll drag cubes to the <strong>SOLUTION AREA</strong> to create a "<strong>set name</strong>" &ndash; a formula that names, or selects, a set of cards.',
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'left-to-right',
+                    message: 'Your solution is read <strong>left-to-right</strong>, like a math equation. Just as "three plus two" is written as "3 + 2", not "3 2 +"',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'build-red-or-blue',
-                    message: 'Try it! Add <strong>"Red OR Blue"</strong> to the solution area. In this case, "Blue Or Red" will give you the same result!',
-                    highlight: { dice: [0, 1, 2] }, // Highlight red, blue, and OR
+                    message: 'Try it! Add the "Red" cube, "OR" cube, and "Blue" cube to the solution area.',
+                    highlight: { solutionArea: true, shake: true },
                     validation: (game) => {
                         // Check if solution contains EXACTLY red, OR, blue (in any row, any order)
                         const allDice = [...game.solutions[0], ...game.solutions[1]];

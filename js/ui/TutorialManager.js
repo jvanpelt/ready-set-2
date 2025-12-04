@@ -194,6 +194,18 @@ export class TutorialManager {
             const goalEl = document.getElementById('goal');
             if (goalEl) goalEl.parentElement.classList.add('tutorial-highlight');
         }
+        
+        if (highlight.solutionArea) {
+            const solutionRows = document.querySelectorAll('.solution-row');
+            solutionRows.forEach(row => {
+                row.classList.add('tutorial-highlight');
+                // Add shake animation for extra attention
+                if (highlight.shake) {
+                    row.classList.add('shake');
+                    setTimeout(() => row.classList.remove('shake'), 300);
+                }
+            });
+        }
     }
     
     clearHighlights() {
