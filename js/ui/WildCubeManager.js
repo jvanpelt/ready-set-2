@@ -136,23 +136,10 @@ export class WildCubeManager {
      * Select an operator for the wild cube
      */
     selectOperator(operator) {
-        console.log('🎲 Wild cube operator selected:', operator); // KEEP: Important user action
         if (this.currentRowIndex !== null && this.currentDieIndex !== null) {
             // Update the die in the game state
             const die = this.game.solutions[this.currentRowIndex][this.currentDieIndex];
-            console.log('🎲 Wild cube BEFORE selection:', {
-                id: die.id,
-                x: die.x,
-                y: die.y,
-                selectedOperator: die.selectedOperator
-            });
             die.selectedOperator = operator;
-            console.log('🎲 Wild cube AFTER selection:', {
-                id: die.id,
-                x: die.x,
-                y: die.y,
-                selectedOperator: die.selectedOperator
-            });
             
             // Save state
             this.game.saveState();

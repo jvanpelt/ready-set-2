@@ -1153,19 +1153,17 @@ export class UIController {
             
             const handleWildCubeClick = (e) => {
                 // If there was an active drag that moved, let handleSolutionDragEnd process it
-                // DON'T stop propagation - the event needs to reach the document listener
+                // If this was a drag (not a tap), let the event bubble to handleSolutionDragEnd
                 if (this.dragDropHandler && this.dragDropHandler.isDragging && this.dragDropHandler.hasMoved) {
-                    console.log('🔄 Wild cube click handler: skipping (was a drag, letting handleSolutionDragEnd process)');
-                    return; // Let event bubble to document for handleSolutionDragEnd
+                    return;
                 }
                 
-                // For non-drag interactions, prevent default behavior and stop propagation
+                // For non-drag interactions, prevent default and stop propagation
                 e.preventDefault();
                 e.stopPropagation();
                 
                 // If there was a tap (isDragging but no movement), reset the drag state
                 if (this.dragDropHandler && this.dragDropHandler.isDragging) {
-                    console.log('🔄 Wild cube click handler: resetting drag state (was just a tap)');
                     this.dragDropHandler.resetDragState();
                 }
                 

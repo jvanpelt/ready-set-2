@@ -108,11 +108,6 @@ export class DragDropHandler {
                     // Cache element references for use during drag (avoid repeated DOM queries)
                     this.cachedDiceAreaElement = document.querySelector('.dice-area');
                     
-                    console.log('🎲 Creating drag clone:');
-                    console.log('  App scale:', appScale);
-                    console.log('  Original die visual size:', visualWidth, 'x', visualHeight);
-                    console.log('  Original die offset size:', die.offsetWidth, 'x', die.offsetHeight);
-                    
                     this.touchDragClone = die.cloneNode(true);
                     this.touchDragClone.classList.add('touch-drag-clone');
                     // Remove tutorial highlight to prevent layout issues from box-shadow
@@ -127,8 +122,6 @@ export class DragDropHandler {
                     this.touchDragClone.style.width = visualWidth + 'px';
                     this.touchDragClone.style.height = visualHeight + 'px';
                     
-                    console.log('  Clone style.width set to:', this.touchDragClone.style.width);
-                    
                     // Position at 0,0 initially, use transform for actual positioning (GPU accelerated)
                     this.touchDragClone.style.left = '0px';
                     this.touchDragClone.style.top = '0px';
@@ -139,12 +132,6 @@ export class DragDropHandler {
                     this.touchDragClone.style.opacity = '0.8';
                     
                     document.body.appendChild(this.touchDragClone);
-                    
-                    // Check actual rendered size after append
-                    setTimeout(() => {
-                        const cloneRect = this.touchDragClone.getBoundingClientRect();
-                        console.log('  Clone ACTUAL rendered size:', cloneRect.width, 'x', cloneRect.height);
-                    }, 0);
                 }
             }
         };
@@ -420,23 +407,11 @@ export class DragDropHandler {
                         let y = ((coords.clientY - rowRect.top) / appScale) - this.dragOffset.y;
                         
                         const tempDie = this.game.solutions[sourceRowIndex][dieIndex];
-                        console.log('📍 REPOSITION - Before:', {
-                            id: tempDie.id,
-                            oldX: tempDie.x,
-                            oldY: tempDie.y,
-                            newX: x,
-                            newY: y
-                        });
                         tempDie.x = x;
                         tempDie.y = y;
                         
                         const snappedPos = this.smartSnapPosition(tempDie, sourceRowIndex, rowRect, appScale);
-                        console.log('📍 REPOSITION - Snapped:', snappedPos);
                         this.game.updateDiePosition(sourceRowIndex, dieIndex, snappedPos.x, snappedPos.y);
-                        console.log('📍 REPOSITION - After update:', {
-                            x: this.game.solutions[sourceRowIndex][dieIndex].x,
-                            y: this.game.solutions[sourceRowIndex][dieIndex].y
-                        });
                         
                         this.currentDragElement.classList.remove('dragging');
                         this.onDrop(); // Trigger re-render
@@ -522,9 +497,8 @@ export class DragDropHandler {
                 this.draggedDie = null;
                 this.onDrop(); // Render first!
                 
-                // Now show wild cube popover if needed (after DOM is updated)
+                // Show wild cube popover if needed (after DOM is updated)
                 if (shouldShowWildPopover && this.onWildCubeDrop) {
-                    console.log('🎯 Auto-showing wild cube popover (after render)');
                     this.onWildCubeDrop(rowIndex, newDieIndex);
                 }
             }
@@ -560,16 +534,14 @@ export class DragDropHandler {
                     
                     this.game.updateDiePosition(rowIndex, newDieIndex, snappedPos.x, snappedPos.y);
                     
-                    // Check if wild cube without selection - auto-show popover (after render)
+                    // Check if wild cube without selection - auto-show popover
                     const shouldShowWildPopover = newDie.type === 'wild' && !newDie.selectedOperator;
-                    console.log('🎲 Dropped die (mobile):', newDie.type, 'selectedOperator:', newDie.selectedOperator);
                     
                     this.draggedDie = null;
                     this.onDrop(); // Render first!
                     
-                    // Now show wild cube popover if needed (after DOM is updated)
+                    // Show wild cube popover if needed (after DOM is updated)
                     if (shouldShowWildPopover && this.onWildCubeDrop) {
-                        console.log('🎯 Auto-showing wild cube popover (mobile, after render)');
                         this.onWildCubeDrop(rowIndex, newDieIndex);
                     }
                 }
@@ -833,8 +805,6 @@ export class DragDropHandler {
      * This ensures subsequent drag operations work correctly
      */
     resetDragState() {
-        console.log('🔄 Resetting drag state');
-        
         // Reset all drag-related flags
         this.draggedDie = null;
         this.draggedFromSolution = false;
