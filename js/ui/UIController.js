@@ -1279,7 +1279,7 @@ export class UIController {
         const introScenario = getTutorialScenario('intro');
         
         if (introScenario) {
-            this.tutorialManager.start(introScenario, entryPoint);
+            this.tutorialManager.start(introScenario, entryPoint, 'intro');
         } else {
             console.error('❌ Intro tutorial scenario not found!');
         }
@@ -1294,7 +1294,7 @@ export class UIController {
             const { getTutorialScenario } = await import('../tutorialScenarios.js');
             const tutorialScenario = getTutorialScenario('intro');
             if (tutorialScenario) {
-                this.tutorialManager.start(tutorialScenario, 'level-interstitial');
+                this.tutorialManager.start(tutorialScenario, 'level-interstitial', 'intro');
                 
                 // Mark tutorial as viewed
                 this.game.storage.markTutorialAsViewed(1);
@@ -1333,7 +1333,7 @@ export class UIController {
             const tutorialToShow = getTutorialScenario(scenarioKey);
             
             if (tutorialToShow) {
-                this.tutorialManager.start(tutorialToShow, 'level-interstitial');
+                this.tutorialManager.start(tutorialToShow, 'level-interstitial', scenarioKey);
                 // Timer will be started when tutorial completes (in TutorialManager.complete())
                 
                 // Mark tutorial as viewed

@@ -1503,8 +1503,8 @@ body {
 }
 
 .tutorial-highlight {
-    box-shadow: 0 0 15px 5px var(--color-tutorial-highlight) !important;
-    animation: tutorialPulse 1.5s infinite;
+    box-shadow: 0 0 15px 5px var(--color-tutorial-highlight);
+    /*animation: tutorialPulse 1.5s infinite;*/
     z-index: var(--z-tutorial-highlight) !important;
     position: relative !important;
 }

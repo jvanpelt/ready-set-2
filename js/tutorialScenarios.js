@@ -428,7 +428,7 @@ export const TUTORIAL_SCENARIOS = {
                 {
                     id: 'set-name',
                     message: 'You\'ll drag cubes to the <strong>SOLUTION AREA</strong> to create a "<strong>set name</strong>" &ndash; a formula that names, or selects, a set of cards.',
-                    highlight: null,
+                    highlight: { solutionArea: true, shake: true, fadeOut: true },
                     nextTrigger: 'auto'
                 },
                 {
@@ -439,8 +439,8 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'build-red-or-blue',
-                    message: 'Try it! Add the "Red" cube, "OR" cube, and "Blue" cube to the top row in the solution area.',
-                    highlight: { solutionArea: true, shake: true, fadeOut: true },
+                    message: `Try it! Add the "Red" cube, "OR" ${getUnionSVG(30,30)} cube, and "Blue" cube to the top row in the solution area.`,
+                    highlight: null,
                     validation: (game) => {
                         // Check if solution contains EXACTLY red, OR, blue (in any row, any order)
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
@@ -462,7 +462,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'swap-and',
-                    message: 'Now try a solution of <strong>"Red AND Blue"</strong>. Tip: Double-tap cubes to easily remove them from your solution.',
+                    message: 'Now try a solution of <strong>"Red AND Blue"</strong>. Tip: double-tap the OR cube to easily remove it from your solution.',
                     highlight: { dice: [0, 1, 3] }, // Highlight red, blue, and AND
                     validation: (game) => {
                         // Check if solution contains EXACTLY red, AND, blue (in any row, any order)

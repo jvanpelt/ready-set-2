@@ -225,7 +225,7 @@ export class ModalManager {
                     const scenarioKey = newLevel === 1 ? 'intro' : newLevel;
                     const tutorialScenario = getTutorialScenario(scenarioKey);
                     if (tutorialScenario && window.uiController) {
-                        window.uiController.tutorialManager.start(tutorialScenario, 'level-interstitial');
+                        window.uiController.tutorialManager.start(tutorialScenario, 'level-interstitial', scenarioKey);
                         
                         // Mark tutorial as viewed
                         this.game.storage.markTutorialAsViewed(newLevel);

@@ -30,20 +30,22 @@ export class TutorialManager {
         this.nextBtn.addEventListener('click', () => this.handleNextClick());
     }
     
-    start(scenarioData, entryPoint = 'menu') {
+    start(scenarioData, entryPoint = 'menu', tutorialLevel = null) {
         if (!scenarioData?.walkthrough?.enabled) return;
         
         console.log('🎓 Starting tutorial...');
         console.log('   Entry point:', entryPoint);
+        console.log('   Tutorial level:', tutorialLevel);
         
         this.scenario = scenarioData;
         this.currentStep = 0;
         this.isActive = true;
         this.entryPoint = entryPoint;
+        this.tutorialLevel = tutorialLevel; // Track which tutorial we're showing
         
-        // Timer behavior depends on the level
+        // Timer behavior depends on the tutorial level (not player's current level)
         // NOTE: Tutorial mode is now managed by state manager (game.isTutorialActive is a getter)
-        if (this.game.level === 7) {
+        if (tutorialLevel === 7) {
             // Level 7 tutorial: Timer should tick and can expire
             this.game.timer.startFresh();
         } else {
@@ -57,7 +59,7 @@ export class TutorialManager {
         
         // Level 10 tutorial: Force solution helper OFF to teach manual card manipulation
         // All other tutorials: Force solution helper ON
-        if (this.game.level === 10) {
+        if (tutorialLevel === 10) {
             this.ui.settings.solutionHelper = false;
             this.ui.solutionHelperToggle.checked = false;
             console.log('💡 Solution Helper: Forced OFF for Level 10 tutorial');
@@ -208,15 +210,14 @@ export class TutorialManager {
                 
                 // Fade out the highlight after showing it
                 if (highlight.fadeOut) {
-                    // Disable the CSS pulse animation so GSAP can control the fade
-                    row.style.animation = 'none';
                     gsap.to(row, {
-                        boxShadow: '0 0 0px 0px rgba(255, 215, 0, 0)',
-                        duration: 1.5,
-                        ease: 'power2.out',
+                        boxShadow: '0 0 0px 0px rgba(255, 215, 200, 0)',
+                        duration: 2.5,
+                        delay: 0.75,
+                        ease: 'power3.out',
                         onComplete: () => {
                             row.classList.remove('tutorial-highlight');
-                            row.style.animation = ''; // Reset for future highlights
+                            //row.style.animation = ''; // Reset for future highlights
                         }
                     });
                 }
