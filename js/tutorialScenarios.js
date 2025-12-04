@@ -440,7 +440,7 @@ export const TUTORIAL_SCENARIOS = {
                 {
                     id: 'build-red-or-blue',
                     message: 'Try it! Add the "Red" cube, "OR" cube, and "Blue" cube to the top row in the solution area.',
-                    highlight: { solutionArea: true, shake: true },
+                    highlight: { solutionArea: true, shake: true, fadeOut: true },
                     validation: (game) => {
                         // Check if solution contains EXACTLY red, OR, blue (in any row, any order)
                         const allDice = [...game.solutions[0], ...game.solutions[1]];

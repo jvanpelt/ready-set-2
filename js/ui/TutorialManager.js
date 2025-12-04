@@ -199,10 +199,22 @@ export class TutorialManager {
             const solutionRows = document.querySelectorAll('.solution-row');
             solutionRows.forEach(row => {
                 row.classList.add('tutorial-highlight');
+                
                 // Add shake animation for extra attention
                 if (highlight.shake) {
                     row.classList.add('shake');
                     setTimeout(() => row.classList.remove('shake'), 300);
+                }
+                
+                // Fade out the highlight after showing it
+                if (highlight.fadeOut) {
+                    gsap.to(row, {
+                        boxShadow: '0 0 0px 0px rgba(255, 215, 0, 0)',
+                        duration: 0.8,
+                        delay: 0.5,
+                        ease: 'power2.out',
+                        onComplete: () => row.classList.remove('tutorial-highlight')
+                    });
                 }
             });
         }
