@@ -1155,16 +1155,19 @@ export class UIController {
                 e.preventDefault(); // Prevent any default behavior
                 e.stopPropagation(); // Stop event from bubbling
                 
-                // If there was an active drag that moved, reset it and ignore this click
-                // This prevents interference between drag and click handling
+                // If there was an active drag that moved, ignore this click
+                // Let handleSolutionDragEnd process the reposition first
                 if (this.dragDropHandler && this.dragDropHandler.isDragging) {
                     const wasDragging = this.dragDropHandler.hasMoved;
-                    console.log('🔄 Resetting drag state from wild cube click handler (wasDragging:', wasDragging, ')');
-                    this.dragDropHandler.resetDragState();
                     // If hasMoved was true, this was a real drag - don't treat as click
+                    // DON'T reset drag state here - handleSolutionDragEnd needs it!
                     if (wasDragging) {
+                        console.log('🔄 Wild cube click handler: skipping (was a drag, letting handleSolutionDragEnd process)');
                         return;
                     }
+                    // Only reset if it wasn't a real drag (just a tap)
+                    console.log('🔄 Wild cube click handler: resetting drag state (was just a tap)');
+                    this.dragDropHandler.resetDragState();
                 }
                 
                 const currentTime = Date.now();
