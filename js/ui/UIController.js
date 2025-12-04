@@ -1152,20 +1152,19 @@ export class UIController {
             const DUPLICATE_EVENT_THRESHOLD = 50; // ms - ignore events within 50ms of each other
             
             const handleWildCubeClick = (e) => {
-                e.preventDefault(); // Prevent any default behavior
-                e.stopPropagation(); // Stop event from bubbling
+                // If there was an active drag that moved, let handleSolutionDragEnd process it
+                // DON'T stop propagation - the event needs to reach the document listener
+                if (this.dragDropHandler && this.dragDropHandler.isDragging && this.dragDropHandler.hasMoved) {
+                    console.log('🔄 Wild cube click handler: skipping (was a drag, letting handleSolutionDragEnd process)');
+                    return; // Let event bubble to document for handleSolutionDragEnd
+                }
                 
-                // If there was an active drag that moved, ignore this click
-                // Let handleSolutionDragEnd process the reposition first
+                // For non-drag interactions, prevent default behavior and stop propagation
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // If there was a tap (isDragging but no movement), reset the drag state
                 if (this.dragDropHandler && this.dragDropHandler.isDragging) {
-                    const wasDragging = this.dragDropHandler.hasMoved;
-                    // If hasMoved was true, this was a real drag - don't treat as click
-                    // DON'T reset drag state here - handleSolutionDragEnd needs it!
-                    if (wasDragging) {
-                        console.log('🔄 Wild cube click handler: skipping (was a drag, letting handleSolutionDragEnd process)');
-                        return;
-                    }
-                    // Only reset if it wasn't a real drag (just a tap)
                     console.log('🔄 Wild cube click handler: resetting drag state (was just a tap)');
                     this.dragDropHandler.resetDragState();
                 }
