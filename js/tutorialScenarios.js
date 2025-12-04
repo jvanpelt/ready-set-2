@@ -462,7 +462,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'swap-and',
-                    message: 'Now try a solution of <strong>"Red AND Blue"</strong>. Tip: double-tap the OR cube to easily remove it from your solution.',
+                    message: `Now try a solution of <strong>"Red AND ${getIntersectionSVG(30,30)} Blue"</strong>. Tip: double-tap the OR cube to easily remove it from your solution.`,
                     highlight: { dice: [0, 1, 3] }, // Highlight red, blue, and AND
                     validation: (game) => {
                         // Check if solution contains EXACTLY red, AND, blue (in any row, any order)
