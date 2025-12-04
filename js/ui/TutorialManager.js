@@ -208,12 +208,16 @@ export class TutorialManager {
                 
                 // Fade out the highlight after showing it
                 if (highlight.fadeOut) {
+                    // Disable the CSS pulse animation so GSAP can control the fade
+                    row.style.animation = 'none';
                     gsap.to(row, {
                         boxShadow: '0 0 0px 0px rgba(255, 215, 0, 0)',
-                        duration: 0.8,
-                        delay: 0.5,
+                        duration: 1.5,
                         ease: 'power2.out',
-                        onComplete: () => row.classList.remove('tutorial-highlight')
+                        onComplete: () => {
+                            row.classList.remove('tutorial-highlight');
+                            row.style.animation = ''; // Reset for future highlights
+                        }
                     });
                 }
             });
