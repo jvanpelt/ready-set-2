@@ -564,9 +564,10 @@ export class Game {
     saveState() {
         // Don't save state during tutorials - tutorial data is temporary
         if (this.isTutorialActive) {
-            // DEBUG: console.log('⏸️ Skipping save - tutorial is active');
+            console.log('⏸️ Skipping save - tutorial is active');
             return;
         }
+        console.log('💾 saveState() - mode:', this.mode, 'level:', this.level, 'cards:', this.cards?.length);
         
         const stateData = {
             level: this.level,
