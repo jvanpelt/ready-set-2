@@ -78,12 +78,11 @@
     --color-text-dark: #ecf0f1;
     
     /* === BUTTONS === */
-    --color-btn-primary: #237eba;
-    --color-btn-secondary: #56a148;
+    --color-btn-primary: #56a148;
+    --color-btn-primary-gradient-start: #56a148;
+    --color-btn-primary-gradient-end: #4a8a3d;
+    --color-btn-secondary: #237eba;
     --color-btn-warning: #d03121;
-    --color-btn-success: #56a148;
-    --color-btn-success-gradient-start: #56a148;
-    --color-btn-success-gradient-end: #4a8a3d;
     --color-btn-danger-gradient-start: #d03121;
     --color-btn-danger-gradient-end: #b8291c;
     --color-btn-danger-gradient-hover-start: #b8291c;

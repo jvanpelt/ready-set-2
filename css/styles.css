@@ -697,12 +697,6 @@ body {
     color: var(--color-text-primary);
 }
 
-.btn-success {
-    background: linear-gradient(135deg, var(--color-btn-success-gradient-start), var(--color-btn-success-gradient-end));
-    color: var(--color-text-primary);
-    font-size: 22px;
-}
-
 .btn-danger {
     background: linear-gradient(135deg, var(--color-btn-danger-gradient-start), var(--color-btn-danger-gradient-end));
     color: var(--color-text-primary);
@@ -1418,19 +1412,24 @@ body {
 }
 
 .btn-primary.btn-large {
-    background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
-    color: var(--color-text-primary);
-}
-
-.btn-success.btn-large {
-    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    background: linear-gradient(135deg, var(--color-btn-primary-gradient-start) 0%, var(--color-btn-primary-gradient-end) 100%);
     color: var(--color-text-primary);
 }
 
 .btn-secondary.btn-large {
-    background: var(--overlay-white-15);
+    background: var(--color-btn-secondary);
     color: var(--color-text-primary);
-    border: 2px solid var(--overlay-white-30);
+}
+
+/* Tutorial buttons - semi-opaque style for How to Play / Show Me How */
+.btn-tutorial {
+    background: var(--overlay-white-15) !important;
+    color: var(--color-text-primary) !important;
+    border: 2px solid var(--overlay-white-30) !important;
+}
+
+.btn-tutorial:hover {
+    background: var(--overlay-white-30) !important;
 }
 
 .btn-icon {

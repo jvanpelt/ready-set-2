@@ -75,10 +75,10 @@
 
         <!-- Controls -->
         <div class="controls">
-            <button id="menu-btn" class="btn btn-primary">Menu</button>
-            <button id="reset-btn" class="btn btn-primary">Reset</button>
+            <button id="menu-btn" class="btn btn-secondary">Menu</button>
+            <button id="reset-btn" class="btn btn-secondary">Reset</button>
             <button id="pass-btn" class="btn btn-warning">Pass</button>
-            <button id="go-btn" class="btn btn-success">GO!</button>
+            <button id="go-btn" class="btn btn-primary">GO!</button>
         </div>
     </div>
 
@@ -96,7 +96,7 @@
             <h2 id="result-title"></h2>
             <div id="result-message"></div>
             <div id="result-score" class="result-score"></div>
-            <button id="result-continue" class="btn btn-success">Continue</button>
+            <button id="result-continue" class="btn btn-primary">Continue</button>
         </div>
     </div>
 
@@ -141,13 +141,13 @@
                 <h2>Menu</h2>
                 <p class="menu-level-indicator">Currently on <strong>Level <span id="menu-current-level">1</span></strong></p>
                 <ul class="menu-list">
-                    <li><button id="menu-home-btn" class="btn btn-secondary">🏠 Home</button></li>
-                    <li><button id="tutorial-btn" class="btn btn-secondary">How to Play</button></li>
-                    <li><button id="about-btn" class="btn btn-secondary">🌟 About</button></li>
-                    <li><button id="scoring-btn" class="btn btn-secondary">📊 Scoring</button></li>
-                    <li><button id="settings-btn" class="btn btn-primary">Settings</button></li>
-                    <li><button id="puzzle-builder-btn" class="btn btn-primary">🛠️ Puzzle Builder</button></li>
-                    <li><button id="refresh-btn" class="btn btn-primary">🔄 Refresh</button></li>
+                    <li><button id="menu-home-btn" class="btn btn-primary">🏠 Home</button></li>
+                    <li><button id="about-btn" class="btn btn-primary">🌟 About</button></li>
+                    <li><button id="scoring-btn" class="btn btn-primary">📊 Scoring</button></li>
+                    <li><button id="settings-btn" class="btn btn-secondary">⚙️ Settings</button></li>
+                    <li><button id="puzzle-builder-btn" class="btn btn-secondary">🛠️ Puzzle Builder</button></li>
+                    <li><button id="refresh-btn" class="btn btn-secondary">🔄 Refresh</button></li>
+                    <li><button id="tutorial-btn" class="btn btn-tutorial">🎓 How to Play</button></li>
                 </ul>
             </div>
             <div id="menu-scoring-view" class="hidden">
@@ -419,8 +419,8 @@
                     <div class="builder-section-content">
                         <div style="display: flex; flex-direction: column; gap: 10px;">
                             <button id="load-scenario-btn" class="btn btn-primary">📋 Load Scenario</button>
-                            <button id="play-scenario-btn" class="btn btn-success">🎮 Play This Scenario</button>
-                            <button id="test-solution-btn" class="btn btn-success">🔍 Check for Solutions</button>
+                            <button id="play-scenario-btn" class="btn btn-primary">🎮 Play This Scenario</button>
+                            <button id="test-solution-btn" class="btn btn-primary">🔍 Check for Solutions</button>
                             <button id="export-json-btn" class="btn btn-secondary">💾 Export as JSON</button>
                             <button id="save-scenario-btn" class="btn btn-secondary">💾 Save to Browser</button>
                         </div>
@@ -469,7 +469,7 @@
 
     <!-- Level Interstitial Screen (Full-page, replaces game board) -->
     <div id="level-interstitial-screen" class="interstitial-screen hidden">
-        <button id="interstitial-menu-btn" class="btn btn-primary overlay-menu-btn">Menu</button>
+        <button id="interstitial-menu-btn" class="btn btn-secondary overlay-menu-btn">Menu</button>
         <div class="interstitial-container">
             <div class="interstitial-badge">
                 <div class="badge-circle">
@@ -489,10 +489,10 @@
             </div>
             
             <div class="interstitial-actions">
-                <button id="tutorial-decline-btn" class="btn btn-success btn-large">
-                    Play Now
+                <button id="tutorial-decline-btn" class="btn btn-primary btn-large">
+                    ⚡ Play Now
                 </button>
-                <button id="tutorial-accept-btn" class="btn btn-secondary btn-large">
+                <button id="tutorial-accept-btn" class="btn btn-tutorial btn-large">
                     <span class="btn-icon">🎓</span>
                     Show Me How
                 </button>
@@ -503,7 +503,7 @@
     <!-- End Game Celebration Screen -->
     <div id="end-game-screen" class="interstitial-screen hidden">
         <div class="confetti-container" id="confetti-container"></div>
-        <button id="end-game-menu-btn" class="btn btn-primary overlay-menu-btn">Menu</button>
+        <button id="end-game-menu-btn" class="btn btn-secondary overlay-menu-btn">Menu</button>
         <div class="interstitial-container">
             <div class="interstitial-badge">
                 <div class="badge-circle victory-badge">
@@ -537,7 +537,7 @@
             </div>
             
             <div class="interstitial-actions">
-                <button id="end-game-home-btn" class="btn btn-success btn-large">
+                <button id="end-game-home-btn" class="btn btn-primary btn-large">
                     🏠 Back to Home
                 </button>
                 <button id="end-game-daily-btn" class="btn btn-primary btn-large">
@@ -549,7 +549,7 @@
 
     <!-- Daily Puzzle Interstitial Screen -->
     <div id="daily-puzzle-interstitial-screen" class="interstitial-screen hidden">
-        <button id="daily-interstitial-menu-btn" class="btn btn-primary overlay-menu-btn">Menu</button>
+        <button id="daily-interstitial-menu-btn" class="btn btn-secondary overlay-menu-btn">Menu</button>
         <div class="interstitial-container">
             <div class="interstitial-badge">
                 <div class="badge-circle daily-badge">
@@ -585,7 +585,7 @@
             </div>
             
             <div class="interstitial-actions">
-                <button id="daily-puzzle-start-btn" class="btn btn-success btn-large">
+                <button id="daily-puzzle-start-btn" class="btn btn-primary btn-large">
                     <span class="btn-icon">▶</span>
                     Start Puzzle
                 </button>
@@ -595,7 +595,7 @@
 
     <!-- Home Screen -->
     <div id="home-screen" class="home-screen hidden">
-        <button id="home-menu-btn" class="btn btn-primary overlay-menu-btn">Menu</button>
+        <button id="home-menu-btn" class="btn btn-secondary overlay-menu-btn">Menu</button>
         <div class="home-container">
             <h1 class="home-title hidden">Ready, Set!</h1>
             <p><img src="images/ReadySet-Logo.svg" alt="Ready, Set!" class="home-logo"></p>
@@ -603,19 +603,19 @@
             
             <div class="home-buttons">
                 <button id="home-continue-btn" class="btn btn-primary btn-large hidden">
-                    Continue Level <span id="home-current-level">1</span>
+                    ⚡ Continue Level <span id="home-current-level">1</span>
                 </button>
-                <button id="home-new-game-btn" class="btn btn-primary btn-large">
-                    New Career
+                <button id="home-new-game-btn" class="btn btn-secondary btn-large">
+                    🚀 New Career
                 </button>
                 <button id="home-free-play-btn" class="btn btn-primary btn-large hidden">
                     <span class="btn-icon">🎮</span> Free Play
                 </button>
-                <button id="home-daily-puzzle-btn" class="btn btn-success btn-large">
+                <button id="home-daily-puzzle-btn" class="btn btn-primary btn-large">
                     <span class="btn-icon">🎲</span> Daily Puzzle
                 </button>
-                <button id="home-how-to-play-btn" class="btn btn-secondary btn-large">
-                    How to Play
+                <button id="home-how-to-play-btn" class="btn btn-tutorial btn-large">
+                    🎓 How to Play
                 </button>
             </div>
         </div>

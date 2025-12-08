@@ -671,10 +671,10 @@ export class ModalManager {
         // Show/hide tutorial button based on availability
         if (hasTutorial) {
             this.tutorialAcceptBtn.style.display = 'flex';
-            this.tutorialDeclineBtn.innerHTML = 'Play Now';
+            this.tutorialDeclineBtn.innerHTML = '⚡ Play Now';
         } else {
             this.tutorialAcceptBtn.style.display = 'none';
-            this.tutorialDeclineBtn.innerHTML = 'Continue';
+            this.tutorialDeclineBtn.innerHTML = '⚡ Continue';
         }
         
         // Set up button handlers
