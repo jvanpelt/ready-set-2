@@ -721,10 +721,10 @@ export class Game {
         this.goalCards = puzzle.goal;
         
         // Load dice and add runtime properties (id, x, y)
-        const timestamp = Date.now();
+        // Use puzzle ID for stable IDs so saved solutions match on re-entry
         this.dice = puzzle.dice.map((die, i) => ({
             ...die,
-            id: `die-${i}-${timestamp}`,
+            id: `die-${i}-${puzzle.id}`,
             x: 0,
             y: 0
         }));
