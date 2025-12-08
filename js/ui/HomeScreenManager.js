@@ -157,7 +157,7 @@ export class HomeScreenManager {
     }
     
     show() {
-        // DEBUG: console.log('🏠 Showing home screen');
+        console.log('🏠 Showing home screen');
         
         // Notify state manager if available
         if (window.uiController && window.uiController.stateManager) {
@@ -174,11 +174,13 @@ export class HomeScreenManager {
         const savedState = this.game.storage.loadGameState();
         const hasSavedGame = savedState && savedState.cards && savedState.cards.length > 0;
         
-        // DEBUG: console.log('🏠 Continue button check:', {
-        //     hasSavedGame,
-        //     level: this.game.level,
-        //     cardsCount: savedState?.cards?.length || 0
-        // });
+        console.log('🏠 Continue button check:', {
+            hasSavedGame,
+            level: this.game.level,
+            savedStateExists: !!savedState,
+            cardsCount: savedState?.cards?.length || 0,
+            savedState: savedState
+        });
         
         // Check if player has beaten the game (completed level 10)
         const hasBeatenGame = this.game.storage.hasGameBeenCompleted();

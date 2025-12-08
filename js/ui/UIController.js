@@ -1290,6 +1290,13 @@ export class UIController {
         const wantsTutorial = await this.modals.showInterstitialAsync(1);
         
         if (wantsTutorial) {
+            // Transition to tutorial mode BEFORE starting tutorial
+            // This ensures saveState() is skipped during tutorial setup
+            this.stateManager.setState({
+                view: UI_VIEWS.GAMEPLAY,
+                mode: GAMEPLAY_MODES.TUTORIAL
+            });
+            
             // Start intro tutorial (used for both Level 1 and menu access)
             const { getTutorialScenario } = await import('../tutorialScenarios.js');
             const tutorialScenario = getTutorialScenario('intro');

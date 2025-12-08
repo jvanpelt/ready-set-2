@@ -567,6 +567,7 @@ export class Game {
             console.log('⏸️ Skipping save - tutorial is active');
             return;
         }
+        console.log('💾 saveState() called - mode:', this.mode, 'level:', this.level, 'cards:', this.cards?.length);
         
         const stateData = {
             level: this.level,
