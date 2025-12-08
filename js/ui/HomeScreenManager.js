@@ -157,8 +157,6 @@ export class HomeScreenManager {
     }
     
     show() {
-        console.log('🏠 Showing home screen');
-        
         // Notify state manager if available
         if (window.uiController && window.uiController.stateManager) {
             window.uiController.stateManager.setState({
@@ -174,13 +172,6 @@ export class HomeScreenManager {
         const savedState = this.game.storage.loadGameState();
         const hasSavedGame = savedState && savedState.cards && savedState.cards.length > 0;
         
-        console.log('🏠 Continue button check:', {
-            hasSavedGame,
-            level: this.game.level,
-            cardsCount: savedState?.cards?.length || 0,
-            savedStateKeys: savedState ? Object.keys(savedState) : 'null'
-        });
-        
         // Check if player has beaten the game (completed level 10)
         const hasBeatenGame = this.game.storage.hasGameBeenCompleted();
         
@@ -194,10 +185,8 @@ export class HomeScreenManager {
         // Continue button shows if there's a saved game in progress
         // (independent of whether they've beaten the game before)
         if (hasSavedGame) {
-            console.log(`🏠 ✅ Showing Continue button for Level ${this.game.level}`);
             this.continueBtn.classList.remove('hidden');
         } else {
-            console.log('🏠 ❌ Hiding Continue button (no saved game)');
             this.continueBtn.classList.add('hidden');
         }
         
