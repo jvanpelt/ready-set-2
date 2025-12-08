@@ -93,12 +93,6 @@ export class UIController {
         this.testModeToggle = document.getElementById('test-mode-toggle');
         this.testModeToggle.checked = this.settings.testMode || false;
         
-        this.dailyTestModeToggle = document.getElementById('daily-test-mode-toggle');
-        // Load from DailyPuzzleManager if it exists (it's initialized before UIController)
-        if (window.dailyPuzzleManager) {
-            this.dailyTestModeToggle.checked = window.dailyPuzzleManager.testMode;
-        }
-        
         this.themeSelector = document.getElementById('theme-selector');
         this.themeSelector.value = this.settings.theme || 'default';
         // Apply saved theme on load
@@ -218,13 +212,6 @@ export class UIController {
             
             // Re-render to show new goal score
             this.render();
-        });
-        
-        this.dailyTestModeToggle.addEventListener('change', (e) => {
-            // Update DailyPuzzleManager if it exists
-            if (window.dailyPuzzleManager) {
-                window.dailyPuzzleManager.setTestMode(e.target.checked);
-            }
         });
         
         // Test mode: Jump to level

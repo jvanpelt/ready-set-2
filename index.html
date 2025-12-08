@@ -138,15 +138,15 @@
         <div class="modal-content">
             <button id="menu-close-btn" class="modal-close-btn" aria-label="Close menu">×</button>
             <div id="menu-main-view">
-                <h2>Menu</h2>
+                <h2 id="menu-title">Menu</h2>
                 <p class="menu-level-indicator">Currently on <strong>Level <span id="menu-current-level">1</span></strong></p>
                 <ul class="menu-list">
                     <li><button id="menu-home-btn" class="btn btn-primary">🏠 Home</button></li>
                     <li><button id="about-btn" class="btn btn-primary">🌟 About</button></li>
                     <li><button id="scoring-btn" class="btn btn-primary">📊 Scoring</button></li>
                     <li><button id="settings-btn" class="btn btn-secondary">⚙️ Settings</button></li>
-                    <li><button id="puzzle-builder-btn" class="btn btn-secondary">🛠️ Puzzle Builder</button></li>
-                    <li><button id="refresh-btn" class="btn btn-secondary">🔄 Refresh</button></li>
+                    <li id="dev-puzzle-builder" class="dev-mode-item hidden"><button id="puzzle-builder-btn" class="btn btn-secondary">🛠️ Puzzle Builder</button></li>
+                    <li id="dev-refresh" class="dev-mode-item hidden"><button id="refresh-btn" class="btn btn-secondary">🔄 Refresh</button></li>
                     <li><button id="tutorial-btn" class="btn btn-tutorial">🎓 How to Play</button></li>
                 </ul>
             </div>
@@ -289,18 +289,10 @@
                     </label>
                 </div>
                 <div class="settings-group" style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 15px; margin-top: 15px;">
-                    <h3 style="margin: 0 0 10px 0; font-size: 1rem; color: rgba(255,255,255,0.9);">🔧 Test Mode</h3>
                     <label class="setting-item">
-                        <input type="checkbox" id="test-mode-toggle">
-                        <span class="setting-label">
-                            <strong>Easy Scores (50 points)</strong>
-                            <small>Reduce all level requirements to 50 points for quick testing</small>
-                        </span>
-                    </label>
-                    <label class="setting-item" style="margin-top: 10px;">
                         <span class="setting-label">
                             <strong>Jump to Level</strong>
-                            <small>Skip to any level for testing</small>
+                            <small>Skip to any level</small>
                         </span>
                         <div style="display: flex; gap: 10px; margin-top: 10px;">
                             <select id="level-selector" class="level-select">
@@ -319,10 +311,21 @@
                         </div>
                     </label>
                     <label class="setting-item" style="margin-top: 15px;">
-                        <input type="checkbox" id="daily-test-mode-toggle">
                         <span class="setting-label">
-                            <strong>Daily Puzzle Test Mode</strong>
-                            <small>Load random puzzles from test pool instead of date-based puzzles</small>
+                            <strong>🎮 Reset Free Play Score</strong>
+                            <small>Clear your cumulative Free Play score and puzzle count</small>
+                        </span>
+                    </label>
+                    <button id="reset-free-play-btn" class="btn btn-secondary" style="margin-top: 10px; width: 100%;">Reset Free Play Stats</button>
+                </div>
+                <!-- Dev Mode Settings (hidden by default, shown via easter egg) -->
+                <div id="dev-mode-settings" class="settings-group hidden" style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 15px; margin-top: 15px;">
+                    <h3 style="margin: 0 0 10px 0; font-size: 1rem; color: rgba(255,255,255,0.9);">🔧 Dev Mode</h3>
+                    <label class="setting-item">
+                        <input type="checkbox" id="test-mode-toggle">
+                        <span class="setting-label">
+                            <strong>Easy Scores (50 points)</strong>
+                            <small>Reduce all level requirements to 50 points for quick testing</small>
                         </span>
                     </label>
                     <label class="setting-item" style="margin-top: 15px;">
@@ -332,13 +335,6 @@
                         </span>
                     </label>
                     <button id="clear-daily-puzzle-btn" class="btn btn-secondary" style="margin-top: 10px; width: 100%;">Clear Today's Puzzle</button>
-                    <label class="setting-item" style="margin-top: 15px;">
-                        <span class="setting-label">
-                            <strong>🎮 Reset Free Play Score</strong>
-                            <small>Clear your cumulative Free Play score and puzzle count</small>
-                        </span>
-                    </label>
-                    <button id="reset-free-play-btn" class="btn btn-secondary" style="margin-top: 10px; width: 100%;">Reset Free Play Stats</button>
                 </div>
                 <div class="settings-group" style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 15px; margin-top: 15px;">
                     <label class="setting-item">

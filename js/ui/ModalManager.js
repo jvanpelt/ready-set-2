@@ -32,6 +32,7 @@ export class ModalManager {
         this.game = game;
         this.initElements();
         this.initBackdropHandlers();
+        this.initDevModeEasterEgg();
     }
     
     initElements() {
@@ -121,6 +122,76 @@ export class ModalManager {
                 this.hideMenu();
             }
         });
+    }
+    
+    /**
+     * Initialize dev mode easter egg - long press on Menu title
+     */
+    initDevModeEasterEgg() {
+        const menuTitle = document.getElementById('menu-title');
+        
+        let pressTimer = null;
+        const LONG_PRESS_DURATION = 8000; // 8 seconds
+        
+        // Dev mode starts off on every page load (no persistence)
+        this.devModeActive = false;
+        
+        // Long press handlers for both mouse and touch
+        const startPress = () => {
+            pressTimer = setTimeout(() => {
+                this.toggleDevMode();
+            }, LONG_PRESS_DURATION);
+        };
+        
+        const cancelPress = () => {
+            if (pressTimer) {
+                clearTimeout(pressTimer);
+                pressTimer = null;
+            }
+        };
+        
+        // Mouse events
+        menuTitle.addEventListener('mousedown', startPress);
+        menuTitle.addEventListener('mouseup', cancelPress);
+        menuTitle.addEventListener('mouseleave', cancelPress);
+        
+        // Touch events
+        menuTitle.addEventListener('touchstart', startPress);
+        menuTitle.addEventListener('touchend', cancelPress);
+        menuTitle.addEventListener('touchcancel', cancelPress);
+    }
+    
+    /**
+     * Toggle dev mode on/off (resets on page refresh)
+     */
+    toggleDevMode() {
+        if (this.devModeActive) {
+            this.devModeActive = false;
+            this.hideDevModeItems();
+            alert('Dev mode is off');
+        } else {
+            this.devModeActive = true;
+            this.showDevModeItems();
+            alert('Dev mode is on');
+        }
+    }
+    
+    /**
+     * Show dev mode menu items and settings
+     */
+    showDevModeItems() {
+        document.getElementById('dev-mode-settings')?.classList.remove('hidden');
+        document.getElementById('dev-puzzle-builder')?.classList.remove('hidden');
+        document.getElementById('dev-refresh')?.classList.remove('hidden');
+    }
+    
+    /**
+     * Hide dev mode menu items and settings
+     */
+    hideDevModeItems() {
+        document.getElementById('dev-mode-settings')?.classList.add('hidden');
+        document.getElementById('dev-puzzle-builder')?.classList.add('hidden');
+        document.getElementById('dev-refresh')?.classList.add('hidden');
     }
     
     /**
