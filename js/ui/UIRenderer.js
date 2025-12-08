@@ -1,6 +1,6 @@
 // Pure rendering logic - no side effects, just DOM updates
 
-import { getSVGForOperator, getOperatorClass } from '../svgSymbols.js';
+import { getSVGForOperator, getOperatorClass, getWildSVG } from '../svgSymbols.js';
 import { isSolutionSyntaxValid } from '../utils/validation.js';
 
 export class UIRenderer {
@@ -245,7 +245,7 @@ export class UIRenderer {
             if (die.type === 'wild') {
                 // Wild cube (Level 9+)
                 dieEl.classList.add('wild');
-                dieEl.textContent = '?';
+                dieEl.innerHTML = getWildSVG(40, 40);
             } else if (die.type === 'color') {
                 dieEl.classList.add('color-circle');
                 const circle = document.createElement('div');
@@ -467,14 +467,16 @@ export class UIRenderer {
                 if (die.type === 'wild') {
                     // Wild cube (Level 9+)
                     dieEl.classList.add('wild');
-                    // Display selected operator or '?' if none selected
-                    const displayValue = die.selectedOperator || '?';
-                    console.log('🎨 Rendering wild cube in solution:', die.selectedOperator, '→', displayValue);
-                    const svg = getSVGForOperator(displayValue);
-                    if (svg) {
-                        dieEl.innerHTML = svg;
+                    // Display selected operator SVG or wild '?' SVG if none selected
+                    if (die.selectedOperator) {
+                        const svg = getSVGForOperator(die.selectedOperator);
+                        if (svg) {
+                            dieEl.innerHTML = svg;
+                        } else {
+                            dieEl.textContent = die.selectedOperator;
+                        }
                     } else {
-                        dieEl.textContent = displayValue;
+                        dieEl.innerHTML = getWildSVG(40, 40);
                     }
                 } else if (die.type === 'color') {
                     dieEl.classList.add('color-circle');

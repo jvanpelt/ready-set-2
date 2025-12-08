@@ -147,6 +147,61 @@ export function getNullSVG(width = 60, height = 60) {
 }
 
 /**
+ * Generate SVG for Wild cube (?) - Elegant serif-style question mark
+ */
+export function getWildSVG(width = 60, height = 60) {
+    return `
+        <svg width="${width}" height="${height}" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+              <path d="M31.6,40.7h-4v-1.9c0-1.9.2-3.6.7-5,.5-1.4,1.1-2.7,1.8-3.9.7-1.2,1.4-2.4,2.2-3.6.7-1.2,1.3-2.7,1.8-4.3.5-1.6.7-3.6.7-5.9s-.6-5-1.9-6.3c-1.2-1.3-2.8-1.9-4.8-1.9s-3.1.4-3.9,1.1c-.9.7-1.3,1.6-1.3,2.8s.1,1.4.4,1.9c.2.4.5.9.8,1.4.3.5.4,1.2.4,2.1,0,1.4-.4,2.4-1.2,3-.8.6-1.8.9-2.9.9s-2.5-.5-3.5-1.5c-.9-1-1.4-2.5-1.4-4.4s.6-3.9,1.8-5.5c1.2-1.6,2.9-2.8,5-3.6,2.1-.9,4.6-1.3,7.3-1.3s4.8.4,7.1,1.1c2.2.7,4,1.9,5.4,3.6,1.4,1.6,2.1,3.8,2.1,6.5s-.4,4.4-1.3,6.2c-.8,1.8-1.9,3.4-3.2,4.9-1.3,1.5-2.5,2.9-3.8,4.2-1.3,1.3-2.3,2.6-3.2,4-.9,1.3-1.3,2.8-1.3,4.5v1.2ZM29.7,55.1c-1.7,0-3.1-.4-3.9-1.3-.9-.8-1.3-2-1.3-3.6s.4-2.8,1.3-3.8c.9-1,2.2-1.5,3.9-1.5s3,.5,3.9,1.5c.9,1,1.3,2.2,1.3,3.8,0,1.6-.5,2.8-1.3,3.6-.8.8-2.1,1.2-3.9,1.2Z"/>
+        </svg>
+    `.trim();
+}
+
+/**
+ * Generate SVG for Bonus cube (★) - Filled star
+ */
+export function getBonusSVG(width = 60, height = 60) {
+    return `
+        <svg width="${width}" height="${height}" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+            <!-- 5-pointed star -->
+            <polygon points="30,8 35,22 50,22 38,32 43,47 30,38 17,47 22,32 10,22 25,22" 
+                     fill="currentColor" />
+        </svg>
+    `.trim();
+}
+
+/**
+ * Generate SVG for Required cube indicator - Checkmark/target
+ */
+export function getRequiredSVG(width = 60, height = 60) {
+    return `
+        <svg width="${width}" height="${height}" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+            <!-- Target/bullseye -->
+            <circle cx="30" cy="30" r="20" fill="none" stroke="currentColor" stroke-width="4" />
+            <circle cx="30" cy="30" r="10" fill="none" stroke="currentColor" stroke-width="3" />
+            <circle cx="30" cy="30" r="4" fill="currentColor" />
+        </svg>
+    `.trim();
+}
+
+/**
+ * Generate SVG for Timer (⏱️) - Clock face
+ */
+export function getTimerSVG(width = 60, height = 60) {
+    return `
+        <svg width="${width}" height="${height}" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+            <!-- Clock face -->
+            <circle cx="30" cy="32" r="20" fill="none" stroke="currentColor" stroke-width="4" />
+            <!-- Clock hands -->
+            <line x1="30" y1="32" x2="30" y2="18" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
+            <line x1="30" y1="32" x2="40" y2="32" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
+            <!-- Top button -->
+            <rect x="27" y="8" width="6" height="5" rx="1" fill="currentColor" />
+        </svg>
+    `.trim();
+}
+
+/**
  * Determine if a die should use an SVG symbol
  * @param {string} value - The die value (symbol)
  * @returns {string|null} - SVG HTML or null if should use text

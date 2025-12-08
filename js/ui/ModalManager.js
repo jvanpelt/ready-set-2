@@ -2,7 +2,30 @@
 
 import { getTutorialScenario } from '../tutorialScenarios.js';
 import { UI_VIEWS, GAMEPLAY_MODES, MODALS } from '../constants.js';
-import { getSVGForOperator } from '../svgSymbols.js';
+import { 
+    getSVGForOperator, 
+    getUnionSVG, 
+    getIntersectionSVG,
+    getMinusSVG, 
+    getComplementSVG, 
+    getUniverseSVG,
+    getNullSVG,
+    getSubsetSVG,
+    getEqualsSVG,
+    getTimerSVG,
+    getWildSVG
+} from '../svgSymbols.js';
+
+// Helper to create a color dot SVG (like color cubes in the game)
+// Color dot SVG using CSS variables for theme support
+function getColorDotSVG(colorVar = 'var(--color-red)', size = 50) {
+    return `
+        <svg width="${size}" height="${size}" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="25" cy="25" r="18" fill="${colorVar}" />
+            <circle cx="25" cy="25" r="18" fill="none" stroke="${colorVar}" stroke-width="2" opacity="0.5" />
+        </svg>
+    `.trim();
+}
 
 export class ModalManager {
     constructor(game) {
@@ -112,7 +135,7 @@ export class ModalManager {
         if (isFreePlay) {
             this.resultMessage.textContent = `${message}\n\nTotal Score: ${this.game.freePlayScore.toLocaleString()}\nPuzzles Solved: ${this.game.freePlayPuzzlesSolved}`;
         } else {
-            this.resultMessage.textContent = message;
+        this.resultMessage.textContent = message;
         }
         
         this.resultScore.textContent = `+${points} points!`;
@@ -526,21 +549,96 @@ export class ModalManager {
      * Returns a promise that resolves with true (tutorial) or false (skip)
      */
     showInterstitial(level, onChoice) {
-        // Get level config
-        const levelConfig = {
-            1: { title: 'Welcome to Ready, Set 2!', symbol: '∪', feature: 'Union & Intersection', desc: 'Combine sets with OR and AND' },
-            2: { title: 'Difference Operator', symbol: '−', feature: 'Difference', desc: 'Remove elements from a set' },
-            3: { title: 'Complement Operator', symbol: '′', feature: 'Complement', desc: 'Get everything EXCEPT a color' },
-            4: { title: 'More Operators!', symbol: '∪∩', feature: 'Duplicate Operators', desc: 'Build more complex expressions' },
-            5: { title: 'Universe & Null Set', symbol: 'U', feature: 'Universe & Null', desc: 'All cards or no cards' },
-            6: { title: 'Restrictions', symbol: '⊆', feature: 'Subset & Equals', desc: 'Modify the universe first' },
-            7: { title: 'Beat the Clock!', symbol: '⏱️', feature: 'Timer', desc: 'Solve puzzles before time runs out' },
-            8: { title: 'Required Cubes', symbol: '🟢', feature: 'Required Cubes', desc: 'Must use the green glowing cube' },
-            9: { title: 'Wild Cubes', symbol: '❓', feature: 'Wild Cubes', desc: 'Choose which operator to use' },
-            10: { title: 'Final Challenge', symbol: '⭐', feature: 'Bonus Cubes', desc: 'Free points for using special cubes' }
+        // Cube types determine border colors - using CSS variables for theme support
+        const CUBE_TYPES = {
+            operator: 'var(--color-operator-regular)',
+            color: 'var(--color-die-border)',         // Gray for color cubes
+            setConstant: 'var(--color-operator-restriction)',
+            restriction: 'var(--color-operator-restriction)',
+            timer: 'var(--color-die-border)',
+            required: 'var(--color-required-border)',
+            wild: 'var(--color-wild-border)',
+            bonus: 'var(--color-bonus-border)'
         };
         
-        const config = levelConfig[level] || { title: `Level ${level}`, symbol: '?', feature: 'New Features', desc: 'Keep learning!' };
+        const cubeSize = 40;
+        const levelConfig = {
+            1: { 
+                cubes: [
+                    { svg: getUnionSVG(cubeSize, cubeSize), type: 'operator' },
+                    { svg: getIntersectionSVG(cubeSize, cubeSize), type: 'operator' }
+                ],
+                feature: 'Union & Intersection', 
+                desc: 'Creata sets of cards with OR and AND' 
+            },
+            2: { 
+                cubes: [{ svg: getMinusSVG(cubeSize, cubeSize), type: 'operator' }],
+                feature: 'Difference', 
+                desc: 'Use MINUS to remove cards from a set.' 
+            },
+            3: { 
+                cubes: [
+                    { svg: getColorDotSVG('var(--color-red)', cubeSize), type: 'color' },
+                    { svg: getComplementSVG(cubeSize, cubeSize), type: 'operator' }
+                ],
+                feature: 'Complement', 
+                desc: 'Cards that do NOT have this color' 
+            },
+            4: { 
+                cubes: [
+                    { svg: getIntersectionSVG(cubeSize, cubeSize), type: 'operator' },
+                    { svg: getIntersectionSVG(cubeSize, cubeSize), type: 'operator' }
+                ],
+                feature: 'Duplicate Operators', 
+                desc: 'You might see the same operator twice!' 
+            },
+            5: { 
+                cubes: [
+                    { svg: getUniverseSVG(cubeSize, cubeSize), type: 'setConstant' },
+                    { svg: getNullSVG(cubeSize, cubeSize), type: 'setConstant' }
+                ],
+                feature: 'Universe & Null', 
+                desc: 'Name all cards, or no cards at all' 
+            },
+            6: { 
+                cubes: [
+                    { svg: getSubsetSVG(cubeSize, cubeSize), type: 'restriction' },
+                    { svg: getEqualsSVG(cubeSize, cubeSize), type: 'restriction' }
+                ],
+                feature: 'Subset & Equals', 
+                desc: 'Modify the universe with restrictions' 
+            },
+            7: { 
+                cubes: [
+                    { svg: getTimerSVG(cubeSize, cubeSize), type: 'timer' }
+                ],
+                feature: 'Timer', 
+                desc: 'Solve puzzles before time runs out' 
+            },
+            8: { 
+                cubes: [
+                    { svg: getColorDotSVG('var(--color-red)', cubeSize), type: 'required' }
+                ], 
+                feature: 'Required Cubes', 
+                desc: 'Must use the cube with the green glow' 
+            },
+            9: { 
+                cubes: [
+                    { svg: getWildSVG(cubeSize, cubeSize), type: 'wild' }
+                ],
+                feature: 'Wild Cubes', 
+                desc: 'Choose which operator to use' 
+            },
+            10: { 
+                cubes: [
+                    { svg: getColorDotSVG('var(--color-blue)', cubeSize), type: 'bonus' }
+                ], 
+                feature: 'Bonus Cubes', 
+                desc: 'Extra points for using special glowing cubes' 
+            }
+        };
+        
+        const config = levelConfig[level] || { emoji: '?', feature: 'New Features', desc: 'Keep learning!' };
         
         // Check if tutorial exists for this level (Level 1 uses 'intro')
         const scenarioKey = level === 1 ? 'intro' : level;
@@ -548,16 +646,32 @@ export class ModalManager {
         
         // Populate content
         this.interstitialLevel.textContent = level;
-        this.interstitialTitle.textContent = config.title;
-        this.interstitialSymbol.textContent = config.symbol;
+        this.interstitialTitle.textContent = `Welcome to Level ${level}`;
+        
+        // Render cubes or emoji
+        if (config.emoji) {
+            // Emoji-based levels (7-10)
+            this.interstitialSymbol.innerHTML = `<span class="emoji-symbol">${config.emoji}</span>`;
+            this.interstitialSymbol.className = 'feature-symbol';
+        } else {
+            // Multi-cube levels
+            const cubesHTML = config.cubes.map(cube => {
+                const borderColor = CUBE_TYPES[cube.type] || CUBE_TYPES.operator;
+                // Add glow class for special cube types
+                const glowClass = ['required', 'wild', 'bonus'].includes(cube.type) ? ` ${cube.type}-cube` : '';
+                return `<div class="feature-cube${glowClass}" style="border-color: ${borderColor}; color: ${borderColor};">${cube.svg}</div>`;
+            }).join('');
+            this.interstitialSymbol.innerHTML = cubesHTML;
+            this.interstitialSymbol.className = 'feature-symbol feature-cubes-container';
+        }
+        
         this.interstitialFeatureName.textContent = config.feature;
         this.interstitialFeatureDesc.textContent = config.desc;
-        this.interstitialDescription.textContent = `Welcome to Level ${level}! ${config.desc}`;
         
         // Show/hide tutorial button based on availability
         if (hasTutorial) {
             this.tutorialAcceptBtn.style.display = 'flex';
-            this.tutorialDeclineBtn.innerHTML = 'I\'ll Figure It Out';
+            this.tutorialDeclineBtn.innerHTML = 'Play Now';
         } else {
             this.tutorialAcceptBtn.style.display = 'none';
             this.tutorialDeclineBtn.innerHTML = 'Continue';

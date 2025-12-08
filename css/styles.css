@@ -1263,6 +1263,7 @@ body {
     margin: 40px 0;
     backdrop-filter: blur(10px);
     display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 30px;
 }
@@ -1274,8 +1275,46 @@ body {
     min-width: 100px;
 }
 
+/* Container for multiple feature cubes */
+.feature-symbol.feature-cubes-container {
+    display: flex;
+    gap: 12px;
+    min-width: auto;
+}
+
+/* Individual feature cube styled like game dice */
+.feature-cube {
+    width: 60px;
+    height: 60px;
+    background: var(--color-die-bg);
+    border: 3px solid; /* Color set inline per cube type */
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.2),
+        inset 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+.feature-cube svg {
+    width: 40px;
+    height: 40px;
+}
+
+/* Special cube types - reuse game animations */
+.feature-cube.required-cube { animation: requiredPulse 2s ease-in-out infinite; }
+.feature-cube.wild-cube { animation: wildPulse 2s ease-in-out infinite; }
+.feature-cube.bonus-cube { animation: bonusPulse 2s ease-in-out infinite; }
+
+/* Emoji symbols (timer, required, wild, bonus) don't need cube styling */
+.feature-symbol .emoji-symbol {
+    font-size: 48px;
+    line-height: 1;
+}
+
 .feature-description {
-    text-align: left;
+    text-align: center;
     flex: 1;
 }
 
@@ -1287,8 +1326,8 @@ body {
 }
 
 .feature-description p {
-    font-size: 18px;
-    color: rgba(255, 255, 255, 0.8);
+    font-size: 20px;
+    color: rgb(255, 255, 255);
     margin: 0;
 }
 
@@ -1352,6 +1391,7 @@ body {
 
 .interstitial-actions {
     display: flex;
+    flex-direction: column;
     gap: 20px;
     margin: 40px 0 30px;
 }
@@ -1860,6 +1900,24 @@ body.tutorial-active .game-container > *:not(.tutorial-highlight) {
     .feature-symbol {
         font-size: 48px;
         min-width: auto;
+    }
+    
+    .feature-symbol.feature-cubes-container {
+        gap: 8px;
+    }
+    
+    .feature-cube {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .feature-cube svg {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .feature-symbol .emoji-symbol {
+        font-size: 40px;
     }
     
     .daily-puzzle-stats {
