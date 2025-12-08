@@ -184,22 +184,21 @@ export class HomeScreenManager {
         // Check if player has beaten the game (completed level 10)
         const hasBeatenGame = this.game.storage.hasGameBeenCompleted();
         
+        // Free Play is available if player has ever beaten the game
         if (hasBeatenGame) {
-            // Game is complete - hide continue button, show Free Play
-            console.log('🏆 Game completed! Hiding Continue button, showing Free Play');
-            this.continueBtn.classList.add('hidden');
             this.freePlayBtn.classList.remove('hidden');
         } else {
-            // Hide Free Play button if game not completed
             this.freePlayBtn.classList.add('hidden');
-            
-            if (hasSavedGame) {
-                // DEBUG: console.log(`🏠 ✅ Showing Continue button for Level ${this.game.level}`);
-                this.continueBtn.classList.remove('hidden');
-            } else {
-                // DEBUG: console.log('🏠 ❌ Hiding Continue button (no saved game)');
-                this.continueBtn.classList.add('hidden');
-            }
+        }
+        
+        // Continue button shows if there's a saved game in progress
+        // (independent of whether they've beaten the game before)
+        if (hasSavedGame) {
+            console.log(`🏠 ✅ Showing Continue button for Level ${this.game.level}`);
+            this.continueBtn.classList.remove('hidden');
+        } else {
+            console.log('🏠 ❌ Hiding Continue button (no saved game)');
+            this.continueBtn.classList.add('hidden');
         }
         
         // Update New Game button text based on whether player has started
