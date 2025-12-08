@@ -1309,8 +1309,20 @@ export class UIController {
         } else {
             // User declined tutorial - mark as viewed so they don't see it again
             this.game.storage.markTutorialAsViewed(1);
+            
+            // Transition to regular gameplay mode
+            this.stateManager.setState({
+                view: UI_VIEWS.GAMEPLAY,
+                mode: GAMEPLAY_MODES.REGULAR
+            });
+            
+            // Start timer if this level has one (Level 7+)
+            const settings = this.game.storage.loadSettings();
+            const config = getLevelConfig(this.game.level, settings.testMode);
+            if (config && config.timeLimit) {
+                this.game.timer.startFresh();
+            }
         }
-        // If they decline, just continue with normal gameplay (already rendered)
     }
     
     async showTutorialForLevel(level) {
