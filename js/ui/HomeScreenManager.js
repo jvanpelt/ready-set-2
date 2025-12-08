@@ -192,9 +192,9 @@ export class HomeScreenManager {
         
         // Update New Game button text based on whether player has started
         if (hasSavedGame || hasBeatenGame) {
-            this.newGameBtn.textContent = 'New Career';
+            this.newGameBtn.textContent = '🚀 New Career';
         } else {
-            this.newGameBtn.textContent = 'Start Career';
+            this.newGameBtn.textContent = '🚀 Start Career';
         }
         
         this.homeScreen.classList.remove('hidden');
