@@ -1378,6 +1378,11 @@ body {
 }
 
 .btn-primary.btn-large {
+    background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+    color: var(--color-text-primary);
+}
+
+.btn-success.btn-large {
     background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
     color: var(--color-text-primary);
 }
