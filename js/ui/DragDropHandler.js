@@ -560,6 +560,14 @@ export class DragDropHandler {
         
         // === DOUBLE-CLICK/TAP TO REMOVE ===
         this.solutionArea.addEventListener('dblclick', (e) => {
+            // Check if tutorial disables interaction
+            if (this.tutorialManager?.isActive) {
+                const currentStep = this.tutorialManager.scenario?.walkthrough?.steps[this.tutorialManager.currentStep];
+                if (currentStep?.disableDragging) {
+                    return; // Don't allow removal during locked tutorial steps
+                }
+            }
+            
             const solutionDie = e.target.closest('.solution-die');
             if (solutionDie) {
                 const row = solutionDie.closest('.solution-row');
@@ -582,6 +590,14 @@ export class DragDropHandler {
             const solutionDie = e.target.closest('.solution-die');
             if (!solutionDie) return;
             if (this.hasMoved) return;
+            
+            // Check if tutorial disables interaction
+            if (this.tutorialManager?.isActive) {
+                const currentStep = this.tutorialManager.scenario?.walkthrough?.steps[this.tutorialManager.currentStep];
+                if (currentStep?.disableDragging) {
+                    return; // Don't allow removal during locked tutorial steps
+                }
+            }
             
             const currentTime = Date.now();
             const tapLength = currentTime - lastTap;
