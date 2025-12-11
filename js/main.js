@@ -44,6 +44,12 @@ window.checkTimer = () => {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 DOM loaded - initializing game');
     
+    // Set version in settings menu
+    const versionEl = document.getElementById('app-version');
+    if (versionEl) {
+        versionEl.textContent = VERSION;
+    }
+    
     try {
         // Create game instance
         console.log('📦 Creating Game instance...');
