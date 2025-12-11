@@ -415,20 +415,18 @@ export class TutorialManager {
             this.ui.modals.showTutorialComplete(async () => {
                 console.log('   → Tutorial complete modal closed, resetting round');
                 
-                // Transition to regular gameplay
+                // Clear solution areas in DOM before resetting
+                this.ui.dragDropHandler.clearAllSolutions();
+                
+                // Reset to fresh puzzle data
+                this.game.resetRound();
+                
+                // Transition to regular gameplay - this triggers enterState which
+                // calls render({ animate: true }) and starts the timer
                 this.ui.stateManager.setState({
                     view: UI_VIEWS.GAMEPLAY,
                     mode: GAMEPLAY_MODES.REGULAR
                 });
-                
-                // Clear solution areas in DOM before resetting
-                this.ui.dragDropHandler.clearAllSolutions();
-                
-                this.game.resetRound();
-                this.ui.render();
-                
-                // Notify UIController to handle timer
-                this.ui.handleTutorialComplete();
             });
         } else if (this.entryPoint === 'home-screen') {
             // Entered from home screen - return to home screen
@@ -454,17 +452,15 @@ export class TutorialManager {
                 this.ui.modals.showTutorialComplete(async () => {
                     console.log('   → Tutorial complete modal closed, restoring state');
                     
-                    // Transition to regular gameplay
+                    // Clear solution areas in DOM before restoring
+                    this.ui.dragDropHandler.clearAllSolutions();
+                    
+                    // Transition to regular gameplay - enterState will call enterRegularMode()
+                    // which restores from saved state and renders with animation
                     this.ui.stateManager.setState({
                         view: UI_VIEWS.GAMEPLAY,
                         mode: GAMEPLAY_MODES.REGULAR
                     });
-                    
-                    // Clear solution areas in DOM before restoring
-                    this.ui.dragDropHandler.clearAllSolutions();
-                    
-                    this.game.restoreFromSavedState(savedState);
-                    this.ui.render();
                     console.log('✅ Game state restored');
                 });
             } else {
@@ -484,14 +480,14 @@ export class TutorialManager {
             
             if (savedState && savedState.cards && savedState.cards.length > 0) {
                 this.ui.modals.showTutorialComplete(async () => {
+                    // Clear solution areas before transitioning
+                    this.ui.dragDropHandler.clearAllSolutions();
+                    
+                    // Transition to regular gameplay - enterState handles restore and render
                     this.ui.stateManager.setState({
                         view: UI_VIEWS.GAMEPLAY,
                         mode: GAMEPLAY_MODES.REGULAR
                     });
-                    
-                    this.ui.dragDropHandler.clearAllSolutions();
-                    this.game.restoreFromSavedState(savedState);
-                    this.ui.render();
                 });
             } else {
                 this.ui.modals.showTutorialComplete(async () => {

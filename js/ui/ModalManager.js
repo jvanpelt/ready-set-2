@@ -234,8 +234,12 @@ export class ModalManager {
         }
         
         // Override the continue button to call onContinue callback
+        // Use capture phase to run BEFORE the permanent handler in UIController
         const continueBtn = document.getElementById('result-continue');
-        const handler = () => {
+        const handler = (e) => {
+            // Stop the permanent handler in UIController from also firing
+            e.stopImmediatePropagation();
+            
             this.resultModal.classList.add('hidden');
             
             // Remove overlay
@@ -243,21 +247,33 @@ export class ModalManager {
                 window.uiController.stateManager.closeModal();
             }
             
-            continueBtn.removeEventListener('click', handler);
+            continueBtn.removeEventListener('click', handler, true);
             onContinue();
         };
-        continueBtn.addEventListener('click', handler);
+        // Use capture: true to ensure this runs before other click handlers
+        continueBtn.addEventListener('click', handler, true);
     }
     
     /**
      * Hide result modal and advance game state
+     * @param {Function} onHide - Optional callback after hiding (only passed from button click, not from state manager)
      */
     async hideResult(onHide) {
+        // If already hidden (called from closeModalByName after state change), just return
+        if (this.resultModal.classList.contains('hidden')) {
+            return;
+        }
+        
         this.resultModal.classList.add('hidden');
         
         // Close modal in state manager
         if (window.uiController && window.uiController.stateManager) {
             window.uiController.stateManager.closeModal();
+        }
+        
+        // If no callback, we were called from closeModalByName - just hide the modal
+        if (typeof onHide !== 'function') {
+            return;
         }
         
         // Free Play mode: always generate new Level 10 puzzle
@@ -303,7 +319,8 @@ export class ModalManager {
                     this.game.timer.stop(true); // Clear data - fresh timer will start after tutorial
                 }
                 
-                onHide();
+                // NOTE: Don't call onHide() here - enterState will handle render with animation
+                // Calling onHide() would cause double-render since it also calls render({ animate: true })
                 
                 // Start tutorial if requested
                 if (wantsTutorial) {
@@ -345,19 +362,14 @@ export class ModalManager {
             } else {
                 // Tutorial already viewed, skip interstitial - go straight to gameplay
                 this.game.startNewLevel();
-                onHide();
                 
-                // Transition to regular gameplay
+                // Transition to regular gameplay - enterState will handle render with animation
+                // NOTE: Don't call onHide() here - it would cause double-render
                 if (window.uiController) {
                     window.uiController.stateManager.setState({
                         view: UI_VIEWS.GAMEPLAY,
                         mode: GAMEPLAY_MODES.REGULAR
                     });
-                }
-                
-                // Notify UIController to handle timer
-                if (window.uiController) {
-                    window.uiController.handleLevelAdvanced();
                 }
             }
         } else {

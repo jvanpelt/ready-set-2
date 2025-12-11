@@ -1,7 +1,7 @@
 # Ready, Set 2 - AI Context Guide
 
-**Last Updated:** November 30, 2025  
-**Version:** 4.36.3  
+**Last Updated:** December 10, 2025  
+**Version:** 4.50.39  
 **Purpose:** This document provides comprehensive context for AI assistants and developers working on this codebase.
 
 ---
@@ -170,9 +170,10 @@ Restrictions **modify the universe** by flipping cards out before evaluating the
 - **Anti-cheat:** Prevents spam-passing strategies
 
 **Wild Cube** (Level 9+)
-- Not yet implemented
-- Will allow player to choose which operator it represents
+- Red "?" symbol with pulsing glow
+- Click/tap to choose which operator it represents (∪, ∩, −, ′)
 - Worth: 25 points
+- Adds strategic flexibility to solutions
 
 **Bonus Cube** (Level 10)
 - Not yet implemented
@@ -1131,6 +1132,18 @@ setState({
 - `game.enterRegularMode()`
 - Any transition from daily to regular/tutorial modes
 
+### 14. Tautological Restrictions Evaluate to Universe
+
+**Behavior:** Expressions like `(A = A)` evaluate to the **universe** (all cards), not to set A.
+
+**Why:** The constraint `A = A` asks "which cards satisfy has-A ↔ has-A?" Every card satisfies this trivially (True ↔ True or False ↔ False both equal True).
+
+**Example:**
+- `blue ⊆ (yellow = yellow)` flips **nothing** (equivalent to `blue ⊆ U`)
+- This differs from `blue ⊆ yellow` which flips blue-only cards
+
+**This is mathematically correct** per set theory, even though it may feel counterintuitive. The equals constraint `(A = B)` represents the set `(A ∩ B) ∪ (Ā ∩ B̄)` - cards where both are present OR both are absent.
+
 ---
 
 ## Testing & Deployment
@@ -1225,11 +1238,10 @@ window.game.dailyPuzzle  // Should be null unless in daily mode
 
 ## Future Improvements / TODOs
 
-### Planned Features (Level 9-10)
+### Planned Features (Level 10)
 
-- [ ] **Wild Cubes (Level 9):** Click to choose operator
+- [x] **Wild Cubes (Level 9):** Click to choose operator ✓ Implemented
 - [ ] **Bonus Cubes (Level 10):** Free points for using
-- [ ] Percentage chances for special cubes at each level
 
 ### Possible Enhancements
 
@@ -1281,7 +1293,7 @@ window.game.dailyPuzzle  // Should be null unless in daily mode
 
 **Solution Helper** - Auto-dim/flip preview feature
 
-**Wild Cube** - Die that can be any operator (Level 9+, not yet implemented)
+**Wild Cube** - Die with red "?" that player clicks to choose operator (Level 9+)
 
 ---
 

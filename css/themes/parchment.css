@@ -73,6 +73,7 @@
     /* === UI ELEMENTS === */
     --color-border: #8b7355;
     --color-highlight: #c85a54;
+    --color-focus: #6b9969;  /* Focus/selection states for interactive elements */
     --color-text-primary: #ffffff;
     --color-text-secondary: rgba(255, 255, 255, 0.7);
     --color-text-dark: #ffffff;
