@@ -106,7 +106,44 @@ const IntroAnimations = {
     },
     
     /**
-     * Step 6: Animate RED cube to solution row 1
+     * Animate solution area with glow and fade
+     * @param {number|null} rowIndex - 0 for top row, 1 for bottom row, null/undefined for both
+     */
+    animateSolution(rowIndex = null) {
+        let solutionRows;
+        
+        if (rowIndex !== null) {
+            // Specific row (0 = top, 1 = bottom)
+            const row = document.querySelector(`.solution-row[data-row="${rowIndex}"]`);
+            solutionRows = row ? [row] : [];
+        } else {
+            // All rows
+            solutionRows = document.querySelectorAll('.solution-row');
+        }
+        
+        if (solutionRows.length === 0) {
+            console.warn('⚠️ Solution rows not found');
+            return;
+        }
+        
+        solutionRows.forEach(row => {
+            row.classList.add('tutorial-highlight');
+            
+            // Fade out the highlight after showing it
+            gsap.to(row, {
+                boxShadow: '0 0 0px 0px rgb(255, 215, 200)',
+                duration: 1.5,
+                delay: 0.75,
+                ease: 'power2.out',
+                onComplete: () => {
+                    row.classList.remove('tutorial-highlight');
+                }
+            });
+        });
+    },
+    
+    /**
+     * Animate RED cube to solution row 1
      */
     animateRedToSolution() {
         
@@ -398,13 +435,13 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'objective',
-                    message: 'Your objective is to use game pieces to create a Solution that matches the goal. Complex Solutions earns higher points, helping progress through your career faster.',
+                    message: 'Your objective is to use "Cards" and "Cubes" to create a "Solution" that matches the goal. Allow us to explain!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'universe',
-                    message: 'Let\'s learn how! The 8 <strong>Cards</strong> up top are called the <strong>Universe</strong>. Each Card has a unique combination of colored dots.',
+                    message: 'The 8 <strong>Cards</strong> up top are called the <strong>Universe</strong>. Each Card has a unique combination of colored dots.',
                     highlight: null,
                     nextTrigger: 'auto',
                     onEnter: () => {
@@ -451,6 +488,9 @@ export const TUTORIAL_SCENARIOS = {
                     id: 'build-red-or-blue',
                     message: `So let\'s try it! Drag the Red Cube, OR ${getUnionSVG(30,30)} Cube, and Blue Cube to the top row in the Solution Area.`,
                     highlight: { dice: [0, 1, 2] },
+                    onEnter: () => {
+                        setTimeout(() => IntroAnimations.animateSolution(0), 100);
+                    },
                     validation: (game) => {
                         // Check if solution contains EXACTLY red, OR, blue (in any row, any order)
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
