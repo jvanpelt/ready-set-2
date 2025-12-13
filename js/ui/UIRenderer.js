@@ -218,14 +218,8 @@ export class UIRenderer {
                     }
                     isDraggable = false;
                     if (index === 0) console.log('🚫 Dragging disabled for all dice');
-                } else if (currentStep?.highlight?.dice) {
-                    // Otherwise check if this specific die is allowed
-                    const allowedIndices = currentStep.highlight.dice;
-                    if (!allowedIndices.includes(index)) {
-                        dieEl.classList.add('tutorial-disabled');
-                        isDraggable = false;
-                    }
                 }
+                // Note: highlight.dice is now purely visual - doesn't restrict dragging
             }
             
             // Set draggable attribute based on all checks
@@ -518,16 +512,17 @@ export class UIRenderer {
         // Only show indicators for groups with 2+ dice
         groups.forEach(group => {
             if (group.length > 1) {
-                const indicator = document.createElement('div');
-                indicator.className = 'solution-group-indicator';
-                
                 // Check if group is syntactically valid
                 const isValid = this.isGroupValid(group);
-                if (isValid) {
-                    indicator.classList.add('valid');
-                } else {
-                    indicator.classList.add('invalid');
+                
+                // Only show indicator for valid groups (gray border was confusing)
+                // TODO: Re-evaluate if invalid group indicator is needed
+                if (!isValid) {
+                    return; // Skip invalid groups - no visual indicator
                 }
+                
+                const indicator = document.createElement('div');
+                indicator.className = 'solution-group-indicator valid';
                 
                 // Calculate bounding box
                 const bounds = this.getGroupBounds(group);

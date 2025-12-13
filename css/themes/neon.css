@@ -59,7 +59,7 @@
     --color-solution-valid-border: #00ff88;
     --color-solution-valid-bg: rgba(0, 255, 136, 0.1);
     --color-solution-restriction-border: rgba(0, 212, 255, 0.8);
-    --color-solution-invalid-border: rgba(255, 51, 102, 0.8);
+    --color-solution-invalid-border: rgba(255, 51, 102, 0.7);
     --color-solution-invalid-bg: rgba(255, 51, 102, 0.1);
     --color-solution-disabled-bg: rgba(0, 0, 0, 0.4);
     --color-solution-disabled-border: rgba(0, 212, 255, 0.2);

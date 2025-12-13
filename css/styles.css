@@ -1451,11 +1451,13 @@ body {
    ============================================================================ */
 
 .tutorial-instruction {
+    display: flex;
+    flex-direction: column;
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 180px;
+    height: 210px;
     background: var(--color-tutorial-bg);
     backdrop-filter: blur(12px);
     color: var(--color-text-primary);
@@ -1483,6 +1485,7 @@ body {
     font-weight: bold;
     display: inline-block;
     margin-bottom: 8px;
+    width: fit-content;
 }
 
 .tutorial-instruction p {
@@ -1490,6 +1493,7 @@ body {
     font-size: 22px;
     line-height: 1.4;
     color: rgb(255, 255, 255);
+    flex-grow: 1;
 }
 
 .tutorial-buttons {
@@ -1562,9 +1566,7 @@ body {
     }
 }
 
-body.tutorial-active .game-container > *:not(.tutorial-highlight) {
-    opacity: 0.3;
-}
+/* Tutorial highlights are now purely visual - no dimming of other elements */
 
 /* ============================================================================
    HOME SCREEN

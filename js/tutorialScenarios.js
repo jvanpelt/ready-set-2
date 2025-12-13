@@ -38,16 +38,22 @@ const IntroAnimations = {
         // Animate each card with overlapping timing
         cards.forEach((card, i) => {
             // Instantly set glow and scale
-            gsap.set(card, { filter: 'drop-shadow(0 0 10px rgba(255, 215, 0, 0.75))'});
+            gsap.set(card, { boxShadow: '0px 0px 6px 2px rgba(255, 215, 0, 0.75)' });
             
             const tl = gsap.timeline({ delay: i * 0.15 });
-            tl.to(card, {duration: 0.4, scale: 1.1, ease: 'power2.inOut'}),
+            tl.to(card, {duration: 0.3, scale: 1.1, ease: 'power2.inOut'}),
             tl.to(card, {
                 scale: 1,
-                filter: 'drop-shadow(0 0 0px rgb(255, 215, 0))',
-                duration: 0.4,
-                delay: 0.2,  // Hold at full glow for 0.2s
+                duration: 0.3,
+                delay: 0.2,
                 ease: 'power2.inOut'
+            }),
+            tl.to(card, {
+                boxShadow: '0px 0px 0px 0px rgba(255, 215, 0, 0.75)',
+                duration: 0.75,
+                delay: 0.2, 
+                ease: 'power2.inOut',
+                onComplete: () => { gsap.set(card, { boxShadow: 'unset' }); }
             });
         });
     },
@@ -66,10 +72,11 @@ const IntroAnimations = {
         gsap.to(goalDisplay, {
             scale: 1.1,
             boxShadow: '0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.4)',
-            duration: 0.4,
+            duration: 0.5,
             ease: 'power2.out',
             yoyo: true,
-            repeat: 1
+            repeat: 1,
+            repeatDelay: 0.3
         });
     },
     
@@ -385,13 +392,19 @@ export const TUTORIAL_SCENARIOS = {
             steps: [
                 {
                     id: 'welcome',
-                    message: '<strong>Ready, Set!</strong> is a game of set theory. Let\'s start with the basics.',
+                    message: '<strong>Ready, Set!</strong> is a game of set theory. Let\'s start with some basic concepts and elements of the game. You\'re gonna want to read this.',
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'objective',
+                    message: 'Your objective is to use game pieces to create a Solution that matches the goal. Complex Solutions earns higher points, helping progress through your career faster.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'universe',
-                    message: 'The 8 <strong>CARDS</strong> up top are called the <strong>UNIVERSE</strong>. Each card has a unique combination of colored dots.',
+                    message: 'Let\'s learn how! The 8 <strong>Cards</strong> up top are called the <strong>Universe</strong>. Each Card has a unique combination of colored dots.',
                     highlight: null,
                     nextTrigger: 'auto',
                     onEnter: () => {
@@ -400,7 +413,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'goal',
-                    message: 'In this example, your goal is to select exactly <strong>3 cards</strong> from the UNIVERSE.',
+                    message: 'In this example, your goal is to select exactly <strong>3 Cards</strong> from the Universe.',
                     highlight: { goal: true },
                     nextTrigger: 'auto',
                     onEnter: () => {
@@ -409,7 +422,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'cubes',
-                    message: 'Use <strong>CUBES</strong> to build a solution. Each cube has a <strong>color</strong> or <strong>operator</strong> symbol, with more introduced in later levels.',
+                    message: 'You\'ll drag Cubes to the <strong>Solution Area</strong> to create a "<strong>Set Name</strong>" &ndash; a formula that selects, or names, a set of Cards.',
                     highlight: { dice: [0, 1, 2, 3] },
                     nextTrigger: 'auto',
                     onEnter: () => {
@@ -417,30 +430,27 @@ export const TUTORIAL_SCENARIOS = {
                     }
                 },
                 {
-                    id: 'operator',
-                    message: `You\'ll start off with two operator cubes: Union or <strong>"OR"</strong> ${getUnionSVG(35,35)} and Intersection or <strong>"AND"</strong> ${getIntersectionSVG(35,35)}.`,
-                    highlight: { dice: [0, 1, 2, 3] },
-                    nextTrigger: 'auto',
-                    onEnter: () => {
-                        setTimeout(() => IntroAnimations.animateCubes(), 100);
-                    }
+                    id: 'operator-or',
+                    message: `The Union or <strong>"OR"</strong> ${getUnionSVG(35,35)} operator selects a larger set, as shown by it's "more full" venn diagram symbol.`,
+                    highlight: { dice: [2] },
+                    nextTrigger: 'auto'
                 },
                 {
-                    id: 'set-name',
-                    message: 'You\'ll drag cubes to the <strong>SOLUTION AREA</strong> to create a "<strong>set name</strong>" &ndash; a formula that names, or selects, a set of cards.',
-                    highlight: { solutionArea: true, shake: true, fadeOut: true },
+                    id: 'operator-and',
+                    message: `The Intersection or <strong>"AND"</strong> ${getIntersectionSVG(35,35)} operator names a smaller set with shared characteristics, as shown by the "less full" venn diagram symbol.`,
+                    highlight: { dice: [3] },
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'left-to-right',
-                    message: 'Your solution is read <strong>left-to-right</strong>, like a math equation. Just as "three plus two" is written as "3 + 2", not "3 2 +". The order matters.',
+                    message: 'Your Solution is read <strong>left-to-right</strong>, like a math equation. Just as "three plus two" is written as "3 + 2", not "3 2 +". The order matters.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'build-red-or-blue',
-                    message: `Try it! Add the "Red" cube, "OR" ${getUnionSVG(30,30)} cube, and "Blue" cube to the top row in the solution area.`,
-                    highlight: null,
+                    message: `So let\'s try it! Drag the Red Cube, OR ${getUnionSVG(30,30)} Cube, and Blue Cube to the top row in the Solution Area.`,
+                    highlight: { dice: [0, 1, 2] },
                     validation: (game) => {
                         // Check if solution contains EXACTLY red, OR, blue (in any row, any order)
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
@@ -456,14 +466,14 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'or-result',
-                    message: '<strong>Red Or Blue</strong> selects cards with red dots OR blue dots. That\'s 5 cards, which doesn\'t match the goal.',
+                    message: '<strong>Red OR Blue</strong> selects Cards with Red dots OR Blue dots. You can see that 5 Cards are highlighted, which doesn\'t match the goal yet.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'swap-and',
-                    message: `Now try a solution of <strong>"Red AND ${getIntersectionSVG(30,30)} Blue"</strong>. Tip: double-tap the OR cube to easily remove it from your solution.`,
-                    highlight: { dice: [0, 1, 3] }, // Highlight red, blue, and AND
+                    message: `Now try a Solution of <strong>"Red AND ${getIntersectionSVG(30,30)} Blue"</strong>. Tip: double-tap the OR cube to easily remove it from your Solution.`,
+                    highlight: { dice: [3] }, // Highlight red, blue, and AND
                     validation: (game) => {
                         // Check if solution contains EXACTLY red, AND, blue (in any row, any order)
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
@@ -482,10 +492,10 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'and-success',
-                    message: 'Perfect! "<strong>Red And Blue</strong>" finds only cards with BOTH colors. That\'s exactly 3 cards! ✓',
+                    message: 'Perfect! "<strong>Red AND Blue</strong>" finds only Cards with BOTH colors. That\'s exactly 3 Cards, making this a valid Solution!',
                     highlight: null,
                     nextTrigger: 'auto'
-                },
+                },/*
                 {
                     id: 'solution-helper',
                     message: 'A few quick tips: The "Solution Helper" feature highlights cards that match your current solution.',
@@ -497,10 +507,34 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Solution Helper is enabled by default, and during all tutorials. It can be disabled in the Settings menu when you\'re ready for <strong>hard mode</strong>!',
                     highlight: null,
                     nextTrigger: 'auto'
+                },*/
+                {
+                    id: 'more-things',
+                    message: 'A few more important things to know...',
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'explain-grouping-order',
+                    message: 'When Cubes touch, they form a group that acts as a unit in your solution. Groups are evaluated first, just like parentheses change the order of operations in algebra.',
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'explain-grouping-boxes',
+                    message: 'You\'ll see that valid groups are wrapped in a green box in your solution. Experiment with how different groupings can change the result of your Solution.',
+                    highlight: null,
+                    nextTrigger: 'auto'
                 },
                 {
                     id: 'pass-button',
-                    message: 'Lastly, in game play, cards and cubes are randomly generated, so some puzzles will have <strong>NO</strong> solution! Use <strong>Pass</strong> when you need to.',
+                    message: 'Finally, in career game play, Cards and Cubes are randomly generated, so some puzzles will have <strong>NO</strong> Solution! Use <strong>Pass</strong> when you need to.',
+                    highlight: null,
+                    nextTrigger: 'auto'
+                },
+                {
+                    id: 'leveling-up',
+                    message: 'Remember, Solutions with more Cubes earn higher points, helping you rise through the levels faster. There, you\'ll learn more advanced concepts and open up new game features!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -513,7 +547,7 @@ export const TUTORIAL_SCENARIOS = {
             ]
         }
     },
-    
+    /*
     1: {
         // Cards: 3 without red/blue, 5 with red or blue
         // 1=gold, 2=green, 3=green+gold (no red/blue)
@@ -591,7 +625,7 @@ export const TUTORIAL_SCENARIOS = {
                 }
             ]
         }
-    },
+    },*/
     
     2: {
         // Level 2: Difference operator (−)
@@ -760,7 +794,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Complement is powerful, but it gets tricky when combined with other operators. This makes us think it\'s a good time to explain grouping.',
                     highlight: null,
                     nextTrigger: 'auto'
-                },
+                },/*
                 {
                     id: 'explain-grouping-order',
                     message: 'When cubes touch, they form a group that acts as a unit in your solution. Groups are evaluated first, just like parentheses change the order of operations in algebra.',
@@ -772,7 +806,7 @@ export const TUTORIAL_SCENARIOS = {
                     message: 'Experiment with different combinations. You\'ll see that valid groups are wrapped in a green box in your solution.',
                     highlight: null,
                     nextTrigger: 'auto'
-                },
+                },*/
                 {
                     id: 'explain-grouping-with-prime',
                     message: 'Try adding red, green, AND, and PRIME to the solution area. Notice how "red and (green prime)" is different than "(red and green) prime"',

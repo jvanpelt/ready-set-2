@@ -60,7 +60,7 @@
     --color-solution-valid-border: #5cb85c;
     --color-solution-valid-bg: rgba(92, 184, 92, 0.1);
     --color-solution-restriction-border: rgba(100, 150, 255, 0.5);
-    --color-solution-invalid-border: rgba(217, 83, 79, 0.5);
+    --color-solution-invalid-border: rgba(217, 83, 79, 0.7);
     --color-solution-invalid-bg: rgba(217, 83, 79, 0.05);
     --color-solution-disabled-bg: rgba(0, 0, 0, 0.2);
     --color-solution-disabled-border: rgba(255, 255, 255, 0.3);
@@ -111,7 +111,7 @@
     /* === TUTORIAL === */
     --color-tutorial-bg: rgba(41, 172, 211, 0.35);
     --color-tutorial-border: rgba(76, 175, 80, 0.4);
-    --color-tutorial-badge: #4CAF50;
+    --color-tutorial-badge: var(--color-blue);
     --color-tutorial-highlight: #ffd90094;
     --color-tutorial-btn-primary: #4CAF50;
     --color-tutorial-btn-hover: #45a049;
