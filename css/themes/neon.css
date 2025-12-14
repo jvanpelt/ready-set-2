@@ -160,11 +160,11 @@
     --transition-slow: 0.4s ease;
     
     /* === SEMI-TRANSPARENT OVERLAYS === */
-    --overlay-dark-10: rgba(0, 0, 0, 0.2);
-    --overlay-dark-20: rgba(0, 0, 0, 0.3);
-    --overlay-dark-30: rgba(0, 0, 0, 0.4);
-    --overlay-dark-40: rgba(0, 0, 0, 0.5);
-    --overlay-dark-50: rgba(0, 0, 0, 0.6);
+    --overlay-dark-10: rgba(0, 0, 0, 0.1);
+    --overlay-dark-20: rgba(0, 0, 0, 0.2);
+    --overlay-dark-30: rgba(0, 0, 0, 0.3);
+    --overlay-dark-40: rgba(0, 0, 0, 0.4);
+    --overlay-dark-50: rgba(0, 0, 0, 0.5);
     /* White overlays - actual white for text and general use */
     --overlay-white-05: rgba(255, 255, 255, 0.05);
     --overlay-white-10: rgba(255, 255, 255, 0.1);

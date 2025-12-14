@@ -92,7 +92,7 @@
     --color-text-disabled: rgba(90, 74, 58, 0.4);
     /* Semantic backgrounds - darker on light theme */
     --color-section-bg: rgba(139, 115, 85, 0.08);
-    --color-section-bg-hover: rgba(139, 115, 85, 0.15);
+    --color-section-bg-hover: rgba(139, 115, 85, 0.35);
     /* Semantic borders */
     --color-border-subtle: rgba(139, 115, 85, 0.15);
     --color-border-medium: rgba(139, 115, 85, 0.25);
@@ -162,10 +162,10 @@
     
     /* === SEMI-TRANSPARENT OVERLAYS === */
     --overlay-dark-10: rgba(90, 74, 58, 0.1);
-    --overlay-dark-20: rgba(90, 74, 58, 0.15);
-    --overlay-dark-30: rgba(90, 74, 58, 0.2);
-    --overlay-dark-40: rgba(90, 74, 58, 0.25);
-    --overlay-dark-50: rgba(90, 74, 58, 0.3);
+    --overlay-dark-20: rgba(90, 74, 58, 0.2);
+    --overlay-dark-30: rgba(90, 74, 58, 0.3);
+    --overlay-dark-40: rgba(90, 74, 58, 0.4);
+    --overlay-dark-50: rgba(90, 74, 58, 0.5);
     --overlay-white-05: rgba(139, 115, 85, 0.05);
     --overlay-white-10: rgba(139, 115, 85, 0.1);
     --overlay-white-15: rgba(139, 115, 85, 0.15);

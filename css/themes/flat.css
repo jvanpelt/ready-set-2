@@ -160,11 +160,11 @@
     --transition-slow: 0.4s ease;
     
     /* === SEMI-TRANSPARENT OVERLAYS === */
-    --overlay-dark-10: rgba(0, 0, 0, 0.15);
-    --overlay-dark-20: rgba(0, 0, 0, 0.25);
-    --overlay-dark-30: rgba(0, 0, 0, 0.35);
-    --overlay-dark-40: rgba(0, 0, 0, 0.45);
-    --overlay-dark-50: rgba(0, 0, 0, 0.55);
+    --overlay-dark-10: rgba(0, 0, 0, 0.1);
+    --overlay-dark-20: rgba(0, 0, 0, 0.2);
+    --overlay-dark-30: rgba(0, 0, 0, 0.3);
+    --overlay-dark-40: rgba(0, 0, 0, 0.4);
+    --overlay-dark-50: rgba(0, 0, 0, 0.5);
     --overlay-white-05: rgba(255, 255, 255, 0.03);
     --overlay-white-10: rgba(255, 255, 255, 0.06);
     --overlay-white-15: rgba(255, 255, 255, 0.09);
@@ -183,52 +183,60 @@
    ============================================================================ */
 
 /* Reversed dice colors - solid colored background with white circles */
-/* Apply to dice in dice area and solution area */
+/* Apply to dice in dice area, solution area, and scoring table */
 .dice-area .die.color-circle:has(.circle.red),
-.solution-die.color-circle:has(.circle.red) {
+.solution-die.color-circle:has(.circle.red),
+.scoring-die.color-circle:has(.circle.red) {
     background: #d03121;
     border-color: #b8291c;
 }
 
 .dice-area .die.color-circle:has(.circle.blue),
-.solution-die.color-circle:has(.circle.blue) {
+.solution-die.color-circle:has(.circle.blue),
+.scoring-die.color-circle:has(.circle.blue) {
     background: #237eba;
     border-color: #1e6a9f;
 }
 
 .dice-area .die.color-circle:has(.circle.green),
-.solution-die.color-circle:has(.circle.green) {
+.solution-die.color-circle:has(.circle.green),
+.scoring-die.color-circle:has(.circle.green) {
     background: #56a148;
     border-color: #4a8a3d;
 }
 
 .dice-area .die.color-circle:has(.circle.gold),
-.solution-die.color-circle:has(.circle.gold) {
+.solution-die.color-circle:has(.circle.gold),
+.scoring-die.color-circle:has(.circle.gold) {
     background: #cfab02;
     border-color: #b69402;
 }
 
 /* White circles on colored dice */
 .dice-area .die.color-circle .circle,
-.solution-die.color-circle .circle {
+.solution-die.color-circle .circle,
+.scoring-die.color-circle .circle {
     background: #ffffff;
 }
 
 /* Solid backgrounds for operator cubes */
 .dice-area .die.operator-regular,
-.solution-die.operator-regular {
-    background: #d03121;
-    border-color: #b8291c;
+.solution-die.operator-regular,
+.scoring-die.operator-regular {
+    background: #85190e;
+    border-color: #85190e;
 }
 
 .dice-area .die.operator-restriction,
-.solution-die.operator-restriction {
+.solution-die.operator-restriction,
+.scoring-die.operator-restriction {
     background: #237eba;
     border-color: #1e6a9f;
 }
 
 .dice-area .die.set-constant,
-.solution-die.set-constant {
+.solution-die.set-constant,
+.scoring-die.set-constant {
     background: #95a5a6;
     border-color: #7f8c8d;
 }
@@ -236,18 +244,41 @@
 /* White SVG icons and text for operators */
 .dice-area .die.operator svg path,
 .solution-die.operator svg path,
+.scoring-die.operator-regular svg path,
+.scoring-die.operator-restriction svg path,
 .dice-area .die.operator svg circle,
 .solution-die.operator svg circle,
+.scoring-die.operator-regular svg circle,
+.scoring-die.operator-restriction svg circle,
 .dice-area .die.operator svg rect,
 .solution-die.operator svg rect,
+.scoring-die.operator-regular svg rect,
+.scoring-die.operator-restriction svg rect,
 .dice-area .die.operator svg line,
-.solution-die.operator svg line {
+.solution-die.operator svg line,
+.scoring-die.operator-regular svg line,
+.scoring-die.operator-restriction svg line,
+.scoring-die.set-constant svg path,
+.scoring-die.set-constant svg circle,
+.scoring-die.set-constant svg rect,
+.scoring-die.set-constant svg line {
     stroke: #ffffff;
-    /* fill: #ffffff; */
 }
 
 .dice-area .die.operator,
-.solution-die.operator {
+.solution-die.operator,
+.scoring-die.operator-regular,
+.scoring-die.operator-restriction,
+.scoring-die.set-constant {
+    color: #ffffff;
+}
+
+/* Wild cube - reversed style for flat theme */
+.dice-area .die.wild,
+.solution-die.wild,
+.scoring-die.wild {
+    background: #85190e;
+    border-color: #85190e;
     color: #ffffff;
 }
 

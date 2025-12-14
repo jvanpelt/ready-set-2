@@ -140,7 +140,7 @@ body {
    ============================================================================ */
 
 .dice-area {
-    background: var(--overlay-dark-30);
+    background: var(--overlay-dark-20);
     border-radius: 12px;
     padding: 20px;
 }
@@ -282,7 +282,7 @@ body {
    ============================================================================ */
 
 .solution-area {
-    background: var(--overlay-dark-30);
+    background: var(--overlay-dark-20);
     border-radius: 12px;
     padding: 20px;
     min-height: 140px;
@@ -1451,7 +1451,7 @@ body {
     color: var(--color-text-primary);
     padding: 4px 12px;
     border-radius: 12px;
-    font-size: 12px;
+    font-size: 16px;
     font-weight: bold;
     display: inline-block;
     margin-bottom: 8px;
@@ -2372,9 +2372,7 @@ body {
     color: var(--color-text-muted);
 }
 
-.about-content strong {
-    color: var(--color-text-primary);
-}
+/* .about-content strong inherits color from parent - no override needed */
 
 .about-content em {
     font-style: italic;
