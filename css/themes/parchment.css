@@ -10,6 +10,7 @@
     --color-blue: #5b8fa3;
     --color-green: #6b9969;
     --color-gold: #d4a747;
+    --color-gold-gradient: linear-gradient(135deg, #e6c97a 0%, #d4a747 100%);
     
     /* === BACKGROUND & STRUCTURE === */
     --bg-gradient-start: rgb(235, 220, 200);
@@ -34,22 +35,29 @@
     --color-die-text: #5a4a3a;
     
     /* === OPERATORS & SET CONSTANTS === */
-    --color-operator-regular: #c85a54;
-    --color-operator-restriction: #5b8fa3;
+    --color-operator-regular: var(--color-red);
+    --color-operator-restriction: var(--color-blue);
     --color-set-constant: #7a6a55;
     
     /* === SPECIAL CUBES (glows & effects) === */
-    --color-required-border: #6b9969;
+    /* Required = green, Bonus = gold, Wild = red */
+    --color-required-border: var(--color-green);
     --color-required-glow: rgba(107, 153, 105, 0.6);
     --color-required-glow-bright: rgba(107, 153, 105, 0.8);
+    --color-required-glow-soft: rgba(107, 153, 105, 0.3);
+    --color-required-glow-medium: rgba(107, 153, 105, 0.5);
     
-    --color-bonus-border: #d4a747;
+    --color-bonus-border: var(--color-gold);
     --color-bonus-glow: rgba(212, 167, 71, 0.6);
     --color-bonus-glow-bright: rgba(212, 167, 71, 0.8);
+    --color-bonus-glow-soft: rgba(212, 167, 71, 0.3);
+    --color-bonus-glow-medium: rgba(212, 167, 71, 0.5);
     
-    --color-wild-border: #c85a54;
+    --color-wild-border: var(--color-red);
     --color-wild-glow: rgba(200, 90, 84, 0.6);
     --color-wild-glow-bright: rgba(200, 90, 84, 0.8);
+    --color-wild-glow-soft: rgba(200, 90, 84, 0.3);
+    --color-wild-glow-medium: rgba(200, 90, 84, 0.5);
     
     /* === SOLUTION AREA === */
     --color-solution-bg: rgba(139, 115, 85, 0.08);
@@ -72,21 +80,42 @@
     
     /* === UI ELEMENTS === */
     --color-border: #8b7355;
-    --color-highlight: #c85a54;
-    --color-focus: #6b9969;  /* Focus/selection states for interactive elements */
+    --color-highlight: var(--color-red);
+    --color-highlight-glow: rgba(200, 90, 84, 0.5);
+    --color-focus: var(--color-green);
     --color-text-primary: #ffffff;
     --color-text-secondary: rgba(255, 255, 255, 0.7);
-    --color-text-dark: #ffffff;
+    --color-text-dark: #5a4a3a;
+    /* Semantic text colors - dark text on light background */
+    --color-text-muted: rgba(90, 74, 58, 0.85);
+    --color-text-subtle: rgba(90, 74, 58, 0.7);
+    --color-text-disabled: rgba(90, 74, 58, 0.4);
+    /* Semantic backgrounds - darker on light theme */
+    --color-section-bg: rgba(139, 115, 85, 0.08);
+    --color-section-bg-hover: rgba(139, 115, 85, 0.15);
+    /* Semantic borders */
+    --color-border-subtle: rgba(139, 115, 85, 0.15);
+    --color-border-medium: rgba(139, 115, 85, 0.25);
+    --color-border-strong: rgba(139, 115, 85, 0.4);
+    
+    /* === STATUS COLORS === */
+    /* Success = green, Error = red */
+    --color-success: var(--color-green);
+    --color-success-glow: rgba(107, 153, 105, 0.5);
+    --color-success-bg: rgba(107, 153, 105, 0.1);
+    --color-error: var(--color-red);
+    --color-link: #5c7a9e;
+    --color-link-hover: #7a9abc;
     
     /* === BUTTONS === */
-    --color-btn-primary: #6b9969;
-    --color-btn-primary-gradient-start: #6b9969;
+    --color-btn-primary: var(--color-green);
+    --color-btn-primary-gradient-start: var(--color-btn-primary);
     --color-btn-primary-gradient-end: #5a8558;
-    --color-btn-secondary: #5b8fa3;
-    --color-btn-warning: #c85a54;
-    --color-btn-danger-gradient-start: #c85a54;
+    --color-btn-secondary: var(--color-blue);
+    --color-btn-warning: var(--color-error);
+    --color-btn-danger-gradient-start: var(--color-error);
     --color-btn-danger-gradient-end: #a84843;
-    --color-btn-danger-gradient-hover-start: #a84843;
+    --color-btn-danger-gradient-hover-start: var(--color-btn-danger-gradient-end);
     --color-btn-danger-gradient-hover-end: #883632;
     
     /* === STATUS BAR === */
@@ -111,20 +140,25 @@
     /* === TUTORIAL === */
     --color-tutorial-bg: rgba(212, 196, 176, 0.85);
     --color-tutorial-border: rgba(107, 153, 105, 0.5);
-    --color-tutorial-badge: #6b9969;
-    --color-tutorial-highlight: #d4a747;
-    --color-tutorial-btn-primary: #6b9969;
+    --color-tutorial-badge: var(--color-success);
+    --color-tutorial-highlight: var(--color-gold);
+    --color-tutorial-btn-primary: var(--color-success);
     --color-tutorial-btn-hover: #5a8558;
     --color-tutorial-btn-hover-end: #4a7048;
     
     /* === PUZZLE BUILDER === */
-    --color-builder-border: rgba(139, 115, 85, 0.3);
-    --color-builder-border-open: #6b9969;
-    --color-builder-heading: #6b9969;
-    --color-builder-success-border: #6b9969;
-    --color-builder-success-bg: rgba(107, 153, 105, 0.2);
-    --color-builder-error-border: #c85a54;
+    --color-builder-border: var(--overlay-white-30);
+    --color-builder-border-open: var(--color-success);
+    --color-builder-heading: var(--color-success);
+    --color-builder-success-border: var(--color-success);
+    --color-builder-success-bg: var(--color-success-bg);
+    --color-builder-error-border: var(--color-error);
     --color-builder-error-bg: rgba(200, 90, 84, 0.2);
+    
+    /* === TRANSITIONS === */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.4s ease;
     
     /* === SEMI-TRANSPARENT OVERLAYS === */
     --overlay-dark-10: rgba(90, 74, 58, 0.1);
@@ -137,42 +171,50 @@
     --overlay-white-15: rgba(139, 115, 85, 0.15);
     --overlay-white-20: rgba(139, 115, 85, 0.2);
     --overlay-white-30: rgba(139, 115, 85, 0.3);
+    --overlay-white-40: rgba(139, 115, 85, 0.4);
+    --overlay-white-50: rgba(139, 115, 85, 0.5);
+    --overlay-white-70: rgba(139, 115, 85, 0.7);
+    --overlay-white-80: rgba(139, 115, 85, 0.8);
+    --overlay-white-85: rgba(139, 115, 85, 0.85);
+    --overlay-white-90: rgba(139, 115, 85, 0.9);
 }
 
 /* ============================================================================
    PARCHMENT THEME SPECIFIC OVERRIDES
+   Using body[data-theme="parchment"] for specificity instead of !important
    ============================================================================ */
 
 /* Timer and score displays use dark text like goal display */
-.timer-display .stat-value,
-.timer-display .stat-label,
-.score-display .stat-value,
-.score-display .stat-label {
-    color: #5a4a3a;
+body[data-theme="parchment"] .timer-display .stat-value,
+body[data-theme="parchment"] .timer-display .stat-label,
+body[data-theme="parchment"] .score-display .stat-value,
+body[data-theme="parchment"] .score-display .stat-label {
+    color: var(--color-text-dark);
 }
 
-/* All modal text uses dark text, but buttons stay white */
-.modal-content,
-.modal-content p,
-.modal-content h2,
-.modal-content h3,
-.modal-content label,
-.modal-content small,
-.modal-content .setting-label,
-.modal-content .setting-label strong,
-.modal-content .menu-level-indicator,
-.modal-content .menu-level-indicator strong,
-.modal-content select,
-.modal-content option {
-    color: #5a4a3a !important;
+/* All modal text uses dark text */
+body[data-theme="parchment"] .modal-content,
+body[data-theme="parchment"] .modal-content p,
+body[data-theme="parchment"] .modal-content h2,
+body[data-theme="parchment"] .modal-content h3,
+body[data-theme="parchment"] .modal-content label,
+body[data-theme="parchment"] .modal-content small,
+body[data-theme="parchment"] .modal-content .setting-label,
+body[data-theme="parchment"] .modal-content .setting-label strong,
+body[data-theme="parchment"] .modal-content .menu-level-indicator,
+body[data-theme="parchment"] .modal-content .menu-level-indicator strong,
+body[data-theme="parchment"] .modal-content select,
+body[data-theme="parchment"] .modal-content option {
+    color: var(--color-text-dark);
 }
 
-.modal-content .btn {
-    color: #ffffff !important;
+/* Buttons keep white text */
+body[data-theme="parchment"] .modal-content .btn {
+    color: var(--color-text-primary);
 }
 
 /* Home screen gradient background */
-.home-screen {
+body[data-theme="parchment"] .home-screen {
     background: linear-gradient(180deg, 
         rgba(194, 184, 170, 0.95) 0%, 
         rgba(245, 237, 224, 0.95) 50%, 
@@ -180,43 +222,43 @@
 }
 
 /* Home screen subtitle text */
-.home-subtitle {
-    color: #5a4a3a;
+body[data-theme="parchment"] .home-subtitle {
+    color: var(--color-text-dark);
 }
 
 /* Interstitial screen text */
-.interstitial-container,
-.interstitial-title,
-.interstitial-content,
-.description-text,
-.interstitial-feature,
-.feature-title,
-.feature-description,
-.interstitial-footer,
-.interstitial-footer small {
-    color: #5a4a3a !important;
+body[data-theme="parchment"] .interstitial-container,
+body[data-theme="parchment"] .interstitial-title,
+body[data-theme="parchment"] .interstitial-content,
+body[data-theme="parchment"] .description-text,
+body[data-theme="parchment"] .interstitial-feature,
+body[data-theme="parchment"] .feature-title,
+body[data-theme="parchment"] .feature-description,
+body[data-theme="parchment"] .interstitial-footer,
+body[data-theme="parchment"] .interstitial-footer small {
+    color: var(--color-text-dark);
 }
 
-/* Tutorial and puzzle builder text - all instances */
-.tutorial-instruction strong,
-.puzzle-builder strong,
-#puzzle-builder strong,
-#tutorial-instruction-text,
-.tutorial-instruction-text,
-.builder-section,
-.builder-section summary,
-.builder-section h3,
-.builder-subsection,
-.builder-subsection strong,
-.builder-info,
-.builder-results,
-.builder-results h4,
-.builder-results pre,
-.selector-die.operator,
-#puzzle-builder,
-#puzzle-builder p,
-#puzzle-builder label,
-#puzzle-builder .builder-section-content {
-    color: #5a4a3a !important;
+/* Tutorial and puzzle builder text */
+body[data-theme="parchment"] .tutorial-instruction strong,
+body[data-theme="parchment"] .puzzle-builder strong,
+body[data-theme="parchment"] #puzzle-builder strong,
+body[data-theme="parchment"] #tutorial-instruction-text,
+body[data-theme="parchment"] .tutorial-instruction-text,
+body[data-theme="parchment"] .builder-section,
+body[data-theme="parchment"] .builder-section summary,
+body[data-theme="parchment"] .builder-section h3,
+body[data-theme="parchment"] .builder-subsection,
+body[data-theme="parchment"] .builder-subsection strong,
+body[data-theme="parchment"] .builder-info,
+body[data-theme="parchment"] .builder-results,
+body[data-theme="parchment"] .builder-results h4,
+body[data-theme="parchment"] .builder-results pre,
+body[data-theme="parchment"] .selector-die.operator,
+body[data-theme="parchment"] #puzzle-builder,
+body[data-theme="parchment"] #puzzle-builder p,
+body[data-theme="parchment"] #puzzle-builder label,
+body[data-theme="parchment"] #puzzle-builder .builder-section-content {
+    color: var(--color-text-dark);
 }
 

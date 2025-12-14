@@ -10,6 +10,7 @@
     --color-blue: #055db4;
     --color-green: #2b8103;
     --color-gold: #e9c600;
+    --color-gold-gradient: linear-gradient(135deg, #f4d03f 0%, #d4af37 100%);
     --color-white: #fff;
     
     /* === BACKGROUND & STRUCTURE === */
@@ -40,30 +41,37 @@
     --color-set-constant: #555;
     
     /* === SPECIAL CUBES (glows & effects) === */
+    /* Required = green, Bonus = gold, Wild = red */
     --color-required-border: var(--color-green);
     --color-required-glow: rgba(0, 255, 0, 0.8);
     --color-required-glow-bright: rgba(0, 255, 0, 1);
+    --color-required-glow-soft: rgba(0, 255, 0, 0.4);
+    --color-required-glow-medium: rgba(0, 255, 0, 0.6);
     
-    --color-bonus-border: #FFD700;
+    --color-bonus-border: var(--color-gold);
     --color-bonus-glow: rgba(255, 215, 0, 0.8);
     --color-bonus-glow-bright: rgba(255, 215, 0, 1);
+    --color-bonus-glow-soft: rgba(255, 215, 0, 0.4);
+    --color-bonus-glow-medium: rgba(255, 215, 0, 0.6);
     
     --color-wild-border: var(--color-red);
     --color-wild-glow: rgba(181, 6, 6, 0.8);
     --color-wild-glow-bright: rgba(181, 6, 6, 1);
+    --color-wild-glow-soft: rgba(181, 6, 6, 0.4);
+    --color-wild-glow-medium: rgba(181, 6, 6, 0.6);
     
     /* === SOLUTION AREA === */
-    --color-solution-bg: rgba(255, 255, 255, 0.05);
-    --color-solution-border: rgba(255, 255, 255, 0.2);
-    --color-solution-drag-over-bg: rgba(255, 255, 255, 0.1);
-    --color-solution-drag-over-border: rgba(255, 255, 255, 0.4);
-    --color-solution-valid-border: #5cb85c;
+    --color-solution-bg: var(--overlay-white-05);
+    --color-solution-border: var(--overlay-white-20);
+    --color-solution-drag-over-bg: var(--overlay-white-10);
+    --color-solution-drag-over-border: var(--overlay-white-40);
+    --color-solution-valid-border: var(--color-btn-primary);
     --color-solution-valid-bg: rgba(92, 184, 92, 0.1);
     --color-solution-restriction-border: rgba(100, 150, 255, 0.5);
     --color-solution-invalid-border: rgba(217, 83, 79, 0.7);
     --color-solution-invalid-bg: rgba(217, 83, 79, 0.05);
-    --color-solution-disabled-bg: rgba(0, 0, 0, 0.2);
-    --color-solution-disabled-border: rgba(255, 255, 255, 0.3);
+    --color-solution-disabled-bg: var(--overlay-dark-20);
+    --color-solution-disabled-border: var(--overlay-white-30);
     
     /* === GROUP INDICATORS === */
     --color-group-valid-bg: rgba(92, 184, 92, 0.15);
@@ -74,20 +82,41 @@
     /* === UI ELEMENTS === */
     --color-border: #1a1a1a;
     --color-highlight: #ff6b6b;
-    --color-focus: #4CAF50;  /* Focus/selection states for interactive elements */
-    --color-text-primary: var(--color-white, #fff);
+    --color-highlight-glow: rgba(255, 107, 107, 0.5);
+    --color-focus: var(--color-success);  /* Focus/selection = success green */
+    --color-text-primary: var(--color-white);
     --color-text-secondary: rgba(255, 255, 255, 0.7);
     --color-text-dark: #333;
+    /* Semantic text colors */
+    --color-text-muted: rgba(255, 255, 255, 0.85);
+    --color-text-subtle: rgba(255, 255, 255, 0.7);
+    --color-text-disabled: rgba(255, 255, 255, 0.4);
+    /* Semantic backgrounds */
+    --color-section-bg: rgba(255, 255, 255, 0.05);
+    --color-section-bg-hover: rgba(255, 255, 255, 0.1);
+    /* Semantic borders */
+    --color-border-subtle: rgba(255, 255, 255, 0.1);
+    --color-border-medium: rgba(255, 255, 255, 0.2);
+    --color-border-strong: rgba(255, 255, 255, 0.3);
+    
+    /* === STATUS COLORS === */
+    /* Success = green family, Error = red family */
+    --color-success: #4CAF50;
+    --color-success-glow: rgba(76, 175, 80, 0.5);
+    --color-success-bg: rgba(76, 175, 80, 0.1);
+    --color-error: var(--color-red);
+    --color-link: #3498db;
+    --color-link-hover: #5dade2;
     
     /* === BUTTONS === */
     --color-btn-primary: #5cb85c;
-    --color-btn-primary-gradient-start: #5cb85c;
+    --color-btn-primary-gradient-start: var(--color-btn-primary);
     --color-btn-primary-gradient-end: #4a9d4a;
     --color-btn-secondary: #066bce;
-    --color-btn-warning: var(--color-red);
+    --color-btn-warning: var(--color-error);
     --color-btn-danger-gradient-start: #d9534f;
     --color-btn-danger-gradient-end: #c9302c;
-    --color-btn-danger-gradient-hover-start: #c9302c;
+    --color-btn-danger-gradient-hover-start: var(--color-btn-danger-gradient-end);
     --color-btn-danger-gradient-hover-end: #ac2925;
     
     /* === STATUS BAR === */
@@ -100,7 +129,7 @@
     /* === MODALS & OVERLAYS === */
     --color-modal-backdrop: rgba(0, 0, 0, 0.75);
     --color-modal-bg: rgba(40, 145, 177, 0.75);
-    --color-modal-border: var(--color-white, #fff);
+    --color-modal-border: var(--color-white);
     --color-modal-close-btn: #dc3545;
     --color-modal-close-btn-hover: #c82333;
     
@@ -113,18 +142,23 @@
     --color-tutorial-border: rgba(76, 175, 80, 0.4);
     --color-tutorial-badge: var(--color-blue);
     --color-tutorial-highlight: #ffd90094;
-    --color-tutorial-btn-primary: #4CAF50;
+    --color-tutorial-btn-primary: var(--color-success);
     --color-tutorial-btn-hover: #45a049;
     --color-tutorial-btn-hover-end: #3d8b40;
     
     /* === PUZZLE BUILDER === */
-    --color-builder-border: rgba(255, 255, 255, 0.1);
-    --color-builder-border-open: #4CAF50;
-    --color-builder-heading: #4CAF50;
-    --color-builder-success-border: #4CAF50;
-    --color-builder-success-bg: rgba(76, 175, 80, 0.2);
-    --color-builder-error-border: #f44336;
+    --color-builder-border: var(--overlay-white-10);
+    --color-builder-border-open: var(--color-success);
+    --color-builder-heading: var(--color-success);
+    --color-builder-success-border: var(--color-success);
+    --color-builder-success-bg: var(--color-success-bg);
+    --color-builder-error-border: var(--color-error);
     --color-builder-error-bg: rgba(244, 67, 54, 0.2);
+    
+    /* === TRANSITIONS === */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.4s ease;
     
     /* === SEMI-TRANSPARENT OVERLAYS === */
     --overlay-dark-10: rgba(0, 0, 0, 0.1);
@@ -137,5 +171,11 @@
     --overlay-white-15: rgba(255, 255, 255, 0.15);
     --overlay-white-20: rgba(255, 255, 255, 0.2);
     --overlay-white-30: rgba(255, 255, 255, 0.3);
+    --overlay-white-40: rgba(255, 255, 255, 0.4);
+    --overlay-white-50: rgba(255, 255, 255, 0.5);
+    --overlay-white-70: rgba(255, 255, 255, 0.7);
+    --overlay-white-80: rgba(255, 255, 255, 0.8);
+    --overlay-white-85: rgba(255, 255, 255, 0.85);
+    --overlay-white-90: rgba(255, 255, 255, 0.9);
 }
 

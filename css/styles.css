@@ -87,7 +87,7 @@ body {
     gap: 16px;
     padding: 12px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all var(--transition-normal);
     position: relative;
 }
 
@@ -106,7 +106,7 @@ body {
 }
 
 .card.excluded {
-    background: var(--color-card-excluded-bg) !important;
+    background: var(--color-card-excluded-bg);
     border-color: var(--color-card-excluded-border);
 }
 
@@ -121,7 +121,7 @@ body {
 
 .card.matched {
     border-color: var(--color-highlight);
-    box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+    box-shadow: 0 0 20px var(--color-highlight-glow);
 }
 
 .circle {
@@ -163,9 +163,9 @@ body {
     grid-template-columns: repeat(4, 1fr);
 }
 
-.die {
-    width: 100px;
-    height: 100px;
+/* Shared die base styles */
+.die,
+.solution-die {
     background: var(--color-die-bg);
     border: 3px solid var(--color-die-border);
     border-radius: 12px;
@@ -173,14 +173,21 @@ body {
     align-items: center;
     justify-content: center;
     cursor: grab;
-    transition: all 0.2s ease;
+    user-select: none;
+}
+
+/* Die tray specific styles */
+.die {
+    width: 100px;
+    height: 100px;
+    transition: all var(--transition-fast);
     font-size: 48px;
     font-weight: bold;
-    user-select: none;
     -webkit-user-drag: element;
 }
 
-.die:active {
+.die:active,
+.solution-die:active {
     cursor: grabbing;
 }
 
@@ -188,7 +195,8 @@ body {
     pointer-events: none;
 }
 
-.die.dragging {
+.die.dragging,
+.solution-die.dragging {
     opacity: 0.5;
     cursor: grabbing;
 }
@@ -212,7 +220,7 @@ body {
 .die.tutorial-disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    transition: opacity 0.4s ease;
+    transition: opacity var(--transition-slow);
 }
 
 .die.operator {
@@ -329,20 +337,13 @@ body {
     user-select: none;
 }
 
+/* Solution area die specific styles */
 .solution-die {
     width: 80px;
     height: 80px;
-    background: var(--color-die-bg);
-    border: 3px solid var(--color-die-border);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     font-size: 36px;
-    cursor: grab;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
     position: absolute;
-    user-select: none;
     color: var(--color-die-text);
     z-index: var(--z-game);
     box-shadow: 2px 2px 8px var(--overlay-dark-20);
@@ -353,19 +354,14 @@ body {
     box-shadow: 0 6px 20px var(--overlay-dark-30);
 }
 
-.solution-die:active {
-    cursor: grabbing;
-}
-
 .solution-die .circle {
     width: 50px;
     height: 50px;
     pointer-events: none;
 }
 
+/* Solution die dragging has extra transition override */
 .solution-die.dragging {
-    opacity: 0.5;
-    /* Disable transitions during drag to prevent CSS fighting with JS positioning */
     transition: none !important;
 }
 
@@ -397,71 +393,56 @@ body {
    SPECIAL CUBES (Required, Bonus, Wild)
    ============================================================================ */
 
+/* Special cube styles - .required/.bonus/.wild classes override base die styles */
 .die.required,
-.solution-die.required,
-.die.color-circle.required,
-.solution-die.color-circle.required,
-.die.operator-regular.required,
-.solution-die.operator-regular.required,
-.die.operator-restriction.required,
-.solution-die.operator-restriction.required,
-.die.set-constant.required,
-.solution-die.set-constant.required {
-    border-color: var(--color-required-border) !important;
-    border-width: 5px !important;
-    box-shadow: 0 0 20px var(--color-required-glow), 0 0 40px rgba(0, 255, 0, 0.4), 2px 2px 8px var(--overlay-dark-30) !important;
+.solution-die.required {
+    border-color: var(--color-required-border);
+    border-width: 5px;
+    box-shadow: 0 0 20px var(--color-required-glow), 0 0 40px var(--color-required-glow-soft), 2px 2px 8px var(--overlay-dark-30);
     animation: requiredPulse 2s ease-in-out infinite;
 }
 
 .die.required:hover,
 .solution-die.required:hover {
-    box-shadow: 0 0 25px var(--color-required-glow-bright), 0 0 50px rgba(0, 255, 0, 0.6), 0 6px 20px var(--overlay-dark-30) !important;
+    box-shadow: 0 0 25px var(--color-required-glow-bright), 0 0 50px var(--color-required-glow-medium), 0 6px 20px var(--overlay-dark-30);
 }
 
 @keyframes requiredPulse {
     0%, 100% {
-        box-shadow: 0 0 20px var(--color-required-glow), 0 0 40px rgba(0, 255, 0, 0.4), 2px 2px 8px var(--overlay-dark-30);
+        box-shadow: 0 0 20px var(--color-required-glow), 0 0 40px var(--color-required-glow-soft), 2px 2px 8px var(--overlay-dark-30);
     }
     50% {
-        box-shadow: 0 0 30px var(--color-required-glow-bright), 0 0 60px rgba(0, 255, 0, 0.6), 2px 2px 8px var(--overlay-dark-30);
+        box-shadow: 0 0 30px var(--color-required-glow-bright), 0 0 60px var(--color-required-glow-medium), 2px 2px 8px var(--overlay-dark-30);
     }
 }
 
 .die.bonus,
-.solution-die.bonus,
-.die.color-circle.bonus,
-.solution-die.color-circle.bonus,
-.die.operator-regular.bonus,
-.solution-die.operator-regular.bonus,
-.die.operator-restriction.bonus,
-.solution-die.operator-restriction.bonus,
-.die.set-constant.bonus,
-.solution-die.set-constant.bonus {
-    border-color: var(--color-bonus-border) !important;
-    border-width: 5px !important;
-    box-shadow: 0 0 20px var(--color-bonus-glow), 0 0 40px rgba(255, 215, 0, 0.4), 2px 2px 8px var(--overlay-dark-30) !important;
+.solution-die.bonus {
+    border-color: var(--color-bonus-border);
+    border-width: 5px;
+    box-shadow: 0 0 20px var(--color-bonus-glow), 0 0 40px var(--color-bonus-glow-soft), 2px 2px 8px var(--overlay-dark-30);
     animation: bonusPulse 2s ease-in-out infinite;
 }
 
 .die.bonus:hover,
 .solution-die.bonus:hover {
-    box-shadow: 0 0 25px var(--color-bonus-glow-bright), 0 0 50px rgba(255, 215, 0, 0.6), 0 6px 20px var(--overlay-dark-30) !important;
+    box-shadow: 0 0 25px var(--color-bonus-glow-bright), 0 0 50px var(--color-bonus-glow-medium), 0 6px 20px var(--overlay-dark-30);
 }
 
 @keyframes bonusPulse {
     0%, 100% {
-        box-shadow: 0 0 20px var(--color-bonus-glow), 0 0 40px rgba(255, 215, 0, 0.4), 2px 2px 8px var(--overlay-dark-30);
+        box-shadow: 0 0 20px var(--color-bonus-glow), 0 0 40px var(--color-bonus-glow-soft), 2px 2px 8px var(--overlay-dark-30);
     }
     50% {
-        box-shadow: 0 0 30px var(--color-bonus-glow-bright), 0 0 60px rgba(255, 215, 0, 0.6), 2px 2px 8px var(--overlay-dark-30);
+        box-shadow: 0 0 30px var(--color-bonus-glow-bright), 0 0 60px var(--color-bonus-glow-medium), 2px 2px 8px var(--overlay-dark-30);
     }
 }
 
 .die.wild,
 .solution-die.wild {
-    border-color: var(--color-wild-border) !important;
-    border-width: 5px !important;
-    box-shadow: 0 0 20px var(--color-wild-glow), 0 0 40px rgba(181, 6, 6, 0.4), 2px 2px 8px var(--overlay-dark-30) !important;
+    border-color: var(--color-wild-border);
+    border-width: 5px;
+    box-shadow: 0 0 20px var(--color-wild-glow), 0 0 40px var(--color-wild-glow-soft), 2px 2px 8px var(--overlay-dark-30);
     animation: wildPulse 2s ease-in-out infinite;
     background: var(--color-die-bg);
     color: var(--color-wild-border);
@@ -472,15 +453,15 @@ body {
 
 .die.wild:hover,
 .solution-die.wild:hover {
-    box-shadow: 0 0 25px var(--color-wild-glow-bright), 0 0 50px rgba(181, 6, 6, 0.6), 0 6px 20px var(--overlay-dark-30) !important;
+    box-shadow: 0 0 25px var(--color-wild-glow-bright), 0 0 50px var(--color-wild-glow-medium), 0 6px 20px var(--overlay-dark-30);
 }
 
 @keyframes wildPulse {
     0%, 100% {
-        box-shadow: 0 0 20px var(--color-wild-glow), 0 0 40px rgba(181, 6, 6, 0.4), 2px 2px 8px var(--overlay-dark-30);
+        box-shadow: 0 0 20px var(--color-wild-glow), 0 0 40px var(--color-wild-glow-soft), 2px 2px 8px var(--overlay-dark-30);
     }
     50% {
-        box-shadow: 0 0 30px var(--color-wild-glow-bright), 0 0 60px rgba(181, 6, 6, 0.6), 2px 2px 8px var(--overlay-dark-30);
+        box-shadow: 0 0 30px var(--color-wild-glow-bright), 0 0 60px var(--color-wild-glow-medium), 2px 2px 8px var(--overlay-dark-30);
     }
 }
 
@@ -532,7 +513,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
+    transition: all var(--transition-fast);
 }
 
 .wild-popover-btn:hover {
@@ -559,7 +540,7 @@ body {
     border-radius: 12px;
     pointer-events: none;
     z-index: 0;
-    transition: all 0.3s ease;
+    transition: all var(--transition-normal);
 }
 
 .solution-group-indicator.valid {
@@ -669,8 +650,13 @@ body {
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--transition-fast);
     text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px var(--overlay-dark-20);
 }
 
 .btn:hover {
@@ -719,10 +705,11 @@ body {
     background: var(--color-modal-backdrop);
     display: flex;
     align-items: center;
+    font-size: 18px;
     justify-content: center;
     z-index: var(--z-modal);
     opacity: 1;
-    transition: opacity 0.3s ease;
+    transition: opacity var(--transition-normal);
 }
 
 .modal.hidden {
@@ -760,7 +747,7 @@ body {
     align-items: center;
     justify-content: center;
     padding: 0;
-    transition: background 0.2s ease;
+    transition: background var(--transition-fast);
     z-index: 10;
 }
 
@@ -839,7 +826,7 @@ body {
     border-radius: 8px;
     font-size: 14px;
     font-weight: 500;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px var(--overlay-dark-30);
     animation: fadeInOut 2s ease-in-out;
     pointer-events: none;
 }
@@ -918,14 +905,14 @@ body {
     align-items: flex-start;
     gap: 12px;
     padding: 16px;
-    background: var(--overlay-white-05);
+    background: var(--color-section-bg);
     border-radius: 8px;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: background var(--transition-fast);
 }
 
 .setting-item:hover {
-    background: var(--overlay-white-10);
+    background: var(--color-section-bg-hover);
 }
 
 .setting-item input[type="checkbox"] {
@@ -979,7 +966,7 @@ body {
     border-radius: 8px;
     margin-bottom: 10px;
     border: 2px solid var(--color-builder-border);
-    transition: all 0.2s;
+    transition: all var(--transition-fast);
 }
 
 .builder-section[open] {
@@ -996,7 +983,7 @@ body {
     list-style: none;
     display: flex;
     align-items: center;
-    transition: background 0.2s;
+    transition: background var(--transition-fast);
 }
 
 .builder-section summary::-webkit-details-marker {
@@ -1004,14 +991,14 @@ body {
 }
 
 .builder-section summary:hover {
-    background: rgba(76, 175, 80, 0.1);
+    background: var(--color-success-bg);
 }
 
 .builder-section summary::before {
     content: '▶';
     display: inline-block;
     margin-right: 10px;
-    transition: transform 0.2s;
+    transition: transform var(--transition-fast);
     font-size: 14px;
 }
 
@@ -1059,7 +1046,7 @@ body {
     background: var(--color-die-bg);
     cursor: pointer;
     position: relative;
-    transition: all 0.2s;
+    transition: all var(--transition-fast);
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
@@ -1075,7 +1062,7 @@ body {
 .palette-card.selected {
     border-color: var(--color-focus);
     border-width: 4px;
-    box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+    box-shadow: 0 0 15px var(--color-success-glow);
 }
 
 .palette-card .circle {
@@ -1102,7 +1089,7 @@ body {
     justify-content: center;
     font-size: 24px;
     font-weight: bold;
-    transition: all 0.2s;
+    transition: all var(--transition-fast);
     user-select: none;
 }
 
@@ -1114,7 +1101,7 @@ body {
 .selector-die.selected {
     border-color: var(--color-focus);
     border-width: 4px;
-    box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+    box-shadow: 0 0 15px var(--color-success-glow);
 }
 
 .selector-die.color-circle {
@@ -1189,7 +1176,7 @@ body {
     align-items: center;
     justify-content: center;
     opacity: 1;
-    transition: opacity 0.4s ease;
+    transition: opacity var(--transition-slow);
 }
 
 .interstitial-screen.fade-out {
@@ -1206,6 +1193,7 @@ body {
     padding: 40px;
     text-align: center;
     animation: fadeInUp 0.5s ease;
+    font-size: 18px;
 }
 
 .interstitial-badge {
@@ -1215,8 +1203,8 @@ body {
 .badge-circle {
     width: 120px;
     height: 120px;
-    background: var(--overlay-white-15);
-    border: 4px solid var(--overlay-white-30);
+    background: var(--color-section-bg-hover);
+    border: 4px solid var(--color-border-strong);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -1236,7 +1224,7 @@ body {
 .badge-label {
     font-size: 14px;
     font-weight: bold;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--color-text-muted);
     letter-spacing: 2px;
     margin-top: 15px;
 }
@@ -1250,8 +1238,8 @@ body {
 }
 
 .interstitial-feature {
-    background: var(--overlay-white-10);
-    border: 2px solid var(--overlay-white-20);
+    background: var(--color-section-bg-hover);
+    border: 2px solid var(--color-border-medium);
     border-radius: 16px;
     padding: 30px;
     margin: 40px 0;
@@ -1265,7 +1253,7 @@ body {
 .feature-symbol {
     font-size: 72px;
     color: var(--color-bonus-border);
-    text-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+    text-shadow: 0 4px 12px var(--color-bonus-glow-soft);
     min-width: 100px;
 }
 
@@ -1287,13 +1275,18 @@ body {
     align-items: center;
     justify-content: center;
     box-shadow: 
-        0 4px 8px rgba(0, 0, 0, 0.2),
-        inset 0 2px 4px rgba(255, 255, 255, 0.1);
+        0 4px 8px var(--overlay-dark-20),
+        inset 0 2px 4px var(--color-border-subtle);
 }
 
 .feature-cube svg {
     width: 40px;
     height: 40px;
+}
+
+.feature-cube .circle {
+    width: 36px;
+    height: 36px;
 }
 
 /* Special cube types - reuse game animations */
@@ -1321,7 +1314,7 @@ body {
 
 .feature-description p {
     font-size: 20px;
-    color: rgb(255, 255, 255);
+    color: var(--color-text-primary);
     margin: 0;
 }
 
@@ -1332,13 +1325,13 @@ body {
 .description-text {
     font-size: 20px;
     line-height: 1.6;
-    color: rgb(255, 255, 255);
+    color: var(--color-text-primary);
     margin: 0;
 }
 
 /* Daily Puzzle Interstitial Styles */
 .daily-badge {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, var(--color-btn-primary-gradient-start) 0%, var(--color-btn-primary-gradient-end) 100%);
 }
 
 .daily-badge .badge-icon {
@@ -1353,8 +1346,8 @@ body {
 }
 
 .daily-puzzle-stats .stat-item {
-    background: var(--overlay-white-10);
-    border: 2px solid var(--overlay-white-20);
+    background: var(--color-section-bg-hover);
+    border: 2px solid var(--color-border-medium);
     border-radius: 12px;
     padding: 20px 30px;
     text-align: center;
@@ -1366,7 +1359,7 @@ body {
     font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: rgb(255, 255, 255);
+    color: var(--color-text-primary);
     margin-bottom: 8px;
     font-weight: 600;
 }
@@ -1374,13 +1367,13 @@ body {
 .daily-puzzle-stats .stat-value {
     font-size: 36px;
     font-weight: bold;
-    color: #ffffff;
+    color: var(--color-text-primary);
     margin: 8px 0;
 }
 
 .daily-puzzle-stats .stat-detail {
     font-size: 14px;
-    color: rgb(255, 255, 255);
+    color: var(--color-text-primary);
 }
 
 .interstitial-actions {
@@ -1390,46 +1383,23 @@ body {
     margin: 40px 0 30px;
 }
 
+/* SIZE modifier - only affects dimensions */
 .btn-large {
     font-size: 20px;
     padding: 18px 36px;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    border: none;
     border-radius: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 4px 12px var(--overlay-dark-20);
-}
-
-.btn-large:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px var(--overlay-dark-30);
-}
-
-.btn-primary.btn-large {
-    background: linear-gradient(135deg, var(--color-btn-primary-gradient-start) 0%, var(--color-btn-primary-gradient-end) 100%);
-    color: var(--color-text-primary);
-}
-
-.btn-secondary.btn-large {
-    background: var(--color-btn-secondary);
-    color: var(--color-text-primary);
+    gap: 10px;
 }
 
 /* Tutorial buttons - semi-opaque style for How to Play / Show Me How */
-.btn-tutorial {
-    background: var(--overlay-white-15) !important;
-    color: var(--color-text-primary) !important;
-    border: 2px solid var(--overlay-white-30) !important;
+.btn.btn-tutorial {
+    background: var(--color-section-bg-hover);
+    color: var(--color-text-primary);
+    border: 2px solid var(--color-border-strong);
 }
 
-.btn-tutorial:hover {
-    background: var(--overlay-white-30) !important;
+.btn.btn-tutorial:hover {
+    background: var(--color-border-strong);
 }
 
 .btn-icon {
@@ -1442,7 +1412,7 @@ body {
 }
 
 .interstitial-footer small {
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--color-text-muted);
     font-size: 14px;
 }
 
@@ -1492,7 +1462,7 @@ body {
     margin: 8px 0 12px 0;
     font-size: 22px;
     line-height: 1.4;
-    color: rgb(255, 255, 255);
+    color: var(--color-text-primary);
     flex-grow: 1;
 }
 
@@ -1512,49 +1482,60 @@ body {
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--transition-fast);
 }
 
 .tutorial-next-btn:hover:not(:disabled) {
     background: linear-gradient(135deg, var(--color-tutorial-btn-hover), var(--color-tutorial-btn-hover-end));
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    box-shadow: 0 4px 12px var(--color-success-glow);
 }
 
-/* Disabled button state for tutorials */
-.tutorial-next-btn:disabled,
-.btn:disabled {
+/* Disabled button state - high specificity to override all button variants and hover states */
+.btn:disabled,
+.btn:disabled:hover,
+.btn.btn-primary:disabled,
+.btn.btn-primary:disabled:hover,
+.btn.btn-secondary:disabled,
+.btn.btn-secondary:disabled:hover,
+.btn.btn-tutorial:disabled,
+.btn.btn-tutorial:disabled:hover,
+.tutorial-next-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    background: var(--overlay-dark-30) !important;
-    color: var(--overlay-white-40) !important;
-    border: 2px solid var(--overlay-dark-50) !important;
-    box-shadow: none !important;
-    transform: none !important;
+    background: var(--overlay-dark-30);
+    color: var(--color-text-disabled);
+    border: 2px solid var(--overlay-dark-50);
+    box-shadow: none;
+    transform: none;
 }
 
 .tutorial-skip-btn {
     background: transparent;
     border: 1px solid var(--color-tutorial-btn-primary);
-    color: rgba(255,255,255,0.8);
+    color: var(--color-text-muted);
     padding: 8px 16px;
     border-radius: 8px;
     font-size: 13px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--transition-fast);
 }
 
 .tutorial-skip-btn:hover {
-    background: var(--overlay-white-10);
-    border-color: rgba(255,255,255,0.5);
+    background: var(--color-section-bg-hover);
+    border-color: var(--color-border-strong);
     color: var(--color-text-primary);
 }
 
+/* Tutorial highlight - needs high specificity to override various elements */
+.die.tutorial-highlight,
+.solution-die.tutorial-highlight,
+.solution-row.tutorial-highlight,
+.card.tutorial-highlight,
 .tutorial-highlight {
     box-shadow: 0 0 15px 5px var(--color-tutorial-highlight);
-    /*animation: tutorialPulse 1.5s infinite;*/
-    z-index: var(--z-tutorial-highlight) !important;
-    position: relative !important;
+    z-index: var(--z-tutorial-highlight);
+    position: relative;
 }
 
 @keyframes tutorialPulse {
@@ -1585,7 +1566,7 @@ body {
     align-items: center;
     justify-content: center;
     opacity: 1;
-    transition: opacity 0.4s ease;
+    transition: opacity var(--transition-slow);
 }
 
 .home-screen.fade-out {
@@ -1633,7 +1614,7 @@ body {
 
 .home-subtitle {
     font-size: 24px;
-    color: rgb(255, 255, 255);
+    color: var(--color-text-primary);
     margin: 0 0 60px 0;
     font-weight: 500;
 }
@@ -1654,12 +1635,12 @@ body {
 .home-level-info {
     margin-top: 30px;
     padding-top: 30px;
-    border-top: 2px solid var(--overlay-white-30);
+    border-top: 2px solid var(--color-border-strong);
 }
 
 .home-level-info p {
     font-size: 18px;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--color-text-muted);
     margin: 0;
 }
 
@@ -1773,33 +1754,15 @@ body {
     
     .die.required,
     .solution-die.required,
-    .die.color-circle.required,
-    .solution-die.color-circle.required,
-    .die.operator-regular.required,
-    .solution-die.operator-regular.required,
-    .die.operator-restriction.required,
-    .solution-die.operator-restriction.required,
-    .die.set-constant.required,
-    .solution-die.set-constant.required {
-        border-width: 5px !important;
-    }
-    
     .die.bonus,
     .solution-die.bonus,
-    .die.color-circle.bonus,
-    .solution-die.color-circle.bonus,
-    .die.operator-regular.bonus,
-    .solution-die.operator-regular.bonus,
-    .die.operator-restriction.bonus,
-    .solution-die.operator-restriction.bonus,
-    .die.set-constant.bonus,
-    .solution-die.set-constant.bonus {
-        border-width: 5px !important;
+    .die.wild,
+    .solution-die.wild {
+        border-width: 5px;
     }
     
     .die.wild,
     .solution-die.wild {
-        border-width: 5px !important;
         font-size: 36px;
     }
     
@@ -1915,6 +1878,11 @@ body {
     .feature-cube svg {
         width: 32px;
         height: 32px;
+    }
+    
+    .feature-cube .circle {
+        width: 28px;
+        height: 28px;
     }
     
     .feature-symbol .emoji-symbol {
@@ -2044,7 +2012,7 @@ body {
    ============================================================================ */
 
 .scoring-explanation {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--color-section-bg);
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 30px;
@@ -2053,7 +2021,7 @@ body {
 .scoring-explanation h3 {
     margin-top: 0;
     margin-bottom: 15px;
-    color: rgb(255, 255, 255);
+    color: var(--color-text-primary);
 }
 
 .scoring-explanation p {
@@ -2072,7 +2040,7 @@ body {
 }
 
 .scoring-example {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--color-section-bg-hover);
     padding: 12px;
     border-radius: 6px;
     margin-top: 15px;
@@ -2085,32 +2053,32 @@ body {
 
 .scoring-table-container h3 {
     margin-bottom: 15px;
-    color: rgb(255, 255, 255);
+    color: var(--color-text-primary);
 }
 
 .scoring-table {
     width: 100%;
     border-collapse: collapse;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--color-section-bg);
     border-radius: 8px;
     overflow: hidden;
 }
 
 .scoring-table thead {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--color-section-bg-hover);
 }
 
 .scoring-table th {
     padding: 12px;
     text-align: left;
     font-weight: 600;
-    color: rgb(255, 255, 255);
-    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    color: var(--color-text-primary);
+    border-bottom: 2px solid var(--color-border-medium);
 }
 
 .scoring-table td {
     padding: 6px 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .scoring-table tbody tr:last-child td {
@@ -2118,16 +2086,18 @@ body {
 }
 
 .scoring-table tbody tr:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--color-section-bg);
 }
 
+/*
 .scoring-table .special-row {
-    background: rgba(255, 215, 0, 0.1);
+    background: var(--color-bonus-glow-soft);
 }
 
 .scoring-table .special-row:hover {
-    background: rgba(255, 215, 0, 0.15);
+    background: var(--color-bonus-glow-soft);
 }
+*/
 
 .scoring-die {
     width: 50px;
@@ -2137,76 +2107,59 @@ body {
     align-items: center;
     justify-content: center;
     position: relative;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 3px 6px var(--overlay-dark-30);
 }
 
-/* Match in-game die styling */
-.scoring-die.die {
-    background: white;
-    border: 2px solid rgba(0, 0, 0, 0.1);
+/* Match in-game die styling - use theme variables */
+.scoring-die {
+    background: var(--color-die-bg);
+    border: 2px solid var(--color-die-border);
 }
 
-/* Color cubes with dots */
-.scoring-die.color-red,
-.scoring-die.color-blue,
-.scoring-die.color-green,
-.scoring-die.color-gold {
-    background: white;
-}
-
-.scoring-die .color-dot {
+/* Circle sizing within scoring dice - inherits theme styling from .circle */
+.scoring-die .circle {
     width: 24px;
     height: 24px;
-    border-radius: 50%;
-}
-
-.scoring-die.color-red .color-dot { background: #e74c3c; }
-.scoring-die.color-blue .color-dot { background: #3498db; }
-.scoring-die.color-green .color-dot { background: #2ecc71; }
-.scoring-die.color-gold .color-dot { 
-    background: linear-gradient(135deg, #f4d03f 0%, #d4af37 100%); 
 }
 
 /* Operator cubes - SVGs will be injected */
 .scoring-die.operator-regular {
-    color: #e74c3c;
+    color: var(--color-error);
 }
 
 /* Set constant cubes - SVGs will be injected */
 .scoring-die.set-constant {
-    color: #333;
+    color: var(--color-text-dark);
 }
 
 /* Restriction cubes - SVGs will be injected */
 .scoring-die.operator-restriction {
-    background: white;
-    color: #3498db;
+    color: var(--color-link);
 }
 
 /* Wild cube */
 .scoring-die.wild {
-    background: white;
-    border: 3px solid #e74c3c;
-    color: #e74c3c;
+    border: 3px solid var(--color-wild-border);
+    color: var(--color-wild-border);
     font-size: 28px;
     font-weight: bold;
 }
 
 /* Required cube - green border */
 .scoring-die.required {
-    border: 3px solid #2ecc71;
-    box-shadow: 0 0 8px rgba(46, 204, 113, 0.6), 0 3px 6px rgba(0, 0, 0, 0.3);
+    border: 3px solid var(--color-success);
+    box-shadow: 0 0 8px var(--color-success-glow), 0 3px 6px var(--overlay-dark-30);
 }
 
 /* Bonus cube - glowing effect */
 .scoring-die.bonus {
-    box-shadow: 0 0 12px rgba(255, 215, 0, 0.8), 0 3px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 12px var(--color-bonus-glow), 0 3px 6px var(--overlay-dark-30);
     animation: bonusGlow 2s ease-in-out infinite;
 }
 
 @keyframes bonusGlow {
-    0%, 100% { box-shadow: 0 0 12px rgba(255, 215, 0, 0.8), 0 3px 6px rgba(0, 0, 0, 0.3); }
-    50% { box-shadow: 0 0 20px rgba(255, 215, 0, 1), 0 3px 6px rgba(0, 0, 0, 0.3); }
+    0%, 100% { box-shadow: 0 0 12px var(--color-bonus-glow), 0 3px 6px var(--overlay-dark-30); }
+    50% { box-shadow: 0 0 20px var(--color-bonus-glow-bright), 0 3px 6px var(--overlay-dark-30); }
 }
 
 /* SVG sizing within scoring dice */
@@ -2231,7 +2184,7 @@ body {
         font-size: 16px;
     }
     
-    .scoring-die .color-dot {
+    .scoring-die .circle {
         width: 18px;
         height: 18px;
     }
@@ -2256,7 +2209,7 @@ body {
    ============================================================================ */
 
 .victory-badge {
-    background: linear-gradient(135deg, #f4d03f 0%, #d4af37 100%);
+    background: var(--color-gold-gradient);
     animation: victoryPulse 2s ease-in-out infinite;
 }
 
@@ -2270,7 +2223,7 @@ body {
 }
 
 .victory-title {
-    background: linear-gradient(135deg, #f4d03f 0%, #d4af37 50%, #f4d03f 100%);
+    background: var(--color-gold-gradient);
     background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -2290,8 +2243,8 @@ body {
 }
 
 .victory-stats-stack {
-    background: var(--overlay-white-10);
-    border: 2px solid var(--overlay-white-20);
+    background: var(--color-section-bg-hover);
+    border: 2px solid var(--color-border-medium);
     border-radius: 12px;
     padding: 30px 40px;
     margin: 40px 0;
@@ -2302,7 +2255,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 20px 0;
-    border-bottom: 1px solid var(--overlay-white-10);
+    border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .stat-row:last-child {
@@ -2312,14 +2265,14 @@ body {
 .stat-row .stat-label {
     font-size: 18px;
     font-weight: 600;
-    color: rgb(255, 255, 255);
+    color: var(--color-text-primary);
     text-align: left;
 }
 
 .stat-row .stat-value {
     font-size: 36px;
     font-weight: bold;
-    color: #f4d03f;
+    color: var(--color-gold);
     text-align: right;
 }
 
@@ -2349,7 +2302,7 @@ body {
     width: 12px;
     height: 12px;
     border-radius: 3px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--overlay-dark-20);
 }
 
 .confetti.card {
@@ -2359,10 +2312,10 @@ body {
 }
 
 /* Confetti colors matching game cubes */
-.confetti.red { background: #e74c3c; }
-.confetti.blue { background: #3498db; }
-.confetti.green { background: #2ecc71; }
-.confetti.gold { background: linear-gradient(135deg, #f4d03f 0%, #d4af37 100%); }
+.confetti.red { background: var(--color-red); }
+.confetti.blue { background: var(--color-blue); }
+.confetti.green { background: var(--color-green); }
+.confetti.gold { background: var(--color-gold); }
 
 @keyframes confettiFall {
     to {
@@ -2406,7 +2359,7 @@ body {
 .about-content h3 {
     margin-top: 30px;
     margin-bottom: 15px;
-    color: rgb(255, 255, 255);
+    color: var(--color-text-primary);
     font-size: 20px;
 }
 
@@ -2416,20 +2369,20 @@ body {
 
 .about-content p {
     margin: 15px 0;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--color-text-muted);
 }
 
 .about-content strong {
-    color: rgb(255, 255, 255);
+    color: var(--color-text-primary);
 }
 
 .about-content em {
     font-style: italic;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--color-text-muted);
 }
 
 .about-links {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--color-section-bg);
     border-radius: 8px;
     padding: 20px;
     margin: 25px 0;
@@ -2452,13 +2405,13 @@ body {
 }
 
 .about-links a {
-    color: #3498db;
+    color: var(--color-link);
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: color var(--transition-fast);
 }
 
 .about-links a:hover {
-    color: #5dade2;
+    color: var(--color-link-hover);
     text-decoration: underline;
 }
 
@@ -2466,9 +2419,9 @@ body {
     text-align: center;
     margin-top: 30px;
     padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--color-border-subtle);
     font-size: 16px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--color-text-subtle);
 }
 
 /* Mobile adjustments */

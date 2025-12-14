@@ -18,13 +18,11 @@ import {
 
 // Helper to create a color dot SVG (like color cubes in the game)
 // Color dot SVG using CSS variables for theme support
-function getColorDotSVG(colorVar = 'var(--color-red)', size = 50) {
-    return `
-        <svg width="${size}" height="${size}" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="25" cy="25" r="18" fill="${colorVar}" />
-            <circle cx="25" cy="25" r="18" fill="none" stroke="${colorVar}" stroke-width="2" opacity="0.5" />
-        </svg>
-    `.trim();
+// Returns DOM element HTML (not SVG) to match in-game color cube styling with theme support
+function getColorDotHTML(color = 'red') {
+    // Use the same DOM structure as in-game cubes so CSS theming works automatically
+    // Size is controlled by CSS (.circle uses 100% to fill container, .feature-cube sets dimensions)
+    return `<div class="circle ${color}"></div>`;
 }
 
 export class ModalManager {
@@ -687,7 +685,7 @@ export class ModalManager {
             },
             3: { 
                 cubes: [
-                    { svg: getColorDotSVG('var(--color-red)', cubeSize), type: 'color' },
+                    { svg: getColorDotHTML('red'), type: 'color' },
                     { svg: getComplementSVG(cubeSize, cubeSize), type: 'operator' }
                 ],
                 feature: 'Complement', 
@@ -726,7 +724,7 @@ export class ModalManager {
             },
             8: { 
                 cubes: [
-                    { svg: getColorDotSVG('var(--color-red)', cubeSize), type: 'required' }
+                    { svg: getColorDotHTML('red'), type: 'required' }
                 ], 
                 feature: 'Required Cubes', 
                 desc: 'Must use the cube with the green glow' 
@@ -740,7 +738,7 @@ export class ModalManager {
             },
             10: { 
                 cubes: [
-                    { svg: getColorDotSVG('var(--color-blue)', cubeSize), type: 'bonus' }
+                    { svg: getColorDotHTML('blue'), type: 'bonus' }
                 ], 
                 feature: 'Bonus Cubes', 
                 desc: 'Extra points for using special glowing cubes' 

@@ -807,6 +807,9 @@ export class UIController {
     }
     
     switchTheme(themeName) {
+        // Set data-theme attribute on body for CSS specificity
+        document.body.setAttribute('data-theme', themeName);
+        
         // Find the existing theme link
         const themeLink = document.querySelector('link[href*="/themes/"]');
         if (themeLink) {
