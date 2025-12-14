@@ -365,6 +365,11 @@ export class UIController {
                 break;
                 
             case UI_VIEWS.GAMEPLAY:
+                // Stop the timer when leaving gameplay
+                if (this.game.timer) {
+                    console.log('⏱️ Stopping timer on gameplay exit');
+                    this.game.timer.stop(true);
+                }
                 // Cleanup tutorials if active
                 if (this.tutorialManager.isActive) {
                     this.tutorialManager.cleanup();
