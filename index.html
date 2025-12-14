@@ -152,7 +152,6 @@
             </div>
             <div id="menu-scoring-view" class="hidden">
                 <h2>Scoring Guide</h2>
-                <button id="scoring-back-btn" class="btn btn-secondary" style="margin-bottom: 20px;">← Back</button>
                 
                 <div class="scoring-explanation">
                     <h3>How Scoring Works</h3>
@@ -239,10 +238,10 @@
                     </table>
                     <p class="scoring-note"><em>Special cubes (Required/Bonus) override the base value of any cube type</em></p>
                 </div>
+                <button id="scoring-back-btn" class="btn btn-primary" style="margin-top: 20px;">Back</button>
             </div>
             <div id="menu-about-view" class="hidden">
                 <h2>About Ready, Set 2</h2>
-                <button id="about-back-btn" class="btn btn-secondary" style="margin-bottom: 20px;">← Back</button>
                 
                 <div class="about-content">
                     <h3>🎲 A Puzzle Game That Thinks Different</h3>
@@ -261,6 +260,7 @@
                     
                     <p class="about-footer">Created with ❤️ by Jason Van Pelt for learners, thinkers, and puzzle enthusiasts everywhere. Thanks to Elise Van Pelt for inspiration and testing!</p>
                 </div>
+                <button id="about-back-btn" class="btn btn-primary" style="margin-top: 20px;">Back</button>
             </div>
             <div id="menu-settings-view" class="hidden">
                 <h2>Settings</h2>
@@ -345,7 +345,7 @@
                     </label>
                     <button id="clear-data-btn" class="btn btn-danger" style="margin-top: 10px; width: 100%;">Clear All Data</button>
                 </div>
-                <button id="settings-back-btn" class="btn btn-secondary">Back</button>
+                <button id="settings-back-btn" class="btn btn-primary" style="margin-top: 20px;">Back</button>
             </div>
 
             <!-- Puzzle Builder View -->
@@ -426,7 +426,18 @@
                     </div>
                 </details>
                 
-                <button id="builder-back-btn" class="btn btn-secondary" style="margin-top: 15px;">Back</button>
+                <button id="builder-back-btn" class="btn btn-primary" style="margin-top: 20px;">Back</button>
+            </div>
+            
+            <!-- Tutorial Choice View -->
+            <div id="menu-tutorial-choice-view" class="hidden">
+                <h2>How to Play</h2>
+                <p style="margin-bottom: 20px;">Which tutorial would you like?</p>
+                <div class="menu-list" style="margin-bottom: 20px;">
+                    <button id="tutorial-choice-intro" class="btn btn-secondary" style="width: 100%; margin-bottom: 10px;">Intro Tutorial</button>
+                    <button id="tutorial-choice-level" class="btn btn-secondary" style="width: 100%;">Level <span id="tutorial-choice-level-num">1</span> Tutorial</button>
+                </div>
+                <button id="tutorial-choice-back-btn" class="btn btn-primary" style="margin-top: 20px;">Back</button>
             </div>
             </div>
         </div>

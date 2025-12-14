@@ -14,6 +14,8 @@ export class TutorialManager {
         this.achievementCelebrated = false; // Track if we've celebrated this step's achievement
         this.entryPoint = null; // Track where tutorial was launched from: 'menu' or 'level-interstitial'
         this.savedSolutionHelperState = null; // Store user's preference before tutorial
+        this.savedLevel = null; // Store player's level before intro tutorial
+        this.savedGoalScore = null; // Store player's goalScore before intro tutorial
         
         this.instructionEl = document.getElementById('tutorial-instruction');
         this.stepBadgeEl = document.getElementById('tutorial-step-badge');
@@ -56,6 +58,16 @@ export class TutorialManager {
         // Save user's Solution Helper preference
         this.savedSolutionHelperState = this.ui.settings.solutionHelper;
         console.log('💡 Solution Helper: Saved user preference:', this.savedSolutionHelperState);
+        
+        // For intro tutorial, temporarily set Level 1 so UI shows correct elements
+        // (single solution row, Level 1 goal score, no timer)
+        if (tutorialLevel === 'intro') {
+            this.savedLevel = this.game.level;
+            this.savedGoalScore = this.game.goalScore;
+            this.game.level = 1;
+            this.game.goalScore = 500; // Level 1 goal
+            console.log('📊 Intro tutorial: Temporarily set to Level 1 (was Level', this.savedLevel + ')');
+        }
         
         // Level 10 tutorial: Force solution helper OFF to teach manual card manipulation
         // All other tutorials: Force solution helper ON
@@ -444,59 +456,29 @@ export class TutorialManager {
                 });
             });
         } else if (this.entryPoint === 'menu-during-gameplay') {
-            // Entered from menu during regular gameplay - restore saved game
-            const savedState = this.game.storage.loadGameState();
-            
-            if (savedState && savedState.cards && savedState.cards.length > 0) {
-                console.log('   → Restoring saved game state');
-                this.ui.modals.showTutorialComplete(async () => {
-                    console.log('   → Tutorial complete modal closed, restoring state');
-                    
-                    // Clear solution areas in DOM before restoring
-                    this.ui.dragDropHandler.clearAllSolutions();
-                    
-                    // Transition to regular gameplay - enterState will call enterRegularMode()
-                    // which restores from saved state and renders with animation
-                    this.ui.stateManager.setState({
-                        view: UI_VIEWS.GAMEPLAY,
-                        mode: GAMEPLAY_MODES.REGULAR
-                    });
-                    console.log('✅ Game state restored');
+            // Entered from menu during gameplay - restore their game
+            console.log('   → Restoring game state');
+            this.ui.modals.showTutorialComplete(async () => {
+                // Clear solution areas in DOM before restoring
+                this.ui.dragDropHandler.clearAllSolutions();
+                
+                // Transition to regular gameplay - enterState will call enterRegularMode()
+                // which restores from saved state and renders with animation
+                this.ui.stateManager.setState({
+                    view: UI_VIEWS.GAMEPLAY,
+                    mode: GAMEPLAY_MODES.REGULAR
                 });
-            } else {
-                // Fallback: no saved state, go to home
-                console.log('   → No saved state, returning to home screen');
-                this.ui.modals.showTutorialComplete(async () => {
-                    this.ui.stateManager.setState({ 
-                        view: UI_VIEWS.HOME,
-                        mode: null
-                    });
-                });
-            }
+            });
         } else {
-            // Legacy fallback: 'menu' - treat as menu during gameplay
-            console.log('   → Legacy menu entry point, restoring saved state');
-            const savedState = this.game.storage.loadGameState();
-            
-            if (savedState && savedState.cards && savedState.cards.length > 0) {
-                this.ui.modals.showTutorialComplete(async () => {
-                    // Clear solution areas before transitioning
-                    this.ui.dragDropHandler.clearAllSolutions();
-                    
-                    // Transition to regular gameplay - enterState handles restore and render
-                    this.ui.stateManager.setState({
-                        view: UI_VIEWS.GAMEPLAY,
-                        mode: GAMEPLAY_MODES.REGULAR
-                    });
+            // Any other entry point - return to home screen
+            console.log('   → Returning to home screen');
+            this.ui.modals.showTutorialComplete(async () => {
+                this.ui.dragDropHandler.clearAllSolutions();
+                this.ui.stateManager.setState({ 
+                    view: UI_VIEWS.HOME,
+                    mode: null 
                 });
-            } else {
-                this.ui.modals.showTutorialComplete(async () => {
-                    this.ui.stateManager.setState({ 
-                        view: UI_VIEWS.HOME,
-                        mode: null
-                    });
-                });
-            }
+            });
         }
     }
     
@@ -536,6 +518,15 @@ export class TutorialManager {
             }
             
             this.savedSolutionHelperState = null;
+        }
+        
+        // Restore player's level after intro tutorial
+        if (this.savedLevel !== null) {
+            console.log('📊 Restoring player level:', this.savedLevel);
+            this.game.level = this.savedLevel;
+            this.game.goalScore = this.savedGoalScore;
+            this.savedLevel = null;
+            this.savedGoalScore = null;
         }
         
         this.scenario = null;

@@ -148,12 +148,41 @@ export class UIController {
             window.location.reload();
         });
         document.getElementById('tutorial-btn').addEventListener('click', () => {
+            // If on home screen or Level 1, just show intro tutorial (no choice needed)
+            const currentView = this.stateManager.getState().view;
+            if (currentView === UI_VIEWS.HOME || this.game.level === 1) {
+                this.stateManager.setState({ 
+                    view: UI_VIEWS.GAMEPLAY, 
+                    mode: GAMEPLAY_MODES.TUTORIAL,
+                    modal: null 
+                });
+                this.showIntroTutorial('menu-during-gameplay');
+                return;
+            }
+            
+            // For Level 2+ during gameplay, show tutorial choice view within menu
+            this.modals.showTutorialChoice(this.game.level);
+        });
+        
+        // Tutorial choice buttons (within menu)
+        document.getElementById('tutorial-choice-intro').addEventListener('click', () => {
             this.stateManager.setState({ 
                 view: UI_VIEWS.GAMEPLAY, 
                 mode: GAMEPLAY_MODES.TUTORIAL,
                 modal: null 
             });
             this.showIntroTutorial('menu-during-gameplay');
+        });
+        document.getElementById('tutorial-choice-level').addEventListener('click', () => {
+            this.stateManager.setState({ 
+                view: UI_VIEWS.GAMEPLAY, 
+                mode: GAMEPLAY_MODES.TUTORIAL,
+                modal: null 
+            });
+            this.showTutorialForLevelFromMenu(this.game.level);
+        });
+        document.getElementById('tutorial-choice-back-btn').addEventListener('click', () => {
+            this.modals.hideTutorialChoice();
         });
         document.getElementById('menu-home-btn').addEventListener('click', () => {
             this.stateManager.setState({ 
@@ -1269,6 +1298,27 @@ export class UIController {
             this.tutorialManager.start(introScenario, entryPoint, 'intro');
         } else {
             console.error('❌ Intro tutorial scenario not found!');
+        }
+    }
+    
+    async showTutorialForLevelFromMenu(level) {
+        // Show level-specific tutorial from the menu (during gameplay)
+        console.log('📚 Starting Level', level, 'tutorial from menu');
+        
+        // Pause timer during tutorial
+        if (this.game.timer) {
+            this.game.timer.stop(false);
+        }
+        
+        const { getTutorialScenario } = await import('../tutorialScenarios.js');
+        const tutorialScenario = getTutorialScenario(level);
+        
+        if (tutorialScenario) {
+            this.tutorialManager.start(tutorialScenario, 'menu-during-gameplay', level);
+        } else {
+            // No tutorial for this level - fall back to intro
+            console.log('⚠️ No tutorial for Level', level, '- showing intro instead');
+            this.showIntroTutorial('menu-during-gameplay');
         }
     }
     

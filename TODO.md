@@ -24,6 +24,11 @@
   - Daily puzzle data persistence
 
 ### Medium Priority
+- [ ] **CSS semantic audit** (Est: 1-2 hours)
+  - Review all CSS for proper separation of concerns
+  - Modifier classes like `.btn-large` should only affect sizing, not colors
+  - Example: `.btn-secondary.btn-large` currently sets colors (should only be sizing)
+  - Ensure class names match their purpose
 - [ ] **State-driven timer improvements** (Est: 15-20 min)
   - Pause timer when modals open (menu, pass, settings)
   - Resume timer when modals close

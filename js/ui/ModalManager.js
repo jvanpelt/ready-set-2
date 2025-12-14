@@ -78,6 +78,8 @@ export class ModalManager {
         this.menuScoringView = document.getElementById('menu-scoring-view');
         this.menuAboutView = document.getElementById('menu-about-view');
         this.menuBuilderView = document.getElementById('menu-builder-view');
+        this.menuTutorialChoiceView = document.getElementById('menu-tutorial-choice-view');
+        this.tutorialChoiceLevelNum = document.getElementById('tutorial-choice-level-num');
         
         // Pass confirmation
         this.passModal = document.getElementById('pass-modal');
@@ -413,11 +415,13 @@ export class ModalManager {
      */
     hideMenu() {
         this.menuModal.classList.add('hidden');
+        // Reset to main view so next open shows main menu
         this.menuMainView.classList.remove('hidden');
         this.menuSettingsView.classList.add('hidden');
         this.menuScoringView.classList.add('hidden');
         this.menuAboutView.classList.add('hidden');
         this.menuBuilderView.classList.add('hidden');
+        this.menuTutorialChoiceView.classList.add('hidden');
         
         // Remove overlay from state manager
         if (window.uiController && window.uiController.stateManager) {
@@ -474,7 +478,7 @@ export class ModalManager {
     }
     
     /**
-     * Hide settings/scoring/about/builder views, return to main menu
+     * Hide settings/scoring/about/builder/tutorial-choice views, return to main menu
      */
     hideSettings() {
         this.menuMainView.classList.remove('hidden');
@@ -482,6 +486,7 @@ export class ModalManager {
         this.menuScoringView.classList.add('hidden');
         this.menuAboutView.classList.add('hidden');
         this.menuBuilderView.classList.add('hidden');
+        this.menuTutorialChoiceView.classList.add('hidden');
     }
     
     /**
@@ -505,8 +510,29 @@ export class ModalManager {
     }
     
     /**
-     * Show pass confirmation warning
+     * Show tutorial choice view within menu
+     * @param {number} level - Current player level
      */
+    showTutorialChoice(level) {
+        this.menuMainView.classList.add('hidden');
+        this.menuSettingsView.classList.add('hidden');
+        this.menuScoringView.classList.add('hidden');
+        this.menuAboutView.classList.add('hidden');
+        this.menuBuilderView.classList.add('hidden');
+        this.menuTutorialChoiceView.classList.remove('hidden');
+        
+        // Update level number in button
+        this.tutorialChoiceLevelNum.textContent = level;
+    }
+    
+    /**
+     * Hide tutorial choice view, return to main menu
+     */
+    hideTutorialChoice() {
+        this.menuMainView.classList.remove('hidden');
+        this.menuTutorialChoiceView.classList.add('hidden');
+    }
+    
     /**
      * Show "checking puzzle" loading state
      */
