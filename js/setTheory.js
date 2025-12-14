@@ -835,12 +835,15 @@ export function evaluateRestriction(restriction, cards, depth = 0) {
     let restrictionIndex = -1;
     
     // Check each die to see if it's a restriction operator AND not part of a group
+    // Use the LAST ungrouped restriction operator for left-to-right evaluation
+    // This ensures "A ⊆ B = C" evaluates as "(A ⊆ B) = C" not "A ⊆ (B = C)"
     restriction.forEach((die, index) => {
-        if ((die.value === '=' || die.value === '⊆') && restrictionDie === null) {
+        if (die.value === '=' || die.value === '⊆') {
             // Check if this die is part of any valid group
             const inGroup = validGroups.some(group => group.includes(index));
             if (!inGroup) {
                 // This restriction operator is not grouped - use it as the split point
+                // Keep updating to get the LAST (rightmost) ungrouped restriction
                 restrictionDie = die;
                 restrictionIndex = index;
             }
@@ -906,9 +909,10 @@ export function evaluateRestriction(restriction, cards, depth = 0) {
     console.log('Left side has restriction group:', leftHasRestrictionGroup);
     console.log('Right side has restriction group:', rightHasRestrictionGroup);
     
-    // If left side has a nested restriction, evaluate it and accumulate its flips
+    // If left side has a nested restriction (grouped OR ungrouped), evaluate it and accumulate its flips
     let leftCards;
-    if (leftHasRestrictionGroup) {
+    if (leftHasRestrictionOp) {
+        // Left side contains a restriction operator - evaluate it as a restriction
         const leftFlips = evaluateRestriction(leftSide, cards, depth + 1);
         console.log('Left side nested flips:', leftFlips);
         accumulatedFlips.push(...leftFlips);
@@ -925,9 +929,10 @@ export function evaluateRestriction(restriction, cards, depth = 0) {
         leftCards = evaluateExpression(leftSide, cards);
     }
     
-    // If right side has a nested restriction, evaluate it and accumulate its flips
+    // If right side has a nested restriction (grouped OR ungrouped), evaluate it and accumulate its flips
     let rightCards;
-    if (rightHasRestrictionGroup) {
+    if (rightHasRestrictionOp) {
+        // Right side contains a restriction operator - evaluate it as a restriction
         const rightFlips = evaluateRestriction(rightSide, cards, depth + 1);
         console.log('Right side nested flips:', rightFlips);
         accumulatedFlips.push(...rightFlips);
