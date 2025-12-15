@@ -441,7 +441,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'universe',
-                    message: 'The 8 <strong>Cards</strong> up top are called the <strong>Universe</strong>. Each Card has a unique combination of colored dots.',
+                    message: 'The 8 Cards up top are called the "Universe". Each Card has a unique combination of colored dots.',
                     highlight: null,
                     nextTrigger: 'auto',
                     onEnter: () => {
@@ -450,7 +450,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'goal',
-                    message: 'In this example, your goal is to select exactly <strong>3 Cards</strong> from the Universe.',
+                    message: 'In this example, your goal is to select exactly 3 Cards from the Universe.',
                     highlight: { goal: true },
                     nextTrigger: 'auto',
                     onEnter: () => {
@@ -459,7 +459,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'cubes',
-                    message: 'You\'ll drag Cubes to the <strong>Solution Area</strong> to create a "<strong>Set Name</strong>" &ndash; a formula that selects, or names, a set of Cards.',
+                    message: 'You\'ll drag Cubes to the <strong>Solution Area</strong> to create a "Set Name" &ndash; a formula that selects, or names, a set of Cards.',
                     highlight: { dice: [0, 1, 2, 3] },
                     nextTrigger: 'auto',
                     onEnter: () => {
@@ -468,13 +468,13 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'operator-or',
-                    message: `The Union or <strong>"OR"</strong> ${getUnionSVG(35,35)} operator selects a larger set, as shown by it's "more full" venn diagram symbol.`,
+                    message: `The Union, or <strong>OR</strong> ${getUnionSVG(35,35)} operator, selects a larger set, as shown by its "more full" venn diagram symbol.`,
                     highlight: { dice: [2] },
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'operator-and',
-                    message: `The Intersection or <strong>"AND"</strong> ${getIntersectionSVG(35,35)} operator names a smaller set with shared characteristics, as shown by the "less full" venn diagram symbol.`,
+                    message: `The Intersection, or <strong>AND</strong> ${getIntersectionSVG(35,35)} operator, names a smaller set with shared characteristics, as shown by its "less full" venn diagram symbol.`,
                     highlight: { dice: [3] },
                     nextTrigger: 'auto'
                 },
@@ -486,7 +486,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'build-red-or-blue',
-                    message: `So let\'s try it! Drag the Red Cube, OR ${getUnionSVG(30,30)} Cube, and Blue Cube to the top row in the Solution Area.`,
+                    message: `So let\'s try it! Drag the Red Cube, OR ${getUnionSVG(30,30)} Cube, and Blue Cube to the top row of the Solution Area.`,
                     highlight: { dice: [0, 1, 2] },
                     onEnter: () => {
                         setTimeout(() => IntroAnimations.animateSolution(0), 100);
@@ -506,13 +506,13 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'or-result',
-                    message: '<strong>Red OR Blue</strong> selects Cards with Red dots OR Blue dots. You can see that 5 Cards are highlighted, which doesn\'t match the goal yet.',
+                    message: '<em>Red OR Blue</em> selects Cards with Red dots or Blue dots. You can see that 5 Cards are highlighted, which doesn\'t match the goal yet.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'swap-and',
-                    message: `Now try a Solution of <strong>"Red AND ${getIntersectionSVG(30,30)} Blue"</strong>. Tip: double-tap the OR cube to easily remove it from your Solution.`,
+                    message: `Now try a Solution of <em>Red AND ${getIntersectionSVG(30,30)} Blue</em>. Tip: double-tap the <strong>OR</strong> Cube to easily remove it from your Solution.`,
                     highlight: { dice: [3] }, // Highlight red, blue, and AND
                     validation: (game) => {
                         // Check if solution contains EXACTLY red, AND, blue (in any row, any order)
@@ -532,13 +532,13 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'and-success',
-                    message: 'Perfect! "<strong>Red AND Blue</strong>" finds only Cards with BOTH colors. That\'s exactly 3 Cards, making this a valid Solution!',
+                    message: 'Perfect! <em>Red AND Blue</em> finds only Cards with both Colors. That\'s exactly 3 Cards, making this a valid Solution!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },/*
                 {
                     id: 'solution-helper',
-                    message: 'A few quick tips: The "Solution Helper" feature highlights cards that match your current solution.',
+                    message: 'A few quick tips: The "Solution Helper" feature highlights Cards that match your current Solution.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -556,13 +556,13 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-grouping-order',
-                    message: 'When Cubes touch, they form a group that acts as a unit in your solution. Groups are evaluated first, just like parentheses change the order of operations in algebra.',
+                    message: 'When Cubes touch, they form a group that acts as a unit in your Solution. Groups are evaluated first, just like parentheses change the order of operations in algebra.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-grouping-boxes',
-                    message: 'You\'ll see that valid groups are wrapped in a green box in your solution. Experiment with how different groupings can change the result of your Solution.',
+                    message: 'You\'ll see that valid groups are wrapped in a green box in your Solution. Experiment with how different groupings can change the result of your Solution.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -574,13 +574,13 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'leveling-up',
-                    message: 'Remember, Solutions with more Cubes earn higher points, helping you rise through the levels faster. There, you\'ll learn more advanced concepts and open up new game features!',
+                    message: 'Remember, Solutions with more Cubes earn higher points, helping you rise through the levels faster. There you\'ll learn more advanced concepts and unlock new game features!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'press-go',
-                    message: 'When you have a solution, press <strong>GO</strong> to check it. Ready to play??',
+                    message: 'When you have a Solution, press <strong>GO</strong> to check it. Ready to play??',
                     highlight: { goButton: true },
                     nextTrigger: 'submit'
                 }
@@ -613,19 +613,19 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'identify-goal',
-                    message: 'Our goal is <strong>5 cards</strong>. check out the goal number.',
+                    message: 'Our goal is 5 Cards. Check out the goal number.',
                     highlight: { goal: true },
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-union',
-                    message: '<strong>Red OR Blue</strong> means "all cards with red OR blue (or both)".',
+                    message: '<em>Red OR Blue</em> means "all Cards with Red or Blue (or both)".',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'drag-red',
-                    message: 'First, drag the <strong>RED</strong> cube to the solution area.',
+                    message: 'First, drag the Red Cube to the <strong>Solution Area</strong>.',
                     highlight: { dice: [0] },
                     validation: (game) => {
                         return game.solutions[0].some(die => die.value === 'red');
@@ -634,7 +634,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-union',
-                    message: 'Great! Now drag the <strong>OR</strong> cube next to it. (It has two overlapping circles.)',
+                    message: 'Great! Now drag the <strong>OR</strong> Cube next to it. (It has two overlapping circles.)',
                     highlight: { dice: [2] },
                     validation: (game) => {
                         return game.solutions[0].some(die => die.value === '∪');
@@ -643,7 +643,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'drag-blue',
-                    message: 'Perfect! Finally, drag the <strong>BLUE</strong> cube to complete your solution.',
+                    message: 'Perfect! Finally, drag the Blue Cube to complete your Solution.',
                     highlight: { dice: [1] },
                     validation: (game) => {
                         return game.solutions[0].some(die => die.value === 'blue');
@@ -652,13 +652,13 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-result',
-                    message: 'Your solution says: "All cards with red OR blue". Count them - 5 cards! ✓',
+                    message: 'Your Solution says <em>All Cards with Red OR Blue</em>. Count them - 5 Cards! ✓',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'submit',
-                    message: 'Now click the <strong>GO!</strong> button to submit your solution!',
+                    message: 'Now click the <strong>GO</strong> button to submit your Solution!',
                     highlight: { goButton: true },
                     validation: (game) => false, // Will be completed by submission
                     nextTrigger: 'submit'
@@ -691,19 +691,19 @@ export const TUTORIAL_SCENARIOS = {
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome to Level 2! Let\'s learn the <strong>minus</strong> operator.',
+                    message: 'Welcome to Level 2! Let\'s learn the <strong>MINUS</strong> operator.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-difference',
-                    message: '<strong>Minus</strong> means "cards in A, but NOT in B". It subtracts B from A.',
+                    message: '<strong>MINUS</strong> means "Cards in A, but NOT in B". It subtracts B from A.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'build-with-minus',
-                    message: 'Our goal is <strong>3 cards</strong>. Try a 3 cube solution like "Green minus Blue", or explore other ways to use <strong>MINUS</strong>!',
+                    message: 'Our goal is 3 Cards. Try a 3 Cube Solution like <em>Green MINUS Blue</em>, or explore other ways to use <strong>MINUS</strong>!',
                     highlight: { dice: [0, 1, 2, 3, 4, 5] }, // Enable all dice
                     validation: (game) => {
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
@@ -728,14 +728,14 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'get-more-complex',
-                    message: 'Perfect! Your solution finds 3 cards. Now let\'s try something a bit more complex.',
+                    message: 'Perfect! Your Solution finds 3 Cards. Now let\'s try something a bit more complex.',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'complex-with-minus',
-                    message: 'Try a 5 cube solution using more colors and operators, making sure to use <strong>MINUS</strong>! If you\'re stuck, try the <strong>OR</strong> operator.',
+                    message: 'Try a 5 Cube Solution using more Colors and operators, making sure to use <strong>MINUS</strong>! If you\'re stuck, try the <strong>OR</strong> operator.',
                     highlight: { dice: [0, 1, 2, 3, 4, 5] }, // Enable all dice
                     validation: (game) => {
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
@@ -760,7 +760,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'submit',
-                    message: 'Perfect! Try to maximize your score by using the most cubes possible! Click <strong>GO!</strong> to continue.',
+                    message: 'Perfect! Try to maximize your score by using the most Cubes possible! Click <strong>GO!</strong> to continue.',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'submit'
@@ -794,19 +794,19 @@ export const TUTORIAL_SCENARIOS = {
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome to Level 3, where we meet the <strong>complement</strong> operator.',
+                    message: 'Welcome to Level 3, where we meet the <strong>Complement</strong> operator.',
                     highlight: { dice: [1] },
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-complement',
-                    message: '<strong>Complement</strong> goes by many names, like "Not" or "Prime". It means "the opposite," as in "Yellow Prime" means "Not Yellow."',
+                    message: '<strong>Complement</strong> goes by many names, like "NOT" or "PRIME". It means "the opposite," as in "Yellow PRIME" means "NOT Yellow."',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'identify-goal',
-                    message: 'Our goal is <strong>5 cards</strong>. Let\'s try "Yellow Prime" &mdash; all cards that are NOT yellow. Who knows, the other colors might work too?',
+                    message: 'Our goal is 5 Cards. Let\'s try <em>Yellow PRIME</em> &mdash; all Cards that are NOT Yellow. Who knows, the other Colors might work too?',
                     highlight: { goal: true, dice: [1, 2] },
                     validation: (game) => {
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
@@ -831,25 +831,25 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-grouping',
-                    message: 'Complement is powerful, but it gets tricky when combined with other operators. This makes us think it\'s a good time to explain grouping.',
+                    message: 'Complement is powerful, but it gets tricky when combined with other operators. This is a good time to explain grouping.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },/*
                 {
                     id: 'explain-grouping-order',
-                    message: 'When cubes touch, they form a group that acts as a unit in your solution. Groups are evaluated first, just like parentheses change the order of operations in algebra.',
+                    message: 'When Cubes touch, they form a group that acts as a unit in your Solution. Groups are evaluated first, just like parentheses change the order of operations in algebra.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-grouping-boxes',
-                    message: 'Experiment with different combinations. You\'ll see that valid groups are wrapped in a green box in your solution.',
+                    message: 'Experiment with different combinations. You\'ll see that valid groups are wrapped in a green box in your Solution.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },*/
                 {
                     id: 'explain-grouping-with-prime',
-                    message: 'Try adding red, green, AND, and PRIME to the solution area. Notice how "red and (green prime)" is different than "(red and green) prime"',
+                    message: 'Try adding Red, Green, <strong>AND</strong>, and <strong>PRIME</strong> to the <strong>Solution Area</strong>. Notice how <em>Red AND (Green PRIME)</em> is different than <em>(Red AND Green) PRIME</em>.',
                     highlight: { dice: [1, 2, 3, 5] },
                     validation: (game) => {
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
@@ -874,7 +874,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'submit',
-                    message: 'Awesome! Now click <strong>GO!</strong> to submit your solution!',
+                    message: 'Awesome! Now click <strong>GO!</strong> to submit your Solution!',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'submit'
@@ -912,13 +912,13 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-double-intersect',
-                    message: 'We can chain operators: <strong>Red AND Blue AND Green</strong> means "cards with red AND blue AND green dots."',
+                    message: 'We can chain operators: <em>Red AND Blue AND Green</em> means "Cards with Red and Blue and Green dots."',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'build-with-double-and',
-                    message: 'Our goal is <strong>1 card</strong>. Try using <strong>both AND operators</strong> to find the card with all three colors!',
+                    message: 'Our goal is 1 Card. Try using both <strong>AND</strong> operators to find the Card with all three Colors!',
                     highlight: { goal: true, dice: [0, 1, 2, 3, 4] }, // Enable all dice except yellow
                     validation: (game) => {
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
@@ -938,7 +938,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-result',
-                    message: 'Perfect! You used <strong>5 cubes</strong> to find 1 very specific card. And you know, more cubes equals more points!',
+                    message: 'Perfect! You used 5 Cubes to find 1 very specific Card. And you know, more Cubes equals more points!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -976,43 +976,43 @@ export const TUTORIAL_SCENARIOS = {
             steps: [
                 {
                     id: 'intro',
-                    message: `Welcome to Level 5! We\'re introducing two new cubes: <strong>Universe</strong> ${getUniverseSVG(25,25)} and <strong>Null</strong> ${getNullSVG(25,25)}.`,
+                    message: `Welcome to Level 5! We\'re introducing two new Cubes: "Universe" ${getUniverseSVG(25,25)} and "Null" ${getNullSVG(25,25)}.`,
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-universe',
-                    message: `The <strong>Universe</strong> ${getUniverseSVG(25,25)} cube refers to ALL cards in the universe. If you place it alone in your solution, you\'ll see all cards stay highlighted.`,
+                    message: `The Universe ${getUniverseSVG(25,25)} Cube refers to ALL Cards. If you place it alone in your Solution, you\'ll see all Cards stay highlighted.`,
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-null',
-                    message: `<strong>Null</strong> ${getNullSVG(25,25)} is an empty set with NO cards. If you place it alone in your solution, you\'ll see all cards are dimmed.`,
+                    message: `Null ${getNullSVG(25,25)} is an empty set with NO Cards. If you place it alone in your Solution, you\'ll see all Cards are dimmed.`,
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'padding-and-restrictions',
-                    message: 'Universe and Null are useful for padding your solution, or for use with restrictions in later levels.',
+                    message: 'Universe and Null are useful for padding your Solution, or for use with Restrictions in later levels.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-padding',
-                    message: '<strong>Padding</strong> means using extra cubes that don\'t change the result, e.g. "Universe And Red" is the same as "Red"!',
+                    message: '"Padding" means using extra Cubes that don\'t change the result, e.g. <em>Universe AND Red</em> is the same as <em>Red</em>!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'build-with-universe',
-                    message: 'Our goal is <strong>3 cards</strong>. Try building a 5 cube solution using <strong>UNIVERSE</strong>.',
+                    message: 'Our goal is 3 Cards. Try building a 5 Cube Solution using Universe.',
                     highlight: { goal: true, dice: [0, 1, 2, 3, 4, 5, 6, 7] }, // Enable all dice
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'build-with-universe',
-                    message: 'If you get stuck, try using "Universe ___ (Blue OR Red)" in your solution. Try different operators in that blank spot, or create your own solution!',
+                    message: 'If you get stuck, try using <em>Universe ___ (Blue OR Red)</em> in your Solution. Try different operators in that blank spot, or create your own Solution!',
                     highlight: { goal: true, dice: [0, 1, 2, 3, 4, 5, 6, 7] }, // Enable all dice
                     validation: (game) => {
                         const allDice = [...game.solutions[0], ...game.solutions[1]];
@@ -1037,7 +1037,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'submit',
-                    message: 'Perfect! Grouping, UNIVERSE, and NULL let you use more cubes for higher scores! Click <strong>GO!</strong>',
+                    message: 'Perfect! Grouping, Universe, and Null let you use more Cubes for higher scores! Click <strong>GO!</strong>',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'submit'
@@ -1070,43 +1070,43 @@ export const TUTORIAL_SCENARIOS = {
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome to Level 6! <strong>Restrictions</strong> are a game changer! First, notice you have <strong>two solution rows</strong> now.',
+                    message: 'Welcome to Level 6! "Restrictions" are a game changer! First, notice you have two Solution rows now.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-two-rows',
-                    message: 'Typically we put restrictions in the top row, and set names in the bottom. Do what you like, just don\'t put them in the <strong>same</strong> row!',
+                    message: 'Typically we put Restrictions in the top row, and Set Names in the bottom. Do what you like, just don\'t put them in the same row!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-subset',
-                    message: `<strong>Subset</strong> ${getSubsetSVG(25,25)}: "A subset B" means cards with A must be contained in B.`,
+                    message: `<strong>SUBSET</strong> ${getSubsetSVG(25,25)}: <em>A SUBSET B</em> means Cards with A must be contained in B.`,
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-subset-example',
-                    message: `For example, "Red Subset Blue" means cards with red must also contain blue. Cards with ONLY red will be <strong>flipped and removed from the Universe</strong>.`,
+                    message: `For example, <em>Red SUBSET Blue</em> means Cards with Red must also contain Blue. Cards with only Red will be flipped and removed from the Universe.`,
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-equals',
-                    message: `<strong>Equals</strong> ${getEqualsSVG(25,25)}: "Red Equals Blue" means cards with red must contain blue, and cards with blue must also contain red.`,
+                    message: `<strong>EQUALS</strong> ${getEqualsSVG(25,25)}: <em>Red EQUALS Blue</em> means Cards with Red must contain Blue, and Cards with Blue must also contain Red.`,
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-important',
-                    message: 'Go ahead and try some restrictions, just to see what they do! You can use Subset, Equals, or both in your solution.',
+                    message: 'Go ahead and try some Restrictions, just to see what they do! You can use Subset, Equals, or both in your Solution.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'goal',
-                    message: 'Goal: <strong>3 cards</strong>. Let\'s try building a full solution, starting with something like "Red Subset Blue" to remove cards with red but not blue.',
+                    message: 'Goal: 3 Cards. Let\'s try building a full Solution, starting with something like <em>Red SUBSET Blue</em> to remove Cards with Red but not Blue.',
                     highlight: { goal: true },
                     validation: (game) => {
                         // Check if either row contains a valid restriction
@@ -1126,19 +1126,19 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-setname-needed',
-                    message: '<strong>Important</strong>: Restrictions alone aren\'t enough! You must ALSO provide a set name in your solution.',
+                    message: '<strong>Important</strong>: Restrictions alone aren\'t enough! You must also provide a Set Name in your Solution.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-one-cube-setname',
-                    message: 'Hint: now that we are using restrictions, we can use single-cube set names!',
+                    message: 'Hint: now that we are using Restrictions, we can use single-Cube Set Names!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'create-set-name',
-                    message: 'Now, if you haven\'t, add a set name to complete your solution! Any valid set name will work.',
+                    message: 'Now, if you haven\'t, add a Set Name to complete your Solution! Any valid Set Name will work.',
                     highlight: { dice: [0, 1, 2, 3, 6] }, // All non-restriction dice
                     validation: (game) => {
                         // Check if solution is valid AND contains a restriction
@@ -1163,7 +1163,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'submit',
-                    message: 'Restrictions can also unlock massive scores by using more cubes! Click <strong>GO</strong> to play!',
+                    message: 'Restrictions can also unlock massive scores by using more Cubes! Click <strong>GO</strong> to play!',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'submit'
@@ -1204,7 +1204,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-timer',
-                    message: 'From now on, you have a <strong>time limit</strong>! Watch the timer at the bottom of the screen.',
+                    message: 'From now on, you have a time limit! Watch the timer at the bottom of the screen.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
@@ -1216,13 +1216,13 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'goal',
-                    message: 'Goal: <strong>5 cards</strong>. Use what you\'ve learned to find a solution. Beat the clock!',
+                    message: 'Goal: 5 Cards. Use what you\'ve learned to find a Solution. Beat the clock!',
                     highlight: { goal: true },
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'submit',
-                    message: 'Build any valid solution and click <strong>GO!</strong>',
+                    message: 'Build any valid Solution and click <strong>GO!</strong>',
                     highlight: { goButton: true },
                     validation: (game) => false,
                     nextTrigger: 'submit'
@@ -1257,43 +1257,43 @@ export const TUTORIAL_SCENARIOS = {
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome to Level 8 where we introduce <strong>Required Cubes</strong>, marked with a green glow. They are worth <strong>50 bonus points</strong>, and they\'re <strong>mandatory</strong>!',
+                    message: 'Welcome to Level 8 where we introduce "Required Cubes", marked with a green glow. They are worth 50 bonus points, and they\'re <strong>mandatory</strong>!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'goal',
-                    message: 'Goal: <strong>3 cards</strong>. Let\'s try building a solution. This one might be tricky, but give it a try before you hit Next.',
+                    message: 'Goal: 3 Cards. Let\'s try building a Solution. This one might be tricky, but give it a try before you hit <strong>Next</strong>.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'hint-one',
-                    message: 'There are only two valid solutions, and they both use And, Red, and the required Prime cube.',
+                    message: 'There are only two valid Solutions, and they both use AND, Red, and the required PRIME Cube.',
                     highlight: { dice: [0] },
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'hint-two',
-                    message: 'You could play "Red Prime And Yellow" to name a set of 3 cards, but there\'s another option worth more points...',
+                    message: 'You could play <em>Red PRIME AND Yellow</em> to name a set of 3 Cards, but there\'s another option worth more points...',
                     highlight: { dice: [1] },
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'hint-three',
-                    message: '"Null Prime And Red" is the better option, since Null is worth more points than Yellow.',
+                    message: '<em>Null PRIME AND Red</em> is the better option, since Null is worth more points than Yellow.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'hint-four',
-                    message: 'Remember, "Null Prime" is the same as "Universe", and "Universe And Red" is the same as "Red". So, "Null Prime And Red" is the same as plain old "Red".',
+                    message: 'Remember, <em>Null PRIME</em> is the same as Universe, and <em>Universe AND Red</em> is the same as Red. So, <em>Null PRIME AND Red</em> is the same as plain old Red.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'submit',
-                    message: 'Watch for that glowing green cube in real play! Click <strong>GO!</strong> to play now!',
+                    message: 'Watch for that glowing green Cube in real play! Click <strong>GO!</strong> to play now!',
                     highlight: { goButton: true },
                     nextTrigger: 'submit'
                 }
@@ -1326,37 +1326,37 @@ export const TUTORIAL_SCENARIOS = {
             steps: [
                 {
                     id: 'intro',
-                    message: 'Welcome to Level 9! Meet the <strong>Wild Cube</strong>! I bet you can guess which cube it is.',
+                    message: 'Welcome to Level 9! Meet the <strong>Wild Cube</strong>! I bet you can guess which Cube it is.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-wild',
-                    message: 'We\'re deep into the game, so let\'s keep this simple. The Wild cube can be changed to <strong>ANY</strong> operator...',
+                    message: 'We\'re deep into the game, so let\'s keep this simple. The Wild Cube can be changed to any operator...',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-selection',
-                    message: 'When you drop a wild cube, a menu appears, allowing you to choose which operator it should be. Change it anytime by clicking it again.',
+                    message: 'When you drop a Wild Cube, a menu appears, allowing you to choose which operator it should be. Change it anytime by clicking it again.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'explain-value',
-                    message: 'If you haven\'t tried it yet, go ahead. A suggestion: add "Red Wild Green", then change Wild to different operators to see what happens.',
+                    message: 'If you haven\'t tried it yet, go ahead. A suggestion: add <em>Red Wild Green</em>, then change the Wild Cube to different operators to see what happens.',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'wild-bonus',
-                    message: 'The bonus cube is not required, but as a reward we\'ll give you 50 bonus points for using it. Nothing wild about that!',
+                    message: 'The Wild Cube is not required, but as a reward we\'ll give you 50 bonus points for using it. Nothing wild about that!',
                     highlight: null,
                     nextTrigger: 'auto'
                 },
                 {
                     id: 'goal',
-                    message: 'That\'s pretty much it. Once you have a solution, press <strong>GO!</strong> to get back to the game!',
+                    message: 'That\'s pretty much it. Once you have a Solution, press <strong>GO!</strong> to get back to the game!',
                     highlight: { goal: true },
                     nextTrigger: 'submit'
                 }
@@ -1395,7 +1395,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-bonus',
-                    message: '<strong>Bonus cubes</strong> look like regular cubes but with a special glow. Free points!',
+                    message: '"Bonus Cubes" look like regular Cubes but with a special glow. Free points!',
                     highlight: null,
                     disableDragging: true,
                     disableDraggingQuiet: true,
@@ -1403,7 +1403,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-value',
-                    message: 'Bonus cubes are worth <strong>50 bonus points</strong> - same as required cubes, but no restrictions!',
+                    message: 'Bonus Cubes are worth 50 bonus points - same as Required Cubes, but no restrictions!',
                     highlight: null,
                     nextTrigger: 'auto',
                     disableDragging: true,
@@ -1411,7 +1411,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'explain-rarity',
-                    message: 'Bonus cubes are rare. When you get one, use it! Easy points.',
+                    message: 'Bonus Cubes are rare. When you get one, use it! Easy points.',
                     highlight: null,
                     nextTrigger: 'auto',
                     disableDragging: true,
@@ -1419,7 +1419,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'preview-solution',
-                    message: 'Before we wrap up we wanted to show you something, so we\'re going to move some cubes around.',
+                    message: 'Before we wrap up we wanted to show you something, so we\'re going to move some Cubes around.',
                     highlight: null,
                     nextTrigger: 'auto',
                     disableDragging: true,
@@ -1427,7 +1427,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'show-solution',
-                    message: 'This is a solution that uses all cubes. But you can\'t <strong>SEE</strong> the solution in the universe of cards. Because Solution Helper is OFF',
+                    message: 'This is a Solution that uses all Cubes. But you can\'t see the Solution in the Universe of Cards. Because "Solution Helper" is off.',
                     highlight: null,
                     disableDragging: true,
                     disableDraggingQuiet: true,
@@ -1534,21 +1534,21 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'manual-verification',
-                    message: 'So let\'s learn to interpret solutions manually.',
+                    message: 'So let\'s learn to interpret Solutions manually.',
                     highlight: null,
                     nextTrigger: 'auto',
                     disableDragging: true
                 },
                 {
                     id: 'explain-restriction',
-                    message: 'The top row is a restriction: "Red AND Green EQUALS Null" means "red and green is the same as nothing". Depressing.',
+                    message: 'The top row is a Restriction: <em>Red AND Green EQUALS Null</em> means "Red AND Green is the same as nothing". Depressing.',
                     highlight: null,
                     nextTrigger: 'auto',
                     disableDragging: true
                 },
                 {
                     id: 'double-tap-to-flip',
-                    message: 'Double-tap the cards that have both red and green <strong>on the same card</strong> to flip them over and show they\'re out of play.',
+                    message: 'Double-tap the Cards that have both Red and Green <strong>on the same Card</strong> to flip them over and show they\'re out of play.',
                     highlight: null,
                     disableDragging: true,
                     validation: (game) => {
@@ -1574,7 +1574,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'dim-cards-without-gold',
-                    message: 'Now dim all the cards that don\'t have yellow.',
+                    message: 'Now dim all the Cards that don\'t have Yellow.',
                     highlight: null,
                     validation: (game) => {
                         const redAndGreenIndices = [5, 6, 7]; // From previous step
@@ -1628,7 +1628,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'dim-cards-with-green',
-                    message: 'Now dim any cards with green to subtract them from the universe.',
+                    message: 'Now dim any Cards with Green to subtract them from the Universe.',
                     highlight: null,
                     validation: (game) => {
                         const redAndGreenIndices = [5, 6, 7]; // From step 1
@@ -1682,7 +1682,7 @@ export const TUTORIAL_SCENARIOS = {
                 },
                 {
                     id: 'final-message',
-                    message: 'Perfect! Manual verification is key to mastering hard mode! And there\'s a rumor that daily puzzles all have 8 cube solutions...',
+                    message: 'Perfect! Manual verification is key to mastering hard mode! And there\'s a rumor that daily puzzles all have 8 Cube Solutions...',
                     highlight: null,
                     nextTrigger: 'auto',
                     disableDragging: true
