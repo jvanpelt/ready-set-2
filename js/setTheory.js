@@ -109,13 +109,18 @@ function detectGroups(dice) {
 function isValidGroup(group, dice) {
     const groupDice = group.map(i => dice[i]);
     groupDice.sort((a, b) => a.x - b.x);
-    const groupValues = groupDice.map(d => d.value).join(' ');
+    // Use effective values for display (handles wild cubes showing their selected operator)
+    const groupValues = groupDice.map(d => getEffectiveValue(d)).join(' ');
     const groupTypes = groupDice.map(d => d.type).join(', ');
     
     // A valid group must contain at least one operator OR restriction
-    const hasOperator = group.some(index => 
-        dice[index].type === 'operator' || dice[index].type === 'restriction'
-    );
+    // Wild cubes with a selected operator also count as operators
+    const hasOperator = group.some(index => {
+        const die = dice[index];
+        return die.type === 'operator' || 
+               die.type === 'restriction' || 
+               (die.type === 'wild' && die.selectedOperator);
+    });
     
     console.log(`  Checking group [${groupValues}], types: [${groupTypes}], hasOperator: ${hasOperator}`);
     
