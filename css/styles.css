@@ -1329,6 +1329,37 @@ body {
     margin: 0;
 }
 
+/* Daily puzzle new player warning */
+.daily-warning {
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid var(--color-red);
+    border-radius: 8px;
+    padding: 15px 20px;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.daily-warning p {
+    color: #1a1a1a;
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.daily-warning .text-link {
+    background: none;
+    border: none;
+    color: var(--color-red);
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+}
+
+.daily-warning .text-link:hover {
+    opacity: 0.8;
+}
+
 /* Daily Puzzle Interstitial Styles */
 .daily-badge {
     background: linear-gradient(135deg, var(--color-btn-primary-gradient-start) 0%, var(--color-btn-primary-gradient-end) 100%);

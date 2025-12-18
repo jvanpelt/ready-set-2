@@ -58,6 +58,8 @@ export class ModalManager {
         this.dailyInterstitialSolutionCount = document.getElementById('daily-solution-count');
         this.dailyInterstitialDifficulty = document.getElementById('daily-difficulty');
         this.dailyInterstitialDescription = document.getElementById('daily-interstitial-description');
+        this.dailyNewPlayerWarning = document.getElementById('daily-new-player-warning');
+        this.dailyWarningDismissBtn = document.getElementById('daily-warning-dismiss');
         this.dailyPuzzleStartBtn = document.getElementById('daily-puzzle-start-btn');
         this.dailyInterstitialMenuBtn = document.getElementById('daily-interstitial-menu-btn');
         
@@ -993,6 +995,27 @@ export class ModalManager {
             // Update description
             this.dailyInterstitialDescription.textContent = 
                 `Today's puzzle has ${solutionCount || 'many'} possible solutions. The shortest uses ${shortestSolution || 2} cubes. Good luck!`;
+            
+            // Show new player warning if player hasn't reached level 7 and hasn't dismissed it
+            const playerLevel = window.game?.level || 1;
+            const warningDismissed = localStorage.getItem('dailyWarningDismissed') === 'true';
+            
+            if (playerLevel < 7 && !warningDismissed) {
+                // Show warning, hide description
+                this.dailyNewPlayerWarning.classList.remove('hidden');
+                this.dailyInterstitialDescription.classList.add('hidden');
+                
+                // Handle dismiss button
+                this.dailyWarningDismissBtn.onclick = () => {
+                    localStorage.setItem('dailyWarningDismissed', 'true');
+                    this.dailyNewPlayerWarning.classList.add('hidden');
+                    this.dailyInterstitialDescription.classList.remove('hidden');
+                };
+            } else {
+                // Hide warning, show description
+                this.dailyNewPlayerWarning.classList.add('hidden');
+                this.dailyInterstitialDescription.classList.remove('hidden');
+            }
             
             // Handle Start button
             const handleStart = () => {
