@@ -43,8 +43,8 @@ export class HomeScreenManager {
                     data: { level: this.game.level }
                 });
                 
-                // Render and show interstitial for current level
-                window.uiController.render();
+                // Animate the puzzle in behind the interstitial
+                window.uiController.render({ animate: true });
                 window.uiController.clearSolutionHelper();
                 
                 // Show interstitial (this will hide home screen with proper z-index layering)
