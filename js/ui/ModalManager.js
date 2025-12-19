@@ -301,6 +301,15 @@ export class ModalManager {
             const shouldShowInterstitial = true; // tutorialViewed ? false : true;
             
             if (shouldShowInterstitial) {
+                // Start new level FIRST (increments level, generates new round, saves state)
+                // This ensures if player quits at the interstitial, their progress is saved
+                this.game.startNewLevel();
+                
+                // Render the new puzzle so it's visible behind the interstitial
+                if (window.uiController) {
+                    window.uiController.render();
+                }
+                
                 // Transition to level interstitial
                 if (window.uiController) {
                     window.uiController.stateManager.setState({
@@ -311,9 +320,6 @@ export class ModalManager {
                 
                 // Show interstitial screen and wait for user choice
                 const wantsTutorial = await this.showInterstitialAsync(newLevel);
-                
-                // Start new level (this generates new round and starts timer)
-                this.game.startNewLevel();
                 
                 // STOP timer immediately - we're showing tutorial/interstitial
                 if (this.game.timer) {
