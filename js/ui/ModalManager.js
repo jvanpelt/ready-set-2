@@ -305,9 +305,10 @@ export class ModalManager {
                 // This ensures if player quits at the interstitial, their progress is saved
                 this.game.startNewLevel();
                 
-                // Render the new puzzle so it's visible behind the interstitial
+                // Animate the new puzzle in - it will be visible behind the semi-transparent interstitial
+                // When player clicks "Play Now", enterState will skip animation since it already happened
                 if (window.uiController) {
-                    window.uiController.render();
+                    window.uiController.render({ animate: true });
                 }
                 
                 // Transition to level interstitial

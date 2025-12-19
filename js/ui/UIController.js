@@ -319,7 +319,7 @@ export class UIController {
         // Only exit/enter primary view if view or mode changed
         if (viewChanged || modeChanged) {
             this.exitState(from);
-            this.enterState(to);
+            this.enterState(to, from);
         }
         
         // Handle modal changes separately (they overlay, don't replace views)
@@ -412,8 +412,10 @@ export class UIController {
     
     /**
      * Enter a state - setup logic
+     * @param {Object} state - The new state to enter
+     * @param {Object} fromState - The previous state (optional, for conditional logic)
      */
-    enterState(state) {
+    enterState(state, fromState = null) {
         const { view, mode, modal, data } = state;
         
         console.log(`🚪 Entering state: view=${view}, mode=${mode}, modal=${modal}`, data);
@@ -443,7 +445,9 @@ export class UIController {
                 // Mode-specific setup
                 if (mode === GAMEPLAY_MODES.REGULAR) {
                     this.game.enterRegularMode();
-                    this.render({ animate: true });
+                    // Skip animation if coming from interstitial (puzzle already animated in behind it)
+                    const fromInterstitial = fromState?.view === UI_VIEWS.LEVEL_INTERSTITIAL;
+                    this.render({ animate: !fromInterstitial });
                     this.game.timer.startFresh();
                 } else if (mode === GAMEPLAY_MODES.TUTORIAL) {
                     // Tutorial setup is handled by TutorialManager
